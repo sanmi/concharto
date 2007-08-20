@@ -28,6 +28,9 @@
 		    <value>com.tech4d.tsm.model.Person</value>
 		  </list>
 		</property>
+		<property name="schemaUpdate">
+			<value>true</value>
+		</property>
 	  	
 	</bean>
 	<!-- End Hibernate Configs  -->
