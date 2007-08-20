@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry including="*.xml" kind="src" path="WebRoot/WEB-INF"/>
-	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="WEB-INF"/>
+	<classpathentry kind="src" output="build/test-classes" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/apps/lib/spring-framework-2.0.6/dist/spring-aspects.jar"/>
 	<classpathentry kind="lib" path="C:/apps/lib/spring-framework-2.0.6/dist/spring-mock.jar"/>
 	<classpathentry kind="con" path="com.genuitec.eclipse.j2eedt.core.J2EE14_CONTAINER"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-logging.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/coverc.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jstl.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/spring.jar" sourcepath="C:/apps/lib/spring-framework-2.0.6/src-combined">
 		<attributes>
@@ -41,5 +40,6 @@
 	<classpathentry kind="lib" path="C:/apps/lib/spring-framework-2.0.6/lib/jakarta-commons/commons-dbcp.jar"/>
 	<classpathentry kind="lib" path="C:/apps/lib/spring-framework-2.0.6/lib/jakarta-commons/commons-pool.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/coverc.jar"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>
