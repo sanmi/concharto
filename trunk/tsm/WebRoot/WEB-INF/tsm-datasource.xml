@@ -12,7 +12,7 @@
 	</bean>
 	
 	<bean id="mySessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-	  <property name="dataSource" ref="myDataSource"/>
+  	    <property name="dataSource" ref="myDataSource"/>
 		<property name="hibernateProperties">
 		    <props>
 		        <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
@@ -28,9 +28,7 @@
 		    <value>com.tech4d.tsm.model.Person</value>
 		  </list>
 		</property>
-		<property name="schemaUpdate">
-			<value>true</value>
-		</property>
+		<property name="schemaUpdate" value="true"/>
 	  	
 	</bean>
 	<!-- End Hibernate Configs  -->

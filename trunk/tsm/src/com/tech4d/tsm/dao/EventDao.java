@@ -1,10 +1,10 @@
 package com.tech4d.tsm.dao;
 
+import java.util.Collection;
+
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.tech4d.tsm.model.Event;
-
-import java.util.Collection;
 
 public class EventDao extends HibernateDaoSupport {
 
