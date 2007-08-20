@@ -2,13 +2,12 @@ package com.tech4d.tsm.dao;
 
 import java.util.Collection;
 
-import org.springframework.context.ApplicationContext;
+import junit.framework.TestCase;
 
+import org.springframework.context.ApplicationContext;
 
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.util.ContextUtil;
-
-import junit.framework.TestCase;
 
 
 public class IntegrationTestEventDao extends TestCase {

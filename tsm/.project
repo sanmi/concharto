@@ -49,9 +49,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>WEB-INF</name>
+			<name>build classes</name>
 			<type>2</type>
-			<location>C:/dev/samples/mvc-convention/WebRoot/WEB-INF</location>
+			<location>C:/dev/tsm/tmp-classes</location>
 		</link>
 	</linkedResources>
 </projectDescription>

@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry including="*.xml" kind="src" path="WEB-INF"/>
+	<classpathentry including="*.xml" kind="src" path="WebRoot/WEB-INF"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/apps/lib/spring-framework-2.0.6/dist/spring.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/apps/lib/spring-framework-2.0.6/docs/api/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="C:/apps/lib/spring-framework-2.0.6/dist/spring-aspects.jar"/>
 	<classpathentry kind="lib" path="C:/apps/lib/spring-framework-2.0.6/dist/spring-mock.jar"/>
 	<classpathentry kind="con" path="com.genuitec.eclipse.j2eedt.core.J2EE14_CONTAINER"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/coverc.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jstl.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/spring.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/spring.jar" sourcepath="C:/apps/lib/spring-framework-2.0.6/src-combined">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/apps/lib/spring-framework-2.0.6/docs/api/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/standard.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/antlr-2.7.6.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/asm-attrs.jar"/>
@@ -25,9 +24,13 @@
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/ejb3-persistence.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/hibernate-annotations.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/hibernate-annotations.jar" sourcepath="C:/apps/lib/hibernate-annotations-3.3.0.GA/src">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/apps/lib/hibernate-annotations-3.3.0.GA/doc/api/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/hibernate-commons-annotations.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/hibernate3.jar">
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/hibernate3.jar" sourcepath="C:/apps/lib/hibernate-3.2/src">
 		<attributes>
 			<attribute name="javadoc_location" value="file:/C:/apps/lib/hibernate-3.2/doc/api/"/>
 		</attributes>

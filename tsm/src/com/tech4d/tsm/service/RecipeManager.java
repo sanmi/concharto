@@ -16,9 +16,9 @@
 
 package com.tech4d.tsm.service;
 
-import com.tech4d.tsm.model.Recipe;
-
 import java.util.Collection;
+
+import com.tech4d.tsm.model.Recipe;
 
 /**
  * Central service interface for the application.
