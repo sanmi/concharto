@@ -5,42 +5,7 @@
 	<classpathentry kind="src" output="eclipse-target/test-classes" path="src/test/java"/>
 	<classpathentry excluding="**/classes/**|**/jsp/**|**/lib/**|**/tld/**" kind="src" output="eclipse-target/test-classes" path="WEB-INF"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/build/junit-3.8.1.jar"/>
 	<classpathentry kind="con" path="com.genuitec.eclipse.j2eedt.core.J2EE14_CONTAINER"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-logging.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jstl.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/spring.jar" sourcepath="C:/apps/lib/spring-framework-2.0.6/src-combined">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/apps/lib/spring-framework-2.0.6/docs/api/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/standard.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/antlr-2.7.6.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/asm-attrs.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/asm.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/cglib-2.1.3.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-collections-2.1.1.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-logging-1.0.4.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/ejb3-persistence.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/hibernate-annotations.jar" sourcepath="C:/apps/lib/hibernate-annotations-3.3.0.GA/src">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/apps/lib/hibernate-annotations-3.3.0.GA/doc/api/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/hibernate-commons-annotations.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/hibernate3.jar" sourcepath="C:/apps/lib/hibernate-3.2/src">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/apps/lib/hibernate-3.2/doc/api/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/hsqldb.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jta.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/log4j-1.2.11.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/coverc.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/mysql-connector-java-5.0.7-bin.jar"/>
-	<classpathentry kind="lib" path="C:/dev/tsm/WebRoot/WEB-INF/lib/commons-dbcp.jar"/>
-	<classpathentry kind="lib" path="C:/dev/tsm/WebRoot/WEB-INF/lib/commons-pool.jar"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>
