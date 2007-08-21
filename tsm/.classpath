@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="eclipse-target/test-classes" path="src/test/conf"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" output="eclipse-target/test-classes" path="src/test/java"/>
 	<classpathentry excluding="**/classes/**|**/jsp/**|**/lib/**|**/tld/**" kind="src" output="eclipse-target/test-classes" path="WEB-INF"/>
-	<classpathentry kind="src" path="src/main"/>
-	<classpathentry excluding="conf/" kind="src" output="eclipse-target/test-classes" path="src/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/apps/lib/spring-framework-2.0.6/dist/spring-aspects.jar"/>
-	<classpathentry kind="lib" path="C:/apps/lib/spring-framework-2.0.6/dist/spring-mock.jar"/>
+	<classpathentry kind="lib" path="lib/build/junit-3.8.1.jar"/>
 	<classpathentry kind="con" path="com.genuitec.eclipse.j2eedt.core.J2EE14_CONTAINER"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jstl.jar"/>
@@ -38,10 +37,10 @@
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/hsqldb.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jta.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/log4j-1.2.11.jar"/>
-	<classpathentry kind="lib" path="C:/apps/lib/spring-framework-2.0.6/lib/jakarta-commons/commons-dbcp.jar"/>
-	<classpathentry kind="lib" path="C:/apps/lib/spring-framework-2.0.6/lib/jakarta-commons/commons-pool.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/coverc.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/mysql-connector-java-5.0.7-bin.jar"/>
+	<classpathentry kind="lib" path="C:/dev/tsm/WebRoot/WEB-INF/lib/commons-dbcp.jar"/>
+	<classpathentry kind="lib" path="C:/dev/tsm/WebRoot/WEB-INF/lib/commons-pool.jar"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>
