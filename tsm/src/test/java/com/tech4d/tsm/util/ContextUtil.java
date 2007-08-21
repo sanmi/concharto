@@ -7,7 +7,7 @@ public class ContextUtil {
     static private ClassPathXmlApplicationContext ctx = null;
     
     protected static final String[] XML_CONFIG_FILES = new String[]{
-        "/tsm-test-datasource.xml",
+        "/tsm-integrationtest-datasource.xml",
         "/tsm-dao.xml"
     };
 
