@@ -5,27 +5,71 @@
 	<property name="name" value="${ant.project.name}" />
 
 	<property name="webroot.dir" value="WebRoot" />
-	<property name="src.dir" value="src" />
+	<property name="src.dir" value="src/main/java" />
+	<property name="src.test.dir" value="src/test/java" />
 	<property name="target.dir" value="target" />
 	<property name="target.classes.dir" value="${target.dir}/classes" />
+	<property name="target.test.classes.dir" value="${target.dir}/test-classes" />
 	<property name="target.webapp.dir" value="${target.dir}/${name}" />
 	<property name="webclasses.dir" value="${webroot.dir}/WEB-INF/classes" />
 	<property name="lib.webroot.dir" value="${webroot.dir}/WEB-INF/lib" />
 	<property name="lib.build.dir" value="lib/build" />
+	<property name="lib.tools.dir" value="lib/tools" />
+	<property name="db.ddl.dir" value="db/ddl"/>
+	<property name="target.db.ddl.dir" value="${target.dir}/ddl"/>
 
 	<property file="build.properties" />
 
-	<path id="master-classpath">
 
+	<!-- Begin Classpaths -->
+	<path id="master-classpath">
 		<fileset dir="${lib.webroot.dir}">
 			<include name="**/*.jar" />
 		</fileset>
 		<fileset dir="${lib.build.dir}">
 			<include name="**/*.jar" />
 		</fileset>
-
 	</path>
 
+	<path id="tools-classpath">
+		<pathelement path="${target.classes.dir}"/>
+		<fileset dir="${lib.tools.dir}">
+			<include name="**/*.jar" />
+		</fileset>		
+		<path refid="master-classpath"/>
+	</path>
+
+	<path id="test-classpath">
+		<pathelement path="${target.classes.dir}"/>
+		<pathelement path="${target.test.classes.dir}"/>
+		<fileset dir="${lib.build.dir}">
+			<include name="**/*.jar" />
+		</fileset>		
+		<path refid="master-classpath"/>
+	</path>
+	<!-- End Classpaths -->
+	
+
+	<!-- Begin Tools -->
+		<taskdef name="hibernatetool" 
+	         classname="org.hibernate.tool.ant.HibernateToolTask" 
+	         classpathref="tools-classpath" />
+	
+	<target name="gen-schema">
+		<mkdir dir="${target.db.ddl.dir}"/>
+		<hibernatetool destdir="${target.db.ddl.dir}">
+			<annotationconfiguration configurationfile="${db.ddl.dir}/hibernate.cfg.xml" />
+			<hbm2ddl 
+				export="false" 
+				outputfilename="create-tables.sql" 
+				drop="true"
+				format="true"
+				haltonerror="true"
+			/>
+		</hibernatetool>
+	</target>
+	<!-- Begin Tools -->
+	
 	<target name="clean" description="Clean output dirs (build, weblib, dist)">
 		<delete dir="${target.dir}" />
 	</target>
@@ -40,9 +84,26 @@
 			<src path="${src.dir}" />
 			<classpath refid="master-classpath" />
 		</javac>
-
 	</target>
 
+	<target name="compile-tests" depends="compile, setup">
+		<javac destdir="${target.test.classes.dir}" debug="true" failonerror="true">
+			<src path="${src.test.dir}" />
+			<classpath refid="master-classpath" />
+		</javac>
+	</target>
+	
+	<target name="integration-test" depends="compile">
+		<junit>
+			<batchtest>
+				<fileset dir="${target.test-classes.dir}" >
+				            <include name="**/@{tests}.class"/>
+				            <exclude name="**/*$$*"/>
+				          </fileset>
+			</batchtest>
+		</junit>	
+	</target>
+	
 	<target name="build" depends="compile">
 
 		<copy todir="${target.webapp.dir}" preservelastmodified="true">
