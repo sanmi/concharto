@@ -55,7 +55,6 @@ public class Event {
         this.title = title;
     }
     
-    //TODO template this to Person
     private Set<Person> participants = new HashSet<Person>();
 
     @ManyToMany(
