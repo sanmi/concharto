@@ -8,7 +8,23 @@
 	  <property name="url" value="jdbc:mysql://localhost:3306/tsm_test"/>
 	  <property name="username" value="tsm_test_user"/>
 	  <property name="password" value="tsm_test_user"/>
-	  
+	</bean>
+
+	<!-- Begin Hibernate Sessions -->  
+	<bean id="mySessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+  	    <property name="dataSource" ref="myDataSource"/>
+		<property name="hibernateProperties">
+		    <props>
+		        <prop key="hibernate.jdbc.batch_size">0</prop>
+		        <prop key="hibernate.connection.pool_size">0</prop>
+		        <prop key="current_session_context_class">thread</prop>
+		        <prop key="hbm2ddl.auto">validate</prop>
+		    </props>
+		</property>
+		<property name="configLocation">
+			<value>WEB-INF/hibernate.cfg.xml</value>
+		</property>
+		<property name="schemaUpdate" value="true"/>
 	</bean>
 
 </beans>

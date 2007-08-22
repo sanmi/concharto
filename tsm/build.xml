@@ -2,16 +2,19 @@
 
 <project name="tsm" basedir=".">
 
+	<import file="macros-and-presets.xml" />
+	<property file="build.properties" />
+
 	<property name="name" value="${ant.project.name}" />
 
-	<property name="webroot.dir" value="WebRoot" />
+	<property name="webroot.dir" value="src/main/webapp" />
 	<property name="webroot.webinf.dir" value="${webroot.dir}/WEB-INF" />
-	<property name="db.ddl.dir" value="db/ddl" />
+	<property name="db.ddl.dir" value="${webroot.webinf.dir}" />
 
 	<property name="src.dir" value="src/main/java" />
 	<property name="src.test.dir" value="src/test/java" />
 	<property name="src.test.conf.dir" value="src/test/conf" />
-	
+
 	<property name="target.dir" value="target" />
 	<property name="target.classes.dir" value="${target.dir}/classes" />
 	<property name="target.test.classes.dir" value="${target.dir}/test-classes" />
@@ -22,10 +25,6 @@
 	<property name="lib.webroot.dir" value="${webroot.dir}/WEB-INF/lib" />
 	<property name="lib.build.dir" value="lib/build" />
 	<property name="lib.tools.dir" value="lib/tools" />
-
-	
-	<property file="build.properties" />
-
 
 	<!-- Begin Classpaths -->
 	<path id="master-classpath">
@@ -68,6 +67,15 @@
 			<hbm2ddl export="false" outputfilename="create-tables.sql" drop="true" format="true" haltonerror="true" />
 		</hibernatetool>
 	</target>
+
+	<target name="create-db-test" depends="gen-schema">
+		<run-db-script dbuserid="${test.db.username}" 
+			dbpassword="${test.db.password}" 
+			scriptdir="${target.db.ddl.dir}"
+			scriptname="create-tables.sql"
+			outputdir="${target.db.ddl.dir}"
+			/>
+	</target>
 	<!-- Begin Tools -->
 
 	<target name="clean" description="Clean output dirs (build, weblib, dist)">
@@ -98,10 +106,10 @@
 	<target name="integration-test" depends="compile-tests">
 		<junit>
 	        <!-- Default Formatter - brain-dead text file with almost no information, only prints failures and errors -->
-	        <formatter type="brief" usefile="true" unless="junit.formatter.plain"/>
+	        <formatter type="brief" usefile="true" unless="junit.formatter.plain" />
 			<classpath refid="test-classpath" />
 
-			<batchtest todir="${target.test.reports.dir}" >
+			<batchtest todir="${target.test.reports.dir}">
 				<fileset dir="${target.test.classes.dir}">
 					<include name="**/IntegrationTest*.class" />
 					<exclude name="**/*$$*" />
@@ -130,9 +138,7 @@
 
 		<mkdir dir="${target.dir}" />
 
-		<war warfile="${target.dir}/${name}.war" 
-			basedir="${target.webapp.dir}" 
-			webxml="${target.webapp.dir}/WEB-INF/web.xml">
+		<war warfile="${target.dir}/${name}.war" basedir="${target.webapp.dir}" webxml="${target.webapp.dir}/WEB-INF/web.xml">
 			<include name="*" />
 			<include name="docs/**" />
 			<include name="html/**" />
