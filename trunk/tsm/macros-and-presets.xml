@@ -1,0 +1,34 @@
+
+<project name="macros-and-presets" default="default">
+
+  <macrodef name="run-db-script">
+    <attribute name="dbdriver" default="${db.driver}"/>
+    <attribute name="dburl" default="${db.url}"/>
+    <attribute name="dbuserid"/>
+    <attribute name="dbpassword"/>
+    <attribute name="scriptname"/>
+    <attribute name="scriptdir"/>
+    <attribute name="outputdir"/>
+    <attribute name="onerror" default="continue"/>
+    <sequential>
+      <echo level="verbose">
+        db.userid= '@{dbuserid}'
+        db.password= '@{dbpassword}'
+      </echo>
+      <sql
+          driver="@{dbdriver}"
+          url="@{dburl}"
+          userid="@{dbuserid}"
+          password="@{dbpassword}"
+          print="yes"
+          src="@{scriptdir}/@{scriptname}"
+          output="@{outputdir}/@{scriptname}-results.txt"
+          onerror="@{onerror}">
+        <classpath refid="master-classpath"/>
+      </sql>
+
+
+    </sequential>
+  </macrodef>
+
+</project>
