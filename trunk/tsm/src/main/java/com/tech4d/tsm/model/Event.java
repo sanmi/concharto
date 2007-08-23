@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -59,7 +60,8 @@ public class Event {
 
     @ManyToMany(
             targetEntity=com.tech4d.tsm.model.Person.class,
-            cascade={CascadeType.PERSIST, CascadeType.MERGE}
+            cascade={CascadeType.ALL},
+            fetch=FetchType.EAGER
     )
     @JoinTable(
             name="PERSON_EVENT",

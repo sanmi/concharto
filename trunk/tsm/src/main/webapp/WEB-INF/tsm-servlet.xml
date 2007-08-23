@@ -6,21 +6,20 @@
     <!-- maps request URLs to Controller names -->
     <bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>
 
-    <bean id="baseRecipeController" abstract="true">
-        <property name="recipeManager" ref="recipeManager"/>
+    <bean id="baseEventController" abstract="true">
+        <property name="eventDao" ref="eventDao"/>
     </bean>
 
     <!-- Controller names are not important when using the above HandlerMapping implementation -->
     <bean class="com.tech4d.tsm.web.SwitchBoardController"
-          parent="baseRecipeController"/>
+          parent="baseEventController"/>
 
-    <bean class="com.tech4d.tsm.web.EditRecipeController"
-          parent="baseRecipeController">
-        <property name="commandName" value="recipe"/>
-        <property name="commandClass" value="com.tech4d.tsm.model.Recipe"/>
-        <property name="formView" value="editRecipe"/>
-        <property name="successView" value="redirect:switchboard/listRecipes.htm"/>
-        <property name="eventDao" ref="eventDao"/>
+    <bean class="com.tech4d.tsm.web.EventController"
+          parent="baseEventController">
+        <property name="commandName" value="event"/>
+        <property name="commandClass" value="com.tech4d.tsm.model.Event"/>
+        <property name="formView" value="event"/>
+        <property name="successView" value="redirect:switchboard/listEvents.htm"/>
     </bean>
 
     <!-- this bean with the well known name generates view names for us -->

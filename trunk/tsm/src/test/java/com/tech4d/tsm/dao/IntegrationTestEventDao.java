@@ -1,28 +1,107 @@
 package com.tech4d.tsm.dao;
 
+import java.io.Serializable;
 import java.util.Collection;
-
-import org.springframework.context.ApplicationContext;
-
-
-import com.tech4d.tsm.model.Event;
-import com.tech4d.tsm.util.ContextUtil;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.springframework.context.ApplicationContext;
 
+import com.tech4d.tsm.model.Event;
+import com.tech4d.tsm.model.Person;
+import com.tech4d.tsm.util.ContextUtil;
+
+/**
+ * Test all dao functions
+ * NOTE: the order of tests is important in the integration test
+ * @author frank
+ *
+ */
 public class IntegrationTestEventDao extends TestCase {
 
     private EventDao eventDao;
+    private static Event event = new Event();
+    
     public void setUp() {
         ApplicationContext appCtx = ContextUtil.getCtx();
         eventDao = (EventDao) appCtx.getBean("eventDao");
     }
     
-    public void test() {
-        Collection<Event> events = eventDao.loadAll();
+    /**
+     * Runs the first time
+     */
+    public void testInit() {
+        eventDao.deleteAll();        
+    }
+    
+    public void testSave() {
+        event = createEvent("something is happening", new Date());
+        Serializable id = eventDao.save(event);
+        assertNotNull (id);
+        assertEvents(1);
+    }
+    
+    public void findAll() {
+        Collection<Event> events = eventDao.findAll();
         for (Event event : events) {
             System.out.println("event " + event.getId() + ", "  + event.getTitle());
         }
+        assertEquals(1, events.size());
+        for (Event event : events) {
+            assertEquals(2, event.getParticipants().size());
+        }
     }
+    
+    public void testSaveOrUpdate() {
+        String title = "a new title";
+        event.setTitle(title);
+        eventDao.saveOrUpdate(event);
+        assertEquals(title, eventDao.findById(event.getId()).getTitle());
+    }
+    
+    public void testFindById() {
+        assertEquals(event.getTitle(), eventDao.findById(event.getId()).getTitle());
+    }
+    
+    
+    public void testDelete() {
+        eventDao.delete(event);
+        assertEvents(0);
+    }
+    
+    public void testDeleteById() {
+        event = createEvent("something elese is happening", new Date());
+        eventDao.save(event);
+        assertEvents(1);
+        eventDao.delete(event.getId());
+        assertEvents(0);
+    }
+
+    private void assertEvents(int size) {
+        Collection<Event> events = eventDao.findAll();
+        assertEquals(size, events.size());
+        
+    }
+    
+    private Event createEvent(String title, Date date) {
+        Event event = new Event();
+        event.setDate(date);
+        event.setTitle(title);
+        Set<Person> people = new HashSet<Person>();
+        people.add(createPerson("Joe", 11));
+        people.add(createPerson("mary", 10));
+        event.setParticipants(people);
+        return event;
+    }
+    
+    private Person createPerson(String name, int age) {
+        Person person = new Person();
+        person.setFirstname(name);
+        person.setAge(age);
+        return person;
+    }
+
 }

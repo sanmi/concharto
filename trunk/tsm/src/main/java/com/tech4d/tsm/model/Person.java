@@ -79,7 +79,7 @@ public class Person {
     // Defensive, convenience methods
     @ManyToMany(
             targetEntity=com.tech4d.tsm.model.Event.class,
-            cascade={CascadeType.PERSIST, CascadeType.MERGE}
+            cascade={CascadeType.ALL}
     )
     @JoinTable(
             name="PERSON_EVENT",
