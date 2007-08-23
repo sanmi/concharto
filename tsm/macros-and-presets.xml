@@ -1,5 +1,5 @@
 
-<project name="macros-and-presets" default="default">
+<project name="macros-and-presets" >
 
   <macrodef name="run-db-script">
     <attribute name="dbdriver" default="${db.driver}"/>
@@ -24,7 +24,7 @@
           src="@{scriptdir}/@{scriptname}"
           output="@{outputdir}/@{scriptname}-results.txt"
           onerror="@{onerror}">
-        <classpath refid="master-classpath"/>
+        <classpath refid="tools-classpath"/>
       </sql>
 
 
