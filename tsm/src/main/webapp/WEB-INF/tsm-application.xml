@@ -3,6 +3,4 @@
         "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
 <beans>
 
-    <bean id="recipeManager" class="com.tech4d.tsm.service.StubRecipeManager"/>
-
 </beans>

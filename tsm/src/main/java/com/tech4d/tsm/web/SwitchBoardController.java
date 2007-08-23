@@ -19,10 +19,12 @@ package com.tech4d.tsm.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
+import org.springframework.web.servlet.view.RedirectView;
 
-import com.tech4d.tsm.service.RecipeManager;
+import com.tech4d.tsm.dao.EventDao;
 
 /**
  * The central switchboard
@@ -33,23 +35,34 @@ import com.tech4d.tsm.service.RecipeManager;
  */
 public class SwitchBoardController extends MultiActionController {
 
-    private RecipeManager recipeManager;
-
+    private EventDao eventDao;
 
     /**
-     * Sets the {@link RecipeManager} that to which this presentation component delegates
-     * in order to perform complex business logic.
+     * Sets the {@link EventDao} that to which this presentation component delegates
+     * in order to perform dao operations.
      *
-     * @param recipeManager the {@link RecipeManager} to which this presentation
-     *                      component delegates in order to perform complex business logic
+     * @param EventDao the {@link EventDao} to which this presentation
+     *                      component delegates in order to perform dao operations
      */
-    public void setRecipeManager(RecipeManager recipeManager) {
-        this.recipeManager = recipeManager;
+    public void setEventDao(EventDao eventDao) {
+        this.eventDao = eventDao;
+    }
+
+    public ModelAndView listEvents(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return new ModelAndView().addObject(this.eventDao.findAll());
+    }
+    
+    public ModelAndView deleteEvent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        
+        Long id = ServletRequestUtils.getLongParameter(request, "listid");
+        if (id != null) {
+            eventDao.delete(id);
+        }
+        //redirect back to the list
+        return new ModelAndView(new RedirectView("/switchboard/listEvents.htm", true));
     }
 
 
-    public ModelAndView listRecipes(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return new ModelAndView().addObject(this.recipeManager.findAll());
-    }
+
 
 }
