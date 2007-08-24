@@ -62,7 +62,17 @@ public class SwitchBoardController extends MultiActionController {
         return new ModelAndView(new RedirectView("/switchboard/listEvents.htm", true));
     }
 
+    public ModelAndView page0(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return new ModelAndView();
+    }
+    
+    public ModelAndView page1(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return new ModelAndView();
+    }
 
-
+    public ModelAndView page2(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return new ModelAndView();
+    }
+    
 
 }
