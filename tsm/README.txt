@@ -1,6 +1,6 @@
 This is a skeleton application that I've mashed up from spring and hibernate.
-For my purposes, I think it gets pretty close to the developer productivity 
-of Ruby on Rails while optimizing efficient code execution.  
+For an practicing java developer, I think it gets pretty close to the developer 
+productivity of Ruby on Rails.  
 
 LICENSE.  This software is licensed under the Apache License
 
