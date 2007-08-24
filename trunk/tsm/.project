@@ -49,11 +49,6 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>WEB-INF</name>
-			<type>2</type>
-			<location>C:/dev/tsm/src/main/webapp/WEB-INF</location>
-		</link>
-		<link>
 			<name>build classes</name>
 			<type>2</type>
 			<location>C:/dev/tsm/tmp-classes</location>

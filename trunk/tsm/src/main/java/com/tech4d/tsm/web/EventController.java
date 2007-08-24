@@ -3,6 +3,7 @@ package com.tech4d.tsm.web;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.tech4d.tsm.dao.EventDao;
@@ -18,8 +19,8 @@ public class EventController extends SimpleFormController {
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
         Long id = ServletRequestUtils.getLongParameter(request, "listid");
-        //long id = ServletRequestUtils.getRequiredLongParameter(request, "listid");
         Event event;
+        
         if (id != null) {
             event = this.eventDao.findById(id);
         } else {
@@ -29,12 +30,11 @@ public class EventController extends SimpleFormController {
     }
 
     @Override
-    protected void doSubmitAction(Object command) throws Exception {
+    protected ModelAndView onSubmit(Object command) throws Exception {
         Event event = (Event)command;
         this.eventDao.saveOrUpdate(event);
-        
+        return new ModelAndView(getSuccessView());
     }
-    
     
 
 }

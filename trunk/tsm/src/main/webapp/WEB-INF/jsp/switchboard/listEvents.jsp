@@ -5,7 +5,7 @@
 <%@taglib tagdir="/WEB-INF/tags" prefix="example"%>
 <example:page title="Events">
   	Events
-    <table>
+    <table >
 
     <c:forEach items="${eventList}" var="event">
         <tr>
@@ -20,5 +20,6 @@
     </table>
     <c:url value="/event.htm" var="addLink"/>
     <a href="${addLink}">Add an Event</a>
+
 </example:page>
 

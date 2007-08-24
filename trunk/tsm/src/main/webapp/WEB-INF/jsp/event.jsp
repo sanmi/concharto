@@ -4,7 +4,7 @@
 
 <%@taglib tagdir="/WEB-INF/tags" prefix="example"%>
 <example:page title="Events">
-	<form:form commandName="event">
+	<form:form commandName="event" method="post">
 	    <form:hidden path="id"/>
 	    <table>
 	        <tr>

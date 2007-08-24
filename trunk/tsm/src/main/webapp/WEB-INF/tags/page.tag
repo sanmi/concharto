@@ -25,22 +25,21 @@
 </head>
 <body>
 <h2>Example App</h2>
-Demonstrating Hibernate Annotations, Spring, Spring MVC w/ convention over configuration for 
-web controllers, maven, ant, jsp page.tag layout
-<ul id="nav">
+Demonstrating Hibernate Annotations, Spring, Spring MVC w/ convention over configuration, maven, ant, jsp page.tag layout
+<div id="nav">
+<ul>
 	<li><a href="listEvents.htm">List Events</a></li>
 	<li><a href="page0.htm">Page 0</a></li>
 	<li><a href="page1.htm">Page 1</a></li>
 	<li><a href="page2.htm">Page 2</a></li>
 </ul>
+</div>
 <div id="content">
 <jsp:doBody />
 </div>
   <hr>
   <div id="footer">
-    <a href="http://validator.w3.org/check?uri=referer"><img
-        src="http://www.w3.org/Icons/valid-html401" border="0"
-        alt="Valid HTML 4.01 Transitional" height="31" width="88"></a>
+	Example App
   </div>
   </body>
 </html>
