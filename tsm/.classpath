@@ -61,8 +61,5 @@
 	<classpathentry kind="var" path="M2_REPO/javax/transaction/jta/1.0.1B/jta-1.0.1B.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate-entitymanager/3.2.1.ga/hibernate-entitymanager-3.2.1.ga.jar"/>
 	<classpathentry kind="var" path="M2_REPO/jboss/jboss-archive-browsing/5.0.0alpha-200607201-119/jboss-archive-browsing-5.0.0alpha-200607201-119.jar"/>
-	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/velocity-1.5.jar"/>
-	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/commons-lang.jar"/>
-	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/commons-collections.jar"/>
 	<classpathentry kind="output" path="src/main/webapp/WEB-INF/classes"/>
 </classpath>
