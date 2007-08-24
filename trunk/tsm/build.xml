@@ -65,9 +65,11 @@
 
 	<path id="tools-classpath">
 		<pathelement path="${target.classes.dir}" />
-		<fileset dir="${lib.tools.dir}">
-			<include name="**/*.jar" />
+		<fileset dir="${maven.repo.local}">
+			<include name="mysql/mysql-connector-java/5.0.5/mysql-connector-java-5.0.5.jar" />
+			<include name="org/hibernate/hibernate-tools/3.2.0.beta9a/hibernate-tools-3.2.0.beta9a.jar" />
 		</fileset>
+		
 		<path refid="master-classpath" />
 		<path path="${runtime-classpath}" />
 	</path>

@@ -1,0 +1,45 @@
+body	
+{
+	margin:0;
+	padding: 20px;
+}
+
+h1
+{
+	background: #e0e0e0;
+}
+
+h1,#content
+{
+	margin: 0;
+	padding: 10px;
+}
+
+#nav
+{
+	margin: 0;
+	padding: 5px;
+	background: #f0f0f0;
+}
+
+#nav li
+{
+	list-style: none;
+	display: inline;
+	margin: 0.5em 1em;
+	font-weight: bold;
+}
+
+hr
+{
+	height: 1px;
+	border: none;
+	border-top: 1px solid #aaa; 
+}
+
+#footer
+{
+	text-align: right;
+	margin: 0;
+	padding: 0;
+}
