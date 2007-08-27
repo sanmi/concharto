@@ -1,0 +1,33 @@
+<!--
+   Library dependencies
+-->
+<ivy-module version="1.0">
+    <info organisation="tech4d" module="tsm"/>
+    <configurations>
+        <conf name="tools" visibility="private"/>
+        <conf name="deploy" visibility="private"/>
+       	<conf name="build" visibility="private" description="compilation only need api jar" />
+    </configurations>
+    <dependencies>
+        <dependency org="org.springframework" name="spring" rev="2.0.6" conf="deploy->master; build->default"/>
+		<dependency org="org.hibernate" name="hibernate" rev="3.2.5.ga"	conf="deploy->default; build->default">
+			<exclude module="jta"/>
+		</dependency>
+		<dependency org="org.hibernate" name="hibernate-annotations" rev="3.3.0.ga"	conf="deploy->default; build->default"/>
+		<dependency org="org.hibernate" name="hibernate-commons-annotations" rev="3.3.0.ga"	conf="deploy->default; build->default"/>
+		<dependency org="net.sf.ehcache" name="ehcache" rev="1.2.4" conf="deploy->default; build->default"/>
+		<dependency org="commons-dbcp" name="commons-dbcp" rev="1.2.2" conf="deploy->default; build->default"/>
+		<dependency org="mysql" name="mysql-connector-java" rev="5.0.5" conf="deploy->default; build->default"/>
+		<dependency org="log4j" name="log4j" rev="1.2.14" conf="deploy->default; build->default"/>
+		<dependency org="taglibs" name="standard" rev="1.1.2" conf="deploy->default; build->default"/>
+		<dependency org="javax.servlet" name="jstl" rev="1.1.2" conf="deploy->default; build->default"/>
+
+		<!--  build only  -->
+		<dependency org="org.hibernate" name="hibernate-tools" rev="3.2.0.beta9a" conf="tools->default">
+			<exclude module="jta"/>
+			<exclude module="ehcache"/>
+		</dependency>        
+		<dependency org="junit" name="junit" rev="4.4" conf="build->default"/>
+		
+	</dependencies>
+</ivy-module>
