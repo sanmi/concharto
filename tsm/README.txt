@@ -22,21 +22,25 @@ Skeleton application mashed up from:
 
 Also demonstrates:
 * MyEclipse/eclipse hot deploy capabilities
-* Maven and ant
+* Ivy and ant (or Maven and ant if you uncomment out some sections in build.xml)
 * ant script for generation of the schema and installation on the datbase server
 * auto generation of ant script for dao "integration" tests
 
 Tools I used:
 * MyEclipse
 * Jdk 1.5.0.10
-* Ant 1.6.5
-* maven 2.0.7
+* Ant 1.7.0
+* maven 2.0.7 (optional)
+* Ivy 2.0.0-alpha2-incubating
 * MySQL 5.0.27
 * Apache Tomcat 5.5
 * source code packages for the following (so you can have javadocs and step into 
-  the source while debugging)
+  the source while debugging - optional)
 ** spring 2.0.6
 ** hibernate 3.0.2
+
+Prerequisites
+1. Install ivy by copying the ivy jar file to your ANT_HOME/lib dir
 
 Installation and running:
 
@@ -46,7 +50,12 @@ Installation and running:
 ** edit build.properties with username and password
 ** edit src/main/webapp/WEB-INF/tsm-datasource.xml with database username and password
 
-2. BUILD
+2. BUILD with ant/ivy
+* from the project directory
+* type ant integration-test
+
+2.1 BUILD with maven (optional)
+* Uncomment the maven sections in build.xml.  Note you can either use maven or ivy, but not both.
 * Update the maven repository with Sun Jars
 Due to sun licensing, maven can't host jta jars.  Instead do this:
 {code}
