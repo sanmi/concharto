@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="tsm" basedir=".">
+<project name="tsm" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<import file="macros-and-presets.xml" />
 	<property file="build.properties" />
@@ -26,12 +26,16 @@
 	<property name="lib.build.dir" value="lib/build" />
 	<property name="lib.tools.dir" value="lib/tools" />
 	<property name="lib.local.dir" value="lib/local" />
+	<property name="lib.deploy.dir" value="lib/deploy" />
 
+
+	<!-- Begin Classpaths -->
+
+	<!-- Uncomment this to use maven.
+	      unfortunately jars need to be defined in three places: .classpath, pom.xml and build.xml
 	<property file="${user.home}/.m2/maven.properties" />
 	<property name="maven.repo.local" value="${user.home}/.m2/repository" />
 
-	<!-- Begin Classpaths -->
-	<!-- TODO unfortunately jars need to be defined in three places: .classpath, pom.xml and build.xml -->
 	<fileset id="external-jars" dir="${maven.repo.local}">
 		<include name="antlr/antlr/2.7.6/antlr-2.7.6.jar" />
 		<include name="javax/servlet/jstl/1.1.2/jstl-1.1.2.jar" />
@@ -55,23 +59,28 @@
 		<include name="log4j/log4j/1.2.14/log4j-1.2.14.jar" />
 		<include name="commons-pool/commons-pool/1.3/commons-pool-1.3.jar" />
 	</fileset>
+	uncomment this to use maven -->
 
 	<path id="master-classpath">
-		<fileset refid="external-jars" />
+		<!-- uncomment this to use maven
+		<fileset refid="external-jars" /> -->
 		<fileset dir="${lib.build.dir}">
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
 
 	<path id="tools-classpath">
-		<pathelement path="${target.classes.dir}" />
+		<pathelement path="${target.classes.dir}" />		
+		<path refid="master-classpath" />
+		<fileset dir="${lib.tools.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<!-- uncomment this to use maven
 		<fileset dir="${maven.repo.local}">
 			<include name="mysql/mysql-connector-java/5.0.5/mysql-connector-java-5.0.5.jar" />
 			<include name="org/hibernate/hibernate-tools/3.2.0.beta9a/hibernate-tools-3.2.0.beta9a.jar" />
 		</fileset>
-		
-		<path refid="master-classpath" />
-		<path path="${runtime-classpath}" />
+		-->
 	</path>
 
 	<path id="test-classpath">
@@ -82,15 +91,18 @@
 		<fileset dir="${lib.build.dir}">
 			<include name="**/*.jar" />
 		</fileset>
+		<fileset dir="${lib.local.dir}">
+			<include name="**/jta*.jar" />
+		</fileset>
 		<path refid="master-classpath" />
 	</path>
 	<!-- End Classpaths -->
 
-
 	<!-- Begin Tools -->
-	<taskdef name="hibernatetool" classname="org.hibernate.tool.ant.HibernateToolTask" classpathref="tools-classpath" />
-
 	<target name="gen-schema" depends="compile">
+		<taskdef name="hibernatetool" 
+			classname="org.hibernate.tool.ant.HibernateToolTask" 
+			classpathref="tools-classpath" />
 		<mkdir dir="${target.db.ddl.dir}" />
 		<hibernatetool destdir="${target.db.ddl.dir}">
 			<annotationconfiguration configurationfile="${db.ddl.dir}/hibernate.cfg.xml" />
@@ -105,12 +117,28 @@
 	-->
 	<target name="create-db-test" depends="gen-schema">
 		<mkdir dir="${target.db.ddl.dir}" />
-		<run-db-script dbuserid="${test.db.username}" dbpassword="${test.db.password}" scriptdir="${target.db.ddl.dir}" scriptname="create-tables.sql" outputdir="${target.db.ddl.dir}" />
+		<run-db-script dbuserid="${test.db.username}" 
+			dbpassword="${test.db.password}" 
+			scriptdir="${target.db.ddl.dir}" 
+			scriptname="create-tables.sql" 
+			outputdir="${target.db.ddl.dir}" />
 	</target>
-	<!-- Begin Tools -->
+	<!-- End Tools -->
+	
+	<!-- Begin Ivy -->
+    <target name="resolve" description="--> retreive dependencies with ivy">
+    	<ivy:retrieve pattern="${ivy.lib.dir}/[conf]/[artifact].[ext]"/>
+    </target>    
+	<!-- End Ivy -->
 
+	<!-- Begin Build Targets -->
 	<target name="clean" description="Clean output dirs (build, weblib, dist)">
 		<delete dir="${target.dir}" />
+		<delete dir="${lib.build.dir}" />
+		<delete dir="${lib.deploy.dir}" />
+		<delete dir="${webroot.webinf.dir}/classes/" includeemptydirs="true"/>
+		
+		<antcall target="resolve"></antcall>
 	</target>
 
 	<target name="setup">
@@ -194,5 +222,7 @@
 
 
 	<target name="all" depends="clean,build,integration-test,warfile" description="Clean,build,warfile" />
+
+	<!-- End Build Targets -->
 
 </project>
