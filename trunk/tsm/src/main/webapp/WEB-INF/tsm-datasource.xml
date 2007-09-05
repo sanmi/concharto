@@ -23,8 +23,8 @@
 		</property>
 		<property name="configLocation">
 			<value>WEB-INF/hibernate.cfg.xml</value>
-		</property>
-		<property name="schemaUpdate" value="true"/>
+		</property>		
 	</bean>
 
+	
 </beans>

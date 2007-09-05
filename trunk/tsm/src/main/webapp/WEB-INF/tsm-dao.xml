@@ -9,6 +9,11 @@
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
+	<bean id="addressDao" class="com.tech4d.tsm.lab.AddressDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
 	<!-- End Daos -->  
 	
 </beans>
