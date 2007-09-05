@@ -13,7 +13,7 @@
 		<mapping package="com.tech4d.tsm.model"/>
         <mapping class="com.tech4d.tsm.model.Event"/>
         <mapping class="com.tech4d.tsm.model.Person"/>
-
+        <mapping class="com.tech4d.tsm.model.lab.Address"/>
     
     </session-factory>
 

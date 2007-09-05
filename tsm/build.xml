@@ -67,6 +67,9 @@
 		<fileset dir="${lib.build.dir}">
 			<include name="**/*.jar" />
 		</fileset>
+		<fileset dir="${lib.local.dir}">
+			<include name="**/*.jar" />
+		</fileset>
 	</path>
 
 	<path id="tools-classpath">

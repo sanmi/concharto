@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry excluding="com/tech4d/tsm/model/test/|com.tech4d.tsm.model.test/" kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry excluding="**" kind="src" output="src/main/webapp/WEB-INF" path="src/main/webapp/WEB-INF"/>
 	<classpathentry excluding="**" kind="src" output="src/test/conf" path="src/test/conf"/>
+	<classpathentry kind="src" path="src/lab/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
 	<classpathentry kind="con" path="com.genuitec.eclipse.j2eedt.core.J2EE14_CONTAINER"/>
@@ -19,13 +20,28 @@
 	<classpathentry kind="lib" path="lib/deploy/ehcache.jar"/>
 	<classpathentry kind="lib" path="lib/deploy/hibernate-annotations.jar"/>
 	<classpathentry kind="lib" path="lib/deploy/hibernate-commons-annotations.jar"/>
-	<classpathentry kind="lib" path="lib/deploy/hibernate.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/hibernate.jar" sourcepath="C:/apps/lib/hibernate-3.2/src">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/apps/lib/hibernate-3.2/doc/api/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="lib/deploy/log4j.jar"/>
 	<classpathentry kind="lib" path="lib/deploy/mysql-connector-java.jar"/>
 	<classpathentry kind="lib" path="lib/deploy/persistence-api.jar"/>
-	<classpathentry kind="lib" path="lib/deploy/spring.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/spring.jar" sourcepath="C:/apps/lib/spring-framework-2.0.6/src-combined">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/apps/lib/spring-framework-2.0.6/docs/api/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="lib/deploy/standard.jar"/>
 	<classpathentry kind="lib" path="lib/local/jta.jar"/>
 	<classpathentry kind="lib" path="lib/deploy/jstl.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/commons-lang.jar"/>
+	<classpathentry kind="lib" path="lib/local/jts-1.8.jar" sourcepath="C:/apps/lib/jts.1.8.0/src">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/apps/lib/jts.1.8.0/doc/javadoc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/deploy/aspectjweaver.jar"/>
 	<classpathentry kind="output" path="src/main/webapp/WEB-INF/classes"/>
 </classpath>
