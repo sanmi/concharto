@@ -14,6 +14,8 @@
         <mapping class="com.tech4d.tsm.model.Event"/>
         <mapping class="com.tech4d.tsm.model.Person"/>
         <mapping class="com.tech4d.tsm.model.lab.Address"/>
+        <mapping class="com.tech4d.tsm.model.geometry.Feature"/>
+        <mapping class="com.tech4d.tsm.model.geometry.TsGeometry"/>
     
     </session-factory>
 

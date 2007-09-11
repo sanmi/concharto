@@ -92,15 +92,22 @@ public class AddressDaoHib implements AddressDao {
      */
     @SuppressWarnings("unchecked")
     public List<Address> findWithinGeometry(Geometry geometry) {
-        /*-- SELECT a.address
-        FROM address a
-        WHERE MBRWithin(a.addressLocation,Envelope(GeomFromText('LineString(2000 2000,5000 5000)'))) = 1;
-        */
-        String sql = "SELECT * FROM address WHERE MBRWithin(addressLocation,Envelope(GeomFromText('";
-        sql += geometry.toText() + ")'))) = 1";
+        String sql = "SELECT * FROM address WHERE MBRWithin(addressLocation,Envelope(GeomFromText(:geom_text))) = 1";
         List<Address> addresses = this.sessionFactory.getCurrentSession()
                 .createSQLQuery(sql)
                 .addEntity(Address.class)
+                .setString("geom_text", geometry.toText())
+                .list();
+        return addresses;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Address> findGeomWithinGeometry(Geometry geometry) {
+        String sql = "SELECT * FROM address WHERE MBRWithin(geom,Envelope(GeomFromText(:geom_text))) = 1";
+        List<Address> addresses = this.sessionFactory.getCurrentSession()
+                .createSQLQuery(sql)
+                .addEntity(Address.class)
+                .setString("geom_text", geometry.toText())
                 .list();
         return addresses;
     }
