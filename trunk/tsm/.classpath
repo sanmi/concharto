@@ -43,5 +43,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/deploy/aspectjweaver.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="src/main/webapp/WEB-INF/classes"/>
 </classpath>
