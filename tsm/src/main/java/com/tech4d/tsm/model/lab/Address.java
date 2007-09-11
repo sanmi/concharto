@@ -57,7 +57,7 @@ public class Address {
     }
 
     @Type(type = "com.tech4d.tsm.model.GeometryUserType")
-    @Column(name = "geom", columnDefinition = "GEOMETRYCOLLECTION")
+    @Column(name = "geom", columnDefinition = "GEOMETRYCOLLECTION", nullable = false)
     private GeometryCollection getGeom() {
         return geom;
     }

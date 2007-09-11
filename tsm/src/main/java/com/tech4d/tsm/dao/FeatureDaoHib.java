@@ -91,7 +91,7 @@ public class FeatureDaoHib implements FeatureDao {
         // MBRWithin(geom,Envelope(GeomFromText(:geom_text))) = 1";
         String sql = "SELECT * FROM feature f, tsgeometry g "
                 + "WHERE f.tsgeometry_id = g.id "
-                + "AND MBRWithin(geometryCollection, Envelope(GeomFromText(:geom_text))) = 1";
+                + "AND MBRWithin(geometryCollection, Envelope(GeomFromText(:geom_text)))";
         List<Feature> features = this.sessionFactory.getCurrentSession()
                 .createSQLQuery(sql).addEntity(Feature.class).setString(
                         "geom_text", geometry.toText()).list();

@@ -1,12 +1,8 @@
 package com.tech4d.tsm.model.geometry;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-
-import org.hibernate.annotations.Cascade;
 
 import com.tech4d.tsm.model.BaseAuditableEntity;
 

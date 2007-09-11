@@ -92,7 +92,7 @@ public class AddressDaoHib implements AddressDao {
      */
     @SuppressWarnings("unchecked")
     public List<Address> findWithinGeometry(Geometry geometry) {
-        String sql = "SELECT * FROM address WHERE MBRWithin(addressLocation,Envelope(GeomFromText(:geom_text))) = 1";
+        String sql = "SELECT * FROM address WHERE MBRWithin(addressLocation,Envelope(GeomFromText(:geom_text)))";
         List<Address> addresses = this.sessionFactory.getCurrentSession()
                 .createSQLQuery(sql)
                 .addEntity(Address.class)
@@ -103,7 +103,7 @@ public class AddressDaoHib implements AddressDao {
 
     @SuppressWarnings("unchecked")
     public List<Address> findGeomWithinGeometry(Geometry geometry) {
-        String sql = "SELECT * FROM address WHERE MBRWithin(geom,Envelope(GeomFromText(:geom_text))) = 1";
+        String sql = "SELECT * FROM address WHERE MBRWithin(geom,Envelope(GeomFromText(:geom_text)))";
         List<Address> addresses = this.sessionFactory.getCurrentSession()
                 .createSQLQuery(sql)
                 .addEntity(Address.class)
