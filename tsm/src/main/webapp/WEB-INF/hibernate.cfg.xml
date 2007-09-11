@@ -16,6 +16,12 @@
         <mapping class="com.tech4d.tsm.model.lab.Address"/>
         <mapping class="com.tech4d.tsm.model.geometry.Feature"/>
         <mapping class="com.tech4d.tsm.model.geometry.TsGeometry"/>
+        <mapping class="com.tech4d.tsm.model.geometry.TimePrimitive"/>
+        <mapping class="com.tech4d.tsm.model.geometry.TimeStamp"/>
+        <mapping class="com.tech4d.tsm.model.geometry.TimeRange"/>
+        <mapping class="com.tech4d.tsm.model.geometry.StyleSelector"/>
+        <mapping class="com.tech4d.tsm.model.geometry.Style"/>
+        <mapping class="com.tech4d.tsm.model.geometry.StyleMap"/>
     
     </session-factory>
 

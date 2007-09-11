@@ -33,16 +33,22 @@ public class FeatureDaoHib implements FeatureDao {
      * @see com.tech4d.tsm.lab.FeatureDao#delete(com.tech4d.tsm.model.lab.Feature)
      */
     public void delete(Feature feature) {
-        this.sessionFactory.getCurrentSession().delete(feature.getTsGeometry());
         this.sessionFactory.getCurrentSession().delete(feature);
     }
 
     /*
-     * (non-Javadoc)
      * 
      * @see com.tech4d.tsm.lab.FeatureDao#delete(java.lang.Long)
      */
     public void delete(Long id) {
+        //TODO - figure out how to make this protected and still work within unit tests
+        //TODO -  this is ugly, but it offers the best performance.  There don't
+        //seem to be simpler cascade options using HQL delete
+        this.sessionFactory
+                .getCurrentSession()
+                .createQuery(
+                        "delete from TimePrimitive where id = (select feature.timePrimitive.id from Feature feature where id = ?)")
+                .setLong(0, id).executeUpdate();
         this.sessionFactory
                 .getCurrentSession()
                 .createQuery(
@@ -57,13 +63,21 @@ public class FeatureDaoHib implements FeatureDao {
      * Just for testing
      */
     public void deleteAll() {
+        //TODO -  this is ugly, but it offers the best performance.  There don't
+        //seem to be simpler cascade options using HQL delete
         this.sessionFactory.getCurrentSession().createQuery(
                 "delete from TsGeometry where id in (select id from Feature)")
                 .executeUpdate();
+        this.sessionFactory
+                .getCurrentSession()
+                .createQuery(
+                        "delete from TimePrimitive where id in (select feature.timePrimitive.id from Feature feature)")
+                .executeUpdate();
         this.sessionFactory.getCurrentSession().createQuery(
                 "delete from Feature").executeUpdate();
+
     }
-     
+
     /*
      * (non-Javadoc)
      * 

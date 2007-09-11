@@ -75,7 +75,7 @@ select count(*) FROM address WHERE MBREqual(geom,GeomFromText('GEOMETRYCOLLECTIO
 --this is fast (0 sec for 1,000,000 rows)
 select count(*) FROM address WHERE MBRWithin(geom,Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))')));
 --this is slow (1.95 sec for 1,000,000 rows)
-select count(*) FROM address WHERE MBRWithin(geom,GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))')) = 1;
+select count(*) FROM address WHERE MBRWithin(geom,Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))'))) = 1;
 
 select count(*) FROM address WHERE MBREqual(geom,Envelope(GeomFromText('GEOMETRYCOLLECTION(POINT(330 330))'))) = 1;
 select count(*) FROM address WHERE MBREqual(geom,GeomFromText('GEOMETRYCOLLECTION(POINT(330 330))')) = 1
@@ -102,3 +102,5 @@ drop table feature;
 delete from tsgeometry where id in (select id from feature)
 
 ALTER TABLE address CHANGE geom geom GEOMETRYCOLLECTION NOT NULL;
+
+Select * from TimePrimitive where id = (select timeprimitive_id from Feature where id = 4)
