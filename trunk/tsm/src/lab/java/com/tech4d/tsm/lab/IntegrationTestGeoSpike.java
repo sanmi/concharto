@@ -2,8 +2,8 @@ package com.tech4d.tsm.lab;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import junit.framework.TestCase;
 
@@ -13,7 +13,6 @@ import com.tech4d.tsm.model.lab.Address;
 import com.tech4d.tsm.util.ContextUtil;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
@@ -60,12 +59,21 @@ public class IntegrationTestGeoSpike extends TestCase {
         Address addr = new Address();
         addr.setAddress("17 Mockinbird Ln, Nameless, TN, 60606");
         addr.setAddress_loc(point);
-//        GeometryCollection geom = (GeometryCollection) new WKTReader()
-//        .read("GEOMETRYCOLLECTION(" + geomStr + ")");
-//        addr.setGeom(geom);
+        // GeometryCollection geom = (GeometryCollection) new WKTReader()
+        // .read("GEOMETRYCOLLECTION(" + geomStr + ")");
+        // addr.setGeom(geom);
 
         Geometry geom = new WKTReader().read(geomStr);
         addr.setGeometry(geom);
+        return addr;
+    }
+
+    private Address createAddress(Geometry geometry) throws ParseException {
+        Address addr = new Address();
+        Point point = (Point) new WKTReader().read("POINT(20 20)");
+        addr.setAddress_loc(point);
+        addr.setAddress("17 Mockinbird Ln, Nameless, TN, 60606");
+        addr.setGeometry(geometry);
         return addr;
     }
 
@@ -82,7 +90,7 @@ public class IntegrationTestGeoSpike extends TestCase {
         Address address = createAddess();
         Serializable id = addressDao.save(address);
         addressDao.delete(address);
-        assertNull(addressDao.findById(address.getId()));
+        assertNull(addressDao.findById((Long) id));
     }
 
     public void testDeleteById() throws ParseException {
@@ -92,42 +100,12 @@ public class IntegrationTestGeoSpike extends TestCase {
         assertNull(addr);
     }
 
-    public void testGetAndDisplay() throws ParseException {
-        // Create some stuff
-        addressDao.save(createAddress("POINT (1330 1330)"));
-        addressDao
-                .save(createAddress("POINT (1330 1330)",
-                        "POLYGON ((1330 1330, 1340 1330, 1340 1340, 1330 1340, 1330 1330))"));
-
-        // get it
-        Collection<Address> addresses = addressDao
-                .findGeomWithinGeometry(new WKTReader()
-                        .read("POLYGON ((1300 1300, 1440 1300, 1440 1440, 1300 1440, 1300 1300))"));
-
-        // iterate
-        for (Address address : addresses) {
-            //the ugly way
-            //printGeometry(address.getGeom().getGeometryN(0));
-            
-            //the nice way
-            printGeometry(address.getGeometry());
-            
-        }
-    }
-
-    private void printGeometry(Geometry geometry) {
-        System.out.println(geometry.getGeometryType() + ", "
-                + geometry.getClass() + ", " + geometry.toText());
-    }
-    
-
-
     /**
      * Tests a spatially indexed query!! Finding a point within a bounding box
      * 
      * @throws ParseException
      */
-    public void te__stFindWithinGeometry()  throws ParseException {
+    public void testFindWithinGeometry() throws ParseException {
         // bounding box
         GeometricShapeFactory gsf = new GeometricShapeFactory();
         gsf.setSize(100);
@@ -145,16 +123,21 @@ public class IntegrationTestGeoSpike extends TestCase {
 
         // outside of the box
         Long start = System.currentTimeMillis();
-        for (int i = 0; i < 10000; i++) {
-            if (i % 200 == 0) {
-                System.out.println(i);
-                addressDao.save(createAddress(insidePoint, insidePoly));
-                addressDao.save(createAddress(insidePoint)); // a point in
-                // both fields
-            } else {
-                addressDao.save(createAddress(outsidePoint, outsidePoly));
-            }
-        }
+        Random random = new Random(System.currentTimeMillis());
+//        for (int i = 0; i < 1000000; i++) {
+//            if (i % 2000 == 0) {
+//                System.out.println(i);
+//            }
+//            if (i % 20000 == 0) {
+//                addressDao.save(createAddress(insidePoint, insidePoly));
+//                addressDao.save(createAddress(insidePoint)); // a point in both fields
+//            } else {
+//                Double x = random.nextDouble()*150;
+//                Double y = random.nextDouble()*150;
+//                gsf.setBase(new Coordinate(x, y));
+//                addressDao.save(createAddress(gsf.createRectangle()));
+//            }
+//        }
         System.out.println("save " + (System.currentTimeMillis() - start));
 
         start = System.currentTimeMillis();
@@ -181,5 +164,32 @@ public class IntegrationTestGeoSpike extends TestCase {
                 returned.getAddress_loc()));
     }
 
+    public void testGetAndDisplay() throws ParseException {
+        // Create some stuff
+        addressDao.save(createAddress("POINT (1330 1330)"));
+        addressDao
+                .save(createAddress("POINT (1330 1330)",
+                        "POLYGON ((1330 1330, 1340 1330, 1340 1340, 1330 1340, 1330 1330))"));
+
+        // get it
+        Collection<Address> addresses = addressDao
+                .findGeomWithinGeometry(new WKTReader()
+                        .read("POLYGON ((1300 1300, 1440 1300, 1440 1440, 1300 1440, 1300 1300))"));
+
+        // iterate
+        for (Address address : addresses) {
+            // the ugly way
+            // printGeometry(address.getGeom().getGeometryN(0));
+
+            // the nice way
+            printGeometry(address.getGeometry());
+
+        }
+    }
+
+    private void printGeometry(Geometry geometry) {
+        System.out.println(geometry.getGeometryType() + ", "
+                + geometry.getClass() + ", " + geometry.toText());
+    }
 
 }

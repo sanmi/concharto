@@ -62,8 +62,27 @@ SELECT a.address
 FROM address a
 WHERE MBRWithin(a.addressLocation,Envelope(GeomFromText('LineString(2000 2000,5000 5000)'))) = 1;
 
-SELECT *, AsText(addressLocation) FROM address 
-WHERE MBRWithin(addressLocation,Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))'))) = 1
+SELECT *, AsText(geom) FROM address where id < 1251120;
+
+SELECT *, AsText(geom) FROM address 
+WHERE MBRWithin(addressLocation,Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))')))
+select count(*) FROM address WHERE MBRWithin(addressLocation,GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))')) = 1;
+select count(*) FROM address WHERE MBRWithin(addressLocation,GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))'));
+
+select count(*) FROM address WHERE Equals(geom,GeomFromText('GEOMETRYCOLLECTION(POLYGON((330 330,340 330,340 340,330 340,330 330)))'));
+select count(*) FROM address WHERE MBREqual(geom,GeomFromText('GEOMETRYCOLLECTION(POLYGON((330 330,340 330,340 340,330 340,330 330)))'));
+
+--this is fast (0 sec for 1,000,000 rows)
+select count(*) FROM address WHERE MBRWithin(geom,Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))')));
+--this is slow (1.95 sec for 1,000,000 rows)
+select count(*) FROM address WHERE MBRWithin(geom,GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))')) = 1;
+
+select count(*) FROM address WHERE MBREqual(geom,Envelope(GeomFromText('GEOMETRYCOLLECTION(POINT(330 330))'))) = 1;
+select count(*) FROM address WHERE MBREqual(geom,GeomFromText('GEOMETRYCOLLECTION(POINT(330 330))')) = 1
+select count(*) FROM address WHERE Equals(geom,GeomFromText('GEOMETRYCOLLECTION(POINT(330 330))')) = 1
+
+select count(*) FROM address WHERE MBREqual(addressLocation,Envelope(GeomFromText('POLYGON((330 330,340 330,340 340,330 340,330 330))'))) = 1
+
 
 --DEBUG feature
 SELECT *, AsText(geom) FROM tsgeometry g 
@@ -81,3 +100,5 @@ drop table tsgeometry;
 drop table feature;
 
 delete from tsgeometry where id in (select id from feature)
+
+ALTER TABLE address CHANGE geom geom GEOMETRYCOLLECTION NOT NULL;
