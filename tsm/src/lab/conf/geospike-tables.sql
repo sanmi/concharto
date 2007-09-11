@@ -62,5 +62,22 @@ SELECT a.address
 FROM address a
 WHERE MBRWithin(a.addressLocation,Envelope(GeomFromText('LineString(2000 2000,5000 5000)'))) = 1;
 
-SELECT * FROM address 
-WHERE MBRWithin(addressLocation,Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300)))'))) = 1
+SELECT *, AsText(addressLocation) FROM address 
+WHERE MBRWithin(addressLocation,Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))'))) = 1
+
+--DEBUG feature
+SELECT *, AsText(geom) FROM tsgeometry g 
+SELECT * FROM feature f, tsgeometry g 
+WHERE f.tsgeometry_id = g.id
+AND MBRWithin(geom,Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))'))) = 1
+
+SELECT * 
+FROM feature f, tsgeometry g 
+WHERE f.geometry_id = g.id 
+AND MBRWithin(geom, Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))'))) = 1
+
+delete from tsgeometry;
+drop table tsgeometry;
+drop table feature;
+
+delete from tsgeometry where id in (select id from feature)

@@ -22,4 +22,6 @@ public interface AddressDao {
 
     public abstract List<Address> findWithinGeometry(Geometry geometry);
 
+    List<Address> findGeomWithinGeometry(Geometry geometry);
+
 }

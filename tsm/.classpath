@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry excluding="com/tech4d/tsm/model/test/|com.tech4d.tsm.model.test/" kind="src" output="target/test-classes" path="src/test/java"/>
-	<classpathentry excluding="**" kind="src" output="src/main/webapp/WEB-INF" path="src/main/webapp/WEB-INF"/>
 	<classpathentry excluding="**" kind="src" output="src/test/conf" path="src/test/conf"/>
+	<classpathentry excluding="**" kind="src" output="src/main/webapp/WEB-INF" path="src/main/webapp/WEB-INF"/>
 	<classpathentry kind="src" path="src/lab/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>

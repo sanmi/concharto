@@ -14,6 +14,11 @@
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
+	<bean id="featureDao" class="com.tech4d.tsm.dao.FeatureDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
 	<!-- End Daos -->  
 	
 </beans>
