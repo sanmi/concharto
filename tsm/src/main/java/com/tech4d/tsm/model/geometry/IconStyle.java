@@ -11,13 +11,13 @@ public class IconStyle {
 
     private Icon icon;
 
-    private Vec2Type hotSpot;
+    private Vec2 hotSpot;
 
     public IconStyle() {
         super();
     }
 
-    public IconStyle(Float scale, Float heading, Icon icon, Vec2Type hotSpot) {
+    public IconStyle(Float scale, Float heading, Icon icon, Vec2 hotSpot) {
         super();
         this.scale = scale;
         this.heading = heading;
@@ -50,11 +50,11 @@ public class IconStyle {
         this.icon = icon;
     }
 
-    public Vec2Type getHotSpot() {
+    public Vec2 getHotSpot() {
         return hotSpot;
     }
 
-    public void setHotSpot(Vec2Type hotSpot) {
+    public void setHotSpot(Vec2 hotSpot) {
         this.hotSpot = hotSpot;
     }
 

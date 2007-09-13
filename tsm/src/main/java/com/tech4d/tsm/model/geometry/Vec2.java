@@ -3,7 +3,7 @@ package com.tech4d.tsm.model.geometry;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class Vec2Type {
+public class Vec2 {
     private Double x;
 
     private String xUnits;
@@ -11,6 +11,23 @@ public class Vec2Type {
     private Double y;
 
     private String yUnits;
+
+    //TODO should these be an enum? fraction, pixels, insetPixels
+    public static String UNITS_FRACTION = "fraction";
+    public static String UNITS_PIXELS = "pixels";
+    public static String UNITS_INSETPIXELS = "insetPixels";
+    
+    public Vec2() {
+        super();
+    }
+
+    public Vec2(Double x, String units, Double y, String units2) {
+        super();
+        this.x = x;
+        xUnits = units;
+        this.y = y;
+        yUnits = units2;
+    }
 
     public Double getX() {
         return x;
@@ -42,18 +59,6 @@ public class Vec2Type {
 
     public void setYUnits(String units) {
         yUnits = units;
-    }
-
-    public Vec2Type(Double x, String units, Double y, String units2) {
-        super();
-        this.x = x;
-        xUnits = units;
-        this.y = y;
-        yUnits = units2;
-    }
-
-    public Vec2Type() {
-        super();
     }
 
 }

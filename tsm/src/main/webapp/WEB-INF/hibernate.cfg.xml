@@ -11,8 +11,6 @@
         <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
 
 		<mapping package="com.tech4d.tsm.model"/>
-        <mapping class="com.tech4d.tsm.model.Event"/>
-        <mapping class="com.tech4d.tsm.model.Person"/>
         <mapping class="com.tech4d.tsm.model.lab.Address"/>
         <mapping class="com.tech4d.tsm.model.geometry.Feature"/>
         <mapping class="com.tech4d.tsm.model.geometry.TsGeometry"/>
@@ -22,6 +20,13 @@
         <mapping class="com.tech4d.tsm.model.geometry.StyleSelector"/>
         <mapping class="com.tech4d.tsm.model.geometry.Style"/>
         <mapping class="com.tech4d.tsm.model.geometry.StyleMap"/>
+        <mapping class="com.tech4d.tsm.model.Event"/>
+        <mapping class="com.tech4d.tsm.model.User"/>
+        <mapping class="com.tech4d.tsm.model.UserTag"/>
+        <mapping class="com.tech4d.tsm.model.ChangeGroup"/>
+        <mapping class="com.tech4d.tsm.model.ChangeItem"/>
+        <mapping class="com.tech4d.tsm.model.EventSummary"/>
+        <mapping class="com.tech4d.tsm.model.User"/>
     
     </session-factory>
 

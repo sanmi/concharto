@@ -10,12 +10,18 @@ import org.hibernate.annotations.Cascade;
 import com.tech4d.tsm.model.BaseAuditableEntity;
 
 @Entity
-@org.hibernate.annotations.Table(comment = "ENGINE : MyISAM", appliesTo = "FEATURE")
 public class Feature extends BaseAuditableEntity {
+    
+    private String summary;
+    
     private String address;
+
     private String snippet;
+
     private String description;
+
     private TimePrimitive timePrimitive;
+
     private StyleSelector styleSelector;
 
     private TsGeometry tsGeometry;
@@ -29,7 +35,6 @@ public class Feature extends BaseAuditableEntity {
     }
 
     @OneToOne(cascade = { CascadeType.ALL })
-//   TODO experiment with this @SQLDelete( sql="delete from TsGeometry where id = ?")
     public TsGeometry getTsGeometry() {
         return tsGeometry;
     }
@@ -64,7 +69,7 @@ public class Feature extends BaseAuditableEntity {
         this.timePrimitive = timePrimative;
     }
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(cascade = { CascadeType.REFRESH, CascadeType.MERGE })
     public StyleSelector getStyleSelector() {
         return styleSelector;
     }
@@ -72,5 +77,14 @@ public class Feature extends BaseAuditableEntity {
     public void setStyleSelector(StyleSelector styleSelector) {
         this.styleSelector = styleSelector;
     }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+    
 
 }
