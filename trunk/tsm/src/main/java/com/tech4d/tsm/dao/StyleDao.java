@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.tech4d.tsm.model.geometry.Style;
-import com.vividsolutions.jts.geom.Geometry;
 
 public interface StyleDao {
     public abstract Serializable save(Style feature);

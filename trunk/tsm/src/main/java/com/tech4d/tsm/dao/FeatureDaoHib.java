@@ -17,6 +17,10 @@ public class FeatureDaoHib implements FeatureDao {
         this.sessionFactory = sessionFactory;
     }
 
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -89,11 +93,6 @@ public class FeatureDaoHib implements FeatureDao {
                 "select feature from Feature feature").list();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.tech4d.tsm.lab.FeatureDao#findById(java.lang.Long)
-     */
     public Feature findById(Long id) {
         return (Feature) this.sessionFactory.getCurrentSession().get(
                 Feature.class, id);

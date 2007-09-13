@@ -1,79 +1,107 @@
 package com.tech4d.tsm.model;
 
-import java.util.Date;
+import java.net.URL;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
+import com.tech4d.tsm.model.geometry.Feature;
 
 @Entity
-@Table(name="EVENTS")
-public class Event {
-    private Long id;
+public class Event extends BaseAuditableEntity {
 
-    private String title;
-    
-    @Temporal(TemporalType.TIME)
-    private Date date;
+    private Feature feature;
+    private List<UserTag> userTags;
+    private Votes votes;
+    private List<ChangeGroup> history;
+    private Set<User> contributors = new HashSet<User>();
+    private URL sourceUrl;
+    private TsmSpace tsmSpace;
+    public enum TsmSpace {ENCYCLOPEDIA, ANECDOTAL, PERSONAL, CURRENT_EVENT};
+    private boolean visible;
+    private TsmFlag flag;
+    public enum TsmFlag {FOR_DELETION, FOR_CONTENT};
 
-    public Event() {}
-
-    @Id 
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    public Long getId() {
-        return id;
+    public URL getSourceUrl() {
+        return sourceUrl;
     }
 
-    @SuppressWarnings("unused")
-    private void setId(Long id) {
-        this.id = id;
+    public void setSourceUrl(URL sourceUrl) {
+        this.sourceUrl = sourceUrl;
     }
 
-    public Date getDate() {
-        return date;
+    public TsmSpace getTsmSpace() {
+        return tsmSpace;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setTsmSpace(TsmSpace tsmSpace) {
+        this.tsmSpace = tsmSpace;
     }
 
-    public String getTitle() {
-        return title;
+    @OneToOne(cascade = { CascadeType.ALL })
+    public Feature getFeature() {
+        return feature;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    
-    private Set<Person> participants = new HashSet<Person>();
-
-    @ManyToMany(
-            targetEntity=com.tech4d.tsm.model.Person.class,
-            cascade={CascadeType.ALL},
-            fetch=FetchType.EAGER
-    )
-    @JoinTable(
-            name="PERSON_EVENT",
-            joinColumns={@JoinColumn(name="EVENT_ID")},
-            inverseJoinColumns={@JoinColumn(name="PERSON_ID")}
-    )
-    public Set<Person> getParticipants() {
-        return participants;
+    public void setFeature(Feature feature) {
+        this.feature = feature;
     }
 
-    public void setParticipants(Set<Person> participants) {
-        this.participants = participants;
+    @OneToMany(cascade={CascadeType.ALL})
+    public List<ChangeGroup> getHistory() {
+        return history;
+    }
+
+    public void setHistory(List<ChangeGroup> history) {
+        this.history = history;
+    }
+
+    @ManyToMany(cascade={CascadeType.ALL})
+    public List<UserTag> getUserTags() {
+        return userTags;
+    }
+
+    public void setUserTags(List<UserTag> userTags) {
+        this.userTags = userTags;
+    }
+
+    public Votes getVotes() {
+        return votes;
+    }
+
+    public void setVotes(Votes votes) {
+        this.votes = votes;
+    }
+
+    @ManyToMany(cascade={CascadeType.ALL})
+    public Set<User> getContributors() {
+        return contributors;
+    }
+
+    public void setContributors(Set<User> participants) {
+        this.contributors = participants;
+    }
+
+    public TsmFlag getFlag() {
+        return flag;
+    }
+
+    public void setFlag(TsmFlag flag) {
+        this.flag = flag;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
 }

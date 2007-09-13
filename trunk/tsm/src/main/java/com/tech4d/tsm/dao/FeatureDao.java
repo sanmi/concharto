@@ -3,10 +3,14 @@ package com.tech4d.tsm.dao;
 import java.io.Serializable;
 import java.util.List;
 
+import org.hibernate.SessionFactory;
+
 import com.tech4d.tsm.model.geometry.Feature;
 import com.vividsolutions.jts.geom.Geometry;
 
 public interface FeatureDao {
+    public abstract SessionFactory getSessionFactory();
+    
     public abstract Serializable save(Feature feature);
 
     public abstract void delete(Feature Feature);
