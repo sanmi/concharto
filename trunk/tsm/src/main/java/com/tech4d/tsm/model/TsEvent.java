@@ -3,13 +3,20 @@ package com.tech4d.tsm.model;
 import com.tech4d.tsm.model.geometry.StyleSelector;
 import com.tech4d.tsm.model.geometry.TimePrimitive;
 import com.tech4d.tsm.model.geometry.TsGeometry;
+import com.tech4d.tsm.model.geometry.KmlFeature;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * Copyright 2007, Time Space Map
+ *
+ * This is the main class for storing events in time and space.  It contains enough information to
+ * be serialized to KML and can be searched using a spatial query.
+ */
 @Entity
-public class TsEvent extends BaseAuditableEntity {
+public class TsEvent extends BaseAuditableEntity implements KmlFeature {
     
     private String summary;
     private String address;
@@ -23,17 +30,20 @@ public class TsEvent extends BaseAuditableEntity {
     private List<ChangeGroup> history;
     private List<User> contributors;
     private String sourceUrl;
-    private TsmSpace tsmSpace;
-    public enum TsmSpace {ENCYCLOPEDIA, ANECDOTAL, PERSONAL, CURRENT_EVENT}
+    private Catalog catalog;
+    public enum Catalog {ENCYCLOPEDIA, ANECDOTAL, PERSONAL, CURRENT_EVENT}
     private boolean visible;
-    private TsmFlag flag;
-    public enum TsmFlag {FOR_DELETION, FOR_CONTENT}
+    private Flag flag;
+    public enum Flag {FOR_DELETION, FOR_CONTENT}
 
-    public String getAddress() {
+    /**
+     * @see com.tech4d.tsm.model.geometry.KmlFeature
+     */
+    public String getStreetAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setStreetAddress(String address) {
         this.address = address;
     }
 
@@ -59,6 +69,7 @@ public class TsEvent extends BaseAuditableEntity {
     }
 
     public void setSnippet(String snippet) {
+        this.snippet = snippet;
         this.snippet = snippet;
     }
 
@@ -97,12 +108,12 @@ public class TsEvent extends BaseAuditableEntity {
         this.sourceUrl = sourceUrl;
     }
 
-    public TsmSpace getTsmSpace() {
-        return tsmSpace;
+    public Catalog getCatalog() {
+        return catalog;
     }
 
-    public void setTsmSpace(TsmSpace tsmSpace) {
-        this.tsmSpace = tsmSpace;
+    public void setCatalog(Catalog catalog) {
+        this.catalog = catalog;
     }
 
     @OneToMany(cascade={CascadeType.ALL})
@@ -140,11 +151,11 @@ public class TsEvent extends BaseAuditableEntity {
         this.contributors = participants;
     }
 
-    public TsmFlag getFlag() {
+    public Flag getFlag() {
         return flag;
     }
 
-    public void setFlag(TsmFlag flag) {
+    public void setFlag(Flag flag) {
         this.flag = flag;
     }
 
