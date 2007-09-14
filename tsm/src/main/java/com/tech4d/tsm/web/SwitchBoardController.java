@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.tech4d.tsm.dao.EventDao;
+import com.tech4d.tsm.dao.EventDaoHib;
 
 /**
  * The central switchboard
@@ -35,28 +36,28 @@ import com.tech4d.tsm.dao.EventDao;
  */
 public class SwitchBoardController extends MultiActionController {
 
-    private EventDao eventDao;
+    private EventDao eventDaoHib;
 
     /**
-     * Sets the {@link EventDao} that to which this presentation component delegates
+     * Sets the {@link EventDaoHib} that to which this presentation component delegates
      * in order to perform dao operations.
      *
-     * @param EventDao the {@link EventDao} to which this presentation
+     * @param EventDaoHib the {@link EventDaoHib} to which this presentation
      *                      component delegates in order to perform dao operations
      */
-    public void setEventDao(EventDao eventDao) {
-        this.eventDao = eventDao;
+    public void setEventDao(EventDao eventDaoHib) {
+        this.eventDaoHib = eventDaoHib;
     }
 
     public ModelAndView listEvents(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return new ModelAndView().addObject(this.eventDao.findAll());
+        return new ModelAndView().addObject(this.eventDaoHib.findAll());
     }
     
     public ModelAndView deleteEvent(HttpServletRequest request, HttpServletResponse response) throws Exception {
         
         Long id = ServletRequestUtils.getLongParameter(request, "listid");
         if (id != null) {
-            eventDao.delete(id);
+            eventDaoHib.delete(id);
         }
         //redirect back to the list
         return new ModelAndView(new RedirectView("/switchboard/listEvents.htm", true));
