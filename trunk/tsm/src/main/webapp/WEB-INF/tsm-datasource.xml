@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN"
-        "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
-<beans>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
 	<bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 	  <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
@@ -16,15 +22,23 @@
 		<property name="hibernateProperties">
 		    <props>
 		        <prop key="hibernate.jdbc.batch_size">0</prop>
-		        <prop key="hibernate.connection.pool_size">0</prop>
-		        <prop key="current_session_context_class">thread</prop>
-		        <prop key="hbm2ddl.auto">validate</prop>
+		        <prop key="hibernate.connection.pool_size">0</prop><!--
+		        <prop key="hibernate.hbm2ddl.auto">validate</prop>
+		        --><prop key="hibernate.current_session_context_class">thread</prop>
+				<prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop> 
 		    </props>
 		</property>
 		<property name="configLocation">
 			<value>WEB-INF/hibernate.cfg.xml</value>
 		</property>		
 	</bean>
+  	<!-- similarly, don't forget the PlatformTransactionManager -->
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	  <property name="dataSource" ref="myDataSource"/>
+	</bean>
+	
+	<!-- enable the configuration of transactional behavior based on annotations -->
+	<tx:annotation-driven transaction-manager="txManager"/>
 
 	
 </beans>

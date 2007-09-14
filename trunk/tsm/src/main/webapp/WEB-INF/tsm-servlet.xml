@@ -3,32 +3,53 @@
         "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
 <beans>
 
-    <!-- maps request URLs to Controller names -->
-    <bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>
+	<!-- maps request URLs to Controller names -->
+	<bean
+		class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="openSessionInViewInterceptor" />
+			</list>
+		</property>
+	</bean>
 
-    <bean id="baseEventController" abstract="true">
-        <property name="eventDao" ref="eventDao"/>
-    </bean>
+	<!-- for handling hibernate lazy loading -->
+	<bean name="openSessionInViewInterceptor"
+		class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
 
-    <!-- Controller names are not important when using the above HandlerMapping implementation -->
-    <bean class="com.tech4d.tsm.web.SwitchBoardController"
-          parent="baseEventController"/>
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory" />
+		</property>
+	</bean>
 
-    <bean class="com.tech4d.tsm.web.EventController"
-          parent="baseEventController">
-        <property name="commandName" value="event"/>
-        <property name="commandClass" value="com.tech4d.tsm.model.Event"/>
-        <property name="formView" value="event"/>
-        <property name="successView" value="redirect:switchboard/listEvents.htm"/>
-    </bean>
+	<bean id="baseEventController" abstract="true">
+		<property name="eventDao" ref="eventDao" />
+	</bean>
 
-    <!-- this bean with the well known name generates view names for us -->
-    <!-- not strictly required since we just want to accept the defaults-->
-    <bean id="viewNameTranslator" class="org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator"/>
+	<!-- Controller names are not important when using the above HandlerMapping implementation -->
+	<bean class="com.tech4d.tsm.web.SwitchBoardController"
+		parent="baseEventController" />
 
-    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/jsp/"/>
-        <property name="suffix" value=".jsp"/>
-    </bean>
+	<bean class="com.tech4d.tsm.web.EventController"
+		parent="baseEventController">
+		<property name="commandName" value="event" />
+		<property name="commandClass"
+			value="com.tech4d.tsm.web.EventForm" />
+		<property name="formView" value="event" />
+		<property name="successView"
+			value="redirect:switchboard/listEvents.htm" />
+	</bean>
+
+	<!-- this bean with the well known name generates view names for us -->
+	<!-- not strictly required since we just want to accept the defaults-->
+	<bean id="viewNameTranslator"
+		class="org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator" />
+
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
 
 </beans>

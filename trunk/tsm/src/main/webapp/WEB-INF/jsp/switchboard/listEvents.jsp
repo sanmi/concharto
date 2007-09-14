@@ -10,7 +10,13 @@
     <c:forEach items="${eventList}" var="event">
         <tr>
             <td>${event.id}</td>
-            <td>${event.title}</td>
+            <td>${event.feature.summary}</td>
+            <td>${event.feature.description}</td>
+            <td>
+            <c:forEach items="${event.userTags}" var="tag">
+            	<c:out value="${tag}"/>
+            </c:forEach>
+            </td>
             <c:url value="/event.htm?listid=${event.id}" var="editLink"/>
             <td><a href="${editLink}">[edit]</a></td>
             <c:url value="/switchboard/deleteEvent.htm?listid=${event.id}" var="delLink"/>

@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
 @Entity
-public class User extends BaseEntity {
+public class User extends BaseAuditableEntity {
 
     private String username;
 

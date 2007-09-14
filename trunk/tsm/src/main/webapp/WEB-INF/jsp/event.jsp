@@ -8,16 +8,21 @@
 	    <form:hidden path="id"/>
 	    <table>
 	        <tr>
-	            <td>Title:</td>
-	            <td><form:input path="title"/></td>
+	            <td>Summary:</td>
+	            <td><form:input path="summary"/></td>
 	            <td></td>
 	        </tr>
-	        <%--<tr>
-	            <td>Date:</td>
-	            <td><form:input path="date"/></td>
+	        <tr>
+	            <td>Description:</td>
+	            <td><form:input path="description"/></td>
 	            <td></td>
 	        </tr>
-	        --%><tr>
+	        <tr>
+	            <td>Tags:</td>
+	            <td><form:input path="tags"/></td>
+	            <td></td>
+	        </tr>
+	        <tr>
 	            <td colspan="3">
 	                <input type="submit" value="Save Changes"/>
 	            </td>
