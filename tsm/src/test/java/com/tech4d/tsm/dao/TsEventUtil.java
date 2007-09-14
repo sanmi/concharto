@@ -1,27 +1,25 @@
 package com.tech4d.tsm.dao;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.tech4d.tsm.model.TsEvent;
 import com.tech4d.tsm.model.User;
 import com.tech4d.tsm.model.UserTag;
-import com.tech4d.tsm.model.TsEvent;
 import com.tech4d.tsm.model.geometry.Style;
 import com.tech4d.tsm.model.geometry.TimePrimitive;
 import com.tech4d.tsm.model.geometry.TimeRange;
 import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class TsEventUtil {
     
     public static TsEvent createTsEvent() throws ParseException {
-        TsEvent tsEvent = createTsEvent((Point) new WKTReader()
+        return createTsEvent( new WKTReader()
                 .read("POINT (20 20)"), new TimeRange(new Date(), new Date()));
-        return tsEvent;
     }
     
     public static TsEvent createTsEvent(Geometry geometry, TimeRange timeRange) {
@@ -30,7 +28,7 @@ public class TsEventUtil {
 
     public static TsEvent CreateTsEvent(Geometry geometry, TimePrimitive timePrimitive, Style style) {
         TsEvent tsEvent = new TsEvent();
-        tsEvent.setAddress("17 Mockinbird Ln, Nameless, TN, 60606");
+        tsEvent.setStreetAddress("17 Mockinbird Ln, Nameless, TN, 60606");
         tsEvent.setSnippet("This is like some sort of small description yo");
         tsEvent
                 .setDescription("This is like the full sort of small description yo with a bunch of stuff");
