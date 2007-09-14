@@ -6,7 +6,7 @@ import java.util.List;
 import com.tech4d.tsm.model.geometry.Style;
 
 public interface StyleDao {
-    public abstract Serializable save(Style feature);
+    public abstract Serializable save(Style style);
 
     public abstract void delete(Style Style);
 
