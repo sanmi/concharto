@@ -15,7 +15,7 @@ public class User extends BaseAuditableEntity {
 
     private String email;
 
-    private List<EventSummary> eventSummaries;
+    private List<TsEventSummary> tsEventSummaries;
 
     private List<UserTag> userTags;
 
@@ -39,12 +39,12 @@ public class User extends BaseAuditableEntity {
     }
 
     @OneToMany(cascade={CascadeType.ALL})
-    public List<EventSummary> getEventSummaries() {
-        return eventSummaries;
+    public List<TsEventSummary> getEventSummaries() {
+        return tsEventSummaries;
     }
 
-    public void setEventSummaries(List<EventSummary> eventSummaries) {
-        this.eventSummaries = eventSummaries;
+    public void setEventSummaries(List<TsEventSummary> tsEventSummaries) {
+        this.tsEventSummaries = tsEventSummaries;
     }
 
     public String getPassword() {

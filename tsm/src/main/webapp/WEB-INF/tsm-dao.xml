@@ -4,17 +4,12 @@
 <beans>
 	
 	<!-- Begin Daos -->  
-	<bean id="eventDao" class="com.tech4d.tsm.dao.EventDaoHib">
-		<property name="sessionFactory">
-			<ref bean="mySessionFactory"/>
-		</property>
-	</bean>
 	<bean id="addressDao" class="com.tech4d.tsm.lab.AddressDaoHib">
 		<property name="sessionFactory">
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
-	<bean id="featureDao" class="com.tech4d.tsm.dao.FeatureDaoHib">
+	<bean id="tsEventDao" class="com.tech4d.tsm.dao.TsEventDaoHib">
 		<property name="sessionFactory">
 			<ref bean="mySessionFactory"/>
 		</property>

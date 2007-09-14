@@ -84,23 +84,23 @@ select count(*) FROM address WHERE Equals(geom,GeomFromText('GEOMETRYCOLLECTION(
 select count(*) FROM address WHERE MBREqual(addressLocation,Envelope(GeomFromText('POLYGON((330 330,340 330,340 340,330 340,330 330))'))) = 1
 
 
---DEBUG feature
+--DEBUG tsEvent
 SELECT *, AsText(geom) FROM tsgeometry g 
-SELECT * FROM feature f, tsgeometry g 
+SELECT * FROM tsEvent f, tsgeometry g
 WHERE f.tsgeometry_id = g.id
 AND MBRWithin(geom,Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))'))) = 1
 
 SELECT * 
-FROM feature f, tsgeometry g 
+FROM tsEvent f, tsgeometry g
 WHERE f.geometry_id = g.id 
 AND MBRWithin(geom, Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))'))) = 1
 
 delete from tsgeometry;
 drop table tsgeometry;
-drop table feature;
+drop table tsEvent;
 
-delete from tsgeometry where id in (select id from feature)
+delete from tsgeometry where id in (select id from tsEvent)
 
 ALTER TABLE address CHANGE geom geom GEOMETRYCOLLECTION NOT NULL;
 
-Select * from TimePrimitive where id = (select timeprimitive_id from Feature where id = 4)
+Select * from TimePrimitive where id = (select timeprimitive_id from tsEvent where id = 4)

@@ -23,7 +23,7 @@
 	</bean>
 
 	<bean id="baseEventController" abstract="true">
-		<property name="eventDao" ref="eventDao" />
+		<property name="tsEventDao" ref="tsEventDao" />
 	</bean>
 
 	<!-- Controller names are not important when using the above HandlerMapping implementation -->
@@ -34,7 +34,7 @@
 		parent="baseEventController">
 		<property name="commandName" value="event" />
 		<property name="commandClass"
-			value="com.tech4d.tsm.web.EventForm" />
+			value="com.tech4d.tsm.web.TsEventForm" />
 		<property name="formView" value="event" />
 		<property name="successView"
 			value="redirect:switchboard/listEvents.htm" />

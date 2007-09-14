@@ -7,11 +7,11 @@
   	Events
     <table >
 
-    <c:forEach items="${eventList}" var="event">
+    <c:forEach items="${tsEventList}" var="event">
         <tr>
             <td>${event.id}</td>
-            <td>${event.feature.summary}</td>
-            <td>${event.feature.description}</td>
+            <td>${event.summary}</td>
+            <td>${event.description}</td>
             <td>
             <c:forEach items="${event.userTags}" var="tag">
             	<c:out value="${tag}"/>
