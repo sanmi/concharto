@@ -45,6 +45,7 @@ public class IntegrationTestStyleDao {
         assertNull(style);
     }
 
+    @Test
     public void deleteById() {
         //test delete by
         styleDao.delete(StyleUtil.getStyle().getId());
