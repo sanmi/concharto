@@ -1,15 +1,14 @@
-package com.tech4d.tsm.support;
+package com.tech4d.tsm.web;
 
 import com.tech4d.tsm.model.TsEvent;
 import com.tech4d.tsm.model.UserTag;
-import com.tech4d.tsm.web.TsEventForm;
 import static org.apache.commons.lang.StringUtils.join;
 import static org.apache.commons.lang.StringUtils.split;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TsEventFactory {
+public class TsEventFormFactory {
 
     public static TsEvent createTsEvent() {
         return  new TsEvent();

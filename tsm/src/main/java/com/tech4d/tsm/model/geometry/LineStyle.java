@@ -4,18 +4,18 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class LineStyle {
-    private int width;
+    private Integer width;
 
     public LineStyle() {
         super();
     }
 
-    public LineStyle(int width) {
+    public LineStyle(Integer width) {
         super();
         this.width = width;
     }
 
-    public int getWidth() {
+    public Integer getWidth() {
         return width;
     }
 

@@ -2,7 +2,6 @@ package com.tech4d.tsm.web;
 
 import com.tech4d.tsm.dao.TsEventDao;
 import com.tech4d.tsm.model.TsEvent;
-import com.tech4d.tsm.support.TsEventFactory;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,7 +29,7 @@ public class EventController extends SimpleFormController {
             tsEvent = this.tsEventDao.findById(id);
             //save it in the session
             WebUtils.setSessionAttribute(request, SESSION_TSEVENT, tsEvent);
-            tsEventForm = TsEventFactory.getTsEventForm(tsEvent);
+            tsEventForm = com.tech4d.tsm.web.TsEventFormFactory.getTsEventForm(tsEvent);
         } else {
             tsEventForm = new TsEventForm();
         }
@@ -44,9 +43,9 @@ public class EventController extends SimpleFormController {
         if (tsEventForm.getId() != null) {
             //get the tsEvent from the session
             tsEvent = (TsEvent) WebUtils.getSessionAttribute(request, SESSION_TSEVENT);
-            tsEvent = TsEventFactory.updateTsEvent(tsEvent, tsEventForm);
+            tsEvent = com.tech4d.tsm.web.TsEventFormFactory.updateTsEvent(tsEvent, tsEventForm);
         } else {
-            tsEvent = TsEventFactory.createTsEvent(tsEventForm);
+            tsEvent = com.tech4d.tsm.web.TsEventFormFactory.createTsEvent(tsEventForm);
         }
         this.tsEventDao.saveOrUpdate(tsEvent);
         return new ModelAndView(getSuccessView());
