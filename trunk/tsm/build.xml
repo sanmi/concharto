@@ -149,7 +149,7 @@
 				unless="junit.formatter.plain" />
 			<classpath refid="test-classpath" />
 
-			<batchtest todir="${target.test.reports.dir}">
+			<batchtest todir="${target.test.reports.dir}" fork="no">
 				<fileset dir="${target.test.classes.dir}">
 					<include name="**/IntegrationTest*.class" />
 					<exclude name="**/*$$*" />
