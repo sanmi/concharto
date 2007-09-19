@@ -1,39 +1,49 @@
-package com.tech4d.tsm.lab;
-
-import static org.junit.Assert.*;
-
-import net.sf.json.JSONObject;
-import net.sf.json.JSONException;
+package com.tech4d.tsm.geocode;
 
 import java.io.ByteArrayOutputStream;
 import java.net.HttpURLConnection;
-import java.net.URLEncoder;
-import java.net.URLConnection;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
 
+/**
+ * Geocoder class for google maps.  
+ * TODO consider using a DynaBean instead of GAddress object.  Move strings to another global config object
+ *
+ */
 public class GGcoder {
-    private static final String URLstr = "http://maps.google.com/maps/geo?output=json";
+    public static final String URLstr = "http://maps.google.com/maps/geo?output=json";
+    public static final int ACCURACY_UNKNOWN_LOCATION = 0;
+    public static final int ACCURACY_COUNTRY = 1;
+    public static final int ACCURACY_REGION = 2;
+    public static final int ACCURACY_SUB_REGION = 3;
+    public static final int ACCURACY_TOWN = 4;
+    public static final int ACCURACY_POST_CODE = 5;
+    public static final int ACCURACY_STREET = 6;
+    public static final int ACCURACY_INTERSECTION = 7;
+    public static final int ACCURACY_ADDRESS = 8;
 
     private static final String DEFAULT_KEY = "ABQIAAAA1DZDDhaKApTfIDHGfvo13hQHaMf-gMmgKgj1cacwLLvRJWUPcRTWzCG3PTSVLKG0PgyzHQthDg5BUw";
 
     public static GAddress geocode(String address, String key) throws Exception {
         URL url = new URL(URLstr + "&q=" + URLEncoder.encode(address, "UTF-8")
                 + "&key=" + key);
-        // System.out.println(url);
         URLConnection conn = url.openConnection();
         ByteArrayOutputStream output = new ByteArrayOutputStream(1024);
         IOUtils.copy(conn.getInputStream(), output);
         output.close();
 
         GAddress gaddr = new GAddress();
+        gaddr.setUserEnteredAddress(address);
         JSONObject json = JSONObject.fromObject(output.toString());
 
         // check for error
-        JSONObject status = (JSONObject) json.get("Status");
-        Integer returnCode = Integer.valueOf(status.get("code").toString());
+        Integer returnCode = Integer.valueOf(query(json, "Status.code").toString());
         if (HttpURLConnection.HTTP_OK == returnCode) {
 
             JSONObject placemark = (JSONObject) query(json, "Placemark[0]");
@@ -54,13 +64,23 @@ public class GGcoder {
                                     + ".SubAdministrativeArea.Locality.Thoroughfare.ThoroughfareName")
                             .toString());
             gaddr
-                    .setCity(query(
+            .setCity(query(
+                    placemark,
+                    commonId
+                            + ".SubAdministrativeArea.Locality.LocalityName")
+                    .toString());
+            gaddr
+                    .setCounty(query(
                             placemark,
                             commonId
                                     + ".SubAdministrativeArea.SubAdministrativeAreaName")
                             .toString());
             gaddr.setState(query(placemark,
                     commonId + ".AdministrativeAreaName").toString());
+            gaddr.setCountry(query(placemark,
+                    "AddressDetails.Country.CountryNameCode").toString());
+            gaddr.setAccuracy(Integer.valueOf(query(placemark,
+                    "AddressDetails.Accuracy").toString()));
             gaddr.setLat(Double.parseDouble(query(placemark,
                     "Point.coordinates[1]").toString()));
             gaddr.setLng(Double.parseDouble(query(placemark,
@@ -100,18 +120,4 @@ public class GGcoder {
         return jo.get(query);
     }
 
-    @Test
-    public void testGeocode() throws Exception {
-        assertPlace(GGcoder.geocode("Turners Creek, MD"));
-        assertPlace(GGcoder.geocode("94103"));
-        assertPlace(GGcoder.geocode("la la land, MD"));
-        assertPlace(GGcoder.geocode("Turnsers Creek, MD"));
-    }
-
-    private void assertPlace(GAddress place) {
-        assertNotNull(place.getLat());
-        System.out.println(place.getFullAddress() + ", " + place.getCity()
-                + ", " + place.getZipCode() + ", " + place.getLat() + ", "
-                + place.getLng());
-    }
 }
