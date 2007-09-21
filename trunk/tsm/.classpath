@@ -51,11 +51,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/deploy/aspectjweaver.jar"/>
-	<classpathentry kind="lib" path="lib/test/geonames-0.5.jar"/>
 	<classpathentry kind="lib" path="lib/deploy/commons-io.jar"/>
 	<classpathentry kind="lib" path="lib/deploy/json-lib-2.0-jdk15.jar"/>
 	<classpathentry kind="lib" path="lib/deploy/commons-beanutils.jar"/>
 	<classpathentry kind="lib" path="lib/deploy/ezmorph.jar"/>
+	<classpathentry kind="lib" path="lib/lab/geonames-0.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="src/main/webapp/WEB-INF/classes"/>
 </classpath>

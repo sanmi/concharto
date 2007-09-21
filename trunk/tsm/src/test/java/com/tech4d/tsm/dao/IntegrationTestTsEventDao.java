@@ -14,28 +14,34 @@ import com.vividsolutions.jts.util.GeometricShapeFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 
 import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class IntegrationTestTsEventDao {
     private static TsEventDao tsEventDao;
-
-    private Date begin = new Date();
-
-    private Date end = new Date();
-
     private static boolean initialized;
 
+    private Date begin;
+    private Date end;
+
+    
+    @Before
+    public void setUp() {
+        Calendar cal = new GregorianCalendar(107 + 1900, 8, 22, 12, 22, 3);
+        cal.set(Calendar.MILLISECOND, 750);
+        begin = cal.getTime();
+        cal.set(Calendar.SECOND, 35);
+        end = cal.getTime();
+    }
+
     @BeforeClass
-    public static void setUp() {
+    public static void setUpClass() {
         ApplicationContext appCtx = ContextUtil.getCtx();
         tsEventDao = (TsEventDao) appCtx.getBean("tsEventDao");
 
@@ -57,7 +63,7 @@ public class IntegrationTestTsEventDao {
 
     @Test
     public void testSaveAndFindById() throws ParseException {
-        TsEvent tsEvent = TsEventUtil.createTsEvent();
+        TsEvent tsEvent = TsEventUtil.createTsEvent(begin, end);
         Serializable id = tsEventDao.save(tsEvent);
         assertNotNull(id);
         TsEvent returned = tsEventDao.findById((Long) id);
@@ -74,10 +80,11 @@ public class IntegrationTestTsEventDao {
         // the msec in order to compare
         Calendar cal = Calendar.getInstance();
         cal.setTime(begin);
-        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.MILLISECOND,0);
+
         Date correctedBegin = cal.getTime();
-        Date newBegin = ((TimeRange) returned.getTimePrimitive()).getBegin();
-        assertEquals(correctedBegin, newBegin);
+        Date returnedBegin = ((TimeRange) returned.getTimePrimitive()).getBegin();
+        assertEquals(correctedBegin, returnedBegin);
 
         StyleSelector styleS = returned.getStyleSelector();
         Style style = (Style) styleS;
@@ -122,9 +129,8 @@ public class IntegrationTestTsEventDao {
     }
 
     /**
-     * Tests a spatially indexed query!! Finding a point within a bounding box
      * 
-     * @throws ParseException
+     * @throws ParseException  When parsing
      */
     @Test
     public void testFindWithinGeometry() throws ParseException {
@@ -138,12 +144,12 @@ public class IntegrationTestTsEventDao {
         // inside the box
         String insideWKT = "POINT (330 330)";
         TsEvent insideTheBox = TsEventUtil.createTsEvent(
-                (Point) new WKTReader().read(insideWKT), new TimeRange(begin,
+                new WKTReader().read(insideWKT), new TimeRange(begin,
                         end));
         tsEventDao.save(insideTheBox);
 
         // outside of the box
-        tsEventDao.save(TsEventUtil.createTsEvent((Point) new WKTReader()
+        tsEventDao.save(TsEventUtil.createTsEvent(new WKTReader()
                 .read("POINT (130 130)"), new TimeRange(begin, end)));
 
         List<TsEvent> tsEvents = tsEventDao

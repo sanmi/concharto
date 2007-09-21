@@ -18,8 +18,13 @@ import java.util.List;
 public class TsEventUtil {
     
     public static TsEvent createTsEvent() throws ParseException {
+        return createTsEvent(new Date(), new Date());
+    }
+
+    public static TsEvent createTsEvent(Date begin, Date end) throws ParseException {
         return createTsEvent( new WKTReader()
-                .read("POINT (20 20)"), new TimeRange(new Date(), new Date()));
+        .read("POINT (20 20)"), new TimeRange(begin, end));
+        
     }
     
     public static TsEvent createTsEvent(Geometry geometry, TimeRange timeRange) {

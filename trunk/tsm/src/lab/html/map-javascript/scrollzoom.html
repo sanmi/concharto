@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<title>Wheelzoom</title>
+		<link href="css/mapedit.css" rel="stylesheet" type="text/css" />
+		<script
+			src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=ABQIAAAA1DZDDhaKApTfIDHGfvo13hQHaMf-gMmgKgj1cacwLLvRJWUPcRTWzCG3PTSVLKG0PgyzHQthDg5BUw"
+			type="text/javascript">
+</script>
+		<!--<script type="text/javascript" src="mktree.js"></script>
+<link rel="stylesheet" href="mktree.css" type="text/css">-->
+		<script type="text/javascript"><!--
+
+//some of the globals
+var map;
+var geocoder = null;
+
+function initialize() {
+	if (GBrowserIsCompatible()) {
+		// map and its equipment
+		map = new GMap2(document.getElementById("map"));
+		map.enableContinuousZoom();
+		map.setCenter(new GLatLng(40.879721,-76.998322),11);  //la la land, PA 
+		map.addControl(new GMapTypeControl(1));
+		map.addControl(new GLargeMapControl());
+		map.enableDoubleClickZoom();
+		map.enableScrollWheelZoom();
+		geocoder = new GClientGeocoder();
+	}
+}
+
+function addPoint() {
+  var point = map.getCenter();
+	var marker = new GMarker(point, {draggable: true});
+	map.addOverlay(marker);
+	var html='<b>Lappeenranta</b><br>';
+	html+='<a href=http://www.polttoaine.net/index2.php?kaupunki=169 target=_blank>Bensan hinta</a><br> ';
+	html+= '<br><br><br><br><br><br><br><br><br><br><br>';
+	marker.openInfoWindowHtml(html);
+	marker.enableDragging();
+
+	GEvent.addListener(marker, "drag", function(){
+		document.getElementById("location").value=markerD.getPoint().toUrlValue();
+	});
+	
+  GEvent.addListener(marker, "dragstart", function() {
+    map.closeInfoWindow();
+  });
+
+//  GEvent.addListener(marker, "dragend", function() {
+//    marker.openInfoWindowHtml(html);
+//  });
+
+  GEvent.addListener(marker, "click", function() {
+    marker.openInfoWindowHtml(html);
+  });
+}
+
+function showAddress(address) {
+	if (geocoder) {
+		geocoder.getLatLng(
+			address,
+			function(point) {
+				if (!point) {
+					alert(address + " not found");
+				} else {
+					map.setCenter(point, 13);
+				}
+			}
+		);
+	}
+}
+
+
+///prevent page scroll
+
+function wheelevent(e)
+{
+if(document.getElementById("prevent").checked){
+if (!e){
+e = window.event
+}
+if (e.preventDefault){
+e.preventDefault()
+}
+e.returnValue = false;
+}}
+GEvent.addDomListener(map.getContainer(), "DOMMouseScroll", wheelevent);
+map.getContainer().onmousewheel = wheelevent; 
+
+
+
+/// Automatic zoomOut from 'sorry..' tiles
+function esasZoomOut(){
+var paragraphs = map.getContainer().getElementsByTagName('p').length;
+if(paragraphs > 6){
+map.zoomOut();
+}}
+interval = setInterval("esasZoomOut()",500);
+
+--></script>
+  </head>
+	<body onload="initialize()" onunload="GUnload();">
+		<table>
+			<tr>
+				<td colspan="2">
+					<div id="forehead">
+						<h3 id="head">
+							Add an event to the map
+						</h3>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td rowspan="2">
+					<div id="novel">
+						<h3>
+							Event Details
+						</h3>
+						<ul>
+							<li>
+								Address: <input tabindex="1" name="joe" size="30"/>
+								<input tabindex="2" type="button" name="go" value="go" onclick="addPoint()"/>
+							</li>
+						</ul>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<form action="#"
+						onsubmit="showAddress(this.address.value); return false">
+						<p>
+							<input type="text" size="60" name="address"
+								value="1600 Amphitheatre Pky, Mountain View, CA" />
+							<input type="submit" value="Go!" />
+						</p>
+					</form>
+					<div id="outline">
+						<div id="map">
+							Map coming...
+							<noscript>
+								<p>
+									JavaScript must be enabled to get the map.
+								</p>
+							</noscript>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+			</tr>
+		</table>
+	</body>
+</html>
