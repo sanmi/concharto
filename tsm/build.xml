@@ -32,6 +32,7 @@
 	<property name="lib.build.dir" value="lib/build" />
 	<property name="lib.tools.dir" value="lib/tools" />
 	<property name="lib.local.dir" value="lib/local" />
+	<property name="lib.lab.dir" value="lib/lab" />
 	<property name="lib.deploy.dir" value="lib/deploy" />
 
 
@@ -62,7 +63,10 @@
 			<include name="**/*.jar" />
 		</fileset>
 		<fileset dir="${lib.local.dir}">
-			<include name="**/jta*.jar" />
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${lib.lab.dir}">
+			<include name="**/*.jar" />
 		</fileset>
 		<path refid="master-classpath" />
 	</path>

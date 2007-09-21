@@ -11,6 +11,8 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
 
+import com.tech4d.tsm.support.ApplicationConstants;
+
 /**
  * Geocoder class for google maps.  
  * TODO consider using a DynaBean instead of GAddress object.  Move strings to another global config object
@@ -28,7 +30,6 @@ public class GGcoder {
     public static final int ACCURACY_INTERSECTION = 7;
     public static final int ACCURACY_ADDRESS = 8;
 
-    private static final String DEFAULT_KEY = "ABQIAAAA1DZDDhaKApTfIDHGfvo13hQHaMf-gMmgKgj1cacwLLvRJWUPcRTWzCG3PTSVLKG0PgyzHQthDg5BUw";
 
     public static GAddress geocode(String address, String key) throws Exception {
         URL url = new URL(URLstr + "&q=" + URLEncoder.encode(address, "UTF-8")
@@ -90,7 +91,7 @@ public class GGcoder {
     }
 
     public static GAddress geocode(String address) throws Exception {
-        return geocode(address, DEFAULT_KEY);
+        return geocode(address, ApplicationConstants.GOOGLE_MAP_API_KEY);
     }
 
     /* allow query for json nested objects, ie. Placemark[0].address */
