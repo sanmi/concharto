@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Autosize</title>
+<style type="text/css">
+
+BODY { font-family: Arial; font-size: small;
+background-color: #CCCCFF;}
+
+A:hover {color: red; text-decoration: underline; }
+
+
+</style>
+<script 
+src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAA1DZDDhaKApTfIDHGfvo13hQHaMf-gMmgKgj1cacwLLvRJWUPcRTWzCG3PTSVLKG0PgyzHQthDg5BUw"type="text/javascript">
+</script>
+</head>
+<body onunload="GUnload()">
+
+<span id="zooms">.</span>
+
+
+
+<div id="map" style="position: absolute;  "></div>
+
+<script type="text/javascript">
+//<![CDATA[
+
+////map
+var map = new GMap2(document.getElementById("map"));
+var start = new GLatLng(60.213,24.88);
+map.setCenter(start, 14);
+map.addControl(new GMapTypeControl(1));
+map.addControl(new GLargeMapControl());
+map.addControl(new GScaleControl());
+map.enableContinuousZoom();
+map.enableDoubleClickZoom();
+var ovMap=new GOverviewMapControl();
+map.addControl(ovMap);
+var mini=ovMap.getOverviewMap();
+
+
+///zoom display
+
+function showZooms(){
+var mapZoom=map.getZoom();
+var miniZoom=mini.getZoom();
+document.getElementById("zooms").innerHTML=mapZoom+"-"+miniZoom+"="+(mapZoom-miniZoom);
+}
+showZooms();
+GEvent.addListener(mini,"move",showZooms);
+map.zoomIn();
+
+
+///check resize
+document.getElementById("map").style.top="10%";
+document.getElementById("map").style.left="2%";
+document.getElementById("map").style.width="96%";
+
+if (window.attachEvent) { 
+window.attachEvent("onresize",function(){ //IE
+var hght=document.documentElement.clientHeight*0.85;
+document.getElementById("map").style.height=hght+"px";
+});
+} else {
+document.getElementById("map").style.height="85%";
+window.addEventListener("resize", function() {showZooms()}, false);
+}
+
+
+
+
+
+//]]>
+
+</script>
+
+
+
+</body>
+</html>

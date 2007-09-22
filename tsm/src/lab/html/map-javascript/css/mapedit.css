@@ -16,6 +16,14 @@ body {
 	-moz-outline-color:#9FB6CD;
 	-moz-outline-width:10px;
 }
+#inputcaption {
+	margin:5px;
+	float:left;
+}
+#inputfields {
+	margin:0 0 0 80px;
+}
+
 #map {
 	width:512px;
 	height:440px;
