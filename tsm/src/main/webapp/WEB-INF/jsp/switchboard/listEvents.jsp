@@ -11,12 +11,15 @@
         <tr>
             <td>${event.id}</td>
             <td>${event.summary}</td>
+            <td>${event.streetAddress}</td>
+            <td>${event.timePrimitive}</td>
             <td>${event.description}</td>
             <td>
             <c:forEach items="${event.userTags}" var="tag">
             	<c:out value="${tag}"/>
             </c:forEach>
             </td>
+            <td>${event.sourceUrl}</td>
             <c:url value="/event.htm?listid=${event.id}" var="editLink"/>
             <td><a href="${editLink}">[edit]</a></td>
             <c:url value="/switchboard/deleteEvent.htm?listid=${event.id}" var="delLink"/>

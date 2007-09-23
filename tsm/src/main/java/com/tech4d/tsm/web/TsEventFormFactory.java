@@ -2,6 +2,13 @@ package com.tech4d.tsm.web;
 
 import com.tech4d.tsm.model.TsEvent;
 import com.tech4d.tsm.model.UserTag;
+import com.tech4d.tsm.model.geometry.TsGeometry;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.util.GeometricShapeFactory;
+
 import static org.apache.commons.lang.StringUtils.join;
 import static org.apache.commons.lang.StringUtils.split;
 
@@ -22,6 +29,9 @@ public class TsEventFormFactory {
         tsEvent.setId(tsEventForm.getId());
         tsEvent.setDescription(tsEventForm.getDescription());
         tsEvent.setSummary(tsEventForm.getSummary());
+        tsEvent.setSourceUrl(tsEventForm.getSource());
+        tsEvent.setStreetAddress(tsEventForm.getWhere());
+        addGeometry(tsEvent, tsEventForm);
 
         // a dirty check so we don't have to save each time
         String originalTags = convertToString(tsEvent.getUserTags());
@@ -43,7 +53,16 @@ public class TsEventFormFactory {
             }
             tsEvent.setUserTags(userTags);
         }
+        System.out.println(tsEventForm.getLng());
         return tsEvent;
+    }
+
+    private static void addGeometry(TsEvent tsEvent, TsEventForm tsEventForm) {
+        GeometryFactory gsf = new GeometryFactory();
+        Coordinate coor = new Coordinate(tsEventForm.getLat(), tsEventForm.getLng());
+        Point point = gsf.createPoint(coor);
+        TsGeometry tsPoint = new TsGeometry(point);
+        tsEvent.setTsGeometry(tsPoint);
     }
 
     public static TsEventForm getTsEventForm(TsEvent tsEvent) {
@@ -51,6 +70,11 @@ public class TsEventFormFactory {
         tsEventForm.setId(tsEvent.getId());
         tsEventForm.setDescription(tsEvent.getDescription());
         tsEventForm.setSummary(tsEvent.getSummary());
+        tsEventForm.setSource(tsEvent.getSourceUrl());
+        tsEventForm.setWhere(tsEvent.getStreetAddress());
+        tsEventForm.setLat(((Point)tsEvent.getTsGeometry().getGeometry()).getCoordinate().x);
+        tsEventForm.setLng(((Point)tsEvent.getTsGeometry().getGeometry()).getCoordinate().y);
+        System.out.println(tsEventForm.getLng());
         if (tsEvent.getUserTags() != null) {
             String tags = convertToString(tsEvent.getUserTags());
             tsEventForm.setTags(tags);
