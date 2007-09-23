@@ -2,10 +2,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<%@taglib tagdir="/WEB-INF/tags" prefix="example"%>
-<example:page title="Events">
+<%@taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
+<tsm:page title="Events">
   	Events
-    <table >
+    <table class="eventlist">
 
     <c:forEach items="${tsEventList}" var="event">
         <tr>
@@ -27,5 +27,5 @@
     <c:url value="/event.htm" var="addLink"/>
     <a href="${addLink}">Add an Event</a>
 
-</example:page>
+</tsm:page>
 

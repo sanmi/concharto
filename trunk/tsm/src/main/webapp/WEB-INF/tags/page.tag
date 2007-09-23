@@ -4,10 +4,11 @@
 <%@attribute name="title" required="true" type="java.lang.String"%>
 <%@attribute name="script" required="false" type="java.lang.String"%>
 <%@attribute name="stylesheet" required="false" type="java.lang.String"%>
+<%@attribute name="bodyattr" required="false" type="java.lang.String"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>${title} - Page Tag Example</title>
+<title>Time Space Map - ${title} </title>
 <style type="text/css">
     @import url("<c:url value="/css/style.css"/>");
 	<c:forTokens var="item" items="${stylesheet}" delims=",">
@@ -16,30 +17,28 @@
 </style>
 
 <c:forTokens var="item" items="${script}" delims=",">
-<script type="text/javascript" src="<c:url value="/script/"/>${item}">
+<script type="text/javascript" src="<c:url value="/javascript/"/>${item}">
 </script>
 </c:forTokens>    
+
 <jsp:invoke fragment="head" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="Pragma" content="no-cache">
 </head>
-<body>
-<h2>Example App</h2>
-Demonstrating Hibernate Annotations, Spring, Spring MVC w/ convention over configuration, maven, ant, jsp page.tag layout
-<div id="nav">
-<ul>
-	<li><a href="listEvents.htm">List Events</a></li>
-	<li><a href="page0.htm">Page 0</a></li>
-	<li><a href="page1.htm">Page 1</a></li>
-	<li><a href="page2.htm">Page 2</a></li>
-</ul>
-</div>
+
+<body ${bodyattr} }>
+
+    <div id="head">
+      <img src="<%=request.getContextPath()%>/images/logo.png" alt="" />
+      <img src="<%=request.getContextPath()%>/images/banner-timeline.png" alt="" width="506" height="63" />
+    </div>
 <div id="content">
 <jsp:doBody />
 </div>
-  <hr>
   <div id="footer">
-	Example App
+	  <hr/>
+	  <div id="clearFloat"/>  
+		Time Space Map
   </div>
   </body>
 </html>
