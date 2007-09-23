@@ -1,4 +1,4 @@
-<%@taglib tagdir="/WEB-INF/tags" prefix="example"%>
-<example:page title="Index">
+<%@taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
+<tsm:page title="Index">
 Index Page
-</example:page>
+</tsm:page>
