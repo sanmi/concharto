@@ -30,16 +30,6 @@
 	<bean class="com.tech4d.tsm.web.SwitchBoardController"
 		parent="baseEventController" />
 
-	<bean class="com.tech4d.tsm.web.EventController"
-		parent="baseEventController">
-		<property name="commandName" value="event" />
-		<property name="commandClass"
-			value="com.tech4d.tsm.web.TsEventForm" />
-		<property name="formView" value="event" />
-		<property name="successView"
-			value="redirect:switchboard/listEvents.htm" />
-	</bean>
-
 	<!-- this bean with the well known name generates view names for us -->
 	<!-- not strictly required since we just want to accept the defaults-->
 	<bean id="viewNameTranslator"
@@ -51,5 +41,24 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 
+	<bean class="com.tech4d.tsm.web.EventController"
+		parent="baseEventController">
+		<property name="commandName" value="event" />
+		<property name="commandClass"
+			value="com.tech4d.tsm.web.TsEventForm" />
+		<property name="formView" value="event" />
+		<property name="successView"
+			value="redirect:switchboard/listEvents.htm" />
+	</bean>
+
+	<bean class="com.tech4d.tsm.web.SearchEventController"
+		parent="baseEventController">
+		<property name="commandName" value="searchEvent" />
+		<property name="commandClass"
+			value="com.tech4d.tsm.web.SearchEventForm" />
+		<property name="formView" value="searchEvent" />
+		<property name="successView"
+			value="redirect:switchboard/searchEvents.htm" />
+	</bean>
 
 </beans>

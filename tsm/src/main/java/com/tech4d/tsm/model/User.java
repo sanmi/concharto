@@ -6,6 +6,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.ForeignKey;
+
 @Entity
 public class User extends BaseAuditableEntity {
 
@@ -39,6 +41,7 @@ public class User extends BaseAuditableEntity {
     }
 
     @OneToMany(cascade={CascadeType.ALL})
+    @ForeignKey(name="FK_USER_EVENTSUMMARY", inverseName = "FK_EVENTSUMMARY_USER")
     public List<TsEventSummary> getEventSummaries() {
         return tsEventSummaries;
     }
@@ -64,6 +67,7 @@ public class User extends BaseAuditableEntity {
     }
 
     @OneToMany(cascade={CascadeType.ALL})
+    @ForeignKey(name="FK_USER_USERTAG", inverseName = "FK_USERTAG_USER")
     public List<UserTag> getUserTags() {
         return userTags;
     }
