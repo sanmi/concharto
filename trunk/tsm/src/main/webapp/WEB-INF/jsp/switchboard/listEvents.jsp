@@ -6,20 +6,30 @@
 <tsm:page title="Events">
   	Events
     <table class="eventlist">
+    	<thead>
+    		<td>ID</td>
+    		<td>Summary</td>
+    		<td>Where</td>
+    		<td>When</td>
+    		<td>Description</td>
+    		<td>Tags</td>
+    		<td>Source</td>
+    		<td colspan="2">&nbsp;</td>
+    	</thead>
 
     <c:forEach items="${tsEventList}" var="event">
         <tr>
-            <td>${event.id}</td>
-            <td>${event.summary}</td>
-            <td>${event.streetAddress}</td>
-            <td>${event.timePrimitive}</td>
-            <td>${event.description}</td>
+            <td>${event.id}&nbsp;</td>
+            <td>${event.summary}&nbsp;</td>
+            <td>${event.streetAddress}&nbsp;</td>
+            <td>${event.timePrimitive}&nbsp;</td>
+            <td>${event.description}&nbsp;</td>
             <td>
             <c:forEach items="${event.userTags}" var="tag">
             	<c:out value="${tag}"/>
-            </c:forEach>
+            </c:forEach>&nbsp;
             </td>
-            <td>${event.sourceUrl}</td>
+            <td>${event.sourceUrl}&nbsp;</td>
             <c:url value="/event.htm?listid=${event.id}" var="editLink"/>
             <td><a href="${editLink}">[edit]</a></td>
             <c:url value="/switchboard/deleteEvent.htm?listid=${event.id}" var="delLink"/>
@@ -29,6 +39,8 @@
     </table>
     <c:url value="/event.htm" var="addLink"/>
     <a href="${addLink}">Add an Event</a>
+    <c:url value="/searchEvent.htm" var="searchLink"/>
+    <a href="${searchLink}">Search</a>
 
 </tsm:page>
 

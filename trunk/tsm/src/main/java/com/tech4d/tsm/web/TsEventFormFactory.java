@@ -53,7 +53,6 @@ public class TsEventFormFactory {
             }
             tsEvent.setUserTags(userTags);
         }
-        System.out.println(tsEventForm.getLng());
         return tsEvent;
     }
 
@@ -72,9 +71,10 @@ public class TsEventFormFactory {
         tsEventForm.setSummary(tsEvent.getSummary());
         tsEventForm.setSource(tsEvent.getSourceUrl());
         tsEventForm.setWhere(tsEvent.getStreetAddress());
-        tsEventForm.setLat(((Point)tsEvent.getTsGeometry().getGeometry()).getCoordinate().x);
-        tsEventForm.setLng(((Point)tsEvent.getTsGeometry().getGeometry()).getCoordinate().y);
-        System.out.println(tsEventForm.getLng());
+        if (tsEvent.getTsGeometry() != null) {
+            tsEventForm.setLat(((Point)tsEvent.getTsGeometry().getGeometry()).getCoordinate().x);
+            tsEventForm.setLng(((Point)tsEvent.getTsGeometry().getGeometry()).getCoordinate().y);
+        }
         if (tsEvent.getUserTags() != null) {
             String tags = convertToString(tsEvent.getUserTags());
             tsEventForm.setTags(tags);

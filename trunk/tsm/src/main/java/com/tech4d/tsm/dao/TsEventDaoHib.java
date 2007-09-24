@@ -48,22 +48,11 @@ public class TsEventDaoHib implements TsEventDao {
      * @see com.tech4d.tsm.lab.TsEventDao#delete(java.lang.Long)
      */
     public void delete(Long id) {
-        //TODO - figure out how to make this protected and still work within unit tests
-        //TODO -  this is ugly, but it offers the best performance.  There don't
-        //seem to be simpler cascade options using HQL delete
-        this.sessionFactory
-                .getCurrentSession()
-                .createQuery(
-                        "delete from TimePrimitive where id = (select tsEvent.timePrimitive.id from TsEvent tsEvent where id = ?)")
-                .setLong(0, id).executeUpdate();
-        this.sessionFactory
-                .getCurrentSession()
-                .createQuery(
-                        "delete from TsGeometry where id = (select id from TsEvent where id = ?)")
-                .setLong(0, id).executeUpdate();
-        this.sessionFactory.getCurrentSession().createQuery(
-                "delete TsEvent tsEvent where tsEvent.id = ?").setLong(0, id)
-                .executeUpdate();
+        //This may look goofy, but it is really ugly if you try to do it from an hql query 
+        //because of all of the foreign keys.  This way, hibernate handles it for us.
+        TsEvent event = new TsEvent();
+        event.setId(id);
+        this.sessionFactory.getCurrentSession().delete(event);
     }
 
     /**

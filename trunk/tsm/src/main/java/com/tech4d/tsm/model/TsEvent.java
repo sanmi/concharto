@@ -5,6 +5,7 @@ import com.tech4d.tsm.model.geometry.TimePrimitive;
 import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.tech4d.tsm.model.geometry.KmlFeature;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.ForeignKey;
 
 import javax.persistence.*;
 import java.util.List;
@@ -48,6 +49,7 @@ public class TsEvent extends BaseAuditableEntity implements KmlFeature {
     }
 
     @OneToOne(cascade = { CascadeType.ALL })
+    @ForeignKey(name="FK_EVENT_GEOM")
     public TsGeometry getTsGeometry() {
         return tsGeometry;
     }
@@ -74,6 +76,7 @@ public class TsEvent extends BaseAuditableEntity implements KmlFeature {
     }
 
     @ManyToOne(cascade = { CascadeType.ALL })
+    @ForeignKey(name="FK_EVENT_TIMEPR")
     @Cascade(org.hibernate.annotations.CascadeType.DELETE)
     public TimePrimitive getTimePrimitive() {
         return timePrimitive;
@@ -84,6 +87,7 @@ public class TsEvent extends BaseAuditableEntity implements KmlFeature {
     }
 
     @ManyToOne(cascade = { CascadeType.REFRESH, CascadeType.MERGE })
+    @ForeignKey(name="FK_EVENT_STYLE")
     public StyleSelector getStyleSelector() {
         return styleSelector;
     }
@@ -117,6 +121,7 @@ public class TsEvent extends BaseAuditableEntity implements KmlFeature {
     }
 
     @OneToMany(cascade={CascadeType.ALL})
+    @ForeignKey(name="FK_EVENT_HISTORY", inverseName = "FK_HISTORY_EVENT")
     public List<ChangeGroup> getHistory() {
         return history;
     }
@@ -126,6 +131,7 @@ public class TsEvent extends BaseAuditableEntity implements KmlFeature {
     }
 
     @ManyToMany(cascade={CascadeType.ALL})
+    @ForeignKey(name="FK_EVENT_USERTAG", inverseName = "FK_USERTAG_EVENT")
     public List<UserTag> getUserTags() {
         return userTags;
     }
@@ -143,6 +149,7 @@ public class TsEvent extends BaseAuditableEntity implements KmlFeature {
     }
 
     @ManyToMany(cascade={CascadeType.ALL})
+    @ForeignKey(name="FK_EVENT_CONTRIB", inverseName = "FK_CONTRIB_EVENT")
     public List<User> getContributors() {
         return contributors;
     }

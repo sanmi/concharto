@@ -82,7 +82,7 @@
 			<annotationconfiguration
 				configurationfile="${db.ddl.dir}/hibernate.cfg.xml" />
 			<hbm2ddl export="false" outputfilename="create-tables.sql"
-				drop="true" format="true" haltonerror="true" />
+				drop="false" format="true" haltonerror="true" />
 		</hibernatetool>
 	</target>
 
@@ -93,6 +93,10 @@
 	-->
 	<target name="create-db-test" depends="gen-schema">
 		<mkdir dir="${target.db.ddl.dir}" />
+		<run-db-script dbuserid="${test.db.username}"
+			dbpassword="${test.db.password}" scriptdir="${db.additional.ddl.dir}"
+			scriptname="pre-gen.sql" outputdir="${target.db.ddl.dir}" />
+
 		<run-db-script dbuserid="${test.db.username}"
 			dbpassword="${test.db.password}" scriptdir="${target.db.ddl.dir}"
 			scriptname="create-tables.sql" outputdir="${target.db.ddl.dir}" />

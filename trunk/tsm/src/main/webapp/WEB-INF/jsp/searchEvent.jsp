@@ -41,6 +41,7 @@
 			mapLeft = document.getElementById("sidebar").clientWidth + 40;
 			document.getElementById("map").style.left=mapLeft + "px";
 		
+			map.setCenter(new GLatLng(40.879721,-76.998322),11);  //la la land, PA 
 			if (window.attachEvent) { 
 				setIEMapExtent(); //on initialize
 				window.attachEvent("onresize",function(){ //IE
@@ -57,6 +58,7 @@
 				document.getElementById("map").style.height = ""
 			}
 			map.checkResize() //tell the map that we have resized it
+			/*
 			var editLocation = false;
 			if (document.getElementById("eventForm").lat.value != "") {
 				editLocation = true;
@@ -84,7 +86,7 @@
 			GEvent.addListener(marker, "click", function() {
 				marker.openInfoWindowHtml(html);
 			});
-			
+			*/
 		}
 	}
 	function setIEMapExtent() {
@@ -143,24 +145,14 @@
 
 	<jsp:body>
 	   <div id="sidebar">
-
-	       <form:form name="event" id="eventForm" commandName="event" method="post">
-			    <form:hidden path="id"/>
-			    <form:hidden path="lat"/>
-			    <form:hidden path="lng"/>
+	   
+	       <form:form name="event" id="searchEventForm" commandName="searchEvent" method="post">
 	
 	         <table>
-	           <tr>
-	             <td class="labelcell">Summary <br/>
-	             <form:input path="summary" size="50"/></td>
-	           </tr>
 	           <tr>
 	             <td class="labelcell">Where
 	                 <small>e.g., "gettysburg, pa" </small><br/>
 	                 <form:input path="where" size="50"/>
-	                 <br/>
-	                 <input  type="button" name="Find" value="Go to Location" onclick="showAddress(document.event.where.value); return false"/>             
-	                 <small id="tip"><b>Tip:</b> drag and drop the lollypop!</small>
 	             </td>
 	           </tr>
 	           <tr>
@@ -173,52 +165,14 @@
 	             </td>
 	           </tr>
 	           <tr>
-	             <td class="labelcell">Description<br/>
-	             <form:textarea rows="5" cols="38" path="description"/></td>
-	           </tr>
-	           <tr>
-	             <td class="labelcell">Tags<br/>
-	             <form:input path="tags" size="50"/>
-	           </tr>
-	           <tr>
-	             <td class="labelcell">Source 
-	             <small><a id="selectedMiniTab" href="#">URL</a><a id="unselectedMiniTab" href="#">Publication</a><a id="unselectedMiniTab" href="#">Other</a></small><br/>
-	             <form:input path="source" size="50"/>
-	             
-	           </td> 
-	             
+	             <td class="labelcell">What<br/>
+	                 <form:input path="what" size="50"/>
 	           </tr>
 	         </table>
-	         <input type="button" name="Save" value="Save This Event" onclick="saveEvent(); return false"/>
+	         <input type="button" name="Search" value="Search" onclick="saveEvent(); return false"/>
 	         <input type="button" name="Save" value="Cancel" onclick="javascript:document.location='switchboard/listEvents.htm';"/>
-	       </form:form><%--
-	       
-				<form:form commandName="event" method="post">
-			    <form:hidden path="id"/>
-			    <table>
-			        <tr>
-			            <td>Summary:</td>
-			            <td><form:input path="summary"/></td>
-			            <td></td>
-			        </tr>
-			        <tr>
-			            <td>Description:</td>
-			            <td><form:input path="description"/></td>
-			            <td></td>
-			        </tr>
-			        <tr>
-			            <td>Tags:</td>
-			            <td><form:input path="tags"/></td>
-			            <td></td>
-			        </tr>
-			        <tr>
-			            <td colspan="3">
-			                <input type="submit" value="Save Changes"/>
-			            </td>
-			        </tr>
-			    </table>
-				</form:form>
-	     --%></div>
+	       </form:form>
+	   </div>
 
 	   <div id="map"  style="position:absolute; height:1000px;width:1000px">
 	     Map coming...
