@@ -25,8 +25,4 @@ public interface TsEventDao {
     public abstract List<TsEvent> findAll();
 
     public abstract TsEvent findById(Long id);
-
-    public abstract List<TsEvent> findWithinGeometry(Geometry geometry);
-
-    public List<TsEvent> search(String textFilter, TimeRange timeRange, Geometry boundingBox);
 }

@@ -104,3 +104,35 @@ delete from tsgeometry where id in (select id from tsEvent)
 ALTER TABLE address CHANGE geom geom GEOMETRYCOLLECTION NOT NULL;
 
 Select * from TimePrimitive where id = (select timeprimitive_id from tsEvent where id = 4)
+
+--DEBUG big search queries
+SELECT * FROM tsevent f, tsgeometry g
+WHERE f.tsgeometry_id = g.id 
+AND MBRWithin(geometryCollection, Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))')))
+
+SELECT * FROM eventsearchtext 
+WHERE MATCH (summary, description, usertags, source) AGAINST ('small')
+
+SELECT * FROM tsevent f, tsgeometry g, eventsearchtext es
+WHERE f.tsgeometry_id = g.id 
+AND f.eventsearchtext_id = es.id
+AND MBRWithin(geometryCollection, Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))')))
+AND MATCH (es.summary, es.description, es.usertags, es.source) AGAINST ('description')
+
+SELECT * FROM tsevent f, timeprimitive t
+WHERE f.timePrimitive_id = t.id
+AND 
+ (t.begin > DATE('2005-03-22') 
+  AND t.end < DATE('2007-03-22') )
+OR
+ (t.time > DATE('2005-03-22') 
+  AND t.time < DATE('2007-03-22') )
+
+SELECT * FROM tsevent f, tsgeometry g, eventsearchtext es, timeprimitive t
+WHERE f.tsgeometry_id = g.id 
+AND f.eventsearchtext_id = es.id
+AND f.timePrimitive_id = t.id
+AND MBRWithin(geometryCollection, Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))')))
+AND MATCH (es.summary, es.description, es.usertags, es.source) AGAINST ('description')
+AND (t.begin > DATE('2005-03-22') AND t.end < DATE('2007-03-22') )
+OR (t.time > DATE('2005-03-22') AND t.time < DATE('2007-03-22') )

@@ -58,6 +58,7 @@
 				document.getElementById("map").style.height = ""
 			}
 			map.checkResize() //tell the map that we have resized it
+			
 			/*
 			var editLocation = false;
 			if (document.getElementById("eventForm").lat.value != "") {
@@ -169,7 +170,7 @@
 	                 <form:input path="what" size="50"/>
 	           </tr>
 	         </table>
-	         <input type="button" name="Search" value="Search" onclick="saveEvent(); return false"/>
+	         <input type="submit" name="Search" value="Search" />
 	         <input type="button" name="Save" value="Cancel" onclick="javascript:document.location='switchboard/listEvents.htm';"/>
 	       </form:form>
 	   </div>
