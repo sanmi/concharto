@@ -18,13 +18,16 @@ import java.util.List;
 public class IntegrationTestStyleDao {
 
     private static StyleDao styleDao;
+    private static TsEventDao tsEventDao;
 
     @Before
     public void setUp() {
         ApplicationContext appCtx = ContextUtil.getCtx();
         styleDao = (StyleDao) appCtx.getBean("styleDao");
+        tsEventDao = (TsEventDao) appCtx.getBean("tsEventDao");
 
         //delete everything and save 1 style object
+        tsEventDao.deleteAll();
         StyleUtil.setupStyle();
     }
 

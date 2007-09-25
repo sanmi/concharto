@@ -17,7 +17,7 @@ import com.vividsolutions.jts.geom.Point;
 
 @Entity
 @Table(name = "ADDRESS")
-@org.hibernate.annotations.Table(comment = "ENGINE : MyISAM", appliesTo = "ADDRESS")
+@org.hibernate.annotations.Table(comment = "LAB Table - not for production.  ENGINE : MyISAM", appliesTo = "ADDRESS")
 public class Address {
     private Long id;
 
@@ -33,8 +33,7 @@ public class Address {
         return id;
     }
 
-    @SuppressWarnings("unused")
-    private void setId(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

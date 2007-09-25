@@ -1,5 +1,8 @@
 package com.tech4d.tsm.model;
 
+import static org.apache.commons.lang.StringUtils.join;
+import static org.apache.commons.lang.StringUtils.split;
+
 import com.tech4d.tsm.model.geometry.StyleSelector;
 import com.tech4d.tsm.model.geometry.TimePrimitive;
 import com.tech4d.tsm.model.geometry.TsGeometry;
@@ -8,6 +11,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.ForeignKey;
 
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +25,7 @@ import java.util.List;
 public class TsEvent extends BaseAuditableEntity implements KmlFeature {
     
     private String summary;
-    private String address;
+    private String streetAddress;
     private String snippet;
     private String description;
     private TimePrimitive timePrimitive;
@@ -36,16 +41,17 @@ public class TsEvent extends BaseAuditableEntity implements KmlFeature {
     private boolean visible;
     private Flag flag;
     public enum Flag {FOR_DELETION, FOR_CONTENT}
+    private EventSearchText eventSearchText;
 
     /**
      * @see com.tech4d.tsm.model.geometry.KmlFeature
      */
     public String getStreetAddress() {
-        return address;
+        return streetAddress;
     }
 
     public void setStreetAddress(String address) {
-        this.address = address;
+        this.streetAddress = address;
     }
 
     @OneToOne(cascade = { CascadeType.ALL })
@@ -172,6 +178,53 @@ public class TsEvent extends BaseAuditableEntity implements KmlFeature {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    /**
+     * Returns a comma separated list of tags
+     * @return a comma separated list of tags
+     */
+    @Transient
+    public String getUserTagsAsString() {
+        return join(userTags, ',');
+    }
+    
+    /**
+     * Populates the tag list from a comma separated list
+     * @param tagList a comma separated list of tags
+     */
+    @Transient
+    public void setUserTagsAsString(String tagList) {
+        // a dirty check so we don't have to save each time
+        String originalTags = getUserTagsAsString();
+        boolean dirty = false;
+        if (originalTags == null) {
+            if (tagList != null) {
+                dirty = true;
+            }
+        } else {
+            if (!originalTags.equals(tagList)) {
+                dirty = true;
+            }
+        }
+        if (dirty) {
+            String[] tags = split(tagList, ",");
+            List<UserTag> userTags = new ArrayList<UserTag>();
+            for (String tag : tags) {
+                userTags.add(new UserTag(tag));
+            }
+            this.setUserTags(userTags);
+        }
+    }
+
+    @OneToOne(cascade = { CascadeType.ALL })
+    @ForeignKey(name="FK_EVENT_EVENTSEARCHTEXT")
+    public EventSearchText getEventSearchText() {
+        return eventSearchText;
+    }
+
+    public void setEventSearchText(EventSearchText eventSearchText) {
+        this.eventSearchText = eventSearchText;
     }
 
 }

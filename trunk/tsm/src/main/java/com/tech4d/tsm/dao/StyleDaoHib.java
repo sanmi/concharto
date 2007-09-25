@@ -59,7 +59,7 @@ public class StyleDaoHib implements StyleDao {
                 "delete from TsGeometry where id in (select id from Style)")
                 .executeUpdate();
         this.sessionFactory.getCurrentSession().createQuery(
-                "delete from Style").executeUpdate();
+            "delete from Style").executeUpdate();
     }
      
     /*

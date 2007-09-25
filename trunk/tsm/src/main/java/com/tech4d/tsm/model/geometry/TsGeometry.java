@@ -18,6 +18,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "geometrytype", discriminatorType = DiscriminatorType.STRING)
+@org.hibernate.annotations.Table(comment = "ENGINE : MyISAM", appliesTo = "TsGeometry")
 public class TsGeometry extends BaseEntity {
 
     private GeometryCollection geometryCollection;
