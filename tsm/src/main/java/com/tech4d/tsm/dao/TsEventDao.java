@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.SessionFactory;
 
 import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.model.geometry.TimeRange;
 import com.vividsolutions.jts.geom.Geometry;
 
 public interface TsEventDao {
@@ -27,4 +28,5 @@ public interface TsEventDao {
 
     public abstract List<TsEvent> findWithinGeometry(Geometry geometry);
 
+    public List<TsEvent> search(String textFilter, TimeRange timeRange, Geometry boundingBox);
 }

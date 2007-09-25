@@ -91,6 +91,46 @@
 		"ant gen-schema" you sometimes get an error: "Unable to load class declared as"
 		but if you repeat, it will work the second time
 	-->
+
+
+	<macrodef name="create-db">
+	  <attribute name="dbmode"/> <!-- test or dev -->
+		<sequential>
+			<mkdir dir="${target.db.ddl.dir}" />
+			<property name="user" value="tsm_@{dbmode}_user" />
+			<property name="password" value="tsm_@{dbmode}_user" />
+			<property name="dbname" value="tsm_@{dbmode}" />
+			<property name="url" value="${db.url}${dbname}" />
+		
+			<run-db-command dbuserid="${user}"
+				dbpassword="${password}" scriptdir="${db.additional.ddl.dir}"
+				outputfile="create-delete" outputdir="${target.db.ddl.dir}" 
+				dburl="${url}">
+					drop database ${dbname};
+					create database ${dbname};
+			</run-db-command>
+
+			<run-db-script dbuserid="${user}"
+				dbpassword="${password}" scriptdir="${target.db.ddl.dir}"
+				scriptname="create-tables.sql" outputdir="${target.db.ddl.dir}" 
+				dburl="${url}"/>
+		
+			<run-db-script dbuserid="${user}"
+				dbpassword="${password}" scriptdir="${db.additional.ddl.dir}"
+				scriptname="post-gen.sql" outputdir="${target.db.ddl.dir}" 
+				dburl="${url}"/>
+		</sequential>
+	</macrodef>
+
+	<target name="create-db-test" depends="gen-schema">
+		<create-db dbmode="test"/>
+	</target>
+	
+	<target name="create-db-dev" depends="gen-schema">
+		<create-db dbmode="dev"/>
+	</target>
+	
+	<!--
 	<target name="create-db-test" depends="gen-schema">
 		<mkdir dir="${target.db.ddl.dir}" />
 		<run-db-script dbuserid="${test.db.username}"
@@ -105,6 +145,7 @@
 			dbpassword="${test.db.password}" scriptdir="${db.additional.ddl.dir}"
 			scriptname="post-gen.sql" outputdir="${target.db.ddl.dir}" />
 	</target>
+	-->
 	<!-- End Tools -->
 
 	<!-- Begin Ivy -->
@@ -150,7 +191,7 @@
 		</javac>
 	</target>
 
-	<target name="integration-test" depends="compile-tests">
+	<target name="integration-test" depends="create-db-dev, compile-tests">
 		<junit>
 			<!-- Default Formatter - brain-dead text file with almost no information, only prints failures and errors -->
 			<formatter type="brief" usefile="true"

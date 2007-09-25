@@ -16,27 +16,31 @@ import java.util.Date;
 import java.util.List;
 
 public class TsEventUtil {
-    
+
     public static TsEvent createTsEvent() throws ParseException {
         return createTsEvent(new Date(), new Date());
     }
 
     public static TsEvent createTsEvent(Date begin, Date end) throws ParseException {
-        return createTsEvent( new WKTReader()
-        .read("POINT (20 20)"), new TimeRange(begin, end));
-        
-    }
-    
-    public static TsEvent createTsEvent(Geometry geometry, TimeRange timeRange) {
-        return CreateTsEvent(geometry, timeRange, StyleUtil.getStyle());
+        return createTsEvent(new WKTReader().read("POINT (20 20)"), new TimeRange(begin, end));
+
     }
 
-    public static TsEvent CreateTsEvent(Geometry geometry, TimePrimitive timePrimitive, Style style) {
+    public static TsEvent createTsEvent(Geometry geometry, TimeRange timeRange) {
+        return createTsEvent(geometry, timeRange, StyleUtil.getStyle(), null);
+    }
+
+    public static TsEvent createTsEvent(Geometry geometry, TimePrimitive timePrimitive,
+            String description) {
+        return createTsEvent(geometry, timePrimitive, StyleUtil.getStyle(), description);
+    }
+
+    public static TsEvent createTsEvent(Geometry geometry, TimePrimitive timePrimitive,
+            Style style, String description) {
         TsEvent tsEvent = new TsEvent();
         tsEvent.setStreetAddress("17 Mockinbird Ln, Nameless, TN, 60606");
         tsEvent.setSnippet("This is like some sort of small description yo");
-        tsEvent
-                .setDescription("This is like the full sort of small description yo with a bunch of stuff");
+        tsEvent.setDescription(description);
 
         TsGeometry tsPoint = new TsGeometry(geometry);
         tsEvent.setTsGeometry(tsPoint);

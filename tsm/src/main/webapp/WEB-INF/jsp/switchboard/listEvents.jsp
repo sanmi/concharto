@@ -39,7 +39,7 @@
     </table>
     <c:url value="/event.htm" var="addLink"/>
     <a href="${addLink}">Add an Event</a>
-    <c:url value="/searchEvent.htm" var="searchLink"/>
+    <c:url value="/searchevent.htm" var="searchLink"/>
     <a href="${searchLink}">Search</a>
 
 </tsm:page>

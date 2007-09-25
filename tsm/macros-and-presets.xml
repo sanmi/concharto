@@ -26,9 +26,36 @@
           onerror="@{onerror}">
         <classpath refid="tools-classpath"/>
       </sql>
-
-
     </sequential>
   </macrodef>
 
+  <macrodef name="run-db-command">
+  	<text name="text"/>
+    <attribute name="dbdriver" default="${db.driver}"/>
+    <attribute name="dburl" default="${db.url}"/>
+    <attribute name="dbuserid"/>
+    <attribute name="dbpassword"/>
+    <attribute name="scriptdir"/>
+    <attribute name="outputdir"/>
+    <attribute name="outputfile"/>
+    <attribute name="onerror" default="continue"/>
+    <sequential>
+      <echo level="verbose">
+        db.userid= '@{dbuserid}'
+        db.password= '@{dbpassword}'
+      </echo>
+      <sql
+          driver="@{dbdriver}"
+          url="@{dburl}"
+          userid="@{dbuserid}"
+          password="@{dbpassword}"
+          print="yes"
+          output="@{outputdir}/@{outputfile}-results.txt"
+          onerror="@{onerror}">
+        <classpath refid="tools-classpath"/>
+      	@{text}
+      </sql>
+    </sequential>
+  </macrodef>
+	
 </project>

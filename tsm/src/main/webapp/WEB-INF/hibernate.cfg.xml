@@ -26,6 +26,7 @@
         <mapping class="com.tech4d.tsm.model.ChangeItem"/>
         <mapping class="com.tech4d.tsm.model.TsEventSummary"/>
         <mapping class="com.tech4d.tsm.model.User"/>
+        <mapping class="com.tech4d.tsm.model.EventSearchText"/>
     
     </session-factory>
 

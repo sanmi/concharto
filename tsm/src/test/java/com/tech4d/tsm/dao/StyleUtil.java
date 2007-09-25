@@ -15,7 +15,6 @@ import com.tech4d.tsm.model.geometry.Vec2;
 import com.tech4d.tsm.util.ContextUtil;
 
 public class StyleUtil {
-    private static StyleDao styleDao;
 
     private static Style style = new Style();
     static {
@@ -35,7 +34,7 @@ public class StyleUtil {
 
     public static Style setupStyle() {
         ApplicationContext appCtx = ContextUtil.getCtx();
-        styleDao = (StyleDao) appCtx.getBean("styleDao");
+        StyleDao styleDao=(StyleDao) appCtx.getBean("styleDao");
         styleDao.deleteAll();
         // The style has to be created before you create any features. It is
         // a many to one mapping.
