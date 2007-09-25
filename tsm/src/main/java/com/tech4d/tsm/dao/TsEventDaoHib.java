@@ -6,10 +6,8 @@ import java.util.List;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.vividsolutions.jts.geom.Geometry;
 import com.tech4d.tsm.model.EventSearchText;
 import com.tech4d.tsm.model.TsEvent;
-import com.tech4d.tsm.model.geometry.TimeRange;
 
 @Transactional
 public class TsEventDaoHib implements TsEventDao {
@@ -98,37 +96,4 @@ public class TsEventDaoHib implements TsEventDao {
                 TsEvent.class, id);
     }
 
-    @SuppressWarnings("unchecked")
-    public List<TsEvent> findWithinGeometry(Geometry geometry) {
-        //TODO change this to prepared statements
-        String sql = "SELECT * FROM tsevent f, tsgeometry g "
-                + "WHERE f.tsgeometry_id = g.id "
-                + "AND MBRWithin(geometryCollection, Envelope(GeomFromText(:geom_text)))";
-        List<TsEvent> tsEvents = this.sessionFactory.getCurrentSession()
-                .createSQLQuery(sql).addEntity(TsEvent.class).setString(
-                "geom_text", geometry.toText()).list();
-        return tsEvents;
-    }
-    
-    @SuppressWarnings("unchecked")
-    public List<TsEvent> search(String textFilter, TimeRange timeRange, Geometry boundingBox) {
-        //TODO change this to prepared statements
-        String sql = "SELECT * FROM tsevent f, tsgeometry g, eventsearchtext es, timeprimitive t "
-            + "WHERE f.tsgeometry_id = g.id "
-            + "AND f.eventsearchtext_id = es.id "
-            + "AND f.timePrimitive_id = t.id "
-            + "AND MBRWithin(geometryCollection, Envelope(GeomFromText(:geom_text))) "
-            + "AND MATCH (es.summary, es.description, es.usertags, es.source) AGAINST (:search_text)"
-            + "AND (t.begin > :earliest AND t.end < :latest ) " 
-            + "OR (t.time > :earliest AND t.time < :latest )";
-        List<TsEvent> tsEvents = this.sessionFactory.getCurrentSession()
-            .createSQLQuery(sql)
-            .addEntity(TsEvent.class)
-            .setString("geom_text", boundingBox.toText())
-            .setString("search_text", textFilter)
-            .setDate("earliest", timeRange.getBegin())
-            .setDate("latest", timeRange.getEnd())
-            .list();
-    return tsEvents;
-    }
 }

@@ -130,22 +130,6 @@
 		<create-db dbmode="dev"/>
 	</target>
 	
-	<!--
-	<target name="create-db-test" depends="gen-schema">
-		<mkdir dir="${target.db.ddl.dir}" />
-		<run-db-script dbuserid="${test.db.username}"
-			dbpassword="${test.db.password}" scriptdir="${db.additional.ddl.dir}"
-			scriptname="pre-gen.sql" outputdir="${target.db.ddl.dir}" />
-
-		<run-db-script dbuserid="${test.db.username}"
-			dbpassword="${test.db.password}" scriptdir="${target.db.ddl.dir}"
-			scriptname="create-tables.sql" outputdir="${target.db.ddl.dir}" />
-
-		<run-db-script dbuserid="${test.db.username}"
-			dbpassword="${test.db.password}" scriptdir="${db.additional.ddl.dir}"
-			scriptname="post-gen.sql" outputdir="${target.db.ddl.dir}" />
-	</target>
-	-->
 	<!-- End Tools -->
 
 	<!-- Begin Ivy -->
@@ -182,30 +166,6 @@
 		</javac>
 	</target>
 
-	<target name="compile-tests" depends="compile, setup">
-		<javac destdir="${target.test.classes.dir}" debug="true"
-			failonerror="true">
-			<src path="${src.test.dir}" />
-			<src path="${src.lab.dir}" />
-			<classpath refid="test-classpath" />
-		</javac>
-	</target>
-
-	<target name="integration-test" depends="create-db-dev, compile-tests">
-		<junit>
-			<!-- Default Formatter - brain-dead text file with almost no information, only prints failures and errors -->
-			<formatter type="brief" usefile="true"
-				unless="junit.formatter.plain" />
-			<classpath refid="test-classpath" />
-
-			<batchtest todir="${target.test.reports.dir}" fork="no">
-				<fileset dir="${target.test.classes.dir}">
-					<include name="**/IntegrationTest*.class" />
-					<exclude name="**/*$$*" />
-				</fileset>
-			</batchtest>
-		</junit>
-	</target>
 
 	<target name="build" depends="compile">
 
@@ -224,6 +184,52 @@
 		</copy>
 
 	</target>
+	<!-- End Build Targets -->
+
+	
+		<!-- begin test targets -->
+	<target name="compile-tests" depends="compile, setup">
+		<javac destdir="${target.test.classes.dir}" debug="true"
+			failonerror="true">
+			<src path="${src.test.dir}" />
+			<src path="${src.lab.dir}" />
+			<classpath refid="test-classpath" />
+		</javac>
+	</target>
+
+	<macrodef name="do-test">
+	  <attribute name="include"/> 
+	  <attribute name="exclude"/> 
+	  <sequential>
+			<junit>
+				<!-- Default Formatter - brain-dead text file with almost 
+				no information, only prints failures and errors -->
+				<formatter type="brief" usefile="true"
+					unless="junit.formatter.plain" />
+				<classpath refid="test-classpath" />
+	
+				<batchtest todir="${target.test.reports.dir}" fork="no">
+					<fileset dir="${target.test.classes.dir}">
+						<include name="@{include}" />
+						<exclude name="@{exclude}" />
+					</fileset>
+				</batchtest>
+			</junit>
+	  </sequential>
+	</macrodef>
+	
+	<target name="integration-test" depends="create-db-dev, compile-tests">
+		<do-test include="**/IntegrationTest*.class" exclude="**/*$$*"/>
+	</target>
+	
+	<target name="unit-test" depends="create-db-dev, compile-tests">
+		<do-test include="**/Test*.class" exclude="**/lab/*"/>
+	</target>
+
+	<target name="test" depends="integration-test, unit-test"/>
+	<!-- end test targets -->
+	
+	<!-- Begin deploy Targets -->
 
 	<target name="warfile" depends="build"
 		description="Build the web application archive">
@@ -259,6 +265,6 @@
 	<target name="all" depends="clean,build,integration-test,warfile"
 		description="Clean,build,warfile" />
 
-	<!-- End Build Targets -->
+	<!-- End deploy Targets -->
 
 </project>
