@@ -2,7 +2,6 @@ package com.tech4d.tsm.web;
 
 import com.tech4d.tsm.model.geometry.TimeRange;
 import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * Form data object for searching for events
@@ -11,20 +10,34 @@ public class SearchEventForm {
     private String what;
     private String where;
     private TimeRange when;
-    private Point whereLatLng;
-    private Polygon whereBoundingBox;
+    private Point mapCenter;
+    private Point BoundingBoxSW;
+    private Point BoundingBoxNE;
+    private Integer mapZoom;
     
-    public Polygon getWhereBoundingBox() {
-        return whereBoundingBox;
+    public Integer getMapZoom() {
+        return mapZoom;
     }
-    public void setWhereBoundingBox(Polygon whereBoundingBox) {
-        this.whereBoundingBox = whereBoundingBox;
+    public void setMapZoom(Integer mapZoom) {
+        this.mapZoom = mapZoom;
     }
-    public Point getWhereLatLng() {
-        return whereLatLng;
+    public Point getBoundingBoxNE() {
+        return BoundingBoxNE;
     }
-    public void setWhereLatLng(Point whereLatLng) {
-        this.whereLatLng = whereLatLng;
+    public void setBoundingBoxNE(Point boundingBoxNE) {
+        BoundingBoxNE = boundingBoxNE;
+    }
+    public Point getBoundingBoxSW() {
+        return BoundingBoxSW;
+    }
+    public void setBoundingBoxSW(Point boundingBoxSW) {
+        BoundingBoxSW = boundingBoxSW;
+    }
+    public Point getMapCenter() {
+        return mapCenter;
+    }
+    public void setMapCenter(Point whereLatLng) {
+        this.mapCenter = whereLatLng;
     }
     public String getWhat() {
         return what;

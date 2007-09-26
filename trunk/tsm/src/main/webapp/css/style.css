@@ -46,7 +46,7 @@ body {
 }
 
 .mapedit #selectedMiniTab {
-	background : ##EBEBEB;
+	background : #EBEBEB;
 	border-left : 1px solid;
 	border-top : 1px solid;
 	border-right : 1px solid;

@@ -48,7 +48,7 @@ public class TimeRangePropertyEditor extends PropertyEditorSupport {
 
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
-        if (text != null) {
+        if (!StringUtils.isEmpty(text)) {
             // first separate the begin and the end
             // we will try the '-' first
             String[] split = StringUtils.split(text, '-');
