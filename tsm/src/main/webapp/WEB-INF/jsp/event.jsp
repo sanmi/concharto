@@ -6,7 +6,7 @@
 <tsm:page title="Event">
 	<jsp:attribute name="head">
 		<script
-			src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=ABQIAAAA1DZDDhaKApTfIDHGfvo13hQHaMf-gMmgKgj1cacwLLvRJWUPcRTWzCG3PTSVLKG0PgyzHQthDg5BUw"
+			src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=ABQIAAAA1DZDDhaKApTfIDHGfvo13hSQekddw1ZVY1OywWYSY7GTmNOxgRQ1UKcA9cKipDAZNLJ5R_X-JJcYhw"
 			type="text/javascript">
 		</script>		
 		<script type="text/javascript">
@@ -16,47 +16,12 @@
 		document.getElementById("eventForm").lng.value = marker.getLatLng().lng();
 		document.event.submit();
 	}			
-	
-	//some of the globals
-	var map;
-	var geocoder = null;
-	var marker;
-	
+
+	/*
+		Called by the main initialize function
+	 */
 	function initialize() {
-		if (GBrowserIsCompatible()) {
-			// map and its equipment
-			map = new GMap2(document.getElementById("map"));
-			//map.enableContinuousZoom();
-			map.addControl(new GMapTypeControl(1));
-			map.addControl(new GLargeMapControl());
-			map.enableDoubleClickZoom();
-			map.enableScrollWheelZoom();
-			geocoder = new GClientGeocoder();
-	
-			//prevent scrolling the window when the mouse is inside of the map
-			GEvent.addDomListener(map.getContainer(), "DOMMouseScroll", wheelevent);
-			map.getContainer().onmousewheel = wheelevent; 
-			
-			///check resize
-			mapLeft = document.getElementById("sidebar").clientWidth + 40;
-			document.getElementById("map").style.left=mapLeft + "px";
-		
-			if (window.attachEvent) { 
-				setIEMapExtent(); //on initialize
-				window.attachEvent("onresize",function(){ //IE
-					setIEMapExtent();
-				});
-			} else {
-	  		document.getElementById("map").style.top=document.getElementById("sidebar").offsetTop + "px";
-				document.getElementById("map").style.right="20px";
-				document.getElementById("map").style.bottom = "20px"
-				// We need need to do set these on the div tag, otherwise there is a GMap loading bug that
-				//causes only some of the map to be loaded, but then we need to reset them now that we are 
-				//doing automatic resizing
-				document.getElementById("map").style.width=""; 
-				document.getElementById("map").style.height = ""
-			}
-			map.checkResize() //tell the map that we have resized it
+			initializeMap();
 			var editLocation = false;
 			if (document.getElementById("eventForm").lat.value != "") {
 				editLocation = true;
@@ -84,17 +49,7 @@
 			GEvent.addListener(marker, "click", function() {
 				marker.openInfoWindowHtml(html);
 			});
-			
 		}
-	}
-	function setIEMapExtent() {
-	  var top = document.getElementById("sidebar").offsetTop + 20;
-		document.getElementById("map").style.top= top + "px";
-		var hght=document.documentElement.clientHeight-top-20;
-		document.getElementById("map").style.height=hght+"px";
-		var width=document.documentElement.clientWidth-document.getElementById("sidebar").clientWidth-60;
-		document.getElementById("map").style.width=width+"px";
-	}
 	
 	// addAddressToMap() is called when the geocoder returns an
 	// answer.  It adds a marker to the map with an open info window
@@ -138,7 +93,7 @@
 		//]]>
 		</script>
 	</jsp:attribute>
-	<jsp:attribute name="script">addevent.js</jsp:attribute>
+	<jsp:attribute name="script">map.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit"</jsp:attribute>
 
 	<jsp:body>
@@ -184,41 +139,14 @@
 	             <td class="labelcell">Source 
 	             <small><a id="selectedMiniTab" href="#">URL</a><a id="unselectedMiniTab" href="#">Publication</a><a id="unselectedMiniTab" href="#">Other</a></small><br/>
 	             <form:input path="source" size="50"/>
-	             
 	           </td> 
 	             
 	           </tr>
 	         </table>
 	         <input type="button" name="Save" value="Save This Event" onclick="saveEvent(); return false"/>
 	         <input type="button" name="Save" value="Cancel" onclick="javascript:document.location='switchboard/listEvents.htm';"/>
-	       </form:form><%--
-	       
-				<form:form commandName="event" method="post">
-			    <form:hidden path="id"/>
-			    <table>
-			        <tr>
-			            <td>Summary:</td>
-			            <td><form:input path="summary"/></td>
-			            <td></td>
-			        </tr>
-			        <tr>
-			            <td>Description:</td>
-			            <td><form:input path="description"/></td>
-			            <td></td>
-			        </tr>
-			        <tr>
-			            <td>Tags:</td>
-			            <td><form:input path="tags"/></td>
-			            <td></td>
-			        </tr>
-			        <tr>
-			            <td colspan="3">
-			                <input type="submit" value="Save Changes"/>
-			            </td>
-			        </tr>
-			    </table>
-				</form:form>
-	     --%></div>
+	       </form:form>
+	   </div>
 
 	   <div id="map"  style="position:absolute; height:1000px;width:1000px">
 	     Map coming...
