@@ -47,11 +47,11 @@
 		<property name="tsEventDao" ref="tsEventDao" />
 	</bean>
 
-	<bean class="com.tech4d.tsm.web.SearchEventController" parent="baseEventController">
-		<property name="commandName" value="searchEvent" />
-		<property name="commandClass" value="com.tech4d.tsm.web.SearchEventForm" />
-		<property name="formView" value="searchEvent" />
-		<property name="successView" value="searchEvent" />
+	<bean class="com.tech4d.tsm.web.EventSearchController" parent="baseEventController">
+		<property name="commandName" value="eventSearch" />
+		<property name="commandClass" value="com.tech4d.tsm.web.EventSearchForm" />
+		<property name="formView" value="eventsearch" />
+		<property name="successView" value="eventsearch" />
 		<property name="eventSearchService" ref="eventSearchService" />
 	</bean>
 

@@ -13,5 +13,5 @@ ALTER TABLE EventSearchText ENGINE = MyISAM;
 CREATE FULLTEXT INDEX ft_event ON EventSearchText (summary, description, usertags, source);
 
 -- This is a laboratory class, not to be used in production
-ALTER TABLE address ENGINE = MyISAM;
-CREATE SPATIAL INDEX sp_addr ON address (addressLocation);
+-- ALTER TABLE address ENGINE = MyISAM;
+-- CREATE SPATIAL INDEX sp_addr ON address (addressLocation);

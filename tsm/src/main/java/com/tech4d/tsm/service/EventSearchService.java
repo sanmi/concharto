@@ -14,11 +14,10 @@ public interface EventSearchService {
 
     public SessionFactory getSessionFactory();
 
-    @SuppressWarnings("unchecked")
     public List<TsEvent> findWithinGeometry(Geometry geometry);
 
-    @SuppressWarnings("unchecked")
     public List<TsEvent> search(int maxResults, String textFilter, TimeRange timeRange,
             Geometry boundingBox);
 
+    public Long getCount(String textFilter, TimeRange timeRange, Geometry boundingBox);
 }

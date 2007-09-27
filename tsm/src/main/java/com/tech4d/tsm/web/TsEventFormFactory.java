@@ -24,6 +24,7 @@ public class TsEventFormFactory {
         tsEvent.setStreetAddress(tsEventForm.getWhere());
         addGeometry(tsEvent, tsEventForm);
         tsEvent.setUserTagsAsString(tsEventForm.getTags());
+        tsEvent.setWhen(tsEventForm.getWhen());
         return tsEvent;
     }
 
@@ -42,6 +43,7 @@ public class TsEventFormFactory {
         tsEventForm.setSummary(tsEvent.getSummary());
         tsEventForm.setSource(tsEvent.getSourceUrl());
         tsEventForm.setWhere(tsEvent.getStreetAddress());
+        tsEventForm.setWhen(tsEvent.getWhen());
         if (tsEvent.getTsGeometry() != null) {
             tsEventForm.setLat(tsEvent.getTsGeometry().getGeometry().getCoordinate().x);
             tsEventForm.setLng(tsEvent.getTsGeometry().getGeometry().getCoordinate().y);

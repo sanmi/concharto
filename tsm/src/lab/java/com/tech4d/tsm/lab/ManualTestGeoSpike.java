@@ -19,7 +19,7 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
 
-public class IntegrationTestGeoSpike extends TestCase {
+public class ManualTestGeoSpike extends TestCase {
     private AddressDao addressDao;
 
     public void setUp() {

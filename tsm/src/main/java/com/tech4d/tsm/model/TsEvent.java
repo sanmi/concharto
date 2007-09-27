@@ -3,17 +3,23 @@ package com.tech4d.tsm.model;
 import static org.apache.commons.lang.StringUtils.join;
 import static org.apache.commons.lang.StringUtils.split;
 
-import com.tech4d.tsm.model.geometry.StyleSelector;
-import com.tech4d.tsm.model.geometry.TimePrimitive;
-import com.tech4d.tsm.model.geometry.TsGeometry;
-import com.tech4d.tsm.model.geometry.KmlFeature;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
+
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.ForeignKey;
 
-import javax.persistence.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.tech4d.tsm.model.geometry.StyleSelector;
+import com.tech4d.tsm.model.geometry.TimeRange;
+import com.tech4d.tsm.model.geometry.TsGeometry;
 
 /**
  * Copyright 2007, Time Space Map
@@ -22,13 +28,13 @@ import java.util.List;
  * be serialized to KML and can be searched using a spatial query.
  */
 @Entity
-public class TsEvent extends BaseAuditableEntity implements KmlFeature {
+public class TsEvent extends BaseAuditableEntity  {
     
     private String summary;
     private String streetAddress;
     private String snippet;
     private String description;
-    private TimePrimitive timePrimitive;
+    private TimeRange when;
     private StyleSelector styleSelector;
     private TsGeometry tsGeometry;
     private List<UserTag> userTags;
@@ -84,12 +90,12 @@ public class TsEvent extends BaseAuditableEntity implements KmlFeature {
     @ManyToOne(cascade = { CascadeType.ALL })
     @ForeignKey(name="FK_EVENT_TIMEPR")
     @Cascade(org.hibernate.annotations.CascadeType.DELETE)
-    public TimePrimitive getTimePrimitive() {
-        return timePrimitive;
+    public TimeRange getWhen() {
+        return when;
     }
 
-    public void setTimePrimitive(TimePrimitive timePrimative) {
-        this.timePrimitive = timePrimative;
+    public void setWhen(TimeRange timeRange) {
+        this.when = timeRange;
     }
 
     @ManyToOne(cascade = { CascadeType.REFRESH, CascadeType.MERGE })
@@ -226,5 +232,4 @@ public class TsEvent extends BaseAuditableEntity implements KmlFeature {
     public void setEventSearchText(EventSearchText eventSearchText) {
         this.eventSearchText = eventSearchText;
     }
-
 }

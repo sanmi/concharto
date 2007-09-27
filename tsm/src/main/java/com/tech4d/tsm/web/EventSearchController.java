@@ -1,5 +1,8 @@
 package com.tech4d.tsm.web;
 
+import java.util.List;
+
+import com.tech4d.tsm.model.TsEvent;
 import com.tech4d.tsm.model.geometry.TimeRange;
 import com.tech4d.tsm.service.EventSearchService;
 import com.tech4d.tsm.web.util.PointPropertyEditor;
@@ -13,11 +16,16 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class SearchEventController extends SimpleFormController {
+public class EventSearchController extends SimpleFormController {
     private EventSearchService eventSearchService;
 
     public EventSearchService getEventSearchService() {
         return eventSearchService;
+    }
+
+
+    public void setEventSearchService(EventSearchService eventSearchService) {
+        this.eventSearchService = eventSearchService;
     }
 
     @Override
@@ -26,10 +34,6 @@ public class SearchEventController extends SimpleFormController {
         binder.registerCustomEditor(TimeRange.class, new TimeRangePropertyEditor());
         binder.registerCustomEditor(Point.class, new PointPropertyEditor());
         super.initBinder(request, binder);
-    }
-
-    public void setEventSearchService(EventSearchService eventSearchService) {
-        this.eventSearchService = eventSearchService;
     }
 
     @Override
@@ -41,24 +45,25 @@ public class SearchEventController extends SimpleFormController {
          * Do a searcg to find the count of all events within that text filter,
          * time range and bounding box
          */
-        SearchEventForm searchEventForm = (SearchEventForm) command;
-        if (searchEventForm.getWhen() != null) {
-            System.out.println("------ begin: " + searchEventForm.getWhen().getBegin());
+        EventSearchForm eventSearchForm = (EventSearchForm) command;
+        if (eventSearchForm.getWhen() != null) {
+            System.out.println("------ begin: " + eventSearchForm.getWhen().getBegin());
         }
-        if (searchEventForm.getBoundingBoxNE() != null) {
-            System.out.println("------ boundingNE: " + searchEventForm.getBoundingBoxNE().toText());
+        if (eventSearchForm.getBoundingBoxNE() != null) {
+            System.out.println("------ boundingNE: " + eventSearchForm.getBoundingBoxNE().toText());
         }
-        if (searchEventForm.getMapCenter() != null) {
-            System.out.println("------ center: " + searchEventForm.getMapCenter().toText());
+        if (eventSearchForm.getMapCenter() != null) {
+            System.out.println("------ center: " + eventSearchForm.getMapCenter().toText());
         }
 
-/*        List<TsEvent> events = eventSearchService.search(10, searchEventForm.getWhat(), searchEventForm.getWhen(),
-                getBoundingBox(searchEventForm));
+        //TODO set max results from somewhere?
+        List<TsEvent> events = eventSearchService.search(10, eventSearchForm.getWhat(), eventSearchForm.getWhen(),
+                getBoundingBox(eventSearchForm));
         
         System.out.println("----- found " + events.size() + " events ");
-*/    }
+    }
 
-    private Polygon getBoundingBox(SearchEventForm se) {
+    private Polygon getBoundingBox(EventSearchForm se) {
         GeometricShapeFactory gsf = new GeometricShapeFactory();
         gsf.setNumPoints(4);
         Point base = se.getBoundingBoxSW();
@@ -67,6 +72,8 @@ public class SearchEventController extends SimpleFormController {
         gsf.setBase(new Coordinate(base.getX(), base.getY()));
         gsf.setWidth(width);
         gsf.setHeight(height);
+        Polygon polygon =  gsf.createRectangle();
+        System.out.println("--- " + polygon);
         return gsf.createRectangle();
     }
 

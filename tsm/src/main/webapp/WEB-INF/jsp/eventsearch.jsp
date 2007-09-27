@@ -16,7 +16,7 @@
 		
 	function search() {
   	<%-- //Geocode before submitting so that we can get the map extent first!	 --%>
-		geocode(document.getElementById("searchEventForm").where.value);
+		geocode(document.getElementById("eventSearchForm").where.value);
 	}			
 	
 	function geocode(address) {
@@ -27,13 +27,13 @@
 	function saveAndSubmit (latLng) {
 		map.setCenter(latLng);
 		var boundingBox = map.getBounds();
-		document.getElementById("searchEventForm").boundingBoxSW.value = 
+		document.getElementById("eventSearchForm").boundingBoxSW.value = 
 			gLatLngToJSON(boundingBox.getSouthWest());
-		document.getElementById("searchEventForm").boundingBoxNE.value = 
+		document.getElementById("eventSearchForm").boundingBoxNE.value = 
 			gLatLngToJSON(boundingBox.getNorthEast());
-		document.getElementById("searchEventForm").mapCenter.value = 
+		document.getElementById("eventSearchForm").mapCenter.value = 
 			gLatLngToJSON(map.getCenter());
-		document.getElementById("searchEventForm").mapZoom.value = map.getZoom();
+		document.getElementById("eventSearchForm").mapZoom.value = map.getZoom();
 		document.event.submit();
 	}
 	
@@ -43,8 +43,8 @@
 
 	function initialize() {
 		initializeMap();
-		var mapCenterJSON = document.getElementById("searchEventForm").mapCenter.value;
-		var mapZoom = parseInt(document.getElementById("searchEventForm").mapZoom.value);
+		var mapCenterJSON = document.getElementById("eventSearchForm").mapCenter.value;
+		var mapZoom = parseInt(document.getElementById("eventSearchForm").mapZoom.value);
 		if (mapCenterJSON != "") {
 			var mapCenter = mapCenterJSON.parseJSON();
 			//recenter the map
@@ -63,7 +63,7 @@
 	<jsp:body>
 	 <%-- Pull the center from the form object so we can center using javascript (see above) --%>
 	  <div id="sidebar">
-	    <form:form name="event" id="searchEventForm" commandName="searchEvent" method="post" onsubmit="search(); return false">
+	    <form:form name="event" id="eventSearchForm" commandName="eventSearch" method="post" onsubmit="search(); return false">
 	    	<form:hidden path="boundingBoxSW" htmlEscape="true"/>
 	    	<form:hidden path="boundingBoxNE" htmlEscape="true"/>
 	    	<form:hidden path="mapCenter" htmlEscape="true"/>

@@ -16,7 +16,6 @@ import com.tech4d.tsm.model.TsEvent;
 import com.tech4d.tsm.model.User;
 import com.tech4d.tsm.model.UserTag;
 import com.tech4d.tsm.model.geometry.Style;
-import com.tech4d.tsm.model.geometry.TimePrimitive;
 import com.tech4d.tsm.model.geometry.TimeRange;
 import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.vividsolutions.jts.geom.Geometry;
@@ -64,12 +63,12 @@ public class TsEventUtil {
         return createTsEvent(geometry, timeRange, StyleUtil.getStyle(), null);
     }
 
-    public TsEvent createTsEvent(Geometry geometry, TimePrimitive timePrimitive,
+    public TsEvent createTsEvent(Geometry geometry, TimeRange timeRange,
             String description) {
-        return createTsEvent(geometry, timePrimitive, StyleUtil.getStyle(), description);
+        return createTsEvent(geometry, timeRange, StyleUtil.getStyle(), description);
     }
 
-    public TsEvent createTsEvent(Geometry geometry, TimePrimitive timePrimitive,
+    public TsEvent createTsEvent(Geometry geometry, TimeRange timeRange,
             Style style, String description) {
         TsEvent tsEvent = new TsEvent();
         tsEvent.setStreetAddress("17 Mockinbird Ln, Nameless, TN, 60606");
@@ -78,7 +77,7 @@ public class TsEventUtil {
 
         TsGeometry tsPoint = new TsGeometry(geometry);
         tsEvent.setTsGeometry(tsPoint);
-        tsEvent.setTimePrimitive(timePrimitive);
+        tsEvent.setWhen(timeRange);
         tsEvent.setStyleSelector(style);
 
         List<User> people = new ArrayList<User>();
@@ -100,9 +99,9 @@ public class TsEventUtil {
         Session session = SessionFactoryUtils.getSession(sessionFactory, true);
         session.refresh(actual);
 
-        Date correctedDate = filterMilliseconds(((TimeRange) (expected.getTimePrimitive()))
+        Date correctedDate = filterMilliseconds(((TimeRange) (expected.getWhen()))
                 .getBegin());
-        assertEquals(correctedDate, ((TimeRange) (actual.getTimePrimitive())).getBegin());
+        assertEquals(correctedDate, ((TimeRange) (actual.getWhen())).getBegin());
         Style expectedStyle = (Style) expected.getStyleSelector();
         Style actualStyle = (Style) actual.getStyleSelector();
         assertEquals(
