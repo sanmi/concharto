@@ -1,12 +1,14 @@
 package com.tech4d.tsm.web;
 
+import com.tech4d.tsm.model.geometry.TimeRange;
+
 public class TsEventForm {
     private String summary;
     private String description;
     private String tags;
     private Long id;
     private String where;
-    private String when;
+    private TimeRange when;
     private String source;
     private Double lat;
     private Double lng;
@@ -71,11 +73,11 @@ public class TsEventForm {
         this.lng = lng;
     }
 
-    public String getWhen() {
+    public TimeRange getWhen() {
         return when;
     }
 
-    public void setWhen(String when) {
+    public void setWhen(TimeRange when) {
         this.when = when;
     }
 

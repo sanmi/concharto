@@ -10,9 +10,9 @@
         <!-- SQL dialect -->
         <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
 
-		<mapping package="com.tech4d.tsm.model"/>
+		<mapping package="com.tech4d.tsm.model"/><!--
         <mapping class="com.tech4d.tsm.model.lab.Address"/>
-        <mapping class="com.tech4d.tsm.model.TsEvent"/>
+        --><mapping class="com.tech4d.tsm.model.TsEvent"/>
         <mapping class="com.tech4d.tsm.model.geometry.TsGeometry"/>
         <mapping class="com.tech4d.tsm.model.geometry.TimePrimitive"/>
         <mapping class="com.tech4d.tsm.model.geometry.TimeStamp"/>

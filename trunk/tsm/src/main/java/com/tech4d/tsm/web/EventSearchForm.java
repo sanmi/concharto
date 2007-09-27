@@ -6,7 +6,7 @@ import com.vividsolutions.jts.geom.Point;
 /**
  * Form data object for searching for events
  */
-public class SearchEventForm {
+public class EventSearchForm {
     private String what;
     private String where;
     private TimeRange when;

@@ -3,13 +3,13 @@
         "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
 <beans>
 	
-	<!-- Begin Daos -->  
+	<!-- Begin Daos --><!--  
 	<bean id="addressDao" class="com.tech4d.tsm.lab.AddressDaoHib">
 		<property name="sessionFactory">
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
-	<bean id="tsEventDao" class="com.tech4d.tsm.dao.TsEventDaoHib">
+	--><bean id="tsEventDao" class="com.tech4d.tsm.dao.TsEventDaoHib">
 		<property name="sessionFactory">
 			<ref bean="mySessionFactory"/>
 		</property>

@@ -2,6 +2,9 @@ package com.tech4d.tsm.service;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Hibernate;
+import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,66 +15,117 @@ import com.vividsolutions.jts.geom.Geometry;
 @Transactional
 public class EventSearchServiceHib implements EventSearchService {
     private SessionFactory sessionFactory;
-    private static String SEARCH_QUERY_STUB = " FROM tsevent f, tsgeometry g, eventsearchtext es, timeprimitive t "
-        + "WHERE f.tsgeometry_id = g.id "
-        + "AND f.eventsearchtext_id = es.id "
-        + "AND f.timePrimitive_id = t.id "
-        + "AND MBRWithin(geometryCollection, Envelope(GeomFromText(:geom_text))) "
-        + "AND MATCH (es.summary, es.description, es.usertags, es.source) AGAINST (:search_text)"
-        + "AND (t.begin > :earliest AND t.end < :latest ) " 
-        + "OR (t.time > :earliest AND t.time < :latest )";
-    private static String SQL_GET_COUNT = "SELECT count(*) " + SEARCH_QUERY_STUB;  
-    private static String SQL_SEARCH = "SELECT * " + SEARCH_QUERY_STUB;
-    
 
-    /* (non-Javadoc)
+    private static String SQL_SELECT_STUB = " FROM tsevent f, tsgeometry g, eventsearchtext es, timeprimitive t "
+            + "WHERE f.tsgeometry_id = g.id "
+            + "AND f.eventsearchtext_id = es.id "
+            + "AND f.when_id = t.id ";
+
+    private static String SQL_TIMERANGE_CLAUSE = 
+        "AND (t.begin >= :earliest AND t.end <= :latest ) "
+        + "OR (t.time >= :earliest AND t.time <= :latest ) ";
+    
+    private static String SQL_MBRWITHIN_CLAUSE = 
+        "AND MBRWithin(geometryCollection, Envelope(GeomFromText(:geom_text))) ";
+
+    private static String SQL_MATCH_CLAUSE = 
+        "AND MATCH (es.summary, es.description, es.usertags, es.source) AGAINST (:search_text) ";
+
+    private static String SQL_PREFIX_GET_COUNT = "SELECT count(*) "; 
+
+    private static String SQL_PREFIX_SEARCH = "SELECT * "; 
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.tech4d.tsm.service.EventSearchService#setSessionFactory(org.hibernate.SessionFactory)
      */
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.tech4d.tsm.service.EventSearchService#getSessionFactory()
      */
     public SessionFactory getSessionFactory() {
         return sessionFactory;
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.tech4d.tsm.service.EventSearchService#findWithinGeometry(com.vividsolutions.jts.geom.Geometry)
      */
     @SuppressWarnings("unchecked")
     public List<TsEvent> findWithinGeometry(Geometry geometry) {
-        //TODO change this to prepared statements
-        String sql = "SELECT * FROM tsevent f, tsgeometry g "
-                + "WHERE f.tsgeometry_id = g.id "
+        // TODO change this to prepared statements
+        String sql = "SELECT * FROM tsevent f, tsgeometry g " + "WHERE f.tsgeometry_id = g.id "
                 + "AND MBRWithin(geometryCollection, Envelope(GeomFromText(:geom_text)))";
         List<TsEvent> tsEvents = this.sessionFactory.getCurrentSession()
-                .createSQLQuery(sql).addEntity(TsEvent.class).setString(
-                "geom_text", geometry.toText()).list();
+                .createSQLQuery(sql)
+                .addEntity(TsEvent.class)
+                .setString("geom_text", geometry.toText())
+                .list();
         return tsEvents;
     }
-    
-    /* (non-Javadoc)
-     * @see com.tech4d.tsm.service.EventSearchService#search(java.lang.String, com.tech4d.tsm.model.geometry.TimeRange, com.vividsolutions.jts.geom.Geometry)
+
+    public Long getCount(String textFilter, TimeRange timeRange, Geometry boundingBox) {
+        String sql = createQuery(SQL_PREFIX_GET_COUNT, textFilter, timeRange,boundingBox);
+        List result = this.sessionFactory.getCurrentSession()
+                .createSQLQuery(sql)
+                .addScalar("count(*)", Hibernate.LONG)
+                .setString("geom_text", boundingBox.toText())
+                .setString("search_text", textFilter)
+                .setDate("earliest", timeRange.getBegin())
+                .setDate("latest", timeRange.getEnd())
+                .list();
+        return (Long) result.get(0);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.tech4d.tsm.service.EventSearchService#search(java.lang.String,
+     *      com.tech4d.tsm.model.geometry.TimeRange,
+     *      com.vividsolutions.jts.geom.Geometry)
      */
     @SuppressWarnings("unchecked")
-    public List<TsEvent> search(
-            int maxResults,
-            String textFilter, 
-            TimeRange timeRange, 
+    public List<TsEvent> search(int maxResults, String textFilter, TimeRange timeRange,
             Geometry boundingBox) {
-        //Note: Hibernate always uses prepared statements
-        List<TsEvent> tsEvents = this.sessionFactory.getCurrentSession()
-            .createSQLQuery(SQL_SEARCH)
-            .addEntity(TsEvent.class)
-            .setString("geom_text", boundingBox.toText())
-            .setString("search_text", textFilter)
-            .setDate("earliest", timeRange.getBegin())
-            .setDate("latest", timeRange.getEnd())
-            .setMaxResults(maxResults)
-            .list();
-    return tsEvents;
+        String sql = createQuery(SQL_PREFIX_SEARCH, textFilter, timeRange,boundingBox);
+        // Note: Hibernate always uses prepared statements
+        SQLQuery sqlQuery = this.sessionFactory.getCurrentSession()
+                .createSQLQuery(sql)
+                .addEntity(TsEvent.class);
+        if (boundingBox != null) {
+            sqlQuery.setString("geom_text", boundingBox.toText());
+        }
+        if (!StringUtils.isEmpty(textFilter)) {
+            sqlQuery.setString("search_text", textFilter);
+        }
+        if (timeRange != null) {
+            sqlQuery.setDate("earliest", timeRange.getBegin());
+            sqlQuery.setDate("latest", timeRange.getEnd());
+        }
+                
+        List<TsEvent> tsEvents = sqlQuery.setMaxResults(maxResults).list(); 
+        return tsEvents;
+    }
+
+    private String createQuery(String prefix, String textFilter, TimeRange timeRange, Geometry boundingBox) {
+        StringBuffer query = new StringBuffer(prefix).append(SQL_SELECT_STUB);
+        if (!StringUtils.isEmpty(textFilter)) {
+            query.append(SQL_MATCH_CLAUSE);
+        }
+        if (boundingBox != null) {
+            query.append(SQL_MBRWITHIN_CLAUSE);
+        }
+        if (timeRange != null) {
+            query.append(SQL_TIMERANGE_CLAUSE);
+        }
+        return query.toString();
     }
 
 }

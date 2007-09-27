@@ -22,7 +22,7 @@
             <td>${event.id}&nbsp;</td>
             <td>${event.summary}&nbsp;</td>
             <td>${event.streetAddress}&nbsp;</td>
-            <td>${event.timePrimitive}&nbsp;</td>
+            <td>${event.when.begin} - ${event.when.end}&nbsp;</td>
             <td>${event.description}&nbsp;</td>
             <td>
             <c:forEach items="${event.userTags}" var="tag">
@@ -39,7 +39,7 @@
     </table>
     <c:url value="/event.htm" var="addLink"/>
     <a href="${addLink}">Add an Event</a>
-    <c:url value="/searchevent.htm" var="searchLink"/>
+    <c:url value="/eventsearch.htm" var="searchLink"/>
     <a href="${searchLink}">Search</a>
 
 </tsm:page>

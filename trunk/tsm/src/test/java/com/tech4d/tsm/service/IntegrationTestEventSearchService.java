@@ -1,13 +1,12 @@
 package com.tech4d.tsm.service;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -31,20 +30,50 @@ public class IntegrationTestEventSearchService {
     private static TsEventDao tsEventDao;
 
     private static TsEventUtil tsEventUtil;
+    private static Polygon searchBox = makeBoundingRectangle(300, 300);
+    private static TimeRange searchTimeRange = new TimeRange(makeDate(2005, 2, 22), makeDate(2007, 2, 22));
+    private static String[] searchStrings = { "description problem", "description", "small hand" };
+    private static Polygon failBox = makeBoundingRectangle(3000, 3000);
+    private static TimeRange failTimeRange = new TimeRange(makeDate(1005, 2, 22), makeDate(1007, 2, 22));
+    private static String[] failStrings = { "the a is", "is", "sdfgsdfg" };
+    private static Geometry insideTheBox;
+    private static Geometry outsideTheBox;
+    private static String[] shouldMatch = { "this is a small description of the problem at hand",
+            "description of this is a small the problem at hand" };
+    private static String shouldNotMatch = "there is nothing to match here";
+    private static TimeRange insideTimeRange = new TimeRange(makeDate(2006, 2, 22), makeDate(2006, 9, 22));
+    private static TimeRange halfwayOutsideTimeRange = new TimeRange(makeDate(2000, 2, 22), makeDate(2007, 2,
+            22));
+    private static TimeRange outsideTimeRange = new TimeRange(makeDate(2000, 2, 22), makeDate(2002, 2, 22));
+    private static TsEvent actual;
 
-    @Before
-    public void setUp() {
-    }
+    // search parameters
+    private static int MAX_RESULTS = 3;
 
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() throws ParseException {
         ApplicationContext appCtx = ContextUtil.getCtx();
         eventSearchService = (EventSearchService) appCtx.getBean("eventSearchService");
         tsEventDao = (TsEventDao) appCtx.getBean("tsEventDao");
         tsEventUtil = new TsEventUtil(eventSearchService.getSessionFactory());
         tsEventDao.deleteAll();
         StyleUtil.setupStyle();
-    }
+
+        insideTheBox = new WKTReader().read("POINT (330 330)");
+        outsideTheBox = new WKTReader().read("POINT (130 130)");
+
+        // sample data
+        // these two pass with all parameters
+        makeSearchTsEvent(insideTheBox, insideTimeRange, shouldMatch[0]);
+        actual = makeSearchTsEvent(insideTheBox, insideTimeRange, shouldMatch[1]);
+        // the rest have at least one thing out of bounds
+        makeSearchTsEvent(outsideTheBox, insideTimeRange, shouldMatch[0]);
+        makeSearchTsEvent(insideTheBox, outsideTimeRange, shouldMatch[0]);
+        makeSearchTsEvent(insideTheBox, halfwayOutsideTimeRange, shouldMatch[0]);
+        makeSearchTsEvent(insideTheBox, insideTimeRange, shouldNotMatch);
+        makeSearchTsEvent(outsideTheBox, insideTimeRange, shouldNotMatch);
+        makeSearchTsEvent(outsideTheBox, outsideTimeRange, shouldNotMatch);
+}
 
     /**
      * 
@@ -53,14 +82,15 @@ public class IntegrationTestEventSearchService {
      */
     @Test
     public void testFindWithinGeometry() throws ParseException {
+
         // search bounding box
-        Polygon rect = makeBoundingRectangle(300, 300);
+        Polygon rect = makeBoundingRectangle(800, 800);
 
         // inside the box
-        String insideWKT = "POINT (330 330)";
-        TsEvent insideTheBox = tsEventUtil.createTsEvent(new WKTReader().read(insideWKT),
+        String insideWKT = "POINT (830 830)";
+        TsEvent eventInsideTheBox = tsEventUtil.createTsEvent(new WKTReader().read(insideWKT),
                 new TimeRange(tsEventUtil.getBegin(), tsEventUtil.getEnd()));
-        tsEventDao.save(insideTheBox);
+        tsEventDao.save(eventInsideTheBox);
 
         // outside of the box
         TsEvent tsEvent = tsEventUtil.createTsEvent(new WKTReader().read("POINT (130 130)"),
@@ -78,40 +108,10 @@ public class IntegrationTestEventSearchService {
     }
 
     @Test
-    public void testSearch() throws ParseException {
-
-        // search parameters
-        Polygon searchBox = makeBoundingRectangle(300, 300);
-        TimeRange searchTimeRange = new TimeRange(makeDate(2005, 2, 22), makeDate(2007, 2, 22));
-        String[] searchStrings = { "description problem", "description", "small hand" };
-        Polygon failBox = makeBoundingRectangle(3000, 3000);
-        TimeRange failTimeRange = new TimeRange(makeDate(1005, 2, 22), makeDate(1007, 2, 22));
-        String[] failStrings = { "the a is", "is", "sdfgsdfg" };
-        int maxResults = 3;
-
-        // sample data
-        Geometry insideTheBox = new WKTReader().read("POINT (330 330)");
-        Geometry outsideTheBox = new WKTReader().read("POINT (130 130)");
-        String[] shouldMatch = { "this is a small description of the problem at hand",
-                "description of this is a small the problem at hand" };
-        String shouldNotMatch = "there is nothing to match here";
-        TimeRange insideTimeRange = new TimeRange(makeDate(2006, 2, 22), makeDate(2006, 9, 22));
-        TimeRange halfwayOutsideTimeRange = new TimeRange(makeDate(2000, 2, 22), makeDate(2007, 2,
-                22));
-        TimeRange outsideTimeRange = new TimeRange(makeDate(2000, 2, 22), makeDate(2002, 2, 22));
-        // these two pass
-        makeSearchTsEvent(insideTheBox, insideTimeRange, shouldMatch[0]);
-        TsEvent actual = makeSearchTsEvent(insideTheBox, insideTimeRange, shouldMatch[1]);
-        // the rest fail
-        makeSearchTsEvent(outsideTheBox, insideTimeRange, shouldMatch[0]);
-        makeSearchTsEvent(insideTheBox, outsideTimeRange, shouldMatch[0]);
-        makeSearchTsEvent(insideTheBox, halfwayOutsideTimeRange, shouldMatch[0]);
-        makeSearchTsEvent(insideTheBox, insideTimeRange, shouldNotMatch);
-        makeSearchTsEvent(outsideTheBox, insideTimeRange, shouldNotMatch);
-        makeSearchTsEvent(outsideTheBox, outsideTimeRange, shouldNotMatch);
+    public void testSearchReturnsSome() throws ParseException {
 
         for (String searchString : searchStrings) {
-            List<TsEvent> tsEvents = eventSearchService.search(maxResults, searchString,
+            List<TsEvent> tsEvents = eventSearchService.search(MAX_RESULTS, searchString,
                     searchTimeRange, searchBox);
             assertEquals("only one should match", 2, tsEvents.size());
             TsEvent returned = tsEvents.get(0);
@@ -126,33 +126,52 @@ public class IntegrationTestEventSearchService {
             if (failDescriptionMatch) {
                 fail("descriptions didn't match");
             }
-            assertEquals(insideTimeRange.getBegin(), ((TimeRange) (returned.getTimePrimitive()))
+            assertEquals(insideTimeRange.getBegin(), ((TimeRange) (returned.getWhen()))
                     .getBegin());
             // Make sure we can get everything
             tsEventUtil.assertEquivalent(actual, tsEvents.get(0));
         }
-
+    }
+    
+    @Test public void noneInBox() {
         // now search in a bounding box that is out
-        assertEquals("none should match", 0, eventSearchService.search(maxResults,
+        assertEquals("none should match", 0, eventSearchService.search(MAX_RESULTS,
                 searchStrings[0], searchTimeRange, failBox).size());
+    }
 
+    @Test public void noTextMach() {
         // now search strings that are don't count words
         for (String failString : failStrings) {
-            assertEquals("none should match", 0, eventSearchService.search(maxResults, failString,
+            assertEquals("none should match", 0, eventSearchService.search(MAX_RESULTS, failString,
                     searchTimeRange, searchBox).size());
         }
-
+    }
+    
+    @Test public void noTimeRangeMatch() {
         // now search timeframes that are out
-        assertEquals("none should match", 0, eventSearchService.search(maxResults,
+        assertEquals("none should match", 0, eventSearchService.search(MAX_RESULTS,
                 searchStrings[0], failTimeRange, searchBox).size());
-
+    }
+    
+    @Test public void checkMaxReturn() {
         // now set the max return threshold to below the number of possible results
         assertEquals("only one should match", 1, eventSearchService.search(1,
                 searchStrings[0], searchTimeRange, searchBox).size());
-        
+    }
+    
+    @Test public void checkNullSearchText() {
+        assertEquals("three should match", 3, eventSearchService.search(MAX_RESULTS,
+                null, searchTimeRange, searchBox).size());
     }
 
-    private Polygon makeBoundingRectangle(int x, int y) {
+    @Test public void checkCount() {
+        assertEquals("two should match", 2, eventSearchService.search(MAX_RESULTS,
+                searchStrings[0], searchTimeRange, searchBox).size());
+        assertEquals("two should match", 2L, (long) eventSearchService.getCount(
+                searchStrings[0], searchTimeRange, searchBox));
+    }
+
+    private static Polygon makeBoundingRectangle(int x, int y) {
         GeometricShapeFactory gsf = new GeometricShapeFactory();
         gsf.setSize(100);
         gsf.setNumPoints(4);
@@ -160,13 +179,13 @@ public class IntegrationTestEventSearchService {
         return gsf.createRectangle();
     }
 
-    private TsEvent makeSearchTsEvent(Geometry geometry, TimeRange timeRange, String description) {
+    private static TsEvent makeSearchTsEvent(Geometry geometry, TimeRange timeRange, String description) {
         TsEvent tsEvent = tsEventUtil.createTsEvent(geometry, timeRange, description);
         tsEventDao.save(tsEvent);
         return tsEvent;
     }
 
-    private Date makeDate(int year, int month, int day) {
+    private static Date makeDate(int year, int month, int day) {
         return new GregorianCalendar(year, month, day).getTime();
     }
 
