@@ -7,7 +7,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class TimeRange extends TimePrimitive {
+public class TimeRange extends TimePrimitive implements SimpleTimeRange {
     private Date begin;
 
     private Date end;
@@ -22,20 +22,32 @@ public class TimeRange extends TimePrimitive {
         this.end = end;
     }
 
+    /* (non-Javadoc)
+     * @see com.tech4d.tsm.model.geometry.SimpleTimeRange#getBegin()
+     */
     @Temporal(TemporalType.TIMESTAMP)
     public Date getBegin() {
         return begin;
     }
 
+    /* (non-Javadoc)
+     * @see com.tech4d.tsm.model.geometry.SimpleTimeRange#setBegin(java.util.Date)
+     */
     public void setBegin(Date begin) {
         this.begin = begin;
     }
 
+    /* (non-Javadoc)
+     * @see com.tech4d.tsm.model.geometry.SimpleTimeRange#getEnd()
+     */
     @Temporal(TemporalType.TIMESTAMP)
     public Date getEnd() {
         return end;
     }
 
+    /* (non-Javadoc)
+     * @see com.tech4d.tsm.model.geometry.SimpleTimeRange#setEnd(java.util.Date)
+     */
     public void setEnd(Date end) {
         this.end = end;
     }
