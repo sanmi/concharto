@@ -312,6 +312,7 @@
         <root url="jar://$PROJECT_DIR$/lib/deploy/persistence-api.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/deploy/spring.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/deploy/standard.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/deploy/json-lib-2.0-jdk15.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
@@ -359,13 +360,6 @@
         <root url="jar://$PROJECT_DIR$/lib/tools/xmlParserAPIs.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/tools/xom.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/tools/commons-io.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="project-test">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/lib/test/geonames-0.5.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

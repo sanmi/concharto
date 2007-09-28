@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
@@ -49,9 +50,18 @@
 			var mapCenter = mapCenterJSON.parseJSON();
 			//recenter the map
 			map.setCenter(new GLatLng(mapCenter.lat,mapCenter.lng), mapZoom);			
+			drawPlacemarks();
 		}
 	}
 	
+	function drawPlacemarks() {
+			var eventsJSON = document.getElementById("eventSearchForm").searchResults.value;
+			var events = eventsJSON.parseJSON();
+			for (var i =0; i<events.length; i++) {
+				marker = new GMarker(new GLatLng(events[i].latLng.lat, events[i].latLng.lng));
+				map.addOverlay(marker);
+			} 
+	}
 
 		//]]>
 		</script>
@@ -67,6 +77,7 @@
 	    	<form:hidden path="boundingBoxSW" htmlEscape="true"/>
 	    	<form:hidden path="boundingBoxNE" htmlEscape="true"/>
 	    	<form:hidden path="mapCenter" htmlEscape="true"/>
+	    	<form:hidden path="searchResults" htmlEscape="true"/>
 	    	<form:hidden path="mapZoom"/>
         <table>
           <tr>
@@ -92,6 +103,24 @@
         <input type="submit" name="Search" value="Search" />
         <input type="button" name="Save" value="Cancel" onclick="document.location='switchboard/listEvents.htm';"/>
 	    </form:form>
+	    <c:if test="${fn:length(events) > 0}">
+		    <br/>
+		    ${fn:length(events)} Events found
+		    <table class="eventlist">
+		    	<thead>
+		    		<td>Summary</td>
+		    		<td>Where</td>
+		    		<td>When</td>
+		    	</thead>
+		    <c:forEach items="${events}" var="event">
+		        <tr>
+		            <td>${event.summary}&nbsp;</td>
+		            <td>${event.where}&nbsp;</td>
+		            <td>${event.when.asText}&nbsp;</td>
+		        </tr>
+		    </c:forEach>
+		    </table>
+	    </c:if>
 	  </div>
 
 	   <div id="map"  style="position:absolute; height:1000px;width:1000px">

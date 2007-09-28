@@ -1,11 +1,7 @@
 package com.tech4d.tsm.web;
 
-import com.tech4d.tsm.dao.TsEventDao;
-import com.tech4d.tsm.model.TsEvent;
-import com.tech4d.tsm.model.geometry.TimeRange;
-import com.tech4d.tsm.web.util.PointPropertyEditor;
-import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
-import com.vividsolutions.jts.geom.Point;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -14,8 +10,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.WebUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.tech4d.tsm.dao.TsEventDao;
+import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.model.geometry.TimeRange;
+import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
 
 public class EventController extends SimpleFormController {
     private static final String SESSION_TSEVENT = "TSEVENT";

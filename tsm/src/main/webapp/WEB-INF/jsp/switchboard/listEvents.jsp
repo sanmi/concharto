@@ -21,7 +21,7 @@
         <tr>
             <td>${event.id}&nbsp;</td>
             <td>${event.summary}&nbsp;</td>
-            <td>${event.streetAddress}&nbsp;</td>
+            <td>${event.where}&nbsp;</td>
             <td>${event.when.begin} - ${event.when.end}&nbsp;</td>
             <td>${event.description}&nbsp;</td>
             <td>

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -31,7 +32,7 @@ import com.tech4d.tsm.model.geometry.TsGeometry;
 public class TsEvent extends BaseAuditableEntity  {
     
     private String summary;
-    private String streetAddress;
+    private String where;
     private String snippet;
     private String description;
     private TimeRange when;
@@ -52,12 +53,13 @@ public class TsEvent extends BaseAuditableEntity  {
     /**
      * @see com.tech4d.tsm.model.geometry.KmlFeature
      */
-    public String getStreetAddress() {
-        return streetAddress;
+    @Column(name = "_where")  //'where' is a sql reserved word
+    public String getWhere() {
+        return where;
     }
 
-    public void setStreetAddress(String address) {
-        this.streetAddress = address;
+    public void setWhere(String address) {
+        this.where = address;
     }
 
     @OneToOne(cascade = { CascadeType.ALL })

@@ -71,7 +71,7 @@ public class TsEventUtil {
     public TsEvent createTsEvent(Geometry geometry, TimeRange timeRange,
             Style style, String description) {
         TsEvent tsEvent = new TsEvent();
-        tsEvent.setStreetAddress("17 Mockinbird Ln, Nameless, TN, 60606");
+        tsEvent.setWhere("17 Mockinbird Ln, Nameless, TN, 60606");
         tsEvent.setSnippet("This is like some sort of small description yo");
         tsEvent.setDescription(description);
 

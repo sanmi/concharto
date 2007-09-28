@@ -29,7 +29,7 @@ public class EventSearchServiceHib implements EventSearchService {
         "AND MBRWithin(geometryCollection, Envelope(GeomFromText(:geom_text))) ";
 
     private static String SQL_MATCH_CLAUSE = 
-        "AND MATCH (es.summary, es.description, es.usertags, es.source) AGAINST (:search_text) ";
+        "AND MATCH (es.summary, es._where, es.usertags, es.description, es.source) AGAINST (:search_text) ";
 
     private static String SQL_PREFIX_GET_COUNT = "SELECT count(*) "; 
 

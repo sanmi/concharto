@@ -1,5 +1,6 @@
 package com.tech4d.tsm.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 /**
@@ -14,8 +15,10 @@ public class EventSearchText extends BaseEntity {
     private String summary;
     private String description;
     private String userTags;
-    private String source;    
+    private String source;  
+    private String where;
     
+
     public EventSearchText(TsEvent tsEvent) {
         copyFrom(tsEvent);
     }
@@ -25,6 +28,7 @@ public class EventSearchText extends BaseEntity {
         this.setDescription(tsEvent.getDescription());
         this.setUserTags(tsEvent.getUserTagsAsString());
         this.setSource(tsEvent.getSourceUrl());
+        this.setWhere(tsEvent.getWhere());
     }
     
     public EventSearchText() {
@@ -53,6 +57,14 @@ public class EventSearchText extends BaseEntity {
     }
     public void setUserTags(String tags) {
         this.userTags = tags;
+    }
+
+    @Column(name = "_where")  //'where' is a sql reserved word 
+    public String getWhere() {
+        return where;
+    }
+    public void setWhere(String where) {
+        this.where = where;
     }
 
 }
