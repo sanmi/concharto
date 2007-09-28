@@ -31,6 +31,7 @@ import com.tech4d.tsm.model.geometry.TsGeometry;
 @Entity
 public class TsEvent extends BaseAuditableEntity  {
     
+    public final static int SZ_DESCRIPTION = 1024;
     private String summary;
     private String where;
     private String snippet;
@@ -72,6 +73,7 @@ public class TsEvent extends BaseAuditableEntity  {
         this.tsGeometry = geometry;
     }
 
+    @Column(length=SZ_DESCRIPTION)
     public String getDescription() {
         return description;
     }
