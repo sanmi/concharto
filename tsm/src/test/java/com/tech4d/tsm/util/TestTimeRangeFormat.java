@@ -42,9 +42,6 @@ public class TestTimeRangeFormat {
         assertEquivalent(makeDayRange(1,1,1941, 1,1,1942), parseTimeRange("1941"));
         assertEquivalent(makeDayRange(12,7,1941, 12,8,1941), parseTimeRange("December 7, 1941"));
         assertEquivalent(makeDayRange(12,1,1941, 1,1,1942), parseTimeRange("December, 1941"));
-        assertEquivalent(makeDayRange(1,1,1941, 1,1,1943), parseTimeRange("1941 - 1942"));
-        assertEquivalent(makeDayRange(12,7,1941, 12,7,1942), parseTimeRange("12/7/1941 - 12/7/1942"));
-        assertEquivalent(makeDayRange(12,7,1941, 12,7,1942), parseTimeRange("Dec 7, 1941 - 12/7/1942"));
         assertEquivalent(makeDayRange(12,7,1941, 12,8,1941), parseTimeRange("Dec 7, 1941"));
         assertEquivalent(makeDayRange(12,31,1941, 1,1,1942), parseTimeRange("Dec 31, 1941"));
 
@@ -57,28 +54,39 @@ public class TestTimeRangeFormat {
         //TODO should we allow negative ranges? Isn't that really a data validation issue?
         assertException("1948 - 1947");
         assertException("Dec 7, 1942 - 12/7/1941");
-    }
+
+        //Ranges
+        assertEquivalent(makeDayRange(1,1,1941, 1,1,1943), parseTimeRange("1941 - 1942"));
+        assertEquivalent(makeDayRange(12,7,1941, 12,11,1941), parseTimeRange("Dec 7, 1941 - Dec 10, 1941"));
+        assertEquivalent(makeDayRange(12,7,1941, 12,8,1942), parseTimeRange("12/7/1941 - 12/7/1942"));
+        assertEquivalent(makeDayRange(12,7,1941, 12,8,1942), parseTimeRange("Dec 7, 1941 - 12/7/1942"));
+
+        assertEquivalent(makeDayRange(12,7,1941,10,0,0, 12,7,1941,12,0,0), parseTimeRange("Dec 7, 1941 10am - Dec 7, 1941 11am"));
+        assertEquivalent(makeDayRange(12,7,1941,10,0,0, 12,7,1941,10,2,0), parseTimeRange("Dec 7, 1941 10:00am - Dec 7, 1941 10:01am"));
+        assertEquivalent(makeDayRange(12,7,1941,10,0,0, 12,7,1941,10,0,2), parseTimeRange("Dec 7, 1941 10:00:00am - Dec 7, 1941 10:00:01am"));
+}
 
     @Test public void getValueAsText() {
 
-        assertEquals("1941", transformToText(1,1,1941,1,1,1942));
-        assertEquals("1941 - 1942", transformToText(1,1,1941,1,1,1943));
-        assertEquals("1941 - 1944", transformToText(1,1,1941,1,1,1945));
+        assertEquals("1941", formatTimeRange(1,1,1941,1,1,1942));
+        assertEquals("1941 - 1942", formatTimeRange(1,1,1941,1,1,1943));
+        assertEquals("1941 - 1944", formatTimeRange(1,1,1941,1,1,1945));
 
         //if 12/1/1941 00:00 - 1/1/1942 00:00 = December 1941
-        assertEquals("December 1941", transformToText(12,1,1941,1,1,1942));
+        assertEquals("December 1941", formatTimeRange(12,1,1941,1,1,1942));
         //if 11/1/1941 00:00 - 1/1/1942 00:00 = November 1941 - December 1941 (subtract)
-        assertEquals("November 1941 - December 1941", transformToText(11,1,1941,1,1,1942));
+        assertEquals("November 1941 - December 1941", formatTimeRange(11,1,1941,1,1,1942));
         //if 12/1/1941 00:00 - 12/1/1942 00:00 = December 1941 - December 1942
-        assertEquals("December 1941 - December 1942", transformToText(12,1,1941,12,1,1942));
+        assertEquals("December 1941 - December 1942", formatTimeRange(12,1,1941,12,1,1942));
 
         //1) if 12/7/1941 00:00 - 12/8/1941 00:00 = December 7, 1941
-        assertEquals("December 07, 1941", transformToText(12,7,1941,12,8,1941));
+        assertEquals("December 07, 1941", formatTimeRange(12,7,1941,12,8,1941));
         //2) if 12/7/1941 00:00 - 12/9/1941 00:00 = December 7, 1941, December 8, 1941 (subtract)
-        assertEquals("December 07, 1941 - December 08, 1941", transformToText(12,7,1941,12,9,1941));
+        assertEquals("December 07, 1941 - December 08, 1941", formatTimeRange(12,7,1941,12,9,1941));
         //3) if 12/7/1941 00:00 - 12/7/1942 00:00 = December 7, 1941, December 7, 1941
-        assertEquals("December 07, 1941 - December 07, 1942", transformToText(12,7,1941,12,7,1942));
-        assertEquals("January 01, 1941 - December 30, 1942", transformToText(1,1,1941,12,31,1942));
+        assertEquals("December 07, 1941 - December 07, 1942", formatTimeRange(12,7,1941,12,7,1942));
+        assertEquals("January 01, 1941 - December 30, 1942", formatTimeRange(1,1,1941,12,31,1942));
+        assertEquals("December 07, 1941 - December 10, 1941", formatTimeRange(12,7,1941,12,11,1941));
         
         //if 12/7/1941 10:00 - 12/7/1941 11:00 = December 7, 1941, 10am
         assertEquals("December 07, 1941, 10AM", transformToText(12,7,1941,10, 0, 0, 12,7,1941, 11, 0, 0));
@@ -101,7 +109,7 @@ public class TestTimeRangeFormat {
 
     }
     
-    private Object transformToText(int m1, int d1, int y1, int m2, int d2, int y2) {
+    private Object formatTimeRange(int m1, int d1, int y1, int m2, int d2, int y2) {
         SimpleTimeRange timeRange = makeDayRange(m1, d1, y1, m2, d2, y2);
         return TimeRangeFormat.format(timeRange);
     }
