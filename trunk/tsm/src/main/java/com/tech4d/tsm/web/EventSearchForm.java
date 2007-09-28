@@ -5,6 +5,9 @@ import com.vividsolutions.jts.geom.Point;
 
 /**
  * Form data object for searching for events
+ * 
+ * A number of these objects are hidden input values for use by
+ * javascript functions
  */
 public class EventSearchForm {
     private String what;
@@ -14,6 +17,7 @@ public class EventSearchForm {
     private Point BoundingBoxSW;
     private Point BoundingBoxNE;
     private Integer mapZoom;
+    private String searchResults;
     
     public Integer getMapZoom() {
         return mapZoom;
@@ -56,5 +60,16 @@ public class EventSearchForm {
     }
     public void setWhere(String where) {
         this.where = where;
+    }
+    /**
+     * Search results in JSON format need to be passed as a hidden value
+     * in the form so that the google maps API javascript functions can retrieve them 
+     * @return
+     */
+    public String getSearchResults() {
+        return searchResults;
+    }
+    public void setSearchResults(String searchResults) {
+        this.searchResults = searchResults;
     }
 }

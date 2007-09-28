@@ -5,6 +5,9 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import com.tech4d.tsm.util.TimeRangeFormat;
 
 @Entity
 public class TimeRange extends TimePrimitive implements SimpleTimeRange {
@@ -50,6 +53,15 @@ public class TimeRange extends TimePrimitive implements SimpleTimeRange {
      */
     public void setEnd(Date end) {
         this.end = end;
+    }
+    
+    /**
+     * Output a human readable string 
+     * @return
+     */
+    @Transient
+    public String getAsText() {
+        return TimeRangeFormat.format(this);
     }
 
 }

@@ -52,8 +52,7 @@
 		}
 	
 	// addAddressToMap() is called when the geocoder returns an
-	// answer.  It adds a marker to the map with an open info window
-	// showing the nicely formatted version of the address and the country code.
+	// answer.  
 	function addAddressToMap(response) {
 	  if (!response || response.Status.code != 200) {
 	    alert("Sorry, we can't find that location, " + response.Status.code);
@@ -64,9 +63,7 @@
 				map.setCenter(point, 13);
 				marker.setLatLng(point);
 	    marker.openInfoWindowHtml(place.address + '<br>' + '<br/><b>Drag me</b> anywhere on the map');
-	
 	  }
-	
 	}
 	
 	// showAddress() is called when you click on the Search button
