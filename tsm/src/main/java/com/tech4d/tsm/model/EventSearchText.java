@@ -34,6 +34,8 @@ public class EventSearchText extends BaseEntity {
     public EventSearchText() {
         super();
     }
+
+    @Column(length=TsEvent.SZ_DESCRIPTION)
     public String getDescription() {
         return description;
     }

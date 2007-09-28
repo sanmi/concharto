@@ -60,19 +60,25 @@ public class TsEventUtil {
     }
 
     public TsEvent createTsEvent(Geometry geometry, TimeRange timeRange) {
-        return createTsEvent(geometry, timeRange, StyleUtil.getStyle(), null);
+        return createTsEvent(geometry, timeRange, StyleUtil.getStyle(), null, null);
     }
 
     public TsEvent createTsEvent(Geometry geometry, TimeRange timeRange,
             String description) {
-        return createTsEvent(geometry, timeRange, StyleUtil.getStyle(), description);
+        return createTsEvent(geometry, timeRange, StyleUtil.getStyle(), null, description);
     }
 
     public TsEvent createTsEvent(Geometry geometry, TimeRange timeRange,
-            Style style, String description) {
+            String summary, String description) {
+        return createTsEvent(geometry, timeRange, StyleUtil.getStyle(), summary, description);
+    }
+
+    public TsEvent createTsEvent(Geometry geometry, TimeRange timeRange,
+            Style style, String summary, String description) {
         TsEvent tsEvent = new TsEvent();
         tsEvent.setWhere("17 Mockinbird Ln, Nameless, TN, 60606");
         tsEvent.setSnippet("This is like some sort of small description yo");
+        tsEvent.setSummary(summary);
         tsEvent.setDescription(description);
 
         TsGeometry tsPoint = new TsGeometry(geometry);
