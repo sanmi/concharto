@@ -58,10 +58,27 @@
 			var eventsJSON = document.getElementById("eventSearchForm").searchResults.value;
 			var events = eventsJSON.parseJSON();
 			for (var i =0; i<events.length; i++) {
-				marker = new GMarker(new GLatLng(events[i].latLng.lat, events[i].latLng.lng));
-				map.addOverlay(marker);
+			  map.addOverlay( createMarker(events[i]) );
 			} 
 	}
+	
+	function createMarker(event) {
+				var marker = new GMarker(new GLatLng(event.latLng.lat, event.latLng.lng));
+				
+				GEvent.addListener(marker, "click", function() {
+					var html = '<b>' + event.summary+'</b><br/>' + event.when + '<br/>' +
+					event.description + '<br/>' +
+					'<br/><b>Tags: </b>' + event.tags + '<br/>' + 
+					'<b>Source: </b>' + event.source + '<br/>' + 
+					'<a href="http://www.map4d.com:8080/tsm/event.htm?listid=' + event.id + '">edit</a>' +  
+					' &nbsp; <a href="#">flag</a>'
+					;
+						
+					marker.openInfoWindowHtml(html);
+				});
+				return marker;
+	}
+	
 
 		//]]>
 		</script>

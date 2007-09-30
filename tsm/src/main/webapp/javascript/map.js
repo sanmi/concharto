@@ -1,7 +1,6 @@
 	//some of the globals
 	var map;
 	var geocoder = null;
-	var marker;
 	
 	function initializeMap() {
 		if (GBrowserIsCompatible()) {
