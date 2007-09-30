@@ -22,11 +22,13 @@ public class JSONFormat {
     
     public static String toJSON(TsEvent event) {
         JSONObject jsonEvent = new JSONObject();
+        jsonEvent.put("id", event.getId());
         jsonEvent.put("summary", event.getSummary());
         jsonEvent.put("description", event.getDescription());
         jsonEvent.put("where", event.getWhere());
         jsonEvent.put("when", TimeRangeFormat.format(event.getWhen()));
         jsonEvent.put("tags", event.getUserTagsAsString());
+        jsonEvent.put("source", event.getSourceUrl());
         jsonEvent.put("latLng", toJSON((Point)event.getTsGeometry().getGeometry()));
         return jsonEvent.toString(); 
     }
