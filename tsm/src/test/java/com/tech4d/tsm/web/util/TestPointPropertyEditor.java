@@ -18,14 +18,14 @@ public class TestPointPropertyEditor {
     @Test
     public void valueAsText() {
         pointPropertyEditor.setAsText(POINT_TEXT);
-        assertEquals(LAT, ((Point) (pointPropertyEditor.getValue())).getX());
-        assertEquals(LNG, ((Point) (pointPropertyEditor.getValue())).getY());
+        assertEquals(LAT, ((Point) (pointPropertyEditor.getValue())).getY());
+        assertEquals(LNG, ((Point) (pointPropertyEditor.getValue())).getX());
         assertEquals(POINT_TEXT, pointPropertyEditor.getAsText());
     }
 
     @Test public void value() {
         GeometryFactory gf = new GeometryFactory();
-        Point point = gf.createPoint(new Coordinate(LAT, LNG));
+        Point point = gf.createPoint(new Coordinate(LNG, LAT));
         pointPropertyEditor.setValue(point);
         assertEquals(POINT_TEXT, pointPropertyEditor.getAsText());
     }

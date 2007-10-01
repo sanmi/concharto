@@ -38,6 +38,7 @@ public class EventController extends SimpleFormController {
         
         if (id != null) {
             tsEvent = this.tsEventDao.findById(id);
+            //TODO don't use session if possible!!!
             //save it in the session
             WebUtils.setSessionAttribute(request, SESSION_TSEVENT, tsEvent);
             tsEventForm = com.tech4d.tsm.web.TsEventFormFactory.getTsEventForm(tsEvent);

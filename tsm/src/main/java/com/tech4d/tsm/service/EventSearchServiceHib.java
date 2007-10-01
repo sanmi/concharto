@@ -1,20 +1,24 @@
 package com.tech4d.tsm.service;
 
-import java.util.List;
-
+import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.model.geometry.TimeRange;
+import com.tech4d.tsm.util.LapTimer;
+import com.vividsolutions.jts.geom.Geometry;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tech4d.tsm.model.TsEvent;
-import com.tech4d.tsm.model.geometry.TimeRange;
-import com.vividsolutions.jts.geom.Geometry;
+import java.util.List;
 
 @Transactional
 public class EventSearchServiceHib implements EventSearchService {
     private SessionFactory sessionFactory;
+    /** Logger that is available to subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
 
     private static String SQL_SELECT_STUB = " FROM tsevent f, tsgeometry g, eventsearchtext es, timeprimitive t "
             + "WHERE f.tsgeometry_id = g.id "
@@ -94,6 +98,7 @@ public class EventSearchServiceHib implements EventSearchService {
     @SuppressWarnings("unchecked")
     public List<TsEvent> search(int maxResults, String textFilter, TimeRange timeRange,
             Geometry boundingBox) {
+        LapTimer timer = new LapTimer(this.logger);
         String sql = createQuery(SQL_PREFIX_SEARCH, textFilter, timeRange,boundingBox);
         // Note: Hibernate always uses prepared statements
         SQLQuery sqlQuery = this.sessionFactory.getCurrentSession()
@@ -111,6 +116,7 @@ public class EventSearchServiceHib implements EventSearchService {
         }
                 
         List<TsEvent> tsEvents = sqlQuery.setMaxResults(maxResults).list(); 
+        timer.timeIt("search").logDebugTime();
         return tsEvents;
     }
 

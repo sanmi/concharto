@@ -7,8 +7,8 @@ import com.tech4d.tsm.util.JSONFormat;
 import com.tech4d.tsm.web.util.PointPropertyEditor;
 import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -17,10 +17,10 @@ import org.springframework.web.servlet.mvc.AbstractFormController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EventSearchController extends AbstractFormController {
+    private static final double LONGITUDE_180 = 180d;
     private static final String MODEL_EVENTS = "events";
     private EventSearchService eventSearchService;
     private String formView;
@@ -64,16 +64,48 @@ public class EventSearchController extends AbstractFormController {
         super.initBinder(request, binder);
     }
 
-
-    private Polygon getBoundingBox(EventSearchForm se) {
-        GeometricShapeFactory gsf = new GeometricShapeFactory();
-        gsf.setNumPoints(4);
+    /**
+     * Calculate the bounding box, given the north east and south west coordinates of 
+     * a box.  Take into account boxes that span the dateline where longitude changes
+     * from 180 to -180
+     * 
+     * TODO put the longitude logic in a utility class
+     */
+    private Set<Geometry> getBoundingBox(EventSearchForm se) {
+        //longitudes have to contend with the international date line where it switches from -180 to +180
+        //so we mod 180.  We assume the bounding box is less than 360 degrees.  If you want to figure
+        //this out, you might want to draw it on paper
+        Set<Geometry> polygons = new HashSet<Geometry>();
         Point base = se.getBoundingBoxSW();
         Double height = se.getBoundingBoxNE().getY() - se.getBoundingBoxSW().getY();
-        Double width = se.getBoundingBoxNE().getX() - se.getBoundingBoxSW().getX();
-        gsf.setBase(new Coordinate(base.getX(), base.getY()));
-        gsf.setWidth(width);
+        Double east = se.getBoundingBoxNE().getX();
+        Double west = se.getBoundingBoxSW().getX();
+        if (east < west) {
+            //System.out.println("East = " + east +", West = " + west);
+            //ok this box spans the date line.  We need two bounding boxes.
+            Double westWidth = LONGITUDE_180 + east;
+            Double eastWidth = LONGITUDE_180 - west;
+            
+            Geometry westmost = makeRectangle(height, westWidth,  -LONGITUDE_180, base.getY()); 
+            Geometry eastmost = makeRectangle(height, eastWidth,  west, base.getY()); 
+
+            polygons.add(westmost);
+            polygons.add(eastmost);
+            //System.out.println(gf.buildGeometry(polygons).toText());
+        } else {
+            polygons.add(makeRectangle(height, east-west,  base.getX(), base.getY()));
+        }
+        return polygons;
+    }
+
+
+    private Geometry makeRectangle(Double height, Double width, Double eastMost, Double southMost) {
+        GeometricShapeFactory gsf = new GeometricShapeFactory();
+        gsf.setNumPoints(4);
+        gsf.setBase(new Coordinate(eastMost, southMost));
         gsf.setHeight(height);
+        gsf.setWidth(width);
+        //System.out.println(gsf.createRectangle().toText());
         return gsf.createRectangle();
     }
 
@@ -88,23 +120,22 @@ public class EventSearchController extends AbstractFormController {
          * time range and bounding box
          */
         EventSearchForm eventSearchForm = (EventSearchForm) command;
-        if (eventSearchForm.getWhat() != null) {
-            System.out.println("------ what: " + eventSearchForm.getWhat());
-        }
-        
 
         Map model = errors.getModel();
         //TODO set max results from somewhere?
         if (eventSearchForm.getMapCenter() != null) {
-            List<TsEvent> events = eventSearchService.search(10, eventSearchForm.getWhat(), eventSearchForm.getWhen(),
-                    getBoundingBox(eventSearchForm));
+            List<TsEvent> events = new ArrayList<TsEvent>(); 
+            Set<Geometry> boxes = getBoundingBox(eventSearchForm);  //there may be two 
+            for (Geometry geometry : boxes) {
+                List results = eventSearchService.search(10, eventSearchForm.getWhat(), eventSearchForm.getWhen(), geometry);
+                events.addAll(results);
+            }
 
             model.put(MODEL_EVENTS, events);
             //NOTE: we are putting the events into the command so that the page javascript
             //functions can properly display them using google's mapping API
             eventSearchForm.setSearchResults(JSONFormat.toJSON(events));
         }
-        
         if (errors.hasErrors()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Data binding errors: " + errors.getErrorCount());

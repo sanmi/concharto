@@ -53,7 +53,7 @@
 			drawPlacemarks();
 		}
 	}
-	
+
 	function drawPlacemarks() {
 			var eventsJSON = document.getElementById("eventSearchForm").searchResults.value;
 			var events = eventsJSON.parseJSON();
@@ -61,10 +61,9 @@
 			  map.addOverlay( createMarker(events[i]) );
 			} 
 	}
-	
+
 	function createMarker(event) {
 				var marker = new GMarker(new GLatLng(event.latLng.lat, event.latLng.lng));
-				
 				GEvent.addListener(marker, "click", function() {
 					var html = '<b>' + event.summary+'</b><br/>' + event.when + '<br/>' +
 					event.description + '<br/>' +

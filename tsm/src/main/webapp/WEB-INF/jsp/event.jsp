@@ -31,6 +31,7 @@
 					document.getElementById("eventForm").lat.value,
 					document.getElementById("eventForm").lng.value),11); 
 			} else {
+				//TODO UI WORK: don't have a default starting point
 				map.setCenter(new GLatLng(40.879721,-76.998322),11);  //la la land, PA 
 			}
 			//Add a marker in the center of the map		
