@@ -30,7 +30,7 @@ public class TsEventFormFactory {
 
     private static void addGeometry(TsEvent tsEvent, TsEventForm tsEventForm) {
         GeometryFactory gsf = new GeometryFactory();
-        Coordinate coor = new Coordinate(tsEventForm.getLat(), tsEventForm.getLng());
+        Coordinate coor = new Coordinate(tsEventForm.getLng(), tsEventForm.getLat());
         Point point = gsf.createPoint(coor);
         TsGeometry tsPoint = new TsGeometry(point);
         tsEvent.setTsGeometry(tsPoint);
@@ -45,8 +45,8 @@ public class TsEventFormFactory {
         tsEventForm.setWhere(tsEvent.getWhere());
         tsEventForm.setWhen(tsEvent.getWhen());
         if (tsEvent.getTsGeometry() != null) {
-            tsEventForm.setLat(tsEvent.getTsGeometry().getGeometry().getCoordinate().x);
-            tsEventForm.setLng(tsEvent.getTsGeometry().getGeometry().getCoordinate().y);
+            tsEventForm.setLng(tsEvent.getTsGeometry().getGeometry().getCoordinate().x);
+            tsEventForm.setLat(tsEvent.getTsGeometry().getGeometry().getCoordinate().y);
         }
         if (tsEvent.getUserTags() != null) {
             String tags = tsEvent.getUserTagsAsString();
