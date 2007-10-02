@@ -140,7 +140,7 @@ public class TestTimeRangeFormat {
         return new TimeRange(makeDate(m1, d1, y1), makeDate(m2, d2, y2));
     }
     
-    private SimpleTimeRange makeDayRange(int m1, int d1, int y1, int hh1, int mm1, int ss1, 
+    public TimeRange makeDayRange(int m1, int d1, int y1, int hh1, int mm1, int ss1, 
             int m2, int d2, int y2, int hh2, int mm2, int ss2) {
         return new TimeRange(makeDate(m1, d1, y1, hh1, mm1, ss1), makeDate(m2, d2, y2, hh2, mm2, ss2));
     }

@@ -1,13 +1,10 @@
 package com.tech4d.tsm.dao;
 
-import java.io.Serializable;
-import java.util.List;
-
+import com.tech4d.tsm.model.TsEvent;
 import org.hibernate.SessionFactory;
 
-import com.tech4d.tsm.model.TsEvent;
-import com.tech4d.tsm.model.geometry.TimeRange;
-import com.vividsolutions.jts.geom.Geometry;
+import java.io.Serializable;
+import java.util.List;
 
 public interface TsEventDao {
     public abstract SessionFactory getSessionFactory();
@@ -18,11 +15,9 @@ public interface TsEventDao {
 
     public abstract void delete(TsEvent tsEvent);
 
-    public abstract void deleteAll();
-
     public abstract void delete(Long id);
 
-    public abstract List<TsEvent> findAll();
+    public abstract List<TsEvent> findAll(int maxResults);
 
     public abstract TsEvent findById(Long id);
 }

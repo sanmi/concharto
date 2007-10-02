@@ -104,8 +104,8 @@ public class TimeRangeFormat  {
      * @return TimeRange 
      * @throws ParseException if parsing failed
      */
-    public static SimpleTimeRange parse(String text) throws ParseException {
-        SimpleTimeRange tr = null;
+    public static TimeRange parse(String text) throws ParseException {
+        TimeRange tr = null;
         if (!StringUtils.isEmpty(text)) {
             // first separate the begin and the end
             // we will try the '-' first
@@ -233,7 +233,7 @@ public class TimeRangeFormat  {
      * @param text
      * @return
      */
-    private static SimpleTimeRange parseSingleDate(String text) {
+    private static TimeRange parseSingleDate(String text) {
 
         text = StringUtils.trimToEmpty(text);
         try {
@@ -261,7 +261,7 @@ public class TimeRangeFormat  {
      * @return SimpleTimeRange new time range
      * @throws ParseException
      */
-    private static SimpleTimeRange parseRange(String[] split) throws ParseException {
+    private static TimeRange parseRange(String[] split) throws ParseException {
 
             Date begin = parseDate(split[0]);
             Date end = parseDate(split[1]);

@@ -24,8 +24,11 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 
 public class IntegrationTestTsEventDao {
+    private static final int MAX_RESULTS = 200;
+
     private static TsEventDao tsEventDao;
-    
+    private static TsEventTesterDao tsEventTesterDao;
+
     private static TsEventUtil tsEventUtil;
 
     private Date begin;
@@ -44,8 +47,9 @@ public class IntegrationTestTsEventDao {
     public static void setUpClass() {
         ApplicationContext appCtx = ContextUtil.getCtx();
         tsEventDao = (TsEventDao) appCtx.getBean("tsEventDao");
+        tsEventTesterDao = (TsEventTesterDao) appCtx.getBean("tsEventTesterDao");
         tsEventUtil = new TsEventUtil(tsEventDao.getSessionFactory());
-        tsEventDao.deleteAll();
+        tsEventTesterDao.deleteAll();
         StyleUtil.setupStyle();
     }
 
@@ -54,8 +58,8 @@ public class IntegrationTestTsEventDao {
      */
     @Test
     public void testInitFindAll() {
-        tsEventDao.deleteAll();
-        Collection<TsEvent> tsEvents = tsEventDao.findAll();
+        tsEventTesterDao.deleteAll();
+        Collection<TsEvent> tsEvents = tsEventDao.findAll(MAX_RESULTS);
         assertEquals(0, tsEvents.size());
     }
 
@@ -78,7 +82,7 @@ public class IntegrationTestTsEventDao {
   
     public void findAll() throws ParseException {
         tsEventDao.save(tsEventUtil.createTsEvent());
-        List<TsEvent> tsEvents = tsEventDao.findAll();
+        List<TsEvent> tsEvents = tsEventDao.findAll(MAX_RESULTS);
         assertTrue(tsEvents.size() >= 1);
     }
 

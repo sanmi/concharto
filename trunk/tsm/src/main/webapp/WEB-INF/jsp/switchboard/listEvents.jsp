@@ -4,7 +4,10 @@
 
 <%@taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 <tsm:page title="Events">
-  	Events
+    <c:url value="/event.htm" var="addLink"/>
+    <a href="${addLink}">Add an Event</a>
+    <c:url value="/eventsearch.htm" var="searchLink"/>
+    <a href="${searchLink}">Search</a>
     <table class="eventlist">
     	<thead>
     		<td>ID</td>
@@ -37,10 +40,6 @@
         </tr>
     </c:forEach>
     </table>
-    <c:url value="/event.htm" var="addLink"/>
-    <a href="${addLink}">Add an Event</a>
-    <c:url value="/eventsearch.htm" var="searchLink"/>
-    <a href="${searchLink}">Search</a>
 
 </tsm:page>
 

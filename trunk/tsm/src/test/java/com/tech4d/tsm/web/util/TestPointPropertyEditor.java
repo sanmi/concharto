@@ -9,6 +9,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 public class TestPointPropertyEditor {
+    private static final double FP_DELTA = .00001;
     private static final double LNG = -77.3416934545;
     private static final double LAT = 40.8491234563;
     private static final String POINT_TEXT = "{\"lat\":" + LAT + ",\"lng\":" + LNG + "}";
@@ -18,8 +19,8 @@ public class TestPointPropertyEditor {
     @Test
     public void valueAsText() {
         pointPropertyEditor.setAsText(POINT_TEXT);
-        assertEquals(LAT, ((Point) (pointPropertyEditor.getValue())).getY());
-        assertEquals(LNG, ((Point) (pointPropertyEditor.getValue())).getX());
+        assertEquals(LAT, ((Point) (pointPropertyEditor.getValue())).getY(), FP_DELTA);
+        assertEquals(LNG, ((Point) (pointPropertyEditor.getValue())).getX(), FP_DELTA);
         assertEquals(POINT_TEXT, pointPropertyEditor.getAsText());
     }
 

@@ -1,14 +1,16 @@
 package com.tech4d.tsm.dao;
 
-import com.tech4d.tsm.model.geometry.Style;
-import com.tech4d.tsm.util.ContextUtil;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 
-import java.util.List;
+import com.tech4d.tsm.model.geometry.Style;
+import com.tech4d.tsm.util.ContextUtil;
 
 /**
  * User: frank
@@ -18,16 +20,15 @@ import java.util.List;
 public class IntegrationTestStyleDao {
 
     private static StyleDao styleDao;
-    private static TsEventDao tsEventDao;
 
     @Before
     public void setUp() {
         ApplicationContext appCtx = ContextUtil.getCtx();
+        TsEventTesterDao tsEventTesterDao = (TsEventTesterDao) appCtx.getBean("tsEventTesterDao");
         styleDao = (StyleDao) appCtx.getBean("styleDao");
-        tsEventDao = (TsEventDao) appCtx.getBean("tsEventDao");
 
         //delete everything and save 1 style object
-        tsEventDao.deleteAll();
+        tsEventTesterDao.deleteAll();
         StyleUtil.setupStyle();
     }
 

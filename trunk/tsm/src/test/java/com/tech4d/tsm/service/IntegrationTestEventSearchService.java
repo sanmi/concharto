@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.tech4d.tsm.dao.StyleUtil;
 import com.tech4d.tsm.dao.TsEventDao;
+import com.tech4d.tsm.dao.TsEventTesterDao;
 import com.tech4d.tsm.dao.TsEventUtil;
 import com.tech4d.tsm.model.TsEvent;
 import com.tech4d.tsm.model.geometry.TimeRange;
@@ -28,6 +29,7 @@ public class IntegrationTestEventSearchService {
     private static EventSearchService eventSearchService;
 
     private static TsEventDao tsEventDao;
+    private static TsEventTesterDao tsEventTesterDao;
 
     private static TsEventUtil tsEventUtil;
     private static Polygon searchBox = makeBoundingRectangle(300, 300);
@@ -108,8 +110,9 @@ public class IntegrationTestEventSearchService {
         ApplicationContext appCtx = ContextUtil.getCtx();
         eventSearchService = (EventSearchService) appCtx.getBean("eventSearchService");
         tsEventDao = (TsEventDao) appCtx.getBean("tsEventDao");
+        tsEventTesterDao = (TsEventTesterDao) appCtx.getBean("tsEventTesterDao");
         tsEventUtil = new TsEventUtil(eventSearchService.getSessionFactory());
-        tsEventDao.deleteAll();
+        tsEventTesterDao.deleteAll();
         StyleUtil.setupStyle();
 
         insideTheBox = new WKTReader().read("POINT (330 330)");
@@ -127,39 +130,8 @@ public class IntegrationTestEventSearchService {
         makeSearchTsEvent(insideTheBox, insideTimeRange, shouldNotMatch, shouldNotMatch);
         makeSearchTsEvent(outsideTheBox, insideTimeRange, shouldNotMatch, shouldNotMatch);
         makeSearchTsEvent(outsideTheBox, outsideTimeRange, shouldNotMatch, shouldNotMatch);
-}
-
-    /**
-     * 
-     * @throws ParseException
-     *             When parsing
-     */
-    @Test
-    public void testFindWithinGeometry() throws ParseException {
-
-        // search bounding box
-        Polygon rect = makeBoundingRectangle(800, 800);
-
-        // inside the box
-        String insideWKT = "POINT (830 830)";
-        TsEvent eventInsideTheBox = tsEventUtil.createTsEvent(new WKTReader().read(insideWKT),
-                new TimeRange(tsEventUtil.getBegin(), tsEventUtil.getEnd()));
-        tsEventDao.save(eventInsideTheBox);
-
-        // outside of the box
-        TsEvent tsEvent = tsEventUtil.createTsEvent(new WKTReader().read("POINT (130 130)"),
-                new TimeRange(tsEventUtil.getBegin(), tsEventUtil.getEnd()));
-        tsEventDao.save(tsEvent);
-
-        List<TsEvent> tsEvents = eventSearchService.findWithinGeometry(rect);
-        assertEquals(1, tsEvents.size());
-        TsEvent returned = tsEvents.get(0);
-
-        assertEquals(insideWKT, (returned.getTsGeometry()).getGeometry().toText());
-
-        // check the rest of the object
-        tsEventUtil.assertEquivalent(tsEvent, returned);
     }
+
 
     @Test
     public void testSearchReturnsSome() throws ParseException {
@@ -181,8 +153,7 @@ public class IntegrationTestEventSearchService {
             if (failDescriptionMatch) {
                 fail("descriptions didn't match");
             }
-            assertEquals(insideTimeRange.getBegin(), ((TimeRange) (returned.getWhen()))
-                    .getBegin());
+            assertEquals(insideTimeRange.getBegin(), returned.getWhen().getBegin());
             // Make sure we can get everything
             tsEventUtil.assertEquivalent(actual, tsEvents.get(0));
         }
