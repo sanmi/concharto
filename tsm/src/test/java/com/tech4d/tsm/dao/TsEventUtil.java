@@ -1,17 +1,5 @@
 package com.tech4d.tsm.dao;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
-
 import com.tech4d.tsm.model.TsEvent;
 import com.tech4d.tsm.model.User;
 import com.tech4d.tsm.model.UserTag;
@@ -21,6 +9,12 @@ import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import static org.junit.Assert.assertEquals;
+import org.springframework.orm.hibernate3.SessionFactoryUtils;
+
+import java.util.*;
 
 public class TsEventUtil {
     public SessionFactory sessionFactory;
@@ -75,6 +69,20 @@ public class TsEventUtil {
 
     public TsEvent createTsEvent(Geometry geometry, TimeRange timeRange,
             Style style, String summary, String description) {
+
+        List<User> people = new ArrayList<User>();
+        people.add(new User("Joe", "1234", "f@joe.com"));
+        people.add(new User("Mary", "1234", "m@mary.com"));
+
+        List<UserTag> tags = new ArrayList<UserTag>();
+        tags.add(new UserTag("tag a"));
+        tags.add(new UserTag("tag b"));
+        tags.add(new UserTag("tag b"));
+        return createTsEvent(people, tags, geometry, timeRange, style, summary, description) ;
+    }
+    
+    public TsEvent createTsEvent(List<User> participants, List<UserTag> usertags, Geometry geometry, TimeRange timeRange,
+            Style style, String summary, String description) {
         TsEvent tsEvent = new TsEvent();
         tsEvent.setWhere("17 Mockinbird Ln, Nameless, TN, 60606");
         tsEvent.setSnippet("This is like some sort of small description yo");
@@ -85,18 +93,10 @@ public class TsEventUtil {
         tsEvent.setTsGeometry(tsPoint);
         tsEvent.setWhen(timeRange);
         tsEvent.setStyleSelector(style);
-
-        List<User> people = new ArrayList<User>();
-        people.add(new User("Joe", "1234", "f@joe.com"));
-        people.add(new User("Mary", "1234", "m@mary.com"));
-        tsEvent.setContributors(people);
         tsEvent.setSourceUrl("http://www.wikipedia.com");
-
-        List<UserTag> tags = new ArrayList<UserTag>();
-        tags.add(new UserTag("tag a"));
-        tags.add(new UserTag("tag b"));
-        tags.add(new UserTag("tag b"));
-        tsEvent.setUserTags(tags);
+        tsEvent.setUserTags(usertags);
+        tsEvent.setContributors(participants);
+        
         return tsEvent;
     }
     
@@ -105,9 +105,9 @@ public class TsEventUtil {
         Session session = SessionFactoryUtils.getSession(sessionFactory, true);
         session.refresh(actual);
 
-        Date correctedDate = filterMilliseconds(((TimeRange) (expected.getWhen()))
+        Date correctedDate = filterMilliseconds(expected.getWhen()
                 .getBegin());
-        assertEquals(correctedDate, ((TimeRange) (actual.getWhen())).getBegin());
+        assertEquals(correctedDate, actual.getWhen().getBegin());
         Style expectedStyle = (Style) expected.getStyleSelector();
         Style actualStyle = (Style) actual.getStyleSelector();
         assertEquals(
@@ -126,9 +126,7 @@ public class TsEventUtil {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.set(Calendar.MILLISECOND, 0);
-
-        Date correctedBegin = cal.getTime();
-        return correctedBegin;
+        return cal.getTime();
     }
 
 }

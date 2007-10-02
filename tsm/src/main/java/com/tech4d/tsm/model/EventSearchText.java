@@ -42,26 +42,28 @@ public class EventSearchText extends BaseEntity {
     public void setDescription(String description) {
         this.description = description;
     }
+    @Column(length=TsEvent.SZ_SOURCEURL)
     public String getSource() {
         return source;
     }
     public void setSource(String source) {
         this.source = source;
     }
+    @Column(length=TsEvent.SZ_SUMMARY)
     public String getSummary() {
         return summary;
     }
     public void setSummary(String summary) {
         this.summary = summary;
     }
+    @Column(length=TsEvent.SZ_USERTAGS)
     public String getUserTags() {
         return userTags;
     }
     public void setUserTags(String tags) {
         this.userTags = tags;
     }
-
-    @Column(name = "_where")  //'where' is a sql reserved word 
+    @Column(name = "_where", length=TsEvent.SZ_WHERE)  //'where' is a sql reserved word 
     public String getWhere() {
         return where;
     }

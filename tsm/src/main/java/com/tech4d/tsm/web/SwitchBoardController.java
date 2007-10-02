@@ -36,6 +36,7 @@ import com.tech4d.tsm.dao.TsEventDaoHib;
  */
 public class SwitchBoardController extends MultiActionController {
 
+    private static final int MAX_RESULTS = 200;
     private TsEventDao tsEventDao;
 
     /**
@@ -50,7 +51,7 @@ public class SwitchBoardController extends MultiActionController {
     }
 
     public ModelAndView listEvents(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return new ModelAndView().addObject(this.tsEventDao.findAll());
+        return new ModelAndView().addObject(this.tsEventDao.findAll(MAX_RESULTS));
     }
     
     public ModelAndView deleteEvent(HttpServletRequest request, HttpServletResponse response) throws Exception {

@@ -106,33 +106,41 @@ ALTER TABLE address CHANGE geom geom GEOMETRYCOLLECTION NOT NULL;
 Select * from TimePrimitive where id = (select timeprimitive_id from tsEvent where id = 4)
 
 --DEBUG big search queries
-SELECT * FROM tsevent f, tsgeometry g
-WHERE f.tsgeometry_id = g.id 
-AND MBRWithin(geometryCollection, Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))')))
 
-SELECT * FROM eventsearchtext 
-WHERE MATCH (summary, description, usertags, source) AGAINST ('small')
-
+--geography and text
 SELECT * FROM tsevent f, tsgeometry g, eventsearchtext es
 WHERE f.tsgeometry_id = g.id 
 AND f.eventsearchtext_id = es.id
 AND MBRWithin(geometryCollection, Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))')))
 AND MATCH (es.summary, es.description, es.usertags, es.source) AGAINST ('description')
 
-SELECT * FROM tsevent f, timeprimitive t
-WHERE f.timePrimitive_id = t.id
-AND 
- (t.begin > DATE('2005-03-22') 
-  AND t.end < DATE('2007-03-22') )
-OR
- (t.time > DATE('2005-03-22') 
-  AND t.time < DATE('2007-03-22') )
+-- just geography
+SELECT * FROM tsevent f,  tsgeometry g
+WHERE f.tsgeometry_id = g.id 
+AND MBRWithin(geometryCollection, Envelope(GeomFromText('POLYGON ((-77.34169006347656 40.85433181694295, -76.81365966796875 40.85433181694295, -76.81365966796875 41.13884745373145, -77.34169006347656 41.13884745373145, -77.34169006347656 40.85433181694295))')))
 
+--Just time
+explain SELECT * FROM tsevent f, timeprimitive t
+WHERE f.when_id = t.id
+AND (t.begin BETWEEN DATE('1905-03-22') AND DATE('1907-03-22') )
+AND (t.end BETWEEN DATE('1905-03-22') AND DATE('1907-03-22') );
+
+--just text no join
+SELECT count(*) FROM eventsearchtext es
+WHERE MATCH (es.summary, es._where, es.usertags, es.description, es.source) AGAINST ('description')
+
+--just text
+SELECT count(*) FROM tsevent f, eventsearchtext es
+WHERE f.eventsearchtext_id = es.id
+AND MATCH (es.summary, es._where, es.usertags, es.description, es.source) AGAINST ('description')
+
+--everything
 SELECT * FROM tsevent f, tsgeometry g, eventsearchtext es, timeprimitive t
 WHERE f.tsgeometry_id = g.id 
 AND f.eventsearchtext_id = es.id
-AND f.timePrimitive_id = t.id
-AND MBRWithin(geometryCollection, Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))')))
-AND MATCH (es.summary, es.description, es.usertags, es.source) AGAINST ('description')
-AND (t.begin > DATE('2005-03-22') AND t.end < DATE('2007-03-22') )
-OR (t.time > DATE('2005-03-22') AND t.time < DATE('2007-03-22') )
+AND f.when_id = t.id
+AND MBRWithin(geometryCollection, Envelope(GeomFromText('POLYGON ((-78.34169006347656 40.85433181694295, -76.81365966796875 40.85433181694295, -76.81365966796875 41.13884745373145, -78.34169006347656 41.13884745373145, -78.34169006347656 40.85433181694295))')))
+AND MATCH (es.summary, es._where, es.usertags, es.description, es.source) AGAINST ('description')
+AND (t.begin BETWEEN DATE('1905-03-22') AND DATE('1907-03-22') )
+AND (t.end BETWEEN DATE('1905-03-22') AND DATE('1907-03-22') );
+

@@ -26,9 +26,9 @@ public class EventSearchServiceHib implements EventSearchService {
             + "AND f.when_id = t.id ";
 
     private static String SQL_TIMERANGE_CLAUSE = 
-        "AND (t.begin >= :earliest AND t.end <= :latest ) "
-        + "OR (t.time >= :earliest AND t.time <= :latest ) ";
-    
+        "AND (t.begin between :earliest AND :latest) " +  
+        "AND (t.end between :earliest AND :latest)";
+
     private static String SQL_MBRWITHIN_CLAUSE = 
         "AND MBRWithin(geometryCollection, Envelope(GeomFromText(:geom_text))) ";
 
@@ -55,24 +55,6 @@ public class EventSearchServiceHib implements EventSearchService {
      */
     public SessionFactory getSessionFactory() {
         return sessionFactory;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.tech4d.tsm.service.EventSearchService#findWithinGeometry(com.vividsolutions.jts.geom.Geometry)
-     */
-    @SuppressWarnings("unchecked")
-    public List<TsEvent> findWithinGeometry(Geometry geometry) {
-        // TODO change this to prepared statements
-        String sql = "SELECT * FROM tsevent f, tsgeometry g " + "WHERE f.tsgeometry_id = g.id "
-                + "AND MBRWithin(geometryCollection, Envelope(GeomFromText(:geom_text)))";
-        List<TsEvent> tsEvents = this.sessionFactory.getCurrentSession()
-                .createSQLQuery(sql)
-                .addEntity(TsEvent.class)
-                .setString("geom_text", geometry.toText())
-                .list();
-        return tsEvents;
     }
 
     public Long getCount(String textFilter, TimeRange timeRange, Geometry boundingBox) {

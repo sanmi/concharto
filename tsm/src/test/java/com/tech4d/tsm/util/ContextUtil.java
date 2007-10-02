@@ -8,6 +8,7 @@ public class ContextUtil {
     
     protected static final String[] XML_CONFIG_FILES = new String[]{
         "/tsm-integrationtest-datasource.xml",
+        "/tsm-integrationtest-dao.xml",
         "/tsm-dao.xml"
     };
 

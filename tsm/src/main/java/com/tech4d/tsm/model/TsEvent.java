@@ -31,7 +31,12 @@ import com.tech4d.tsm.model.geometry.TsGeometry;
 @Entity
 public class TsEvent extends BaseAuditableEntity  {
     
-    public final static int SZ_DESCRIPTION = 1024;
+    public final static int SZ_DESCRIPTION = 2048;
+    public static final int SZ_SNIPPET = 1024;
+    public static final int SZ_SUMMARY = 512;
+    public static final int SZ_SOURCEURL = 1024;
+    public static final int SZ_WHERE = 512;
+    public static final int SZ_USERTAGS = 2048;  //this is used by validators and EventSearchText
     private String summary;
     private String where;
     private String snippet;
@@ -54,7 +59,7 @@ public class TsEvent extends BaseAuditableEntity  {
     /**
      * @see com.tech4d.tsm.model.geometry.KmlFeature
      */
-    @Column(name = "_where")  //'where' is a sql reserved word
+    @Column(name = "_where", length=SZ_WHERE)  //'where' is a sql reserved word
     public String getWhere() {
         return where;
     }
@@ -82,6 +87,7 @@ public class TsEvent extends BaseAuditableEntity  {
         this.description = description;
     }
 
+    @Column(length=SZ_SNIPPET)
     public String getSnippet() {
         return snippet;
     }
@@ -112,6 +118,7 @@ public class TsEvent extends BaseAuditableEntity  {
         this.styleSelector = styleSelector;
     }
 
+    @Column(length=SZ_SUMMARY)
     public String getSummary() {
         return summary;
     }
@@ -120,6 +127,8 @@ public class TsEvent extends BaseAuditableEntity  {
         this.summary = summary;
     }
     
+    //TODO change this to source
+    @Column(length=SZ_SOURCEURL)
     public String getSourceUrl() {
         return sourceUrl;
     }

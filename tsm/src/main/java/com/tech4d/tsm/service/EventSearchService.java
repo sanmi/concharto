@@ -14,8 +14,6 @@ public interface EventSearchService {
 
     public SessionFactory getSessionFactory();
 
-    public List<TsEvent> findWithinGeometry(Geometry geometry);
-
     public List<TsEvent> search(int maxResults, String textFilter, TimeRange timeRange,
             Geometry boundingBox);
 

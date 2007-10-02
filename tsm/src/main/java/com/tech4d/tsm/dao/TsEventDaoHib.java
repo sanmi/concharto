@@ -73,7 +73,7 @@ public class TsEventDaoHib implements TsEventDao {
     public void deleteAll() {
         //TODO -  this is ugly, but it just for testing.  There don't
         //seem to be simpler cascade options using HQL delete
-        List<TsEvent> tsEvents = this.findAll();
+        List<TsEvent> tsEvents = this.findAll(100); //TODO
         for (TsEvent event : tsEvents) {
             this.delete(event);
         }
@@ -86,9 +86,9 @@ public class TsEventDaoHib implements TsEventDao {
      * @see com.tech4d.tsm.lab.TsEventDao#findAll()
      */
     @SuppressWarnings("unchecked")
-    public List<TsEvent> findAll() {
+    public List<TsEvent> findAll(int maxResults) {
         return this.sessionFactory.getCurrentSession().createQuery(
-                "select tsEvent from TsEvent tsEvent").list();
+                "select tsEvent from TsEvent tsEvent").setMaxResults(maxResults).list();
     }
 
     public TsEvent findById(Long id) {

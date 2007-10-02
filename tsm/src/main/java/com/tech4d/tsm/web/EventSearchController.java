@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 public class EventSearchController extends AbstractFormController {
+    private static final int MAX_RECORDS = 50;
     private static final double LONGITUDE_180 = 180d;
     private static final String MODEL_EVENTS = "events";
     private EventSearchService eventSearchService;
@@ -81,7 +82,6 @@ public class EventSearchController extends AbstractFormController {
         Double east = se.getBoundingBoxNE().getX();
         Double west = se.getBoundingBoxSW().getX();
         if (east < west) {
-            //System.out.println("East = " + east +", West = " + west);
             //ok this box spans the date line.  We need two bounding boxes.
             Double westWidth = LONGITUDE_180 + east;
             Double eastWidth = LONGITUDE_180 - west;
@@ -91,7 +91,6 @@ public class EventSearchController extends AbstractFormController {
 
             polygons.add(westmost);
             polygons.add(eastmost);
-            //System.out.println(gf.buildGeometry(polygons).toText());
         } else {
             polygons.add(makeRectangle(height, east-west,  base.getX(), base.getY()));
         }
@@ -105,7 +104,6 @@ public class EventSearchController extends AbstractFormController {
         gsf.setBase(new Coordinate(eastMost, southMost));
         gsf.setHeight(height);
         gsf.setWidth(width);
-        //System.out.println(gsf.createRectangle().toText());
         return gsf.createRectangle();
     }
 
@@ -127,7 +125,8 @@ public class EventSearchController extends AbstractFormController {
             List<TsEvent> events = new ArrayList<TsEvent>(); 
             Set<Geometry> boxes = getBoundingBox(eventSearchForm);  //there may be two 
             for (Geometry geometry : boxes) {
-                List results = eventSearchService.search(10, eventSearchForm.getWhat(), eventSearchForm.getWhen(), geometry);
+                logger.debug(geometry.toText());
+                List results = eventSearchService.search(MAX_RECORDS, eventSearchForm.getWhat(), eventSearchForm.getWhen(), geometry);
                 events.addAll(results);
             }
 

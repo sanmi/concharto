@@ -7,6 +7,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Index;
+
 import com.tech4d.tsm.util.TimeRangeFormat;
 
 @Entity
@@ -29,6 +31,7 @@ public class TimeRange extends TimePrimitive implements SimpleTimeRange {
      * @see com.tech4d.tsm.model.geometry.SimpleTimeRange#getBegin()
      */
     @Temporal(TemporalType.TIMESTAMP)
+    @Index(name="beginindex")
     public Date getBegin() {
         return begin;
     }
@@ -44,6 +47,7 @@ public class TimeRange extends TimePrimitive implements SimpleTimeRange {
      * @see com.tech4d.tsm.model.geometry.SimpleTimeRange#getEnd()
      */
     @Temporal(TemporalType.TIMESTAMP)
+    @Index(name="endindex")
     public Date getEnd() {
         return end;
     }
