@@ -118,8 +118,8 @@ public class TsEventUtil {
 
         session.close();
     }
-
-    public Date filterMilliseconds(Date date) {
+    
+    public static Date filterMilliseconds(Date date) {
         // NOTE: MySQL doesn't store dates with millisecond precision, so we
         // need to strip out
         // the msec in order to compare

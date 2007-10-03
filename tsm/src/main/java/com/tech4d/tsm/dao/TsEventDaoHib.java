@@ -17,10 +17,6 @@ public class TsEventDaoHib implements TsEventDao {
         this.sessionFactory = sessionFactory;
     }
 
-    public SessionFactory getSessionFactory() {
-        return sessionFactory;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -65,21 +61,7 @@ public class TsEventDaoHib implements TsEventDao {
         event.setId(id);
         this.sessionFactory.getCurrentSession().delete(event);
     }
-
-    /**
-     * Just for testing.  Do not use this in production
-     * TODO figure out how to remove this from the "production" dao interface
-     */
-    public void deleteAll() {
-        //TODO -  this is ugly, but it just for testing.  There don't
-        //seem to be simpler cascade options using HQL delete
-        List<TsEvent> tsEvents = this.findAll(100); //TODO
-        for (TsEvent event : tsEvents) {
-            this.delete(event);
-        }
-
-    }
-
+   
     /*
      * (non-Javadoc)
      * 
