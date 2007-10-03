@@ -14,6 +14,7 @@
 	function saveEvent() {
 		document.getElementById("eventForm").lat.value = marker.getLatLng().lat();
 		document.getElementById("eventForm").lng.value = marker.getLatLng().lng();
+		document.getElementById("eventForm").zoomLevel.value = map.getZoom();
 		document.event.submit();
 	}			
 
@@ -27,9 +28,16 @@
 				editLocation = true;
 			}
 			if (editLocation) {
+				var zoomStr = document.getElementById("eventForm").zoomLevel.value;
+				var zoom;
+				if (zoomStr == '') {
+					zoom = 11;
+				} else {
+					zoom = parseInt (zoomStr);
+				}
 				map.setCenter(new GLatLng(
 					document.getElementById("eventForm").lat.value,
-					document.getElementById("eventForm").lng.value),11); 
+					document.getElementById("eventForm").lng.value), zoom); 
 			} else {
 				//TODO UI WORK: don't have a default starting point
 				map.setCenter(new GLatLng(40.879721,-76.998322),11);  //la la land, PA 
@@ -49,7 +57,7 @@
 		
 			GEvent.addListener(marker, "click", function() {
 				marker.openInfoWindowHtml(html);
-			});
+			});		
 		}
 	
 	// addAddressToMap() is called when the geocoder returns an
@@ -97,10 +105,11 @@
 	<jsp:body>
 	   <div id="sidebar">
 
-	       <form:form name="event" id="eventForm" commandName="event" method="post">
+	       <form:form name="event" id="eventForm" commandName="event" method="post" onsubmit="saveEvent(); return false">
 			    <form:hidden path="id"/>
 			    <form:hidden path="lat"/>
 			    <form:hidden path="lng"/>
+			    <form:hidden path="zoomLevel"/>
 	
 	         <table>
 	           <tr>
@@ -141,8 +150,8 @@
 	             
 	           </tr>
 	         </table>
-	         <input type="button" name="Save" value="Save This Event" onclick="saveEvent(); return false"/>
-	         <input type="button" name="Save" value="Cancel" onclick="javascript:document.location='switchboard/listEvents.htm';"/>
+	         <input type="submit" name="Save" value="Save This Event" />
+	         <input type="button" name="Cancel" value="Cancel" onclick="javascript:document.location='switchboard/listEvents.htm';"/>
 	       </form:form>
 	   </div>
 

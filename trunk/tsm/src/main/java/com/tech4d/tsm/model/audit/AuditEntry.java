@@ -16,6 +16,7 @@ public class AuditEntry extends BaseEntity {
     public static final int ACTION_INSERT = 0;
     public static final int ACTION_UPDATE = 1;
     public static final int ACTION_DELETE = 2;
+    public static final int ACTION_REVERT = 3;
 
     private Collection<AuditFieldChange> auditEntryFieldChange;
     private Date dateCreated;
@@ -23,6 +24,7 @@ public class AuditEntry extends BaseEntity {
     private Integer action;
     private String entityClass;
     private long entityId;
+    private long version;
 
 
     @OneToMany(mappedBy="auditEntry", cascade={CascadeType.ALL})
@@ -62,6 +64,12 @@ public class AuditEntry extends BaseEntity {
     }
     public void setEntityId(long entityId) {
         this.entityId = entityId;
+    }
+    public long getVersion() {
+        return version;
+    }
+    public void setVersion(long version) {
+        this.version = version;
     }
     
 }

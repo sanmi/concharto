@@ -34,12 +34,12 @@ public class AuditInterceptor extends EmptyInterceptor {
     
 
     /**
-     * A list of class names of classes that implement AuditFieldChangeFormatter.  We uses
-     * these to create the audit field change record 
-     * @param auditFieldChangeFormatters
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws ClassNotFoundException
+     * A list of class names of classes that implement AuditFieldChangeFormatter.  We use
+     * these to create the audit field change record
+     * @param auditFieldChangeFormatters AuditFieldChangeFormatter 
+     * @throws InstantiationException e
+     * @throws IllegalAccessException e
+     * @throws ClassNotFoundException e
      */
     public void setAuditFieldChangeFormatters(Set<String> auditFieldChangeFormatters) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         for (String className : auditFieldChangeFormatters) {
@@ -58,12 +58,29 @@ public class AuditInterceptor extends EmptyInterceptor {
 
     public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState,
                                 String[] propertyNames, Type[] types) throws CallbackException {
+        boolean updated = false;
         if (entity instanceof Auditable) {
             log.debug("onFlushDirty");
             Session session = sessionFactory.openSession();
             try {
                 Class<? extends Object> objectClass = entity.getClass();
 
+                //update the lastModified field
+                for ( int i=0; i < propertyNames.length; i++ ) {
+                    if ( "lastModified".equals( propertyNames[i] ) ) {
+                        currentState[i] = new Date();
+                        updated = true;
+                    } else if ("version".equals(propertyNames[i] ) ) {
+                        Long version =((Long)(currentState[i]));
+                        if (version == null) {
+                            currentState[i] = 0L;
+                        } else {
+                            currentState[i] = ++version;
+                        }
+                        updated = true;
+                    }
+                }
+                
                 // Use the id and class to get the pre-update state from the
                 // database
                 Serializable persistedObjectId = ((Auditable) entity).getId();
@@ -73,16 +90,6 @@ public class AuditInterceptor extends EmptyInterceptor {
                 UpdateState state = new UpdateState((Auditable) entity, (Auditable) previousInstance);
                 stateSets.getUpdates().add(state);
 
-                //update the lastModified field
-                if ( entity instanceof Auditable ) {
-                    for ( int i=0; i < propertyNames.length; i++ ) {
-                        if ( "lastModified".equals( propertyNames[i] ) ) {
-                            currentState[i] = new Date();
-                            return true;
-                        }
-                    }
-                }
-
             } catch (HibernateException e) {
                 clearStateSets();
                 throw new CallbackException(e);
@@ -90,7 +97,7 @@ public class AuditInterceptor extends EmptyInterceptor {
                 session.close();
             }           
         }
-        return false;
+        return updated;
     }
 
     private void refresh(Auditable auditable) {
@@ -113,6 +120,9 @@ public class AuditInterceptor extends EmptyInterceptor {
                 } else if ( "lastModified".equals( propertyNames[i] ) ) {
                     state[i] = new Date();
                     updated = true;
+                } else if ("version".equals(propertyNames[i] ) ) {
+                    state[i] = 0L;
+                    updated = true;
                 }
             }
         }
@@ -133,24 +143,26 @@ public class AuditInterceptor extends EmptyInterceptor {
             AuditFieldChangeFormatter formatter;
             Date dateCreated = new Date();
             String user = getUserLoggedInUserId();
-            for (Iterator<Object> iterator1 = stateSets.getInserts().iterator(); iterator1.hasNext();) {
-                Auditable auditable = (Auditable) iterator1.next();
+            for (Object o : stateSets.getInserts()) {
+                Auditable auditable = (Auditable) o;
                 if (null != (formatter = getFormatter(auditable))) {
                     AuditEntry auditEntry = formatter.createInsertAuditItems(auditable);
                     updateAuditEntry(auditEntry, dateCreated, user);
                     auditEntries.add(auditEntry);
                 }
             }
-            for (Iterator iterator1 = stateSets.getUpdates().iterator(); iterator1.hasNext();) {
-                UpdateState state = (UpdateState) iterator1.next();
+            for (UpdateState state : stateSets.getUpdates()) {
                 if (null != (formatter = getFormatter(state.currentState))) {
-                    AuditEntry auditEntry = formatter.createUpdateAuditItems( state.currentState, state.previousState);
-                    updateAuditEntry(auditEntry, dateCreated, user);
-                    auditEntries.add(auditEntry);
+                    AuditEntry auditEntry = formatter.createUpdateAuditItems(state.currentState, state.previousState);
+                    //Only make an audit entry if there are changes
+                    if (auditEntry.getAuditEntryFieldChange().size() > 0) {
+                        updateAuditEntry(auditEntry, dateCreated, user);
+                        auditEntries.add(auditEntry);
+                    }
                 }
             }
-            for (Iterator<Object> iterator1 = stateSets.getDeletes().iterator(); iterator1.hasNext();) {
-                Auditable auditable = (Auditable) iterator1.next();
+            for (Object o1 : stateSets.getDeletes()) {
+                Auditable auditable = (Auditable) o1;
                 if (null != (formatter = getFormatter(auditable))) {
                     AuditEntry auditEntry = formatter.createDeleteAuditItems(auditable);
                     updateAuditEntry(auditEntry, dateCreated, user);
@@ -169,6 +181,8 @@ public class AuditInterceptor extends EmptyInterceptor {
     private void updateAuditEntry(AuditEntry auditEntry, Date dateCreated, String user) {
             auditEntry.setDateCreated(dateCreated);
             auditEntry.setUser(user);
+            //new version
+            auditEntry.setVersion(auditEntry.getVersion());
     }
 
     private AuditFieldChangeFormatter getFormatter(Auditable auditable) {

@@ -21,7 +21,7 @@
 			mapLeft = document.getElementById("sidebar").clientWidth + 40;
 			document.getElementById("map").style.left=mapLeft + "px";
 		
-			map.setCenter(new GLatLng(40.879721,-76.998322),11);  //la la land, PA 
+			map.setCenter(new GLatLng(40.879721,-76.998322),10);  //la la land, PA 
 			if (window.attachEvent) { 
 				setIEMapExtent(); //on initialize
 				window.attachEvent("onresize",function(){ //IE

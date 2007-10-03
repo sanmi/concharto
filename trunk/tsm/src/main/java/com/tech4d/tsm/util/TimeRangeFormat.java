@@ -83,12 +83,12 @@ public class TimeRangeFormat  {
         patterns = tmpPatterns.toArray(new String[tmpPatterns.size()]);
         
         //for calculating the date precision 
-       calendarPrecisions.add(new CalendarPrecision(0, Calendar.SECOND, 0, FMT_TO_SECOND));
-       calendarPrecisions.add(new CalendarPrecision(1, Calendar.MINUTE, 0, FMT_TO_MINUTE));
-       calendarPrecisions.add(new CalendarPrecision(2, Calendar.HOUR, 0, FMT_TO_HOUR));
-       calendarPrecisions.add(new CalendarPrecision(3, Calendar.DAY_OF_MONTH, 1, FMT_TO_DAY));
-       calendarPrecisions.add(new CalendarPrecision(4, Calendar.MONTH, Calendar.JANUARY, FMT_TO_MONTH));
-       calendarPrecisions.add(new CalendarPrecision(5, Calendar.YEAR, -1, FMT_TO_YEAR));  //no empty value
+        calendarPrecisions.add(new CalendarPrecision(0, Calendar.SECOND, 0, FMT_TO_SECOND));
+        calendarPrecisions.add(new CalendarPrecision(1, Calendar.MINUTE, 0, FMT_TO_MINUTE));
+        calendarPrecisions.add(new CalendarPrecision(2, Calendar.HOUR, 0, FMT_TO_HOUR));
+        calendarPrecisions.add(new CalendarPrecision(3, Calendar.DAY_OF_MONTH, 1, FMT_TO_DAY));
+        calendarPrecisions.add(new CalendarPrecision(4, Calendar.MONTH, Calendar.JANUARY, FMT_TO_MONTH));
+        calendarPrecisions.add(new CalendarPrecision(5, Calendar.YEAR, -1, FMT_TO_YEAR));  //no empty value
     }
     
     private static void addPatterns(String[] patterns, List<String> list) {
@@ -136,8 +136,8 @@ public class TimeRangeFormat  {
 
     /**
      * Format a time range to a string.  
-     * @param timeRange
-     * @return
+     * @param timeRange TimeRange
+     * @return TimeRange formatted as a string
      */
     public static String format(SimpleTimeRange timeRange) {
         if (timeRange == null) {
@@ -158,29 +158,27 @@ public class TimeRangeFormat  {
         }
     }
 
-    /** */
     private static SimpleTimeRange subtractOneFromEnd(int calendarField, SimpleTimeRange timeRange) {
+        TimeRange adjusted = new TimeRange(timeRange.getBegin(), timeRange.getEnd());
         Calendar end = getCalendar(timeRange.getEnd());
         end.add(calendarField, -1);
-        timeRange.setEnd(end.getTime());
-        return timeRange;
+        adjusted.setEnd(end.getTime());
+        return adjusted;
     }
 
-    /** */
     private static boolean isOneApart(int calendarField, SimpleTimeRange tr) {
         return isSeparatedBy(calendarField, 1, tr);
     }
     
-    /** */
     private static boolean isEqual(int calendarField, SimpleTimeRange tr) {
         return isSeparatedBy(calendarField, 0, tr);
     }
 
     /**
      * evaluates whether the separation between the begin and end is equal to 'separation' parameter
-     * @param calendarField
-     * @param separation
-     * @param tr
+     * @param calendarField calendar field (e.g. Calendar.MONTH)
+     * @param separation number of places of separation
+     * @param tr SimpleTimeRange
      * @return true if begin-end = separation for the given calendar field (e.g. Calendar.MONTH)
      */
     private static boolean isSeparatedBy(int calendarField, int separation, SimpleTimeRange tr) {
@@ -191,7 +189,6 @@ public class TimeRangeFormat  {
         return (0 == (end.get(calendarField) - begin.get(calendarField)));        
     }
 
-    /** */
     private static Calendar getCalendar(Date date) {
         Calendar cal = new GregorianCalendar();
         cal.setTime(date);
@@ -199,7 +196,8 @@ public class TimeRangeFormat  {
     }
 
     /**
-     * @param format
+     * @param tr SimpleTimeRange
+     * @param format format string
      * @return a string with both beginning and end in the format fmt - fmt
      *         (e.g. yyyy - yyyy or MMM yyyy - MMM yyyy)
      */
@@ -212,7 +210,7 @@ public class TimeRangeFormat  {
 
     /** 
      * format a date
-     * @param date
+     * @param date date
      * @param format string (see SimpleDateFormat)
      * @return String formatted string
      */
@@ -230,8 +228,8 @@ public class TimeRangeFormat  {
      *   if begin = Sept 30, 1941, then end is Oct 1, 1941
      * </pre>
      * 
-     * @param text
-     * @return
+     * @param text text to parse
+     * @return TimeRange a time range
      */
     private static TimeRange parseSingleDate(String text) {
 
@@ -259,7 +257,7 @@ public class TimeRangeFormat  {
      *  
      * @param split an arr
      * @return SimpleTimeRange new time range
-     * @throws ParseException
+     * @throws ParseException exception if there is a parsing problem
      */
     private static TimeRange parseRange(String[] split) throws ParseException {
 
@@ -284,9 +282,9 @@ public class TimeRangeFormat  {
 
     /**
      * Parses dates from a very wide variety of formats and precisions
-     * @param text
+     * @param text text to parse
      * @return Date date
-     * @throws ParseException
+     * @throws ParseException if there is a parsing problem
      */
     private static Date parseDate(String text) throws ParseException {
         // first clean the spaces from front and back
@@ -301,7 +299,7 @@ public class TimeRangeFormat  {
 
     /**
      * Converts strings in the form "a,b" to "a, b"
-     * @param text
+     * @param text text to normalize
      * @return converted text
      */
     private static String normalizeCommas(String text) {
@@ -326,7 +324,7 @@ public class TimeRangeFormat  {
      * the pattern of default empty values.  E.g. 12/1/2007 00:00:00 
      * has a precision of "month" and 1/1/2007 00:00:00 has a precision
      * of "year" 
-     * @param date
+     * @param date Date to check
      * @return CalendarPrecision precision
      */
     private static CalendarPrecision getPrecision(Date date) {
@@ -345,7 +343,7 @@ public class TimeRangeFormat  {
 
     /**
      * Get the least precicse precision of begin and end for this time range
-     * @param timeRange
+     * @param timeRange TimeRange to check
      * @return CalendarPrecision precision
      */
     private static CalendarPrecision getPrecision(SimpleTimeRange timeRange) {

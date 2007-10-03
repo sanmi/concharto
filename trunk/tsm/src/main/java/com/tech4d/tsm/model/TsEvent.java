@@ -55,10 +55,8 @@ public class TsEvent extends BaseAuditableEntity {
     private Flag flag;
     public enum Flag {FOR_DELETION, FOR_CONTENT}
     private EventSearchText eventSearchText;
+    private Integer zoomLevel;
 
-    /**
-     * @see com.tech4d.tsm.model.geometry.KmlFeature
-     */
     @Column(name = "_where", length=SZ_WHERE)  //'where' is a sql reserved word
     public String getWhere() {
         return where;
@@ -198,6 +196,14 @@ public class TsEvent extends BaseAuditableEntity {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public Integer getZoomLevel() {
+        return zoomLevel;
+    }
+
+    public void setZoomLevel(Integer editZoomLevel) {
+        this.zoomLevel = editZoomLevel;
     }
 
     /**

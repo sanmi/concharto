@@ -35,8 +35,7 @@ public class TsEventFieldChangeFormatter implements AuditFieldChangeFormatter{
     
     /**
      * Just record that the object was created and who did it
-     * @param auditEntry
-     * @param auditable
+     * @param auditable Auditable
      */
     public AuditEntry createInsertAuditItems(Auditable auditable) {
         return makeAuditEntry(auditable, AuditEntry.ACTION_INSERT);
@@ -48,13 +47,17 @@ public class TsEventFieldChangeFormatter implements AuditFieldChangeFormatter{
         auditEntry.setAction(action);
         auditEntry.setEntityClass(ClassName.getClassName(auditable));
         auditEntry.setEntityId(auditable.getId());
+        Long currVersion = auditable.getVersion();
+        if (null == currVersion) {
+            currVersion = 0L;
+        }
+        auditEntry.setVersion(currVersion);
         return auditEntry;
     }
 
     /**
      * We don't need to record what got deleted - its gone and ain't coming back
-     * @param auditEntry
-     * @param auditable
+     * @param auditable Auditable
      */
     public AuditEntry createDeleteAuditItems(Auditable auditable) {
         return makeAuditEntry(auditable, AuditEntry.ACTION_DELETE);
@@ -73,21 +76,21 @@ public class TsEventFieldChangeFormatter implements AuditFieldChangeFormatter{
         TsEvent current = (TsEvent) currentA;
         TsEvent previous = (TsEvent) previousA;
 
-        makeChange(SUMMARY, current, current.getSummary(), previous.getSummary(), auditEntry);
-        makeChange(DESCRIPTION, current, current.getDescription(), previous.getDescription(), auditEntry);
-        makeChange(WHERE, current, current.getWhere(), previous.getWhere(), auditEntry);
-        makeChange(USERTAGS, current, current.getUserTagsAsString(), previous.getUserTagsAsString(), auditEntry);
-        makeChange(SOURCEURL, current, current.getSourceUrl(), previous.getSourceUrl(), auditEntry);
-        makeChange(TSGEOMETRY, current, 
+        makeChange(SUMMARY,  current.getSummary(), previous.getSummary(), auditEntry);
+        makeChange(DESCRIPTION, current.getDescription(), previous.getDescription(), auditEntry);
+        makeChange(WHERE,  current.getWhere(), previous.getWhere(), auditEntry);
+        makeChange(USERTAGS, current.getUserTagsAsString(), previous.getUserTagsAsString(), auditEntry);
+        makeChange(SOURCEURL, current.getSourceUrl(), previous.getSourceUrl(), auditEntry);
+        makeChange(TSGEOMETRY,
                 current.getTsGeometry().getGeometry().toText(), 
                 previous.getTsGeometry().getGeometry().toText(), auditEntry);
-        makeChange(WHEN, current, 
+        makeChange(WHEN,
                 TimeRangeFormat.format(current.getWhen()), 
                 TimeRangeFormat.format(previous.getWhen()), auditEntry);
         return auditEntry;
     }
     
-    private void makeChange(Integer propertyName, TsEvent currentEvent, String current, 
+    private void makeChange(Integer propertyName, String current, 
             String previous, AuditEntry auditEntry ) {
         if (!StringUtils.equals(current, previous)) {
             //concatenate in case it is larger than the space alloted

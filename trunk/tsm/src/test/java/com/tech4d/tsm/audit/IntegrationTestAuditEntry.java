@@ -71,6 +71,9 @@ public class IntegrationTestAuditEntry {
         event.setDescription("sdfsdf");
         Thread.sleep(1000);
         tsEventDao.saveOrUpdate(event);
+        //save, but don't make any changes.  Ensure no superfluous audit records
+        tsEventDao.saveOrUpdate(event);
+        tsEventDao.saveOrUpdate(event);
         TsEvent returned2 = tsEventDao.findById((Long) id);
         assertEquals(TsEventUtil.filterMilliseconds(event.getCreated()), returned.getCreated());
         //make sure the last modified dates are different for the two instances we edited
@@ -82,6 +85,10 @@ public class IntegrationTestAuditEntry {
         //now ensure two audit entries were created for this event
         List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(event, 0, 100);
         assertEquals(2, auditEntries.size());
+        for (int i=0; i<auditEntries.size(); i++) {
+            AuditEntry auditEntry = auditEntries.get(i);
+            assertEquals(new Long(i), auditEntry.getVersion());
+        }
     }
   
 
