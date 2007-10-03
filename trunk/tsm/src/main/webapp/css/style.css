@@ -46,17 +46,17 @@ body {
 }
 
 .mapedit #selectedMiniTab {
-	background : #EBEBEB;
+	background : #FFFFFF;
 	border-left : 1px solid;
 	border-top : 1px solid;
 	border-right : 1px solid;
 	color : #999;
-	font-size : smaller;
+	font-size : x-small;
 	font-weight : bold;
 	line-height : 10px;
 	margin-right : 4px;
 	padding : 2px 10px 2px 10px;
-	text-decoration : none;			
+	text-decoration : none;
 }
 
 .mapedit #unselectedMiniTab {
@@ -65,7 +65,7 @@ body {
 	border-top : 1px solid;
 	border-right : 1px solid;
 	color : #999;
-	font-size : smaller;
+	font-size : x-small;
 	font-weight : bold;
 	line-height : 10px;
 	margin-right : 4px;

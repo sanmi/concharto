@@ -26,7 +26,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 </head>
 
-<body ${bodyattr} }>
+<body ${bodyattr}>
 
     <div id="head">
       <img src="<%=request.getContextPath()%>/images/logo.png" alt="" />

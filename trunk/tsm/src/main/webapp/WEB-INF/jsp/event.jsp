@@ -94,7 +94,13 @@
 			}
 			e.returnValue = false;
 	}
-				
+			
+	function changeHistory() {
+		var id = document.getElementById("eventForm").id.value;
+		if (id != '') {
+			document.location="changehistory.htm?id=" + id;
+		}
+	}
 			
 		//]]>
 		</script>
@@ -105,53 +111,55 @@
 	<jsp:body>
 	   <div id="sidebar">
 
-	       <form:form name="event" id="eventForm" commandName="event" method="post" onsubmit="saveEvent(); return false">
+        <form:form name="event" id="eventForm" commandName="event" method="post" onsubmit="saveEvent(); return false">
 			    <form:hidden path="id"/>
 			    <form:hidden path="lat"/>
 			    <form:hidden path="lng"/>
 			    <form:hidden path="zoomLevel"/>
-	
-	         <table>
-	           <tr>
-	             <td class="labelcell">Summary <br/>
-	             <form:input path="summary" size="50"/></td>
-	           </tr>
-	           <tr>
-	             <td class="labelcell">Where
-	                 <small>e.g., "gettysburg, pa" </small><br/>
-	                 <form:input path="where" size="50"/>
-	                 <br/>
-	                 <input  type="button" name="Find" value="Go to Location" onclick="showAddress(document.event.where.value); return false"/>             
-	                 <small id="tip"><b>Tip:</b> drag and drop the lollypop!</small>
-	             </td>
-	           </tr>
-	           <tr>
-	             <td class="labelcell">
-	               When
-	               <small>
-	                 e.g. "1962" or "March, 1064" or "1880 - 1886" <a href="#">hints</a>
-	               </small><br/>
-	               <form:input path="when" size="50"/>
-	             </td>
-	           </tr>
-	           <tr>
-	             <td class="labelcell">Description<br/>
-	             <form:textarea rows="5" cols="38" path="description"/></td>
-	           </tr>
-	           <tr>
-	             <td class="labelcell">Tags<br/>
-	             <form:input path="tags" size="50"/>
-	           </tr>
-	           <tr>
-	             <td class="labelcell">Source 
-	             <small><a id="selectedMiniTab" href="#">URL</a><a id="unselectedMiniTab" href="#">Publication</a><a id="unselectedMiniTab" href="#">Other</a></small><br/>
-	             <form:input path="source" size="50"/>
-	           </td> 
-	             
-	           </tr>
-	         </table>
-	         <input type="submit" name="Save" value="Save This Event" />
-	         <input type="button" name="Cancel" value="Cancel" onclick="javascript:document.location='switchboard/listEvents.htm';"/>
+					<div class="labelcell" style="margin-bottom:5px; margin-left:5px">
+						<span id="selectedMiniTab">Edit</span><a id="unselectedMiniTab" href="#" onclick="changeHistory(); return false;">Change History</a>
+	        </div>
+         <table>
+           <tr>
+             <td class="labelcell">Summary <br/>
+             <form:input path="summary" size="50"/></td>
+           </tr>
+           <tr>
+             <td class="labelcell">Where
+                 <small>e.g., "gettysburg, pa" </small><br/>
+                 <form:input path="where" size="50"/>
+                 <br/>
+                 <input  type="button" name="Find" value="Go to Location" onclick="showAddress(document.event.where.value); return false"/>             
+                 <small id="tip"><b>Tip:</b> drag and drop the lollypop!</small>
+             </td>
+           </tr>
+           <tr>
+             <td class="labelcell">
+               When
+               <small>
+                 e.g. "1962" or "March, 1064" or "1880 - 1886" <a href="#">hints</a>
+               </small><br/>
+               <form:input path="when" size="50"/>
+             </td>
+           </tr>
+           <tr>
+             <td class="labelcell">Description<br/>
+             <form:textarea rows="5" cols="38" path="description"/></td>
+           </tr>
+           <tr>
+             <td class="labelcell">Tags<br/>
+             <form:input path="tags" size="50"/>
+           </tr>
+           <tr>
+             <td class="labelcell">Source 
+             <small><a id="selectedMiniTab" href="#">URL</a><a id="unselectedMiniTab" href="#">Publication</a><a id="unselectedMiniTab" href="#">Other</a></small><br/>
+             <form:input path="source" size="50"/>
+           </td> 
+             
+           </tr>
+         </table>
+         <input type="submit" name="Save" value="Save This Event" />
+         <input type="button" name="Cancel" value="Cancel" onclick="javascript:document.location='switchboard/listEvents.htm';"/>
 	       </form:form>
 	   </div>
 
