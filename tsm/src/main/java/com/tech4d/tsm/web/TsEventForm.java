@@ -12,6 +12,7 @@ public class TsEventForm {
     private String source;
     private Double lat;
     private Double lng;
+    private Integer zoomLevel;
 
     public Long getId() {
         return id;
@@ -95,6 +96,14 @@ public class TsEventForm {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public Integer getZoomLevel() {
+        return zoomLevel;
+    }
+
+    public void setZoomLevel(Integer zoomLevel) {
+        this.zoomLevel = zoomLevel;
     }
 
 }

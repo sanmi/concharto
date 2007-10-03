@@ -13,5 +13,9 @@ public interface Auditable {
     public Date getLastModified();
 
     public void setLastModified(Date lastModified);
+    
+    public Long getVersion();
+
+    public void setVersion(Long version);
 
 }
