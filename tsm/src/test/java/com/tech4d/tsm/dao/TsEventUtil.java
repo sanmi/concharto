@@ -1,5 +1,17 @@
 package com.tech4d.tsm.dao;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.orm.hibernate3.SessionFactoryUtils;
+
 import com.tech4d.tsm.model.TsEvent;
 import com.tech4d.tsm.model.User;
 import com.tech4d.tsm.model.UserTag;
@@ -9,12 +21,6 @@ import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import static org.junit.Assert.assertEquals;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
-
-import java.util.*;
 
 public class TsEventUtil {
     public SessionFactory sessionFactory;

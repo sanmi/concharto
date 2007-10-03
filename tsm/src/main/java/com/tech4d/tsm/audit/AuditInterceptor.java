@@ -246,16 +246,4 @@ public class AuditInterceptor extends EmptyInterceptor {
         }
     }
 
-    /**
-     * Get the class name without the packages
-     * @param obj
-     * @return classname stripped of the packages
-     */
-    private String getClassName(Object obj) {
-        String className = obj.getClass().getName();
-        String[] tokens = className.split("\\.");
-        int lastToken = tokens.length - 1;
-        return tokens[lastToken];
-    }
-
 }
