@@ -17,12 +17,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tech4d.tsm.model.TsEvent;
 import com.tech4d.tsm.util.ContextUtil;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 
+@Transactional
 public class IntegrationTestTsEventDao {
     private static final int MAX_RESULTS = 200;
 
@@ -48,7 +50,7 @@ public class IntegrationTestTsEventDao {
         ApplicationContext appCtx = ContextUtil.getCtx();
         tsEventDao = (TsEventDao) appCtx.getBean("tsEventDao");
         tsEventTesterDao = (TsEventTesterDao) appCtx.getBean("tsEventTesterDao");
-        tsEventUtil = new TsEventUtil(tsEventDao.getSessionFactory());
+        tsEventUtil = new TsEventUtil(tsEventTesterDao.getSessionFactory());
         tsEventTesterDao.deleteAll();
         StyleUtil.setupStyle();
     }
@@ -72,12 +74,31 @@ public class IntegrationTestTsEventDao {
         if (returned.getTsGeometry().getGeometry() instanceof Point) {
             Point point = (Point) returned.getTsGeometry().getGeometry();
             assertTrue((tsEvent.getTsGeometry()).getGeometry().equals(point));
-
+            
         } else {
             fail("should have been a point");
         }
-
+        
         tsEventUtil.assertEquivalent(tsEvent, returned);
+    }
+
+    /**
+     * Tests Auditing
+     * @throws ParseException
+     * @throws InterruptedException
+     */
+    @Test
+    public void testSaveAndResave() throws ParseException, InterruptedException {
+        TsEvent event = tsEventUtil.createTsEvent(begin, end);
+        Serializable id = tsEventDao.save(event);
+        TsEvent returned = tsEventDao.findById((Long) id);
+        event.setDescription("sdfsdf");
+        Thread.sleep(1000);
+        tsEventDao.saveOrUpdate(event);
+        TsEvent returned2 = tsEventDao.findById((Long) id);
+        assertEquals(TsEventUtil.filterMilliseconds(event.getCreated()), returned.getCreated());
+        //make sure the last modified dates are different for the two instances we edited
+        assertTrue(returned.getLastModified().compareTo(returned2.getLastModified()) != 0);
     }
   
     public void findAll() throws ParseException {

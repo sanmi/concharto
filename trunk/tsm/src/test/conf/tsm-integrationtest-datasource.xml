@@ -35,13 +35,18 @@
 		<property name="schemaUpdate" value="true"/>
 	</bean>
 	
-  	<!-- similarly, don't forget the PlatformTransactionManager -->
-	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-	  <property name="dataSource" ref="myDataSource"/>
-	</bean>
-	
-	<!-- enable the configuration of transactional behavior based on annotations -->
-	<tx:annotation-driven transaction-manager="txManager"/>
+
+
+	<!-- Audit interceptor for hibernate objects -->	
+  <bean id="auditLogInterceptor" class="com.tech4d.tsm.lab.audit.AuditLogInterceptor">
+  	<property name="sessionFactory" ref="mySessionFactory"/>
+  </bean>
+
+
+  <bean id="simpleAuditInterceptor" class="com.tech4d.tsm.lab.audit.SimpleAuditInterceptor">
+  </bean>
+
+
 
 
 	 <!--  

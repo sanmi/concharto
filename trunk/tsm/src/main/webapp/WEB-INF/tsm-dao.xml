@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN"
-        "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
-<beans>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 	
-	<!-- Begin Daos --><!--  
-	<bean id="addressDao" class="com.tech4d.tsm.lab.AddressDaoHib">
-		<property name="sessionFactory">
-			<ref bean="mySessionFactory"/>
-		</property>
-	</bean>
-	--><bean id="tsEventDao" class="com.tech4d.tsm.dao.TsEventDaoHib">
+	<bean id="tsEventDao" class="com.tech4d.tsm.dao.TsEventDaoHib">
 		<property name="sessionFactory">
 			<ref bean="mySessionFactory"/>
 		</property>
@@ -24,6 +24,36 @@
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
+	<bean id="auditEntryDao" class="com.tech4d.tsm.dao.AuditEntryDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="auditLogWriter" class="com.tech4d.tsm.dao.AuditLogWriterHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
 	<!-- End Daos -->  
+	
+		<!-- Begin Transaction config -->
+	<bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+	  <property name="sessionFactory" ref="mySessionFactory"/>
+	  <property name="entityInterceptor" ref="auditInterceptor"/>
+	</bean>
+	
+	<!-- enable the configuration of transactional behavior based on annotations -->
+	<tx:annotation-driven transaction-manager="txManager"/>
+
+	<bean id="auditInterceptor" class="com.tech4d.tsm.audit.AuditInterceptor">
+  	<property name="sessionFactory" ref="mySessionFactory"/>
+  	<property name="auditLogWriter" ref="auditLogWriter"/>
+  	<property name="auditFieldChangeFormatters">
+  		<set>
+  			<value>com.tech4d.tsm.audit.TsEventFieldChangeFormatter</value>
+  		</set>
+  	</property>
+  </bean>
+	<!-- End Transaction config -->
 	
 </beans>

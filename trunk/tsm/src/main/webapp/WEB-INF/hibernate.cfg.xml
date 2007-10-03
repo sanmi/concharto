@@ -27,6 +27,8 @@
         <mapping class="com.tech4d.tsm.model.TsEventSummary"/>
         <mapping class="com.tech4d.tsm.model.User"/>
         <mapping class="com.tech4d.tsm.model.EventSearchText"/>
+        <mapping class="com.tech4d.tsm.model.audit.AuditEntry"/>
+        <mapping class="com.tech4d.tsm.model.audit.AuditFieldChange"/>
     
     </session-factory>
 

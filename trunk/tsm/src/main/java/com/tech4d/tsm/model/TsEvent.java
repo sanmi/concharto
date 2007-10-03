@@ -29,7 +29,7 @@ import com.tech4d.tsm.model.geometry.TsGeometry;
  * be serialized to KML and can be searched using a spatial query.
  */
 @Entity
-public class TsEvent extends BaseAuditableEntity  {
+public class TsEvent extends BaseAuditableEntity {
     
     public final static int SZ_DESCRIPTION = 2048;
     public static final int SZ_SNIPPET = 1024;
@@ -155,6 +155,7 @@ public class TsEvent extends BaseAuditableEntity  {
         this.history = history;
     }
 
+    //TODO this should probably be one to many!  many to many would be slow to fetch.
     @ManyToMany(cascade={CascadeType.ALL})
     @ForeignKey(name="FK_EVENT_USERTAG", inverseName = "FK_USERTAG_EVENT")
     public List<UserTag> getUserTags() {
