@@ -35,8 +35,6 @@
 		<property name="schemaUpdate" value="true"/>
 	</bean>
 	
-
-
 	<!-- Audit interceptor for hibernate objects -->	
   <bean id="auditLogInterceptor" class="com.tech4d.tsm.lab.audit.AuditLogInterceptor">
   	<property name="sessionFactory" ref="mySessionFactory"/>
@@ -46,7 +44,19 @@
   <bean id="simpleAuditInterceptor" class="com.tech4d.tsm.lab.audit.SimpleAuditInterceptor">
   </bean>
 
+	<!-- Begin Transaction config -->
+	<!-- This transaction manager is different from the one used by the web app because we 
+	attach the entityInterceptor to the OpenInViewInterceptor rather than to the transaction manager 
+	but for integration testing, we don't use a web app context and don't do that sort of view stuff -->
+	<bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+	  <property name="sessionFactory" ref="mySessionFactory"/>
+		<property name="entityInterceptor" ref="auditInterceptor"/>
+	</bean>
 
+	<!-- enable the configuration of transactional behavior based on annotations 
+			TODO not sure if this is working properly with the openSessionInViewInteceptor -->
+	<tx:annotation-driven transaction-manager="txManager"/>
+	<!-- End Transaction config -->
 
 
 	 <!--  

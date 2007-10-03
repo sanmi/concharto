@@ -1,9 +1,9 @@
 package com.tech4d.tsm.util;
 
+import java.util.ArrayList;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.ArrayList;
 
 /**
  * Utility to accumulate times and displays them

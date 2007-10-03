@@ -36,14 +36,17 @@
 	</bean>
 	<!-- End Daos -->  
 	
-		<!-- Begin Transaction config -->
-	<bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-	  <property name="sessionFactory" ref="mySessionFactory"/>
-	  <property name="entityInterceptor" ref="auditInterceptor"/>
+	<!-- enable the configuration of transactional behavior based on annotations 
+			TODO not sure if this is working properly with the openSessionInViewInteceptor -->
+	<tx:annotation-driven transaction-manager="txManager"/>
+	
+		<!-- for handling hibernate lazy loading -->
+	<bean name="openSessionInViewInterceptor"
+		class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+		<property name="entityInterceptor" ref="auditInterceptor"/>
 	</bean>
 	
-	<!-- enable the configuration of transactional behavior based on annotations -->
-	<tx:annotation-driven transaction-manager="txManager"/>
 
 	<bean id="auditInterceptor" class="com.tech4d.tsm.audit.AuditInterceptor">
   	<property name="sessionFactory" ref="mySessionFactory"/>

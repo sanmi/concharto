@@ -1,9 +1,7 @@
 package com.tech4d.tsm.service;
 
-import com.tech4d.tsm.model.TsEvent;
-import com.tech4d.tsm.model.geometry.TimeRange;
-import com.tech4d.tsm.util.LapTimer;
-import com.vividsolutions.jts.geom.Geometry;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,7 +10,10 @@ import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.model.geometry.TimeRange;
+import com.tech4d.tsm.util.LapTimer;
+import com.vividsolutions.jts.geom.Geometry;
 
 @Transactional
 public class EventSearchServiceHib implements EventSearchService {
