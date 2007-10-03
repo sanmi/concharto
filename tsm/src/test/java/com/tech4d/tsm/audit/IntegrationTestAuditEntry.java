@@ -28,6 +28,7 @@ import com.vividsolutions.jts.io.ParseException;
 @Transactional
 public class IntegrationTestAuditEntry {
 
+    private static final int MAX_RESULTS = 100;
     private static TsEventDao tsEventDao;
     private static TsEventTesterDao tsEventTesterDao;
     private static AuditEntryDao auditEntryDao;
@@ -83,13 +84,26 @@ public class IntegrationTestAuditEntry {
         tsEventDao.save(tsEventUtil.createTsEvent(begin, end));
         
         //now ensure two audit entries were created for this event
-        List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(event, 0, 100);
+        List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(event, 0, MAX_RESULTS);
         assertEquals(2, auditEntries.size());
         for (int i=0; i<auditEntries.size(); i++) {
             AuditEntry auditEntry = auditEntries.get(i);
             assertEquals(new Long(i), auditEntry.getVersion());
         }
+        
+        //now test retrieval by fake object
+        TsEvent empty = new TsEvent();
+        empty.setId(event.getId());
+        auditEntries = auditEntryDao.getAuditEntries(empty, 0, MAX_RESULTS);
+        assertEquals(2, auditEntries.size());
+        
+        //now test a bad ID
+        empty.setId(4344L);
+        auditEntries = auditEntryDao.getAuditEntries(empty, 0, MAX_RESULTS);
+        assertEquals(0, auditEntries.size());
+        
     }
   
+    
 
 }

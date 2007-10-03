@@ -73,7 +73,7 @@ public class PopulateDummyData {
         textFileReader.close();
     }
     
-    private static final int NUM_EVENTS = 100000;
+    private static final int NUM_EVENTS = 10000;
     private static final int COLLECTION_SIZE = 10000;
     @Test
     public void makeData() throws ParseException, IOException {

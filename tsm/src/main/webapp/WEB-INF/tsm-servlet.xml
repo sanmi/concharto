@@ -39,6 +39,11 @@
 		<property name="tsEventDao" ref="tsEventDao" />
 	</bean>
 
+	<bean class="com.tech4d.tsm.web.ChangeHistoryController" parent="baseEventController">
+		<property name="tsEventDao" ref="tsEventDao" />
+		<property name="auditEntryDao" ref="auditEntryDao" />
+	</bean>
+
 	<bean class="com.tech4d.tsm.web.EventSearchController" parent="baseEventController">
 		<property name="commandName" value="eventSearch" />
 		<property name="commandClass" value="com.tech4d.tsm.web.EventSearchForm" />
