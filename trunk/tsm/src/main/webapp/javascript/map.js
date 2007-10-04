@@ -18,7 +18,7 @@
 			map.getContainer().onmousewheel = wheelevent; 
 			
 			///check resize
-			mapLeft = document.getElementById("sidebar").clientWidth + 40;
+			mapLeft = document.getElementById("sidebar").clientWidth + 10;
 			document.getElementById("map").style.left=mapLeft + "px";
 		
 			map.setCenter(new GLatLng(40.879721,-76.998322),10);  //la la land, PA 
@@ -28,10 +28,10 @@
 					setIEMapExtent();
 				});
 			} else {
-	  		document.getElementById("map").style.top=document.getElementById("sidebar").offsetTop + "px";
-				document.getElementById("map").style.right="20px";
+    	  		document.getElementById("map").style.top = document.getElementById("sidebar").offsetTop + "px";
+				document.getElementById("map").style.right = "20px";
 				document.getElementById("map").style.bottom = "20px"
-				// We need need to do set these on the div tag, otherwise there is a GMap loading bug that
+				// We need to set these on the div tag, otherwise there is a GMap loading bug that
 				//causes only some of the map to be loaded, but then we need to reset them now that we are 
 				//doing automatic resizing
 				document.getElementById("map").style.width=""; 
@@ -42,11 +42,11 @@
 	}
 	
 	function setIEMapExtent() {
-	  var top = document.getElementById("sidebar").offsetTop + 20;
+	    var top = document.getElementById("sidebar").offsetTop + 20;
 		document.getElementById("map").style.top= top + "px";
 		var hght=document.documentElement.clientHeight-top-20;
 		document.getElementById("map").style.height=hght+"px";
-		var width=document.documentElement.clientWidth-document.getElementById("sidebar").clientWidth-60;
+		var width=document.documentElement.clientWidth-document.getElementById("sidebar").clientWidth-30;
 		document.getElementById("map").style.width=width+"px";
 	}
 	
