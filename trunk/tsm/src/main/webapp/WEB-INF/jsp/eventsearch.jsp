@@ -1,9 +1,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
 
 <tsm:page title="Event">
 	<jsp:attribute name="head">
@@ -52,6 +56,7 @@
 			map.setCenter(new GLatLng(mapCenter.lat,mapCenter.lng), mapZoom);			
 			drawPlacemarks();
 		}
+		adjustSidebar();
 	}
 
 	function drawPlacemarks() {
@@ -78,66 +83,71 @@
 				return marker;
 	}
 	
+	function adjustSidebar() {
+		var top = document.getElementById("sidebar").offsetTop;
+		var hght=document.documentElement.clientHeight-top-40;
+		
+		//alert(top +"," + hght);
+		document.getElementById("results").style.height=hght+"px";
+	}
 
 		//]]>
 		</script>
 	</jsp:attribute>
 	<jsp:attribute name="script">map.js,json.js</jsp:attribute>
-	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit"</jsp:attribute>
+	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="adjustSidebar();"</jsp:attribute>
 
 
 	<jsp:body>
-	 <%-- Pull the center from the form object so we can center using javascript (see above) --%>
-	  <div id="sidebar">
-	    <form:form name="event" id="eventSearchForm" commandName="eventSearch" method="post" onsubmit="search(); return false">
-	    	<form:hidden path="boundingBoxSW" htmlEscape="true"/>
-	    	<form:hidden path="boundingBoxNE" htmlEscape="true"/>
-	    	<form:hidden path="mapCenter" htmlEscape="true"/>
-	    	<form:hidden path="searchResults" htmlEscape="true"/>
-	    	<form:hidden path="mapZoom"/>
-        <table>
-          <tr>
-            <td class="labelcell">Where 
-                <small>e.g., "gettysburg, pa" </small><br/>
-                <form:input path="where" size="50"/>
-            </td>
-          </tr>
-          <tr>
-            <td class="labelcell">
-              When
-              <small>
-                e.g. "1962" or "March, 1064" or "1880 - 1886" <a href="#">hints</a>
-              </small><br/>
-              <form:input path="when" size="50"/>
-            </td>
-          </tr>
-          <tr>
-            <td class="labelcell">What<br/>
-                <form:input path="what" size="50"/>
-          </tr>
-        </table>
-        <input type="submit" name="Search" value="Search" />
-        <input type="button" name="Save" value="Cancel" onclick="document.location='switchboard/listEvents.htm';"/>
-	    </form:form>
-	    <c:if test="${fn:length(events) > 0}">
-		    <br/>
-		    ${fn:length(events)} Events found
-		    <table class="eventlist">
-		    	<thead>
-		    		<td>Summary</td>
-		    		<td>Where</td>
-		    		<td>When</td>
-		    	</thead>
-		    <c:forEach items="${events}" var="event">
-		        <tr>
-		            <td>${event.summary}&nbsp;</td>
-		            <td>${event.where}&nbsp;</td>
-		            <td>${event.when.asText}&nbsp;</td>
-		        </tr>
-		    </c:forEach>
-		    </table>
-	    </c:if>
+	  <div >
+        	<span style="position:absolute; left:250px; top:34px;" >
+				    <form:form name="event" id="eventSearchForm" commandName="eventSearch" method="post" onsubmit="search(); return false">
+				    	<form:hidden path="boundingBoxSW" htmlEscape="true"/>
+				    	<form:hidden path="boundingBoxNE" htmlEscape="true"/>
+				    	<form:hidden path="mapCenter" htmlEscape="true"/>
+				    	<form:hidden path="searchResults" htmlEscape="true"/>
+				    	<form:hidden path="mapZoom"/>
+			        <table>
+			          <tr>
+			            <td class="labelcell">Where 
+			                <small>e.g., "gettysburg, pa" </small><br/>
+			                <form:input path="where" size="22"/>
+			            </td>
+			            <td class="labelcell">
+			              When
+			              <small>
+			                e.g. "1962" or "March, 1064" or "1880 - 1886" 
+			              </small><br/>
+			              <form:input path="when" size="35"/>
+			            </td>
+			            <td class="labelcell">What<br/>
+			                <form:input path="what" size="15"/>
+				          </tr>
+				        </table>
+				        <input type="submit" name="Search" value="Search" />
+				        <input type="button" name="Save" value="Cancel" onclick="document.location='switchboard/listEvents.htm';"/>
+					    </form:form>
+	          </span>
 	  </div>
+	  
+	 <%-- Pull the center from the form object so we can center using javascript (see above) --%>
+	  <div id="sidebar" >
+	  		<span style="padding-left: 5px"><b>${fn:length(events)} Events found</b></span>
+		    <div id="results" style="margin-right:-20px;height:100px;overflow-x:hidden;overflow-y:scroll;overflow:-moz-scrollbars-vertical!important;">
+			    <table class="eventlist">
+				    <c:forEach items="${events}" var="event">
+			        <tr>
+		            <td>
+				          <a href="#">${event.summary}</a><br/>
+				          <b>${event.when.asText}</b>, 
+				          ${event.where}
+		            </td>
+			        </tr>
+				    </c:forEach>
+			    </table>
+			  </div>
+	  </div>
+	  
 
 	   <div id="map"  style="position:absolute; height:1000px;width:1000px">
 	     Map coming...
