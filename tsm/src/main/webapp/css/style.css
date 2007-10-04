@@ -53,6 +53,7 @@ background-color:#CCCCCC;
 	color: #000000;
 	border: 1px solid #D7E5F2;
 	border-collapse: collapse;
+	margin-right: 10px;
 }
 
 .mapedit #eventForm td {

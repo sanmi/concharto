@@ -56,12 +56,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			map.setCenter(new GLatLng(mapCenter.lat,mapCenter.lng), mapZoom);			
 			drawPlacemarks();
 		}
-		adjustSidebar();
+		adjustSidebarIE();
 	}
 
+	//global array and index for dealing with markers 
+	var markers;
+	var markerIndex = 0;
+	var markerHtml;
+	
+	
 	function drawPlacemarks() {
 			var eventsJSON = document.getElementById("eventSearchForm").searchResults.value;
 			var events = eventsJSON.parseJSON();
+			//make a new global array for storing the events
+			markers = new Array(events.length);
+			markerHtml = new Array(events.length);
+			
+			//create the markers
 			for (var i =0; i<events.length; i++) {
 			  map.addOverlay( createMarker(events[i]) );
 			} 
@@ -69,33 +80,40 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 	function createMarker(event) {
 				var marker = new GMarker(new GLatLng(event.latLng.lat, event.latLng.lng));
-				GEvent.addListener(marker, "click", function() {
-					var html = '<b>' + event.summary+'</b><br/>' + event.when + '<br/>' +
-					event.description + '<br/>' +
-					'<br/><b>Tags: </b>' + event.tags + '<br/>' + 
-					'<b>Source: </b>' + event.source + '<br/>' + 
-					'<a href="http://www.map4d.com:8080/tsm/event.htm?listid=' + event.id + '">edit</a>' +  
-					' &nbsp; <a href="#">flag</a><br/>'
-					;
-						
-					marker.openInfoWindowHtml(html);
-				});
+
+				var html = '<b>' + event.summary+'</b><br/>' + event.when + '<br/>' +
+				event.description + '<br/>' +
+				'<br/><b>Tags: </b>' + event.tags + '<br/>' + 
+				'<b>Source: </b>' + event.source + '<br/>' + 
+				'<a href="http://www.map4d.com:8080/tsm/event.htm?listid=' + event.id + '">edit</a>' +  
+				' &nbsp; <a href="#">flag</a><br/>'
+				;
+				//save this marker.
+				markers[markerIndex] = marker;
+				markerHtml[markerIndex] = html;
+				markerIndex++;
+
+				marker.bindInfoWindowHtml(html);
+
 				return marker;
 	}
 	
-	function adjustSidebar() {
+	function adjustSidebarIE() {
 		var top = document.getElementById("sidebar").offsetTop;
 		var hght=document.documentElement.clientHeight-top-40;
 		
-		//alert(top +"," + hght);
 		document.getElementById("results").style.height=hght+"px";
+	}
+
+	function openMarker(index) {	
+		markers[index].openInfoWindowHtml(markerHtml[index]);
 	}
 
 		//]]>
 		</script>
 	</jsp:attribute>
 	<jsp:attribute name="script">map.js,json.js</jsp:attribute>
-	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="adjustSidebar();"</jsp:attribute>
+	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 
 
 	<jsp:body>
@@ -135,11 +153,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  		<span style="padding-left: 5px"><b>${fn:length(events)} Events found</b></span>
 		    <div id="results" style="margin-right:10px;width=320px;height:100px;overflow-x:hidden;overflow-y:scroll;overflow:-moz-scrollbars-vertical!important;">
 			    <table class="eventlist">
-				    <c:forEach items="${events}" var="event">
+				    <c:forEach items="${events}" var="event" varStatus="status">
 			        <tr>
 		            <td>
+		            	<c:out value='${status.count}'/>) 
 				          <span style="color:#3670A7;font-weight:bold">${event.when.asText}</span>, 
-				          <a href="#">${event.summary}</a><br/>
+				          <a href="#" onclick="openMarker(<c:out value='${status.count-1}'/>)">${event.summary}</a><br/>
 				          <em>${event.where}</em>, <br/>
 				          ${event.description}
 		            </td>
