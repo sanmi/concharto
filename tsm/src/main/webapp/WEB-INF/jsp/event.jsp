@@ -111,23 +111,23 @@
 	<jsp:body>
 	   <div id="sidebar">
 
-        <form:form name="event" id="eventForm" commandName="event" method="post" onsubmit="saveEvent(); return false">
-			    <form:hidden path="id"/>
-			    <form:hidden path="lat"/>
-			    <form:hidden path="lng"/>
-			    <form:hidden path="zoomLevel"/>
-					<div class="labelcell" style="margin-bottom:5px; margin-left:5px">
-						<span id="selectedMiniTab">Edit</span><a id="unselectedMiniTab" href="#" onclick="changeHistory(); return false;">Change History</a>
-	        </div>
+       <form:form name="event" id="eventForm" commandName="event" method="post" onsubmit="saveEvent(); return false">
+			   <form:hidden path="id"/>
+			   <form:hidden path="lat"/>
+			   <form:hidden path="lng"/>
+			   <form:hidden path="zoomLevel"/>
+				 <div style="margin-bottom:5px; margin-left:5px">
+					 <span id="selectedMiniTab">Edit</span><a id="unselectedMiniTab" href="#" onclick="changeHistory(); return false;">Change History</a>
+	       </div>
          <table>
            <tr>
              <td class="labelcell">Summary <br/>
-             <form:input path="summary" size="50"/></td>
+             <form:input path="summary" size="45"/></td>
            </tr>
            <tr>
              <td class="labelcell">Where
                  <small>e.g., "gettysburg, pa" </small><br/>
-                 <form:input path="where" size="50"/>
+                 <form:input path="where" size="45"/>
                  <br/>
                  <input  type="button" name="Find" value="Go to Location" onclick="showAddress(document.event.where.value); return false"/>             
                  <small id="tip"><b>Tip:</b> drag and drop the lollypop!</small>
@@ -139,28 +139,28 @@
                <small>
                  e.g. "1962" or "March, 1064" or "1880 - 1886" <a href="#">hints</a>
                </small><br/>
-               <form:input path="when" size="50"/>
+               <form:input path="when" size="45"/>
              </td>
            </tr>
            <tr>
              <td class="labelcell">Description<br/>
-             <form:textarea rows="5" cols="38" path="description"/></td>
+             <form:textarea rows="5" cols="35" path="description"/></td>
            </tr>
            <tr>
              <td class="labelcell">Tags<br/>
-             <form:input path="tags" size="50"/>
+             <form:input path="tags" size="45"/>
            </tr>
            <tr>
              <td class="labelcell">Source 
              <small><a id="selectedMiniTab" href="#">URL</a><a id="unselectedMiniTab" href="#">Publication</a><a id="unselectedMiniTab" href="#">Other</a></small><br/>
-             <form:input path="source" size="50"/>
+             <form:input path="source" size="45"/>
            </td> 
              
            </tr>
          </table>
          <input type="submit" name="Save" value="Save This Event" />
          <input type="button" name="Cancel" value="Cancel" onclick="javascript:document.location='switchboard/listEvents.htm';"/>
-	       </form:form>
+	     </form:form>
 	   </div>
 
 	   <div id="map"  style="position:absolute; height:1000px;width:1000px">

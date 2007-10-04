@@ -33,7 +33,7 @@ public class AuditEntryDaoHib implements AuditEntryDao {
         "select auditEntry from AuditEntry auditEntry " +
         "where auditEntry.entityClass = :className " +
         "and auditEntry.entityId = :id " +
-        "order by auditEntry.dateCreated";
+        "order by auditEntry.version desc";
     @SuppressWarnings("unchecked")
     public List<AuditEntry> getAuditEntries(Auditable auditable, int firstResult, int maxResults) {
         LapTimer timer = new LapTimer(this.logger);

@@ -86,9 +86,11 @@ public class IntegrationTestAuditEntry {
         //now ensure two audit entries were created for this event
         List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(event, 0, MAX_RESULTS);
         assertEquals(2, auditEntries.size());
+        //go down the list (entries are ordered by newest first)
+        int version = auditEntries.size() - 1;
         for (int i=0; i<auditEntries.size(); i++) {
             AuditEntry auditEntry = auditEntries.get(i);
-            assertEquals(new Long(i), auditEntry.getVersion());
+            assertEquals((long) new Long(version--), auditEntry.getVersion());
         }
         
         //now test retrieval by fake object

@@ -28,13 +28,13 @@
 
 <body ${bodyattr}>
 
-    <div id="head">
-      <img src="<%=request.getContextPath()%>/images/logo.png" alt="" />
-      <img src="<%=request.getContextPath()%>/images/banner-timeline.png" alt="" width="506" height="63" />
-    </div>
-<div id="content">
-<jsp:doBody />
-</div>
+	<jsp:include flush="true" page="/WEB-INF/jsp/include/topmenu.jsp"/>
+	<jsp:include flush="true" page="/WEB-INF/jsp/include/head.jsp"/>
+  
+	<div id="content">
+		<jsp:doBody />
+	</div>
+
   <div id="footer">
 	  <hr/>
 	  <div id="clearFloat"/>  
