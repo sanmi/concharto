@@ -42,7 +42,7 @@ background-color:#CCCCCC;
 	text-align: left; 
 }  
 .mapedit #sidebar {
-	width: 300px; 
+	width: 320px; 
 	padding: 5px 0;
 }
 
@@ -164,7 +164,7 @@ background-color:#CCCCCC;
 
 .eventlist td em {
 	color:#990000;
-	font-weight: bold;
+	
 }
 
 .eventlist thead th {

@@ -75,7 +75,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					'<br/><b>Tags: </b>' + event.tags + '<br/>' + 
 					'<b>Source: </b>' + event.source + '<br/>' + 
 					'<a href="http://www.map4d.com:8080/tsm/event.htm?listid=' + event.id + '">edit</a>' +  
-					' &nbsp; <a href="#">flag</a>'
+					' &nbsp; <a href="#">flag</a><br/>'
 					;
 						
 					marker.openInfoWindowHtml(html);
@@ -133,14 +133,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	 <%-- Pull the center from the form object so we can center using javascript (see above) --%>
 	  <div id="sidebar" >
 	  		<span style="padding-left: 5px"><b>${fn:length(events)} Events found</b></span>
-		    <div id="results" style="margin-right:-20px;height:100px;overflow-x:hidden;overflow-y:scroll;overflow:-moz-scrollbars-vertical!important;">
+		    <div id="results" style="margin-right:10px;width=320px;height:100px;overflow-x:hidden;overflow-y:scroll;overflow:-moz-scrollbars-vertical!important;">
 			    <table class="eventlist">
 				    <c:forEach items="${events}" var="event">
 			        <tr>
 		            <td>
+				          <span style="color:#3670A7;font-weight:bold">${event.when.asText}</span>, 
 				          <a href="#">${event.summary}</a><br/>
-				          <b>${event.when.asText}</b>, 
-				          ${event.where}
+				          <em>${event.where}</em>, <br/>
+				          ${event.description}
 		            </td>
 			        </tr>
 				    </c:forEach>
@@ -149,7 +150,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  </div>
 	  
 
-	   <div id="map"  style="position:absolute; height:1000px;width:1000px">
+	   <div id="map"  style="padding:0;position:absolute; height:1000px;width:1000px">
 	     Map coming...
 	     <noscript>
 	       <p>
