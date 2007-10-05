@@ -64,7 +64,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	var markerIndex = 0;
 	var markerHtml;
 	
-	
+	// Create a base icon for all of our markers that specifies the
+	// shadow, icon dimensions, etc.
+	var baseIcon = new GIcon();
+	baseIcon.shadow = "http://www.google.com/mapfiles/shadow50.png";
+	baseIcon.iconSize = new GSize(20, 34);
+	baseIcon.shadowSize = new GSize(37, 34);
+	baseIcon.iconAnchor = new GPoint(9, 34);
+	baseIcon.infoWindowAnchor = new GPoint(9, 2);
+	baseIcon.infoShadowAnchor = new GPoint(18, 25);
+		
 	function drawPlacemarks() {
 			var eventsJSON = document.getElementById("eventSearchForm").searchResults.value;
 			var events = eventsJSON.parseJSON();
@@ -79,7 +88,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	}
 
 	function createMarker(event) {
-				var marker = new GMarker(new GLatLng(event.latLng.lat, event.latLng.lng));
+			  // Create a lettered icon for this point using our icon class
+			  var letter = String.fromCharCode("A".charCodeAt(0) + markerIndex);
+			  var letteredIcon = new GIcon(baseIcon);
+			  letteredIcon.image = "http://www.google.com/mapfiles/marker" + letter + ".png";
+			
+			  // Set up our GMarkerOptions object
+			  markerOptions = { icon:letteredIcon };
+				var marker = new GMarker(new GLatLng(event.latLng.lat, event.latLng.lng), markerOptions);
 
 				var html = '<b>' + event.summary+'</b><br/>' + event.when + '<br/>' +
 				event.description + '<br/>' +
@@ -139,7 +155,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			              <form:input path="when" size="35"/>
 			            </td>
 			            <td class="labelcell">What<br/>
-			                <form:input path="what" size="15"/>
+			                <form:input path="what" size="22"/>
 				          </tr>
 				        </table>
 				        <input type="submit" name="Search" value="Search" />
@@ -152,11 +168,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  <div id="sidebar" >
 	  		<span style="padding-left: 5px"><b>${fn:length(events)} Events found</b></span>
 		    <div id="results" style="margin-right:10px;width=320px;height:100px;overflow-x:hidden;overflow-y:scroll;overflow:-moz-scrollbars-vertical!important;">
+		    	<c:set var="test" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ"/>
+		    	
 			    <table class="eventlist">
 				    <c:forEach items="${events}" var="event" varStatus="status">
 			        <tr>
 		            <td>
-		            	<c:out value='${status.count}'/>) 
+		            	<b>(<c:out value="${fn:substring(test,status.count-1,status.count)}"/>)</b>
 				          <span style="color:#3670A7;font-weight:bold">${event.when.asText}</span>, 
 				          <a href="#" onclick="openMarker(<c:out value='${status.count-1}'/>)">${event.summary}</a><br/>
 				          <em>${event.where}</em>, <br/>
@@ -170,7 +188,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  
 
 	   <div id="map"  style="padding:0;position:absolute; height:1000px;width:1000px">
-	     Map coming...
+	     <br/><br/>Map coming...
 	     <noscript>
 	       <p>
 	         JavaScript must be enabled to get the map.
