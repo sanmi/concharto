@@ -1,5 +1,22 @@
 package com.tech4d.tsm.web;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.propertyeditors.CustomBooleanEditor;
+import org.springframework.validation.BindException;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractFormController;
+import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.WebUtils;
+
 import com.tech4d.tsm.model.TsEvent;
 import com.tech4d.tsm.model.geometry.TimeRange;
 import com.tech4d.tsm.service.EventSearchService;
@@ -10,16 +27,10 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
-import org.springframework.validation.BindException;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractFormController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
 
 public class EventSearchController extends AbstractFormController {
+    public static final String SESSION_EVENT_SEARCH_FORM = "eventSearchForm";
+    
     private static final int MAX_RECORDS = 26;
     private static final double LONGITUDE_180 = 180d;
     private static final String MODEL_EVENTS = "events";
@@ -62,15 +73,36 @@ public class EventSearchController extends AbstractFormController {
             throws Exception {
         binder.registerCustomEditor(TimeRange.class, new TimeRangePropertyEditor());
         binder.registerCustomEditor(Point.class, new PointPropertyEditor());
+        binder.registerCustomEditor(Boolean.class, new CustomBooleanEditor("true", "false", true));
         super.initBinder(request, binder);
     }
 
+
+    private EventSearchForm getEventSearchForm(HttpServletRequest request) {
+        return (EventSearchForm) WebUtils.getSessionAttribute(request, EventSearchController.SESSION_EVENT_SEARCH_FORM);
+    }
+
+    @Override
+    protected Object formBackingObject(HttpServletRequest request) throws Exception {
+        //check to see if there is a form object in the session, if so it
+        //is there for us to use right now (e.g. we are supposed to remember where
+        //we were when we left here
+        EventSearchForm eventSearchForm = getEventSearchForm(request);
+        if (eventSearchForm != null) {
+            return eventSearchForm;
+        } else {
+            return super.formBackingObject(request);
+        }
+    }
+    
     /**
      * Calculate the bounding box, given the north east and south west coordinates of 
      * a box.  Take into account boxes that span the dateline where longitude changes
      * from 180 to -180
      * 
      * TODO put the longitude logic in a utility class
+     * @return Set<Geometry> a POLYGON object representing the bounding box
+     * @param se EventSearchForm
      */
     private Set<Geometry> getBoundingBox(EventSearchForm se) {
         //longitudes have to contend with the international date line where it switches from -180 to +180
@@ -111,14 +143,34 @@ public class EventSearchController extends AbstractFormController {
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+        if (errors.hasErrors()) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Data binding errors: " + errors.getErrorCount());
+            }
+            return showForm(request, response, errors);
+        }
+        else {
+            logger.debug("No errors -> processing submit");
+            EventSearchForm eventSearchForm = (EventSearchForm) command;
+            Map model = doSearch(errors, eventSearchForm);
+            //put the data into the session in case we are leaving
+            WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
+            if (eventSearchForm.getIsAddToMap()) {
+                return new ModelAndView(new RedirectView("event.htm"));
+            } else {
+                return new ModelAndView(getSuccessView(), model);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map doSearch( BindException errors, EventSearchForm eventSearchForm) {
         /*
          * 1. Geocode "where" and get the lat-long bounding box of whatever zoom
          * level we are at. 2. Parse the time field to extract a time range 3.
          * Do a searcg to find the count of all events within that text filter,
          * time range and bounding box
          */
-        EventSearchForm eventSearchForm = (EventSearchForm) command;
-
         Map model = errors.getModel();
         //TODO set max results from somewhere?
         if (eventSearchForm.getMapCenter() != null) {
@@ -135,24 +187,25 @@ public class EventSearchController extends AbstractFormController {
             //functions can properly display them using google's mapping API
             eventSearchForm.setSearchResults(JSONFormat.toJSON(events));
         }
-        if (errors.hasErrors()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Data binding errors: " + errors.getErrorCount());
-            }
-            return showForm(request, response, errors);
-        }
-        else {
-            logger.debug("No errors -> processing submit");
-            return new ModelAndView(getSuccessView(), model);
-        }
+        return model;
     }
+
 
     @Override
     protected ModelAndView showForm(
             HttpServletRequest request, HttpServletResponse response, BindException errors)
             throws Exception {
-
-        return showForm(request, errors, getFormView());
+        //if there is a form, we should redo the search, just in case things have been
+        //added since we left (for instance the user just added a point to the map)
+        EventSearchForm eventSearchForm = getEventSearchForm(request);
+        if (eventSearchForm != null) {
+            Map model = doSearch(errors, eventSearchForm);
+            return new ModelAndView(getFormView(), model);
+        } else {
+            return showForm(request, errors, getFormView());
+        }
     }
+    
+
     
 }

@@ -30,11 +30,15 @@ public class EventController extends SimpleFormController {
         super.initBinder(request, binder);
     }
     
+    private EventSearchForm getEventSearchForm(HttpServletRequest request) {
+        return (EventSearchForm) WebUtils.getSessionAttribute(request, EventSearchController.SESSION_EVENT_SEARCH_FORM);
+    }
+
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
         Long id = ServletRequestUtils.getLongParameter(request, "listid");
         TsEvent tsEvent;
-        TsEventForm tsEventForm;
+        TsEventForm tsEventForm; 
         
         if (id != null) {
             tsEvent = this.tsEventDao.findById(id);
@@ -43,7 +47,14 @@ public class EventController extends SimpleFormController {
             WebUtils.setSessionAttribute(request, SESSION_TSEVENT, tsEvent);
             tsEventForm = com.tech4d.tsm.web.TsEventFormFactory.getTsEventForm(tsEvent);
         } else {
+            EventSearchForm eventSearchForm = getEventSearchForm(request);
             tsEventForm = new TsEventForm();
+            if (eventSearchForm != null) {
+                tsEventForm.setLng(eventSearchForm.getMapCenter().getX());
+                tsEventForm.setLat(eventSearchForm.getMapCenter().getY());
+                tsEventForm.setZoomLevel(eventSearchForm.getMapZoom());
+                tsEventForm.setSearchResults(eventSearchForm.getSearchResults());
+            } 
         }
         return tsEventForm;
     }
