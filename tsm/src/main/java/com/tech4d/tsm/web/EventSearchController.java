@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 public class EventSearchController extends AbstractFormController {
-    private static final int MAX_RECORDS = 50;
+    private static final int MAX_RECORDS = 26;
     private static final double LONGITUDE_180 = 180d;
     private static final String MODEL_EVENTS = "events";
     private EventSearchService eventSearchService;
