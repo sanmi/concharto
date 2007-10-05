@@ -7,6 +7,7 @@
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+request.setAttribute("basePath", basePath);
 %>
 
 <tsm:page title="Event">
@@ -19,6 +20,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<script type="text/javascript">
 		//<![CDATA[
 		
+  var isAddToMap = false;
+  
+  function doSubmit() {  	
+  	if (isAddToMap == true) {
+			document.getElementById("eventSearchForm").isAddToMap.value = "true"; 
+  		addToMap();
+  	} else {
+  		document.getElementById("eventSearchForm").isAddToMap.value = "false"; 
+  		search();
+  	}
+  }
+
+	function addToMap() {
+		<%-- don't geocode, but do everything else.  --%>
+		saveAndSubmit(map.getCenter());		
+	}
+	  
 	function search() {
   	<%-- //Geocode before submitting so that we can get the map extent first!	 --%>
 		geocode(document.getElementById("eventSearchForm").where.value);
@@ -77,6 +95,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	function drawPlacemarks() {
 			var eventsJSON = document.getElementById("eventSearchForm").searchResults.value;
 			var events = eventsJSON.parseJSON();
+
 			//make a new global array for storing the events
 			markers = new Array(events.length);
 			markerHtml = new Array(events.length);
@@ -101,7 +120,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				event.description + '<br/>' +
 				'<br/><b>Tags: </b>' + event.tags + '<br/>' + 
 				'<b>Source: </b>' + event.source + '<br/>' + 
-				'<a href="http://www.map4d.com:8080/tsm/event.htm?listid=' + event.id + '">edit</a>' +  
+				'<a href="<c:out value="${basePath}"/>/event.htm?listid=' + event.id + '">edit</a>' +  
 				' &nbsp; <a href="#">flag</a><br/>'
 				;
 				//save this marker.
@@ -135,12 +154,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<jsp:body>
 	  <div >
         	<span style="position:absolute; left:250px; top:34px;" >
-				    <form:form name="event" id="eventSearchForm" commandName="eventSearch" method="post" onsubmit="search(); return false">
+				    <form:form name="event" id="eventSearchForm" commandName="eventSearch" onsubmit="doSubmit(); return false">
 				    	<form:hidden path="boundingBoxSW" htmlEscape="true"/>
 				    	<form:hidden path="boundingBoxNE" htmlEscape="true"/>
 				    	<form:hidden path="mapCenter" htmlEscape="true"/>
 				    	<form:hidden path="searchResults" htmlEscape="true"/>
 				    	<form:hidden path="mapZoom"/>
+				    	<form:hidden path="isAddToMap"/>
 			        <table>
 			          <tr>
 			            <td class="labelcell">Where 
@@ -159,7 +179,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				          </tr>
 				        </table>
 				        <input type="submit" name="Search" value="Search" />
-				        <input type="button" name="Save" value="Cancel" onclick="document.location='switchboard/listEvents.htm';"/>
+				        &nbsp;&nbsp;&nbsp;<input type="submit" name="add" value="Add to the Map!" onclick="isAddToMap=true;"/>
 					    </form:form>
 	          </span>
 	  </div>
@@ -170,7 +190,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		    <div id="results" style="margin-right:10px;width=320px;height:100px;overflow-x:hidden;overflow-y:scroll;overflow:-moz-scrollbars-vertical!important;">
 		    	<c:set var="test" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ"/>
 		    	
-			    <table class="eventlist">
+			    <table class="eventlist" style="width: 100%">
 				    <c:forEach items="${events}" var="event" varStatus="status">
 			        <tr>
 		            <td>
@@ -178,7 +198,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				          <span style="color:#3670A7;font-weight:bold">${event.when.asText}</span>, 
 				          <a href="#" onclick="openMarker(<c:out value='${status.count-1}'/>)">${event.summary}</a><br/>
 				          <em>${event.where}</em>, <br/>
-				          ${event.description}
+				          ${event.description} <br/>
+				          <a href="<c:out value='${basePath}'/>/event.htm?listid=<c:out value='${event.id}'/>">edit</a>
+				          &nbsp; <a href="#">flag</a><br/>
 		            </td>
 			        </tr>
 				    </c:forEach>

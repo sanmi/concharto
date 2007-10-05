@@ -32,10 +32,11 @@
 	</bean>
 
 	<bean class="com.tech4d.tsm.web.EventController" parent="baseEventController">
+		<property name="bindOnNewForm" value="true" />
 		<property name="commandName" value="event" />
 		<property name="commandClass" value="com.tech4d.tsm.web.TsEventForm" />
 		<property name="formView" value="event" />
-		<property name="successView" value="redirect:switchboard/listEvents.htm" />
+		<property name="successView" value="redirect:eventsearch.htm" />
 		<property name="tsEventDao" ref="tsEventDao" />
 	</bean>
 

@@ -18,6 +18,7 @@ public class EventSearchForm {
     private Point BoundingBoxNE;
     private Integer mapZoom;
     private String searchResults;
+    private Boolean isAddToMap;
     
     public Integer getMapZoom() {
         return mapZoom;
@@ -64,7 +65,7 @@ public class EventSearchForm {
     /**
      * Search results in JSON format need to be passed as a hidden value
      * in the form so that the google maps API javascript functions can retrieve them 
-     * @return
+     * @return resutls JSON formatted array of TsEvent objects 
      */
     public String getSearchResults() {
         return searchResults;
@@ -72,4 +73,11 @@ public class EventSearchForm {
     public void setSearchResults(String searchResults) {
         this.searchResults = searchResults;
     }
+    public Boolean getIsAddToMap() {
+        return isAddToMap;
+    }
+    public void setIsAddToMap(Boolean isAddToMap) {
+        this.isAddToMap = isAddToMap;
+    }
+    
 }

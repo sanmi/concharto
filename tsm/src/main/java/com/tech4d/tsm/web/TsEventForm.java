@@ -13,6 +13,8 @@ public class TsEventForm {
     private Double lat;
     private Double lng;
     private Integer zoomLevel;
+    private String searchResults;
+
 
     public Long getId() {
         return id;
@@ -104,6 +106,20 @@ public class TsEventForm {
 
     public void setZoomLevel(Integer zoomLevel) {
         this.zoomLevel = zoomLevel;
+    }
+
+    /**
+     * Search results in JSON format need to be passed as a hidden value
+     * in the form so that the google maps API javascript functions can retrieve them
+     * TODO refactor because this is also on the EventSearchForm 
+     * @return resutls JSON formatted array of TsEvent objects
+     */
+    public String getSearchResults() {
+        return searchResults;
+    }
+
+    public void setSearchResults(String searchResults) {
+        this.searchResults = searchResults;
     }
 
 }

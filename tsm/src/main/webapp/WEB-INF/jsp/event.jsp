@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 
@@ -47,10 +48,11 @@
 			marker = new GMarker(point, {draggable: true});
 			map.addOverlay(marker);
 			marker.enableDragging();
-			if (!editLocation) {
+				marker.openInfoWindowHtml("<b>Drag me</b> <br/>anywhere on the map");
+/*			if (!editLocation) {
 				marker.openInfoWindowHtml("<b>Drag me</b> <br/>anywhere on the map");
 			}
-	
+	*/
 			GEvent.addListener(marker, "dragstart", function() {
 				map.closeInfoWindow();
 			});
@@ -58,6 +60,10 @@
 			GEvent.addListener(marker, "click", function() {
 				marker.openInfoWindowHtml(html);
 			});		
+			
+			adjustSidebarIE();
+			
+			drawPlacemarks();
 		}
 	
 	// addAddressToMap() is called when the geocoder returns an
@@ -82,44 +88,95 @@
 	    geocoder.getLocations(address, addAddressToMap);
 	}
 	
-	///prevent page scroll
 	
-	function wheelevent(e)
-	{
-			if (!e){
-				e = window.event
-			}
-			if (e.preventDefault){
-				e.preventDefault()
-			}
-			e.returnValue = false;
-	}
+		// Create a base icon for all of our markers that specifies the
+	// shadow, icon dimensions, etc.
+	var baseIcon = new GIcon();
+	baseIcon.shadow = "http://www.google.com/mapfiles/shadow50.png";
+	baseIcon.iconSize = new GSize(20, 34);
+	baseIcon.shadowSize = new GSize(37, 34);
+	baseIcon.iconAnchor = new GPoint(9, 34);
+	baseIcon.infoWindowAnchor = new GPoint(9, 2);
+	baseIcon.infoShadowAnchor = new GPoint(18, 25);
+		
+	function drawPlacemarks() {
+			var eventsJSON2 = document.getElementById("eventForm").searchResults.value;
+			var events = eventsJSON2.parseJSON();
+			alert("sdf");  //TODO DEBUG the parseJSON isn't working!!! and remove cut and paste too!
 			
+			//create the markers
+			for (var i =0; i<events.length; i++) {
+  			alert("sdf");
+			  map.addOverlay( createMarker(events[i]) );
+			} 
+	}
+
+	function createMarker(event) {
+			  // Create a lettered icon for this point using our icon class
+			  var letter = String.fromCharCode("A".charCodeAt(0) + markerIndex);
+			  var letteredIcon = new GIcon(baseIcon);
+			  letteredIcon.image = "http://www.google.com/mapfiles/marker" + letter + ".png";
+			
+			  // Set up our GMarkerOptions object
+			  markerOptions = { icon:letteredIcon };
+				var marker = new GMarker(new GLatLng(event.latLng.lat, event.latLng.lng));
+
+				var html = '<b>' + event.summary+'</b><br/>' + event.when + '<br/>' +
+				event.description + '<br/>' +
+				'<br/><b>Tags: </b>' + event.tags + '<br/>' + 
+				'<b>Source: </b>' + event.source + '<br/>' + 
+				'<a href="<c:out value="${basePath}"/>/event.htm?listid=' + event.id + '">edit</a>' +  
+				' &nbsp; <a href="#">flag</a><br/>'
+				;
+				//save this marker.
+				markers[markerIndex] = marker;
+				markerHtml[markerIndex] = html;
+				markerIndex++;
+
+				marker.bindInfoWindowHtml(html);
+
+				return marker;
+	}
+	
 	function changeHistory() {
 		var id = document.getElementById("eventForm").id.value;
 		if (id != '') {
 			document.location="changehistory.htm?id=" + id;
 		}
 	}
+	
+	function adjustSidebarIE() {
+		var top = document.getElementById("sidebar").offsetTop;
+		var hght=document.documentElement.clientHeight-top-25;
+		
+		document.getElementById("eventForm").style.height=hght+"px";
+	}
+
 			
 		//]]>
 		</script>
 	</jsp:attribute>
 	<jsp:attribute name="script">map.js</jsp:attribute>
-	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit"</jsp:attribute>
+	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 
 	<jsp:body>
 	   <div id="sidebar">
 
-       <form:form name="event" id="eventForm" commandName="event" method="post" onsubmit="saveEvent(); return false">
+       <form:form name="event" id="eventForm" commandName="event"  method="post" onsubmit="saveEvent(); return false">
 			   <form:hidden path="id"/>
 			   <form:hidden path="lat"/>
 			   <form:hidden path="lng"/>
 			   <form:hidden path="zoomLevel"/>
+			   <form:hidden path="searchResults" htmlEscape="true"/>
 				 <div style="margin-bottom:5px; margin-left:5px">
 					 <span id="selectedMiniTab">Edit</span><a id="unselectedMiniTab" href="#" onclick="changeHistory(); return false;">Change History</a>
 	       </div>
          <table>
+         	 <tr>
+         	 	<td>
+         	 		<c:out value="${fn:length(event.searchResults)}"/>
+         	 	</td>
+         	 </tr>
            <tr>
              <td class="labelcell">Summary <br/>
              <form:input path="summary" size="45"/></td>
@@ -148,7 +205,8 @@
            </tr>
            <tr>
              <td class="labelcell">Tags<br/>
-             <form:input path="tags" size="45"/>
+	             <form:input path="tags" size="45"/>
+             </td>
            </tr>
            <tr>
              <td class="labelcell">Source 
@@ -159,7 +217,7 @@
            </tr>
          </table>
          <input type="submit" name="Save" value="Save This Event" />
-         <input type="button" name="Cancel" value="Cancel" onclick="javascript:document.location='switchboard/listEvents.htm';"/>
+         <input type="button" name="Cancel" value="Cancel" onclick="javascript:document.location='eventsearch.htm';"/>
 	     </form:form>
 	   </div>
 
