@@ -172,19 +172,14 @@
 					 <span id="selectedMiniTab">Edit</span><a id="unselectedMiniTab" href="#" onclick="changeHistory(); return false;">Change History</a>
 	       </div>
          <table>
-         	 <tr>
-         	 	<td>
-         	 		<c:out value="${fn:length(event.searchResults)}"/>
-         	 	</td>
-         	 </tr>
            <tr>
              <td class="labelcell">Summary <br/>
-             <form:input path="summary" size="45"/></td>
+             <form:input path="summary" size="45" htmlEscape="true"/></td>
            </tr>
            <tr>
              <td class="labelcell">Where
                  <small>e.g., "gettysburg, pa" </small><br/>
-                 <form:input path="where" size="45"/>
+                 <form:input path="where" size="45" htmlEscape="true"/>
                  <br/>
                  <input  type="button" name="Find" value="Go to Location" onclick="showAddress(document.event.where.value); return false"/>             
                  <small id="tip"><b>Tip:</b> drag and drop the lollypop!</small>
@@ -205,13 +200,13 @@
            </tr>
            <tr>
              <td class="labelcell">Tags<br/>
-	             <form:input path="tags" size="45"/>
+	             <form:input path="tags" size="45" htmlEscape="true"/>
              </td>
            </tr>
            <tr>
              <td class="labelcell">Source 
              <small><a id="selectedMiniTab" href="#">URL</a><a id="unselectedMiniTab" href="#">Publication</a><a id="unselectedMiniTab" href="#">Other</a></small><br/>
-             <form:input path="source" size="45"/>
+             <form:input path="source" size="45" htmlEscape="true"/>
            </td> 
              
            </tr>

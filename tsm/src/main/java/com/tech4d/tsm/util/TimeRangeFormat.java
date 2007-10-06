@@ -32,6 +32,13 @@ import com.tech4d.tsm.model.geometry.TimeRange;
  */
 public class TimeRangeFormat  {
 
+    public static final int PRECISION_SECOND = 0;
+    public static final int PRECISION_MINUTE = 1;
+    public static final int PRECISION_HOUR = 2;
+    public static final int PRECISION_DAY = 3;
+    public static final int PRECISION_MONTH = 4;
+    public static final int PRECISION_YEAR = 5;
+    
     private static final String FMT_TO_YEAR = "yyyy";
     private static final String FMT_TO_MONTH = "MMMM yyyy";
     private static final String FMT_TO_DAY = "MMMM dd, yyyy";
@@ -83,12 +90,12 @@ public class TimeRangeFormat  {
         patterns = tmpPatterns.toArray(new String[tmpPatterns.size()]);
         
         //for calculating the date precision 
-        calendarPrecisions.add(new CalendarPrecision(0, Calendar.SECOND, 0, FMT_TO_SECOND));
-        calendarPrecisions.add(new CalendarPrecision(1, Calendar.MINUTE, 0, FMT_TO_MINUTE));
-        calendarPrecisions.add(new CalendarPrecision(2, Calendar.HOUR, 0, FMT_TO_HOUR));
-        calendarPrecisions.add(new CalendarPrecision(3, Calendar.DAY_OF_MONTH, 1, FMT_TO_DAY));
-        calendarPrecisions.add(new CalendarPrecision(4, Calendar.MONTH, Calendar.JANUARY, FMT_TO_MONTH));
-        calendarPrecisions.add(new CalendarPrecision(5, Calendar.YEAR, -1, FMT_TO_YEAR));  //no empty value
+        calendarPrecisions.add(new CalendarPrecision(PRECISION_SECOND, Calendar.SECOND, 0, FMT_TO_SECOND));
+        calendarPrecisions.add(new CalendarPrecision(PRECISION_MINUTE, Calendar.MINUTE, 0, FMT_TO_MINUTE));
+        calendarPrecisions.add(new CalendarPrecision(PRECISION_HOUR, Calendar.HOUR, 0, FMT_TO_HOUR));
+        calendarPrecisions.add(new CalendarPrecision(PRECISION_DAY, Calendar.DAY_OF_MONTH, 1, FMT_TO_DAY));
+        calendarPrecisions.add(new CalendarPrecision(PRECISION_MONTH, Calendar.MONTH, Calendar.JANUARY, FMT_TO_MONTH));
+        calendarPrecisions.add(new CalendarPrecision(PRECISION_YEAR, Calendar.YEAR, -1, FMT_TO_YEAR));  //no empty value
     }
     
     private static void addPatterns(String[] patterns, List<String> list) {
@@ -110,10 +117,6 @@ public class TimeRangeFormat  {
             // first separate the begin and the end
             // we will try the '-' first
             String[] split = StringUtils.split(text, '-');
-            // now we will try the phrase 'to'
-            if (split.length <= 1) {
-                split = StringUtils.split(text, "to");
-            }
             boolean isRange;
             if (split.length == 1) {
                 isRange = false;

@@ -35,11 +35,6 @@
 		<property name="schemaUpdate" value="true"/>
 	</bean>
 	
-	<!-- Audit interceptor for hibernate objects -->	
-  <bean id="auditLogInterceptor" class="com.tech4d.tsm.lab.audit.AuditLogInterceptor">
-  	<property name="sessionFactory" ref="mySessionFactory"/>
-  </bean>
-
 
   <bean id="simpleAuditInterceptor" class="com.tech4d.tsm.lab.audit.SimpleAuditInterceptor">
   </bean>
