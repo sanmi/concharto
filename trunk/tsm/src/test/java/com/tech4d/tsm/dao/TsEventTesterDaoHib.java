@@ -43,6 +43,7 @@ public class TsEventTesterDaoHib implements TsEventTesterDao {
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from TsEvent_User").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from User").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from TsEvent").executeUpdate();
+//        this.sessionFactory.getCurrentSession().createSQLQuery("delete from EventSearchText").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from TimePrimitive").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from AuditFieldChange").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from AuditEntry").executeUpdate();
