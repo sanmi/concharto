@@ -60,7 +60,7 @@ public class AuditInterceptor extends EmptyInterceptor {
                                 String[] propertyNames, Type[] types) throws CallbackException {
         boolean updated = false;
         if (entity instanceof Auditable) {
-            log.debug("onFlushDirty");
+            //log.debug("onFlushDirty");
             Session session = sessionFactory.openSession();
             try {
                 Class<? extends Object> objectClass = entity.getClass();
@@ -111,7 +111,7 @@ public class AuditInterceptor extends EmptyInterceptor {
             throws CallbackException {
         boolean updated = false;
         if (o instanceof Auditable) {
-            log.debug("onSave");
+            //log.debug("onSave");
             stateSets.getInserts().add(o);
             for ( int i=0; i<propertyNames.length; i++ ) {
                 if ( "created".equals( propertyNames[i] ) ) {

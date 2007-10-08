@@ -39,6 +39,8 @@ public class EventSearchServiceHib implements EventSearchService {
     private static String SQL_PREFIX_GET_COUNT = "SELECT count(*) "; 
 
     private static String SQL_PREFIX_SEARCH = "SELECT * "; 
+    
+    private static String SQL_ORDER_CLAUSE = "order by t.begin asc";
 
     /*
      * (non-Javadoc)
@@ -97,7 +99,7 @@ public class EventSearchServiceHib implements EventSearchService {
             sqlQuery.setDate("earliest", timeRange.getBegin());
             sqlQuery.setDate("latest", timeRange.getEnd());
         }
-                
+               
         List<TsEvent> tsEvents = sqlQuery.setMaxResults(maxResults).list(); 
         timer.timeIt("search").logDebugTime();
         return tsEvents;
@@ -114,6 +116,7 @@ public class EventSearchServiceHib implements EventSearchService {
         if (timeRange != null) {
             query.append(SQL_TIMERANGE_CLAUSE);
         }
+        query.append(SQL_ORDER_CLAUSE);
         return query.toString();
     }
 

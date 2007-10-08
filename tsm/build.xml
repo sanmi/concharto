@@ -22,7 +22,7 @@
 	<property name="target.test.classes.dir"
 		value="${target.dir}/test-classes" />
 	<property name="target.lab.classes.dir"
-		value="${target.test.classes.dir}" />
+		value="${target.dir}/lab-classes" />
 	<property name="target.test.reports.dir"
 		value="${target.dir}/test-reports" />
 	<property name="target.webapp.dir" value="${target.dir}/${name}" />
