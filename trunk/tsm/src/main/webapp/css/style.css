@@ -130,12 +130,29 @@ background-color:#333333;
 .mapedit .result .letter {
 	font-weight: bold;
 }
+
 .mapedit .result .when {
     color:#3670A7;
     font-weight:bold;
 }
+
+.mapedit .result .summary {
+	font-weight: bold;
+}
+
 .mapedit .result .where {
 	font-style: italic;
+}
+
+.mapedit .result .more {
+	font-style: italic;
+}
+
+.mapedit .result .links {
+}
+
+a.summary:link, a.summary:visited, a.links:link, a.links:visited, a.more:link, a.more:visited  {
+    color: blue;
 }
 
 .mapedit .changes {
