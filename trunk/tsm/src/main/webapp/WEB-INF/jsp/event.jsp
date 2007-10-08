@@ -48,11 +48,8 @@
 			marker = new GMarker(point, {draggable: true});
 			map.addOverlay(marker);
 			marker.enableDragging();
-				marker.openInfoWindowHtml("<b>Drag me</b> <br/>anywhere on the map");
-/*			if (!editLocation) {
-				marker.openInfoWindowHtml("<b>Drag me</b> <br/>anywhere on the map");
-			}
-	*/
+			marker.openInfoWindowHtml("<b>Drag me</b> <br/>anywhere on the map");
+
 			GEvent.addListener(marker, "dragstart", function() {
 				map.closeInfoWindow();
 			});
@@ -144,87 +141,75 @@
 			document.location="changehistory.htm?id=" + id;
 		}
 	}
-	
-	function adjustSidebarIE() {
-		var top = document.getElementById("sidebar").offsetTop;
-		var hght=document.documentElement.clientHeight-top-25;
 		
-		document.getElementById("eventForm").style.height=hght+"px";
-	}
-
-			
 		//]]>
 		</script>
 	</jsp:attribute>
 	<jsp:attribute name="script">map.js</jsp:attribute>
-	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
+	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="setMapExtent();"</jsp:attribute>
 
 	<jsp:body>
-	   <div id="sidebar">
-
-       <form:form name="event" id="eventForm" commandName="event"  method="post" onsubmit="saveEvent(); return false">
-			   <form:hidden path="id"/>
-			   <form:hidden path="lat"/>
-			   <form:hidden path="lng"/>
-			   <form:hidden path="zoomLevel"/>
-			   <form:hidden path="searchResults" htmlEscape="true"/>
-				 <div style="margin-bottom:5px; margin-left:5px">
-					 <span id="selectedMiniTab">Edit</span><a id="unselectedMiniTab" href="#" onclick="changeHistory(); return false;">Change History</a>
-	       </div>
-         <table>
-           <tr>
-             <td class="labelcell">Summary <br/>
-             <form:input path="summary" size="45" htmlEscape="true"/></td>
-           </tr>
-           <tr>
-             <td class="labelcell">Where
-                 <small>e.g., "gettysburg, pa" </small><br/>
-                 <form:input path="where" size="45" htmlEscape="true"/>
-                 <br/>
-                 <input  type="button" name="Find" value="Go to Location" onclick="showAddress(document.event.where.value); return false"/>             
-                 <small id="tip"><b>Tip:</b> drag and drop the lollypop!</small>
-             </td>
-           </tr>
-           <tr>
-             <td class="labelcell">
-               When
-               <small>
-                 e.g. "1962" or "March, 1064" or "1880 - 1886" <a href="#">hints</a>
-               </small><br/>
-               <form:input path="when" size="45"/>
-             </td>
-           </tr>
-           <tr>
-             <td class="labelcell">Description<br/>
-             <form:textarea rows="5" cols="35" path="description"/></td>
-           </tr>
-           <tr>
-             <td class="labelcell">Tags<br/>
-	             <form:input path="tags" size="45" htmlEscape="true"/>
-             </td>
-           </tr>
-           <tr>
-             <td class="labelcell">Source 
-             <small><a id="selectedMiniTab" href="#">URL</a><a id="unselectedMiniTab" href="#">Publication</a><a id="unselectedMiniTab" href="#">Other</a></small><br/>
-             <form:input path="source" size="45" htmlEscape="true"/>
-           </td> 
-             
-           </tr>
-         </table>
-         <input type="submit" name="Save" value="Save This Event" />
-         <input type="button" name="Cancel" value="Cancel" onclick="javascript:document.location='eventsearch.htm';"/>
-	     </form:form>
-	   </div>
-
-	   <div id="map"  style="position:absolute; height:1000px;width:1000px">
-	     Map coming...
-	     <noscript>
-	       <p>
-	         JavaScript must be enabled to get the map.
-	       </p>
-	     </noscript>
-	   </div>
-	 
+		<table><tr>			
+			<td id="sidebar">
+        <form:form name="event" id="eventForm" commandName="event"  method="post" onsubmit="saveEvent(); return false">
+					<form:hidden path="id"/>
+					<form:hidden path="lat"/>
+					<form:hidden path="lng"/>
+					<form:hidden path="zoomLevel"/>
+					<form:hidden path="searchResults" htmlEscape="true"/>
+					
+   		    <div class="miniTabBar">
+   		    	<span class="miniTabSelected">Edit</span>
+   		    	<a class="miniTabUnselected" href="#" onclick="changeHistory(); return false;">Change History</a>
+	 		    </div>
+   		    <div class="inputcell">
+		        Summary <br/>
+		        <form:input path="summary" size="45" htmlEscape="true"/>
+   		    </div>
+   		    <div class="inputcell">
+   		    	Where
+	          <small>e.g., "gettysburg, pa" </small><br/>
+	          <form:input path="where" size="45" htmlEscape="true"/>
+	          <br/>
+	          <input  type="button" name="Find" value="Go to Location" onclick="showAddress(document.event.where.value); return false"/>             
+	          <small id="tip"><b>Tip:</b> drag and drop the lollypop!</small>
+   		    </div>
+   		    <div class="inputcell">
+		         When
+		         <small>
+		           e.g. "1962" or "March, 1064" or "1880 - 1886" <a href="#">hints</a>
+		         </small><br/>
+		         <form:input path="when" size="45"/>
+   		    </div>
+   		    <div class="inputcell">
+	   		    Description<br/>
+						<form:textarea rows="5" cols="35" path="description"/>
+   		    </div>
+   		    <div class="inputcell">
+   		    	Tags<br/>
+		        <form:input path="tags" size="45" htmlEscape="true"/>
+  		    </div>
+   		    <div class="inputcell">
+   		    	Source 
+			      <form:input path="source" size="45" htmlEscape="true"/>
+   		    </div>
+					<div class="inputcell">
+					 <input type="submit" name="Save" value="Save This Event" />
+					 <input type="button" name="Cancel" value="Cancel" onclick="javascript:document.location='eventsearch.htm';"/>
+					</div>
+	      </form:form>
+			</td>		   
+			<td>
+				<div id="map">
+				     Map coming...
+				     <noscript>
+				       <p>
+				         JavaScript must be enabled to get the map.
+				       </p>
+				     </noscript>
+				</div>
+			</td>
+	 	</tr></table>
 	
 	</jsp:body>
 </tsm:page>

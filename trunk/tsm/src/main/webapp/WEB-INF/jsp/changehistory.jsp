@@ -16,17 +16,17 @@
 	      begin = queryString.indexOf ( parameterName );
 	      // If the parameter name is not found, skip it, otherwise return the value
 	      if ( begin != -1 ) {
-	         // Add the length (integer) to the beginning
+	         <%-- Add the length (integer) to the beginning --%>
 	         begin += parameterName.length;
-	         // Multiple parameters are separated by the "&" sign
+	         <%-- Multiple parameters are separated by the "&" sign --%>
 	         end = queryString.indexOf ( "&" , begin );
 	      if ( end == -1 ) {
 	         end = queryString.length
 	      }
-	      // Return the string
+	      <%-- Return the string --%>
 	      return unescape ( queryString.substring ( begin, end ) );
 	   }
-	   // Return "null" if no parameter has been found
+	   <%-- Return "null" if no parameter has been found --%>
 	   return "null";
 	   }
 	}
@@ -41,38 +41,32 @@
 	<jsp:attribute name="bodyattr">class="mapedit"</jsp:attribute>
 
 	<jsp:body>
-	   <div >
-				<div style="margin-bottom:5px; margin-left:5px">
-					<a href="#" id="unselectedMiniTab" onclick="edit(); return false;">Edit</a><span id="selectedMiniTab" >Change History</span>
-        </div>
-        <table class="eventlist">
-          <c:forEach items="${auditEntries}" var="auditEntry">
-          	<tr>
-          		<td>
-          			Revision <c:out value="${auditEntry.version}"/>, 
-          			<c:out value="${actionLabels[auditEntry.action]}"/>
-          			<c:out value="${auditEntry.user}"/> 
-	          		<fmt:formatDate value="${auditEntry.dateCreated}" pattern="MMM dd, yyyy hh:mm a"/>
-	          		<br/>
-          			<ul>
-	          		<c:forEach items="${auditEntry.auditEntryFieldChange}" var="changes">
-	          			<li>
-	          				<b><c:out value="${propertyLabels[changes.propertyName]}"/></b> was changed from 
-	          				"<c:out value="${changes.oldValue}"/>" to
-	          				"<c:out value="${changes.newValue}"/>"
-	          			</li>
-	          		</c:forEach>
-          			</ul>
-          			
-          			<a href="#">revert</a>
-          		</td>
-          	</tr>
-          </c:forEach>
-          <tr>
-          </tr>
-        </table>
-	   </div>
-	
-	</jsp:body>
+		<table><tr>			
+			<div class="changes">
+				<div class="miniTabBar">
+					<a href="#" class="miniTabUnselected" onclick="edit(); return false;">Edit</a>
+					<span class="miniTabSelected" >Change History</span>
+	       </div>
+	       <c:forEach items="${auditEntries}" var="auditEntry">
+	        <div class="changeEntry" >
+	      			Revision <c:out value="${auditEntry.version}"/>, 
+	      			<c:out value="${actionLabels[auditEntry.action]}"/>
+	      			<c:out value="${auditEntry.user}"/> 
+	       		<fmt:formatDate value="${auditEntry.dateCreated}" pattern="MMM dd, yyyy hh:mm a"/>
+	       		<ul>
+          		<c:forEach items="${auditEntry.auditEntryFieldChange}" var="changes">
+          			<li>
+          				<b><c:out value="${propertyLabels[changes.propertyName]}"/> was changed from </b> 
+          				<em>"<c:out value="${changes.oldValue}"/>"</em> <b> to</b>
+          				<em>"<c:out value="${changes.newValue}"/>"</em>
+          			</li>
+          		</c:forEach>
+          	</ul>
+	      		<a href="#">revert</a>
+	        </div>
+	       </c:forEach>
+	  	</div>     
+  	</tr></table>
+  </jsp:body>
 </tsm:page>
 
