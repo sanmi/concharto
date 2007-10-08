@@ -38,7 +38,7 @@ request.setAttribute("basePath", basePath);
 	}
 	  
 	function search() {
-  	<%-- //Geocode before submitting so that we can get the map extent first!	 --%>
+  	<%-- Geocode before submitting so that we can get the map extent first!	 --%>
 		geocode(document.getElementById("eventSearchForm").where.value);
 	}			
 	
@@ -70,20 +70,20 @@ request.setAttribute("basePath", basePath);
 		var mapZoom = parseInt(document.getElementById("eventSearchForm").mapZoom.value);
 		if (mapCenterJSON != "") {
 			var mapCenter = mapCenterJSON.parseJSON();
-			//recenter the map
+			<%-- recenter the map --%>
 			map.setCenter(new GLatLng(mapCenter.lat,mapCenter.lng), mapZoom);			
 			drawPlacemarks();
 		}
 		adjustSidebarIE();
 	}
 
-	//global array and index for dealing with markers 
+	<%-- global array and index for dealing with markers --%>
 	var markers;
 	var markerIndex = 0;
 	var markerHtml;
 	
-	// Create a base icon for all of our markers that specifies the
-	// shadow, icon dimensions, etc.
+	<%-- Create a base icon for all of our markers that specifies the
+	     shadow, icon dimensions, etc. --%>
 	var baseIcon = new GIcon();
 	baseIcon.shadow = "http://www.google.com/mapfiles/shadow50.png";
 	baseIcon.iconSize = new GSize(20, 34);
@@ -96,23 +96,23 @@ request.setAttribute("basePath", basePath);
 			var eventsJSON = document.getElementById("eventSearchForm").searchResults.value;
 			var events = eventsJSON.parseJSON();
 
-			//make a new global array for storing the events
+			<%-- make a new global array for storing the events --%>
 			markers = new Array(events.length);
 			markerHtml = new Array(events.length);
 			
-			//create the markers
+			<%-- create the markers --%>
 			for (var i =0; i<events.length; i++) {
 			  map.addOverlay( createMarker(events[i]) );
 			} 
 	}
 
 	function createMarker(event) {
-			  // Create a lettered icon for this point using our icon class
+			  <%-- Create a lettered icon for this point using our icon class --%>
 			  var letter = String.fromCharCode("A".charCodeAt(0) + markerIndex);
 			  var letteredIcon = new GIcon(baseIcon);
 			  letteredIcon.image = "http://www.google.com/mapfiles/marker" + letter + ".png";
 			
-			  // Set up our GMarkerOptions object
+			  <%-- Set up our GMarkerOptions object --%>
 			  markerOptions = { icon:letteredIcon };
 				var marker = new GMarker(new GLatLng(event.latLng.lat, event.latLng.lng), markerOptions);
 
@@ -134,10 +134,11 @@ request.setAttribute("basePath", basePath);
 	}
 	
 	function adjustSidebarIE() {
-		var top = document.getElementById("sidebar").offsetTop;
-		var hght=document.documentElement.clientHeight-top-40;
-		
-		document.getElementById("results").style.height=hght+"px";
+		<%-- adjust the map --%>
+		setMapExtent();
+    	var top = document.getElementById("map").offsetTop;
+    	var height = getHeight() - top - 45;
+    	document.getElementById("results").style.height=height+"px";
 	}
 
 	function openMarker(index) {	
@@ -150,73 +151,69 @@ request.setAttribute("basePath", basePath);
 	<jsp:attribute name="script">map.js,json.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 
-
 	<jsp:body>
-	  <div >
-        	<span style="position:absolute; left:250px; top:34px;" >
-				    <form:form name="event" id="eventSearchForm" commandName="eventSearch" onsubmit="doSubmit(); return false">
-				    	<form:hidden path="boundingBoxSW" htmlEscape="true"/>
-				    	<form:hidden path="boundingBoxNE" htmlEscape="true"/>
-				    	<form:hidden path="mapCenter" htmlEscape="true"/>
-				    	<form:hidden path="searchResults" htmlEscape="true"/>
-				    	<form:hidden path="mapZoom"/>
-				    	<form:hidden path="isAddToMap"/>
-			        <table>
-			          <tr>
-			            <td class="labelcell">Where 
-			                <small>e.g., "gettysburg, pa" </small><br/>
-			                <form:input path="where" size="22"/>
-			            </td>
-			            <td class="labelcell">
-			              When
-			              <small>
-			                e.g. "1962" or "March, 1064" or "1880 - 1886" 
-			              </small><br/>
-			              <form:input path="when" size="35"/>
-			            </td>
-			            <td class="labelcell">What<br/>
-			                <form:input path="what" size="22"/>
-				          </tr>
-				        </table>
-				        <input type="submit" name="Search" value="Search" />
-				        &nbsp;&nbsp;&nbsp;<input type="submit" name="add" value="Add to the Map!" onclick="isAddToMap=true;"/>
-					    </form:form>
-	          </span>
+  	<div>
+     	<span style="position:absolute; left:250px; top:34px;" >
+	    <form:form name="event" id="eventSearchForm" commandName="eventSearch" onsubmit="doSubmit(); return false">
+	    	<form:hidden path="boundingBoxSW" htmlEscape="true"/>
+	    	<form:hidden path="boundingBoxNE" htmlEscape="true"/>
+	    	<form:hidden path="mapCenter" htmlEscape="true"/>
+	    	<form:hidden path="searchResults" htmlEscape="true"/>
+	    	<form:hidden path="mapZoom"/>
+	    	<form:hidden path="isAddToMap"/>
+        <table>
+          <tr>
+            <td class="labelcell">Where 
+                <small>e.g., "gettysburg, pa" </small><br/>
+                <form:input path="where" size="22"/>
+            </td>
+            <td class="labelcell">
+              When
+              <small>
+                e.g. "1962" or "March, 1064" or "1880 - 1886" 
+              </small><br/>
+              <form:input path="when" size="35"/>
+            </td>
+            <td class="labelcell">What<br/>
+                <form:input path="what" size="22"/>
+	          </tr>
+	        </table>
+	        <input type="submit" name="Search" value="Search" />
+	        &nbsp;&nbsp;&nbsp;<input type="submit" name="add" value="Add to the Map!" onclick="isAddToMap=true;"/>
+		    </form:form>
+        </span>
 	  </div>
 	  
 	 <%-- Pull the center from the form object so we can center using javascript (see above) --%>
-	  <div id="sidebar" >
-	  		<span style="padding-left: 5px"><b>${fn:length(events)} Events found</b></span>
-		    <div id="results" style="margin-right:10px;width=320px;height:100px;overflow-x:hidden;overflow-y:scroll;overflow:-moz-scrollbars-vertical!important;">
+		<table><tbody><tr>			
+			<td id="sidebar">
+	  		<span class="resultcount">${fn:length(events)} Events found</span>
+	    	<div id="results" >
 		    	<c:set var="test" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ"/>
-		    	
-			    <table class="eventlist" style="width: 100%">
-				    <c:forEach items="${events}" var="event" varStatus="status">
-			        <tr>
-		            <td>
-		            	<b>(<c:out value="${fn:substring(test,status.count-1,status.count)}"/>)</b>
-				          <span style="color:#3670A7;font-weight:bold">${event.when.asText}</span>, 
-				          <a href="#" onclick="openMarker(<c:out value='${status.count-1}'/>)">${event.summary}</a><br/>
-				          <em>${event.where}</em>, <br/>
-				          ${event.description} <br/>
-				          <a href="<c:out value='${basePath}'/>/event.htm?listid=<c:out value='${event.id}'/>">edit</a>
-				          &nbsp; <a href="#">flag</a><br/>
-		            </td>
-			        </tr>
-				    </c:forEach>
-			    </table>
-			  </div>
-	  </div>
-	  
-
-	   <div id="map"  style="padding:0;position:absolute; height:1000px;width:1000px">
-	     <br/><br/>Map coming...
-	     <noscript>
-	       <p>
-	         JavaScript must be enabled to get the map.
-	       </p>
-	     </noscript>
-	   </div>
+			    <c:forEach items="${events}" var="event" varStatus="status">
+			    	<div class="result">
+            	<span class="letter">(<c:out value="${fn:substring(test,status.count-1,status.count)}"/>)</span>
+		          <span class="when"><c:out value="${event.when.asText}"/></span>, 
+		          <a href="#" onclick="openMarker(<c:out value='${status.count-1}'/>)"><c:out value="${event.summary}"/></a><br/>
+		          <span class="where"><c:out value="${event.where}"/></span>, <br/>
+		          <c:out value="${event.description}"/> <br/>
+		          <a href="<c:out value='${basePath}'/>/event.htm?listid=<c:out value='${event.id}'/>">edit</a>
+		          &nbsp; <a href="#">flag</a><br/>
+						</div>
+			    </c:forEach>
+		  	</div>
+		  </td>
+		  <td>
+				<div id="map">
+				  <br/><br/>Map coming...
+				  <noscript>
+				    <p>
+				      JavaScript must be enabled to get the map.
+				    </p>
+				  </noscript>
+				</div>
+			</td>
+		</tr></tbody></table>
 	 
 	</jsp:body>
 </tsm:page>
