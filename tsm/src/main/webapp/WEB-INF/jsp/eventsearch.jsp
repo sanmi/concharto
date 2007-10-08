@@ -106,18 +106,19 @@ request.setAttribute("basePath", basePath);
 			  markerOptions = { icon:letteredIcon };
 				var marker = new GMarker(new GLatLng(event.latLng.lat, event.latLng.lng), markerOptions);
 
-				var html = '<b>' + event.summary+'</b><br/>' + event.when + '<br/>' +
+				var html = '<div class="result" style="width:450px;margin-bottom:10px"><b>' + event.summary+'</b><br/>' + event.when + '<br/>' +
 				event.description + '<br/>' +
 				'<br/><b>Tags: </b>' + event.tags + '<br/>' + 
 				'<b>Source: </b>' + event.source + '<br/>' + 
 				'<a href="<c:out value="${basePath}"/>/event.htm?listid=' + event.id + '">edit</a>' +  
-				' &nbsp; <a href="#">flag</a><br/>'
+				' &nbsp; <a href="#">flag</a><br/></div>'
 				;
-				//save this marker.
+				<%-- save this marker. --%>
 				markers[markerIndex] = marker;
 				markerHtml[markerIndex] = html;
 				markerIndex++;
 
+				//marker.bindInfoWindow(document.getElementById("result_A"));
 				marker.bindInfoWindowHtml(html);
 
 				return marker;
@@ -184,11 +185,17 @@ request.setAttribute("basePath", basePath);
 			    	<div class="result">
             	<span class="letter">(<c:out value="${fn:substring(test,status.count-1,status.count)}"/>)</span>
 		          <span class="when"><c:out value="${event.when.asText}"/></span>, 
-		          <a href="#" onclick="openMarker(<c:out value='${status.count-1}'/>)"><c:out value="${event.summary}"/></a><br/>
+		          <a class="summary" href="#" onclick="openMarker(<c:out value='${status.count-1}'/>)"><c:out value="${event.summary}"/></a><br/>
 		          <span class="where"><c:out value="${event.where}"/></span>, <br/>
-		          <c:out value="${event.description}"/> <br/>
-		          <a href="<c:out value='${basePath}'/>/event.htm?listid=<c:out value='${event.id}'/>">edit</a>
-		          &nbsp; <a href="#">flag</a><br/>
+		          
+		          <c:out value="${fn:substring(event.description,0,300)}"/> 
+		          <c:if test="${fn:length(event.description) > 300}">
+		          	<a class="more" href="#" onclick="openMarker(<c:out value='${status.count-1}'/>)"> ... more</a>
+		          </c:if> 
+							<br/>	
+		          <a  class="links" href="<c:out value='${basePath}'/>/event.htm?listid=<c:out value='${event.id}'/>">edit</a>
+		          &nbsp; <a class="links" href="#">flag</a><br/>
+		          
 						</div>
 			    </c:forEach>
 		  	</div>
