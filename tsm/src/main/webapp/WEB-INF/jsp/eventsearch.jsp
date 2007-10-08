@@ -20,24 +20,14 @@ request.setAttribute("basePath", basePath);
 		<script type="text/javascript">
 		//<![CDATA[
 		
-  var isAddToMap = false;
-  
-  function doSubmit() {  	
-  	if (isAddToMap == true) {
-			document.getElementById("eventSearchForm").isAddToMap.value = "true"; 
-  		addToMap();
-  	} else {
-  		document.getElementById("eventSearchForm").isAddToMap.value = "false"; 
-  		search();
-  	}
-  }
-
 	function addToMap() {
+		document.getElementById("eventSearchForm").isAddToMap.value = "true"; 
 		<%-- don't geocode, but do everything else.  --%>
 		saveAndSubmit(map.getCenter());		
 	}
 	  
 	function search() {
+ 		document.getElementById("eventSearchForm").isAddToMap.value = "false"; 
   	<%-- Geocode before submitting so that we can get the map extent first!	 --%>
 		geocode(document.getElementById("eventSearchForm").where.value);
 	}			
@@ -154,7 +144,7 @@ request.setAttribute("basePath", basePath);
 	<jsp:body>
   	<div>
      	<span style="position:absolute; left:250px; top:34px;" >
-	    <form:form name="event" id="eventSearchForm" commandName="eventSearch" onsubmit="doSubmit(); return false">
+	    <form:form name="event" id="eventSearchForm" commandName="eventSearch" onsubmit="search(); return false">
 	    	<form:hidden path="boundingBoxSW" htmlEscape="true"/>
 	    	<form:hidden path="boundingBoxNE" htmlEscape="true"/>
 	    	<form:hidden path="mapCenter" htmlEscape="true"/>
@@ -179,7 +169,7 @@ request.setAttribute("basePath", basePath);
 	          </tr>
 	        </table>
 	        <input type="submit" name="Search" value="Search" />
-	        &nbsp;&nbsp;&nbsp;<input type="submit" name="add" value="Add to the Map!" onclick="isAddToMap=true;"/>
+	        &nbsp;&nbsp;&nbsp;<input type="button" name="add" value="Add to the Map!" onclick="addToMap()"/>
 		    </form:form>
         </span>
 	  </div>
