@@ -76,7 +76,7 @@ public class PopulateDummyData {
         }
     }
     
-    private static final int NUM_EVENTS = 30000;
+    private static final int NUM_EVENTS = 1000;
     private static final int COLLECTION_SIZE = 1000;
     @Test
     public void makeData() throws ParseException, IOException {
@@ -256,7 +256,8 @@ public class PopulateDummyData {
         Date date1 = makeDate(m1, d1, y1, hh1, mm1, ss1);
         Date date2 = makeDate(m2, d2, y2, hh2, mm2, ss2);
         TimeRange timeRange;
-        if (date1.compareTo(date2) <=0) {
+        //switch dates if they are backward
+        if (date1.compareTo(date2) >=0) {
             timeRange = new TimeRange(date2, date1);
         } else {
             timeRange = new TimeRange(date1,date2);
