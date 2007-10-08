@@ -161,7 +161,7 @@ request.setAttribute("basePath", basePath);
 	    	<form:hidden path="searchResults" htmlEscape="true"/>
 	    	<form:hidden path="mapZoom"/>
 	    	<form:hidden path="isAddToMap"/>
-        <table>
+        <table class="searchbar">
           <tr>
             <td class="labelcell">Where 
                 <small>e.g., "gettysburg, pa" </small><br/>

@@ -142,3 +142,7 @@ background-color:#333333;
 	padding: 5px 0;
 	border:1px solid #999999;
 }
+
+.mapedit .searchbar{
+    width:auto;
+}
