@@ -26,6 +26,7 @@ public class TsEventFormFactory {
         tsEvent.setUserTagsAsString(tsEventForm.getTags());
         tsEvent.setWhen(tsEventForm.getWhen());
         tsEvent.setZoomLevel(tsEventForm.getZoomLevel());
+        tsEvent.setMapType(tsEventForm.getMapType());
         return tsEvent;
     }
 
@@ -46,6 +47,8 @@ public class TsEventFormFactory {
         tsEventForm.setWhere(tsEvent.getWhere());
         tsEventForm.setWhen(tsEvent.getWhen());
         tsEventForm.setZoomLevel(tsEvent.getZoomLevel());
+        
+        tsEventForm.setMapType(tsEvent.getMapType());
         if (tsEvent.getTsGeometry() != null) {
             tsEventForm.setLng(tsEvent.getTsGeometry().getGeometry().getCoordinate().x);
             tsEventForm.setLat(tsEvent.getTsGeometry().getGeometry().getCoordinate().y);

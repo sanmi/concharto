@@ -37,6 +37,9 @@ public class TsEvent extends BaseAuditableEntity {
     public static final int SZ_SOURCEURL = 1024;
     public static final int SZ_WHERE = 512;
     public static final int SZ_USERTAGS = 2048;  //this is used by validators and EventSearchText
+    public static final int MAP_TYPE_MAP = 0;
+    public static final int MAP_TYPE_HYBRID = 1;
+    public static final int MAP_TYPE_SATELLITE = 2;
     private String summary;
     private String where;
     private String snippet;
@@ -56,6 +59,7 @@ public class TsEvent extends BaseAuditableEntity {
     public enum Flag {FOR_DELETION, FOR_CONTENT}
     private EventSearchText eventSearchText;
     private Integer zoomLevel;
+    private Integer mapType;
 
     @Column(name = "_where", length=SZ_WHERE)  //'where' is a sql reserved word
     public String getWhere() {
@@ -204,6 +208,14 @@ public class TsEvent extends BaseAuditableEntity {
 
     public void setZoomLevel(Integer editZoomLevel) {
         this.zoomLevel = editZoomLevel;
+    }
+
+    public Integer getMapType() {
+        return mapType;
+    }
+
+    public void setMapType(Integer mapType) {
+        this.mapType = mapType;
     }
 
     /**
