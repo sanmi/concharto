@@ -20,14 +20,18 @@ request.setAttribute("basePath", basePath);
 		<script type="text/javascript">
 		//<![CDATA[
 		
-	function addToMap() {
-		document.getElementById("eventSearchForm").isAddToMap.value = "true"; 
+	function editEvent(eventId) {
+		document.getElementById("eventSearchForm").isEditEvent.value = "true"; 
+		document.getElementById("eventSearchForm").eventId.value = eventId; 
+		document.getElementById("eventSearchForm").mapType.value = getMapTypeIndex();
+		
+		
 		<%-- don't geocode, but do everything else.  --%>
 		saveAndSubmit(map.getCenter());		
 	}
-	  
+
 	function search() {
- 		document.getElementById("eventSearchForm").isAddToMap.value = "false"; 
+ 		document.getElementById("eventSearchForm").isEditEvent.value = "false"; 
   	<%-- Geocode before submitting so that we can get the map extent first!	 --%>
 		geocode(document.getElementById("eventSearchForm").where.value);
 	}			
@@ -56,14 +60,25 @@ request.setAttribute("basePath", basePath);
 
 	function initialize() {
 		initializeMap();
+		<%-- map center and map zoom --%>
 		var mapCenterJSON = document.getElementById("eventSearchForm").mapCenter.value;
+		
 		var mapZoom = parseInt(document.getElementById("eventSearchForm").mapZoom.value);
+
+		<%-- set map type from the event --%>
+		var mapType = document.getElementById("eventSearchForm").mapType.value;
+		if (mapType != '') {
+			map.setMapType(G_DEFAULT_MAP_TYPES[mapType]);
+		}
+
 		if (mapCenterJSON != "") {
 			var mapCenter = mapCenterJSON.parseJSON();
 			<%-- recenter the map --%>
 			map.setCenter(new GLatLng(mapCenter.lat,mapCenter.lng), mapZoom);			
 			drawPlacemarks();
 		}
+
+
 		adjustSidebarIE();
 	}
 
@@ -106,7 +121,11 @@ request.setAttribute("basePath", basePath);
 			  markerOptions = { icon:letteredIcon };
 				var marker = new GMarker(new GLatLng(event.latLng.lat, event.latLng.lng), markerOptions);
 
-				var html = '<div class="result" style="width:450px;margin-bottom:10px"><b>' + event.summary+'</b><br/>' + event.when + '<br/>' +
+				var html = createInfoWindowHtml(event);
+				html +=  '<br/><a href="<c:out value="${basePath}"/>/event.htm?listid=' + event.id + '">edit</a>' +  
+				' &nbsp; <a href="#">flag</a><br/></div>'
+				;
+				'<div class="result" style="width:450px;margin-bottom:10px"><b>' + event.summary+'</b><br/>' + event.when + '<br/>' +
 				event.description + '<br/>' +
 				'<br/><b>Tags: </b>' + event.tags + '<br/>' + 
 				'<b>Source: </b>' + event.source + '<br/>' + 
@@ -151,7 +170,9 @@ request.setAttribute("basePath", basePath);
 	    	<form:hidden path="mapCenter" htmlEscape="true"/>
 	    	<form:hidden path="searchResults" htmlEscape="true"/>
 	    	<form:hidden path="mapZoom"/>
-	    	<form:hidden path="isAddToMap"/>
+	    	<form:hidden path="mapType"/>
+	    	<form:hidden path="isEditEvent"/>
+	    	<form:hidden path="eventId"/>
         <table class="searchbar">
           <tr>
             <td class="labelcell">Where 
@@ -170,7 +191,7 @@ request.setAttribute("basePath", basePath);
 	          </tr>
 	        </table>
 	        <input type="submit" name="Search" value="Search" />
-	        &nbsp;&nbsp;&nbsp;<input type="button" name="add" value="Add to the Map!" onclick="addToMap()"/>
+	        &nbsp;&nbsp;&nbsp;<input type="button" name="add" value="Add to the Map!" onclick="editEvent(null)"/>
 		    </form:form>
         </span>
 	  </div>
@@ -193,7 +214,7 @@ request.setAttribute("basePath", basePath);
 		          	<a class="more" href="#" onclick="openMarker(<c:out value='${status.count-1}'/>)"> ... more</a>
 		          </c:if> 
 							<br/>	
-		          <a  class="links" href="<c:out value='${basePath}'/>/event.htm?listid=<c:out value='${event.id}'/>">edit</a>
+		          <a  class="links" href="#" onclick="editEvent(<c:out value='${event.id}'/>)">edit</a>
 		          &nbsp; <a class="links" href="#">flag</a><br/>
 		          
 						</div>
