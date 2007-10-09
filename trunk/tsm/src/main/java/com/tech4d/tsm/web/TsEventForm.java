@@ -13,6 +13,7 @@ public class TsEventForm {
     private Double lat;
     private Double lng;
     private Integer zoomLevel;
+    private Integer mapType;
     private String searchResults;
 
 
@@ -106,6 +107,14 @@ public class TsEventForm {
 
     public void setZoomLevel(Integer zoomLevel) {
         this.zoomLevel = zoomLevel;
+    }
+
+    public Integer getMapType() {
+        return mapType;
+    }
+
+    public void setMapType(Integer mapType) {
+        this.mapType = mapType;
     }
 
     /**

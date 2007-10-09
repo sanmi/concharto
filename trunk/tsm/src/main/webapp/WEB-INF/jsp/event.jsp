@@ -16,6 +16,13 @@
 		document.getElementById("eventForm").lat.value = marker.getLatLng().lat();
 		document.getElementById("eventForm").lng.value = marker.getLatLng().lng();
 		document.getElementById("eventForm").zoomLevel.value = map.getZoom();
+		var mapTypeIndex = 0;
+		for (i=0; i<G_DEFAULT_MAP_TYPES.length; i++) {
+			if (G_DEFAULT_MAP_TYPES[i].getName() == map.getCurrentMapType().getName()) {
+				mapTypeIndex = i;
+			}
+		}
+		document.getElementById("eventForm").mapType.value = mapTypeIndex;
 		document.event.submit();
 	}			
 
@@ -29,6 +36,7 @@
 				editLocation = true;
 			}
 			if (editLocation) {
+				<%-- set zoom level from the event --%>
 				var zoomStr = document.getElementById("eventForm").zoomLevel.value;
 				var zoom;
 				if (zoomStr == '') {
@@ -36,14 +44,22 @@
 				} else {
 					zoom = parseInt (zoomStr);
 				}
+
+				<%-- set map type from the event --%>
+				var mapType = document.getElementById("eventForm").mapType.value;
+				if (mapType != '') {
+					map.setMapType(G_DEFAULT_MAP_TYPES[mapType]);
+				}
+
+				<%-- set center from the event --%>
 				map.setCenter(new GLatLng(
-					document.getElementById("eventForm").lat.value,
-					document.getElementById("eventForm").lng.value), zoom); 
+				document.getElementById("eventForm").lat.value,
+				document.getElementById("eventForm").lng.value), zoom); 
 			} else {
-				//TODO UI WORK: don't have a default starting point
+				<%-- TODO UI WORK: don't have a default starting point --%>
 				map.setCenter(new GLatLng(40.879721,-76.998322),11);  //la la land, PA 
 			}
-			//Add a marker in the center of the map		
+			<%-- Add a marker in the center of the map --%>
 			var point = map.getCenter();
 			marker = new GMarker(point, {draggable: true});
 			map.addOverlay(marker);
@@ -156,6 +172,7 @@
 					<form:hidden path="lat"/>
 					<form:hidden path="lng"/>
 					<form:hidden path="zoomLevel"/>
+					<form:hidden path="mapType"/>
 					<form:hidden path="searchResults" htmlEscape="true"/>
 					
    		    <div class="miniTabBar">
