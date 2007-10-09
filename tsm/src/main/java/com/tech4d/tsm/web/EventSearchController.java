@@ -155,8 +155,13 @@ public class EventSearchController extends AbstractFormController {
             Map model = doSearch(errors, eventSearchForm);
             //put the data into the session in case we are leaving
             WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
-            if (eventSearchForm.getIsAddToMap()) {
-                return new ModelAndView(new RedirectView("event.htm"));
+            if (eventSearchForm.getIsEditEvent()) {
+                if (eventSearchForm.getEventId() != null) {
+                    return new ModelAndView(new RedirectView("event.htm?listid=" + eventSearchForm.getEventId()));
+                } else {
+                    //we are creating a new event
+                    return new ModelAndView(new RedirectView("event.htm"));
+                }
             } else {
                 return new ModelAndView(getSuccessView(), model);
             }

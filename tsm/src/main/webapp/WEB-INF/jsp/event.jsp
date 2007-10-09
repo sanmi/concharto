@@ -12,17 +12,14 @@
 		</script>		
 		<script type="text/javascript">
 		//<![CDATA[
+		
+	var newMarker;
+	
 	function saveEvent() {
-		document.getElementById("eventForm").lat.value = marker.getLatLng().lat();
-		document.getElementById("eventForm").lng.value = marker.getLatLng().lng();
+		document.getElementById("eventForm").lat.value = newMarker.getLatLng().lat();
+		document.getElementById("eventForm").lng.value = newMarker.getLatLng().lng();
 		document.getElementById("eventForm").zoomLevel.value = map.getZoom();
-		var mapTypeIndex = 0;
-		for (i=0; i<G_DEFAULT_MAP_TYPES.length; i++) {
-			if (G_DEFAULT_MAP_TYPES[i].getName() == map.getCurrentMapType().getName()) {
-				mapTypeIndex = i;
-			}
-		}
-		document.getElementById("eventForm").mapType.value = mapTypeIndex;
+		document.getElementById("eventForm").mapType.value = getMapTypeIndex();
 		document.event.submit();
 	}			
 
@@ -59,28 +56,26 @@
 				<%-- TODO UI WORK: don't have a default starting point --%>
 				map.setCenter(new GLatLng(40.879721,-76.998322),11);  //la la land, PA 
 			}
+			
 			<%-- Add a marker in the center of the map --%>
 			var point = map.getCenter();
-			marker = new GMarker(point, {draggable: true});
-			map.addOverlay(marker);
-			marker.enableDragging();
-			marker.openInfoWindowHtml("<b>Drag me</b> <br/>anywhere on the map");
+			newMarker = new GMarker(point, {draggable: true});
+			map.addOverlay(newMarker);
+			newMarker.enableDragging();
+			newMarker.openInfoWindowHtml("<b>Drag me</b> <br/>anywhere on the map");
 
-			GEvent.addListener(marker, "dragstart", function() {
+			GEvent.addListener(newMarker, "dragstart", function() {
 				map.closeInfoWindow();
 			});
 		
-			GEvent.addListener(marker, "click", function() {
-				marker.openInfoWindowHtml(html);
+			GEvent.addListener(newMarker, "click", function() {
+				newMarker.openInfoWindowHtml(html);
 			});		
-			
-			adjustSidebarIE();
 			
 			drawPlacemarks();
 		}
 	
-	// addAddressToMap() is called when the geocoder returns an
-	// answer.  
+	<%-- addAddressToMap() is called when the geocoder returns an answer.  --%>
 	function addAddressToMap(response) {
 	  if (!response || response.Status.code != 200) {
 	    alert("Sorry, we can't find that location, " + response.Status.code);
@@ -88,67 +83,57 @@
 	    place = response.Placemark[0];
 	    point = new GLatLng(place.Point.coordinates[1],
 	                        place.Point.coordinates[0]);
-				map.setCenter(point, 13);
-				marker.setLatLng(point);
-	    marker.openInfoWindowHtml(place.address + '<br>' + '<br/><b>Drag me</b> anywhere on the map');
+			map.setCenter(point, 13);
+			newMarker.setLatLng(point);
+	    newMarker.openInfoWindowHtml(place.address + '<br>' + '<br/><b>Drag me</b> anywhere on the map');
 	  }
 	}
 	
-	// showAddress() is called when you click on the Search button
-	// in the form.  It geocodes the address entered into the form
-	// and adds a marker to the map at that location.
+	<%-- showAddress() is called when you click on the Search button
+	     in the form.  It geocodes the address entered into the form
+	     and adds a marker to the map at that location. --%>
 	function showAddress(address) {
 	    geocoder.getLocations(address, addAddressToMap);
 	}
 	
-	
-		// Create a base icon for all of our markers that specifies the
-	// shadow, icon dimensions, etc.
-	var baseIcon = new GIcon();
-	baseIcon.shadow = "http://www.google.com/mapfiles/shadow50.png";
-	baseIcon.iconSize = new GSize(20, 34);
-	baseIcon.shadowSize = new GSize(37, 34);
-	baseIcon.iconAnchor = new GPoint(9, 34);
-	baseIcon.infoWindowAnchor = new GPoint(9, 2);
-	baseIcon.infoShadowAnchor = new GPoint(18, 25);
+	<%-- Create a base icon for all of our markers that specifies the
+	     shadow, icon dimensions, etc. --%>
+	icon = new GIcon();
+	icon.image = "http://labs.google.com/ridefinder/images/mm_20_red.png";
+	icon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
+	icon.iconSize = new GSize(12, 20);
+	icon.shadowSize = new GSize(22, 20);
+	icon.iconAnchor = new GPoint(6, 20);
+	icon.infoWindowAnchor = new GPoint(6, 2);
+	icon.infoShadowAnchor = new GPoint(18, 18);
 		
 	function drawPlacemarks() {
 			var eventsJSON2 = document.getElementById("eventForm").searchResults.value;
 			var events = eventsJSON2.parseJSON();
-			alert("sdf");  //TODO DEBUG the parseJSON isn't working!!! and remove cut and paste too!
-			
-			//create the markers
+						
+			<%-- create the markers --%>
+			var marker;
 			for (var i =0; i<events.length; i++) {
-  			alert("sdf");
-			  map.addOverlay( createMarker(events[i]) );
+				marker = createMarker(events[i]);
+				if (marker != null) {
+				  map.addOverlay(marker);
+				}
 			} 
 	}
 
 	function createMarker(event) {
-			  // Create a lettered icon for this point using our icon class
-			  var letter = String.fromCharCode("A".charCodeAt(0) + markerIndex);
-			  var letteredIcon = new GIcon(baseIcon);
-			  letteredIcon.image = "http://www.google.com/mapfiles/marker" + letter + ".png";
-			
-			  // Set up our GMarkerOptions object
-			  markerOptions = { icon:letteredIcon };
-				var marker = new GMarker(new GLatLng(event.latLng.lat, event.latLng.lng));
-
-				var html = '<b>' + event.summary+'</b><br/>' + event.when + '<br/>' +
-				event.description + '<br/>' +
-				'<br/><b>Tags: </b>' + event.tags + '<br/>' + 
-				'<b>Source: </b>' + event.source + '<br/>' + 
-				'<a href="<c:out value="${basePath}"/>/event.htm?listid=' + event.id + '">edit</a>' +  
-				' &nbsp; <a href="#">flag</a><br/>'
-				;
-				//save this marker.
-				markers[markerIndex] = marker;
-				markerHtml[markerIndex] = html;
-				markerIndex++;
-
-				marker.bindInfoWindowHtml(html);
-
-				return marker;
+			  <%-- Create a lettered icon for this point using our icon class
+						 Set up our GMarkerOptions object --%>
+			  var point = new GLatLng(event.latLng.lat, event.latLng.lng);
+			  if ((newMarker.getPoint().lat() != point.lat()) && (newMarker.getPoint().lng() != point.lng())) {
+					var marker = new GMarker(point, {icon:icon});
+					var html = createInfoWindowHtml(event);
+	
+					marker.bindInfoWindowHtml(html);
+					return marker;
+				} else {
+					return null;
+				}
 	}
 	
 	function changeHistory() {
@@ -161,7 +146,7 @@
 		//]]>
 		</script>
 	</jsp:attribute>
-	<jsp:attribute name="script">map.js</jsp:attribute>
+	<jsp:attribute name="script">map.js,json.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="setMapExtent();"</jsp:attribute>
 
 	<jsp:body>

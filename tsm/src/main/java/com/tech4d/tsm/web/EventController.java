@@ -39,6 +39,7 @@ public class EventController extends SimpleFormController {
         Long id = ServletRequestUtils.getLongParameter(request, "listid");
         TsEvent tsEvent;
         TsEventForm tsEventForm; 
+        EventSearchForm eventSearchForm = getEventSearchForm(request);
         
         if (id != null) {
             tsEvent = this.tsEventDao.findById(id);
@@ -46,8 +47,10 @@ public class EventController extends SimpleFormController {
             //save it in the session
             WebUtils.setSessionAttribute(request, SESSION_TSEVENT, tsEvent);
             tsEventForm = com.tech4d.tsm.web.TsEventFormFactory.getTsEventForm(tsEvent);
+            if (eventSearchForm != null) {
+                tsEventForm.setSearchResults(eventSearchForm.getSearchResults());
+            }
         } else {
-            EventSearchForm eventSearchForm = getEventSearchForm(request);
             tsEventForm = new TsEventForm();
             if (eventSearchForm != null) {
                 tsEventForm.setLng(eventSearchForm.getMapCenter().getX());

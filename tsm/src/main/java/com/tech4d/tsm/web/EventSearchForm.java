@@ -17,8 +17,10 @@ public class EventSearchForm {
     private Point BoundingBoxSW;
     private Point BoundingBoxNE;
     private Integer mapZoom;
+    private Integer mapType;
     private String searchResults;
-    private Boolean isAddToMap;
+    private Boolean isEditEvent;
+    private Integer eventId;
     
     public Integer getMapZoom() {
         return mapZoom;
@@ -73,11 +75,23 @@ public class EventSearchForm {
     public void setSearchResults(String searchResults) {
         this.searchResults = searchResults;
     }
-    public Boolean getIsAddToMap() {
-        return isAddToMap;
+    public Boolean getIsEditEvent() {
+        return isEditEvent;
     }
-    public void setIsAddToMap(Boolean isAddToMap) {
-        this.isAddToMap = isAddToMap;
+    public void setIsEditEvent(Boolean isEditEvent) {
+        this.isEditEvent = isEditEvent;
+    }
+    public Integer getEventId() {
+        return eventId;
+    }
+    public void setEventId(Integer eventId) {
+        this.eventId = eventId;
+    }
+    public Integer getMapType() {
+        return mapType;
+    }
+    public void setMapType(Integer mapType) {
+        this.mapType = mapType;
     }
     
 }

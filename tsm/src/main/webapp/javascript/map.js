@@ -47,6 +47,23 @@
       return myHeight;
     }
 	
+	function createInfoWindowHtml(event) {
+	   var html = '<div class="result" style="width:450px;margin-bottom:10px"><b>' + event.summary+'</b><br/>' + event.when + '<br/>' +
+				event.description + '<br/>' +
+				'<br/><b>Tags: </b>' + event.tags + '<br/>' + 
+				'<b>Source: </b>' + event.source;
+	   return html;
+	}
+	
+	function getMapTypeIndex() {
+		var mapTypeIndex = 0;
+		for (i=0; i<G_DEFAULT_MAP_TYPES.length; i++) {
+			if (G_DEFAULT_MAP_TYPES[i].getName() == map.getCurrentMapType().getName()) {
+				mapTypeIndex = i;
+			}
+		}
+		return mapTypeIndex;
+	}
 		
 	///prevent page scroll
 	function wheelevent(e)
