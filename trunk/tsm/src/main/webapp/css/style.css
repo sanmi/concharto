@@ -64,6 +64,12 @@ background-color:#333333;
     color: #3670A7;
     margin: 0 .2em 2px .2em;
 }
+.mapedit #eventForm .radio {
+    color: #3670A7;
+    border: none;
+    padding: 2px;
+    font: x-small;
+}
 
 .mapedit .miniTabBar {
     margin-left:20px;

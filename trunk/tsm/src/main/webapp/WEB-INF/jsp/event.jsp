@@ -13,67 +13,211 @@
 		<script type="text/javascript">
 		//<![CDATA[
 		
-	var newMarker;
+	var _newMarker;
+	var _point;
+	var _line;
+	var _dragMeMessage;
 	
+	<%-- Create a base icon for all of our markers that specifies the
+	     shadow, icon dimensions, etc. --%>
+	var icon = new GIcon();
+	icon.image = "http://labs.google.com/ridefinder/images/mm_20_red.png";
+	icon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
+	icon.iconSize = new GSize(12, 20);
+	icon.shadowSize = new GSize(22, 20);
+	icon.iconAnchor = new GPoint(6, 20);
+	icon.infoWindowAnchor = new GPoint(6, 2);
+	icon.infoShadowAnchor = new GPoint(18, 18);
+		
+  <%-- BEGIN PRE FUNCTIONS (initialization) ============================= --%>
+	<%-- the main initialize function --%>
+	function initialize() {
+		initializeMap();
+
+		<%-- set center from the event --%>
+		parseGeometry();
+		
+		var editLocation = false;
+		if (document.getElementById("eventForm").id.value != "") {
+		
+			<%-- set map type from the event --%>
+			var mapType = document.getElementById("eventForm").mapType.value;
+			if (mapType != '') {
+				map.setMapType(G_DEFAULT_MAP_TYPES[mapType]);
+			}
+
+		} else {
+			if (_point != null) {
+				map.addOverlay(createEditableMarker(_point));
+			}
+			<%-- TODO UI WORK: don't have a default starting point --%>
+			map.setCenter(new GLatLng(40.879721,-76.998322),11);  //la la land, PA 
+		} 
+
+		setMapCenter();
+		
+		drawOverlays();
+
+		GEvent.addListener(_newMarker, "dragstart", function() {
+			map.closeInfoWindow();
+		});
+	
+		<%-- open up the "drag me" window --%>
+		_newMarker.openInfoWindow(_dragMeMessage);
+		
+	}
+	
+	//TODO remove this 
+	function parseGeometry() {
+	
+		geometryType = getGeometryType();
+		if (geometryType == 'point') {
+			var pointJSON = document.getElementById("eventForm").point.value;
+			var pt = pointJSON.parseJSON();			
+			_point = new GLatLng(pt.lat, pt.lng)
+		} else if (geometryType == 'line') {
+			var lineJSON = document.getElementById("eventForm").line.value;
+			ln = lineJSON.parseJSON();
+			_line = createPolylineFromLine(ln);
+		}
+	}
+	
+	//TODO remove this 	
+	function setMapCenter() {
+		<%-- set zoom level from the event --%>
+		var zoomStr = document.getElementById("eventForm").zoomLevel.value;
+		var zoom;
+		if (zoomStr == '') {
+			zoom = 11;
+		} else {
+			zoom = parseInt (zoomStr);
+		}
+
+		if (geometryType == 'point') {
+			map.setCenter(_point, zoom); 
+		} else if (geometryType == 'line') {
+			map.setCenter(_line.getBounds().getCenter(), zoom);
+		}
+	}
+
+	<%-- draw the points and lines on the map --%>
+	function drawOverlays() {
+		var eventsJSON = document.getElementById("eventForm").searchResults.value;
+		var events = eventsJSON.parseJSON();
+		<%-- create the overlays --%>
+		for (var i =0; i<events.length; i++) {
+			if (events[i].gtype == 'point') {
+			  map.addOverlay(createMarker(events[i]));
+			} else if (events[i].gtype == 'line') {
+				var tmp = createPolyline(events[i]);
+				map.addOverlay(tmp);
+			}
+		} 
+	}
+
+	//TODO
+	function createPolyline(event) {
+	  var html;
+		var polyline;
+		html = createInfoWindowHtml(event);
+		polyline = createPolylineFromLine(event.latLng, html);
+		return polyline;
+	}
+	
+	function createPolylineFromLine(line, html) {
+		var points = [];
+		for (i=0; i<line.length; i++) {
+			var point = new GLatLng(line[i].lat, line[i].lng);
+			points.push(point);
+			<%-- create attached markers for each vertex 
+				TODO: change the marker style, plus don't add it here.
+			--%>
+			marker = new GMarker(point, {icon:icon});
+			marker.bindInfoWindowHtml(html);
+			map.addOverlay(marker);
+		}
+		return new GPolyline(points,'#FF0000', 3, 1);
+	}
+
+	<%-- Draw the editable overlay, plus all of the search results --%>	
+	function createMarker(event) {
+	  <%-- if this is the event we are editing, it is special: --%>
+	  var html;
+	  var marker;
+		var point = new GLatLng(event.latLng.lat, event.latLng.lng);
+	  
+	  if (event.id == document.getElementById("eventForm").id.value) { 
+		  <%-- this is the one we need to edit --%>
+		  marker = createEditableMarker(point);
+	  } else {
+	  	<%-- this just a search result, put there for context --%>
+			html = createInfoWindowHtml(event);
+			marker = new GMarker(point, {icon:icon});
+	  }
+		marker.bindInfoWindowHtml(html);
+		return marker;
+	}
+	
+	function createEditableMarker(point) {
+			marker = new GMarker(point, {draggable: true});
+			marker.enableDragging();
+			html = "<b>Drag me</b> <br/>anywhere on the map";
+			_dragMeMessage = html;
+			_newMarker = marker; 			
+			return marker;
+	}
+	
+  <%-- END PRE FUNCTIONS (initialization) ============================= --%>
+	
+  <%-- BEGIN MISC FUNCTIONS ============================= --%>
+  function getGeometryType() {
+		if (document.getElementById("eventForm").geometryType1.checked) {
+			return "point";
+		} else if (document.getElementById("eventForm").geometryType2.checked) {
+			return "line";
+		} else {
+			return "none";
+		}
+  }
+  <%-- END MISC FUNCTIONS ============================= --%>
+  
+  <%-- BEGIN POST FUNCTIONS ============================= --%>
+	<%-- called on form submit --%>	
 	function saveEvent() {
-		document.getElementById("eventForm").lat.value = newMarker.getLatLng().lat();
-		document.getElementById("eventForm").lng.value = newMarker.getLatLng().lng();
+		saveGeometry();
 		document.getElementById("eventForm").zoomLevel.value = map.getZoom();
 		document.getElementById("eventForm").mapType.value = getMapTypeIndex();
 		document.event.submit();
 	}			
 
-	/*
-		Called by the main initialize function
-	 */
-	function initialize() {
-			initializeMap();
-			var editLocation = false;
-			if (document.getElementById("eventForm").lat.value != "") {
-				editLocation = true;
-			}
-			if (editLocation) {
-				<%-- set zoom level from the event --%>
-				var zoomStr = document.getElementById("eventForm").zoomLevel.value;
-				var zoom;
-				if (zoomStr == '') {
-					zoom = 11;
-				} else {
-					zoom = parseInt (zoomStr);
-				}
-
-				<%-- set map type from the event --%>
-				var mapType = document.getElementById("eventForm").mapType.value;
-				if (mapType != '') {
-					map.setMapType(G_DEFAULT_MAP_TYPES[mapType]);
-				}
-
-				<%-- set center from the event --%>
-				map.setCenter(new GLatLng(
-				document.getElementById("eventForm").lat.value,
-				document.getElementById("eventForm").lng.value), zoom); 
-			} else {
-				<%-- TODO UI WORK: don't have a default starting point --%>
-				map.setCenter(new GLatLng(40.879721,-76.998322),11);  //la la land, PA 
-			}
-			
-			<%-- Add a marker in the center of the map --%>
-			var point = map.getCenter();
-			newMarker = new GMarker(point, {draggable: true});
-			map.addOverlay(newMarker);
-			newMarker.enableDragging();
-			newMarker.openInfoWindowHtml("<b>Drag me</b> <br/>anywhere on the map");
-
-			GEvent.addListener(newMarker, "dragstart", function() {
-				map.closeInfoWindow();
-			});
-		
-			GEvent.addListener(newMarker, "click", function() {
-				newMarker.openInfoWindowHtml(html);
-			});		
-			
-			drawPlacemarks();
+	<%-- saves either point or line or poly depending on edit mode --%>
+	function saveGeometry() {
+		var geometryType = getGeometryType();
+		if (geometryType == "point") {
+			document.getElementById("eventForm").point.value = gLatLngToJSON(_newMarker.getLatLng());
+		} else if (geometryType == "line") {
+			alert ("not implemented");
+			//TODO FOR DEBUGGING
+/*			var points = [];
+			points.push(_newMarker.getLatLng());
+			points.push(map.getCenter());
+			var gPolyline = new GPolyline(points);
+			*/
+			document.getElementById("eventForm").line.value = gPolylineToJSON(_line);
 		}
+	}
+
+	function gPolylineToJSON(polyline) {
+		var str = '{"line":[';
+		for (i=0; i<polyline.getVertexCount(); i++) {
+			str += gLatLngToJSON( polyline.getVertex(i));
+			if (i != polyline.getVertexCount()-1) {
+				str += ',';
+			}
+		}
+		str +=']}';
+		return str;
+	}
 	
 	<%-- addAddressToMap() is called when the geocoder returns an answer.  --%>
 	function addAddressToMap(response) {
@@ -84,8 +228,8 @@
 	    point = new GLatLng(place.Point.coordinates[1],
 	                        place.Point.coordinates[0]);
 			map.setCenter(point, 13);
-			newMarker.setLatLng(point);
-	    newMarker.openInfoWindowHtml(place.address + '<br>' + '<br/><b>Drag me</b> anywhere on the map');
+			_newMarker.setLatLng(point);
+	    _newMarker.openInfoWindowHtml(place.address + '<br>' + '<br/><b>Drag me</b> anywhere on the map');
 	  }
 	}
 	
@@ -96,52 +240,13 @@
 	    geocoder.getLocations(address, addAddressToMap);
 	}
 	
-	<%-- Create a base icon for all of our markers that specifies the
-	     shadow, icon dimensions, etc. --%>
-	icon = new GIcon();
-	icon.image = "http://labs.google.com/ridefinder/images/mm_20_red.png";
-	icon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
-	icon.iconSize = new GSize(12, 20);
-	icon.shadowSize = new GSize(22, 20);
-	icon.iconAnchor = new GPoint(6, 20);
-	icon.infoWindowAnchor = new GPoint(6, 2);
-	icon.infoShadowAnchor = new GPoint(18, 18);
-		
-	function drawPlacemarks() {
-			var eventsJSON2 = document.getElementById("eventForm").searchResults.value;
-			var events = eventsJSON2.parseJSON();
-						
-			<%-- create the markers --%>
-			var marker;
-			for (var i =0; i<events.length; i++) {
-				marker = createMarker(events[i]);
-				if (marker != null) {
-				  map.addOverlay(marker);
-				}
-			} 
-	}
-
-	function createMarker(event) {
-			  <%-- Create a lettered icon for this point using our icon class
-						 Set up our GMarkerOptions object --%>
-			  var point = new GLatLng(event.latLng.lat, event.latLng.lng);
-			  if ((newMarker.getPoint().lat() != point.lat()) && (newMarker.getPoint().lng() != point.lng())) {
-					var marker = new GMarker(point, {icon:icon});
-					var html = createInfoWindowHtml(event);
-	
-					marker.bindInfoWindowHtml(html);
-					return marker;
-				} else {
-					return null;
-				}
-	}
-	
 	function changeHistory() {
 		var id = document.getElementById("eventForm").id.value;
 		if (id != '') {
 			document.location="changehistory.htm?id=" + id;
 		}
 	}
+  <%-- END POST FUNCTIONS ============================= --%>
 		
 		//]]>
 		</script>
@@ -154,8 +259,8 @@
 			<td id="sidebar">
         <form:form name="event" id="eventForm" commandName="event"  method="post" onsubmit="saveEvent(); return false">
 					<form:hidden path="id"/>
-					<form:hidden path="lat"/>
-					<form:hidden path="lng"/>
+					<form:hidden path="point" htmlEscape="true"/>
+					<form:hidden path="line" htmlEscape="true"/>
 					<form:hidden path="zoomLevel"/>
 					<form:hidden path="mapType"/>
 					<form:hidden path="searchResults" htmlEscape="true"/>
@@ -164,6 +269,14 @@
    		    	<span class="miniTabSelected">Edit</span>
    		    	<a class="miniTabUnselected" href="#" onclick="changeHistory(); return false;">Change History</a>
 	 		    </div>
+   		    
+   		    <div class="inputcell">
+		        
+		        <span class="radio">
+							Point: <form:radiobutton path="geometryType" value="point" /> 
+	        		Line: <form:radiobutton path="geometryType" value="line"/> 
+        		</span>
+   		    </div>
    		    <div class="inputcell">
 		        Summary <br/>
 		        <form:input path="summary" size="45" htmlEscape="true"/>
