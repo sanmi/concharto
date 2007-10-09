@@ -65,6 +65,10 @@
 		return mapTypeIndex;
 	}
 		
+    function gLatLngToJSON( point ) {
+		return '{"lat":' + point.lat() + ',"lng":' + point.lng() + '}';
+	}
+		
 	///prevent page scroll
 	function wheelevent(e)
 	{

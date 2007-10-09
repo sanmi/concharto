@@ -1,6 +1,8 @@
 package com.tech4d.tsm.web;
 
 import com.tech4d.tsm.model.geometry.TimeRange;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Point;
 
 public class TsEventForm {
     private String summary;
@@ -10,12 +12,12 @@ public class TsEventForm {
     private String where;
     private TimeRange when;
     private String source;
-    private Double lat;
-    private Double lng;
+    private String geometryType;
+    private Point point;
+    private LineString line;
     private Integer zoomLevel;
     private Integer mapType;
     private String searchResults;
-
 
     public Long getId() {
         return id;
@@ -61,20 +63,28 @@ public class TsEventForm {
         this.tags = tags;
     }
 
-    public Double getLat() {
-        return lat;
+    public String getGeometryType() {
+        return geometryType;
     }
 
-    public void setLat(Double lat) {
-        this.lat = lat;
+    public void setGeometryType(String geometryType) {
+        this.geometryType = geometryType;
     }
 
-    public Double getLng() {
-        return lng;
+    public LineString getLine() {
+        return line;
     }
 
-    public void setLng(Double lng) {
-        this.lng = lng;
+    public void setLine(LineString line) {
+        this.line = line;
+    }
+
+    public Point getPoint() {
+        return point;
+    }
+
+    public void setPoint(Point point) {
+        this.point = point;
     }
 
     public TimeRange getWhen() {

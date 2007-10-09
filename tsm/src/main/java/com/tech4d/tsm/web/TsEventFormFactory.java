@@ -2,8 +2,10 @@ package com.tech4d.tsm.web;
 
 import com.tech4d.tsm.model.TsEvent;
 import com.tech4d.tsm.model.geometry.TsGeometry;
-import com.vividsolutions.jts.geom.Coordinate;
+import com.tech4d.tsm.util.GeometryType;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 
 public class TsEventFormFactory {
@@ -31,11 +33,13 @@ public class TsEventFormFactory {
     }
 
     private static void addGeometry(TsEvent tsEvent, TsEventForm tsEventForm) {
-        GeometryFactory gsf = new GeometryFactory();
-        Coordinate coor = new Coordinate(tsEventForm.getLng(), tsEventForm.getLat());
-        Point point = gsf.createPoint(coor);
-        TsGeometry tsPoint = new TsGeometry(point);
-        tsEvent.setTsGeometry(tsPoint);
+        if (GeometryType.POINT.equals(tsEventForm.getGeometryType())) {
+            TsGeometry tsPoint = new TsGeometry(tsEventForm.getPoint());
+            tsEvent.setTsGeometry(tsPoint);
+        } else if (GeometryType.LINE.equals(tsEventForm.getGeometryType())) {
+            TsGeometry tsLine = new TsGeometry(tsEventForm.getLine());
+            tsEvent.setTsGeometry(tsLine);
+        }
     }
 
     public static TsEventForm getTsEventForm(TsEvent tsEvent) {
@@ -47,11 +51,16 @@ public class TsEventFormFactory {
         tsEventForm.setWhere(tsEvent.getWhere());
         tsEventForm.setWhen(tsEvent.getWhen());
         tsEventForm.setZoomLevel(tsEvent.getZoomLevel());
-        
         tsEventForm.setMapType(tsEvent.getMapType());
         if (tsEvent.getTsGeometry() != null) {
-            tsEventForm.setLng(tsEvent.getTsGeometry().getGeometry().getCoordinate().x);
-            tsEventForm.setLat(tsEvent.getTsGeometry().getGeometry().getCoordinate().y);
+            Geometry geom = tsEvent.getTsGeometry().getGeometry();
+            if (geom instanceof Point) {
+                tsEventForm.setPoint((Point) geom);
+                tsEventForm.setGeometryType(GeometryType.POINT);
+            } else if (geom instanceof LineString) {
+                tsEventForm.setLine((LineString) geom);
+                tsEventForm.setGeometryType(GeometryType.LINE);
+            }
         }
         if (tsEvent.getUserTags() != null) {
             String tags = tsEvent.getUserTagsAsString();

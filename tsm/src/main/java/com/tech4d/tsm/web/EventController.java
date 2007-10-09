@@ -1,8 +1,14 @@
 package com.tech4d.tsm.web;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.tech4d.tsm.dao.TsEventDao;
+import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.model.geometry.TimeRange;
+import com.tech4d.tsm.util.GeometryType;
+import com.tech4d.tsm.web.util.LineStringPropertyEditor;
+import com.tech4d.tsm.web.util.PointPropertyEditor;
+import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Point;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -10,10 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.WebUtils;
 
-import com.tech4d.tsm.dao.TsEventDao;
-import com.tech4d.tsm.model.TsEvent;
-import com.tech4d.tsm.model.geometry.TimeRange;
-import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class EventController extends SimpleFormController {
     private static final String SESSION_TSEVENT = "TSEVENT";
@@ -27,6 +31,8 @@ public class EventController extends SimpleFormController {
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder)
             throws Exception {
         binder.registerCustomEditor(TimeRange.class, new TimeRangePropertyEditor());
+        binder.registerCustomEditor(Point.class, new PointPropertyEditor());
+        binder.registerCustomEditor(LineString.class, new LineStringPropertyEditor());
         super.initBinder(request, binder);
     }
     
@@ -42,21 +48,24 @@ public class EventController extends SimpleFormController {
         EventSearchForm eventSearchForm = getEventSearchForm(request);
         
         if (id != null) {
+            //get the event
             tsEvent = this.tsEventDao.findById(id);
             //TODO don't use session if possible!!!
-            //save it in the session
+            //save it in the session for later modification
             WebUtils.setSessionAttribute(request, SESSION_TSEVENT, tsEvent);
             tsEventForm = com.tech4d.tsm.web.TsEventFormFactory.getTsEventForm(tsEvent);
             if (eventSearchForm != null) {
                 tsEventForm.setSearchResults(eventSearchForm.getSearchResults());
             }
         } else {
+            //this is a new form
             tsEventForm = new TsEventForm();
             if (eventSearchForm != null) {
-                tsEventForm.setLng(eventSearchForm.getMapCenter().getX());
-                tsEventForm.setLat(eventSearchForm.getMapCenter().getY());
+                tsEventForm.setPoint(eventSearchForm.getMapCenter());
                 tsEventForm.setZoomLevel(eventSearchForm.getMapZoom());
                 tsEventForm.setSearchResults(eventSearchForm.getSearchResults());
+                //default geometry type is point
+                tsEventForm.setGeometryType(GeometryType.POINT);
             } 
         }
         return tsEventForm;

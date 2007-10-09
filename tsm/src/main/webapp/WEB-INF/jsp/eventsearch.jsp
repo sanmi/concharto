@@ -20,6 +20,45 @@ request.setAttribute("basePath", basePath);
 		<script type="text/javascript">
 		//<![CDATA[
 		
+
+	<%-- global array and index for dealing with markers --%>
+	var markers;
+	var markerIndex = 0;
+	var markerHtml;
+	
+	<%-- Create a base icon for all of our markers that specifies the
+	     shadow, icon dimensions, etc. --%>
+	var baseIcon = new GIcon();
+	baseIcon.shadow = "http://www.google.com/mapfiles/shadow50.png";
+	baseIcon.iconSize = new GSize(20, 34);
+	baseIcon.shadowSize = new GSize(37, 34);
+	baseIcon.iconAnchor = new GPoint(9, 34);
+	baseIcon.infoWindowAnchor = new GPoint(9, 2);
+	baseIcon.infoShadowAnchor = new GPoint(18, 25);
+		
+	function initialize() {
+		initializeMap();
+		<%-- map center and map zoom --%>
+		var mapCenterJSON = document.getElementById("eventSearchForm").mapCenter.value;
+		
+		var mapZoom = parseInt(document.getElementById("eventSearchForm").mapZoom.value);
+
+		<%-- set map type from the event --%>
+		var mapType = document.getElementById("eventSearchForm").mapType.value;
+		if (mapType != '') {
+			map.setMapType(G_DEFAULT_MAP_TYPES[mapType]);
+		}
+
+		if (mapCenterJSON != "") {
+			var mapCenter = mapCenterJSON.parseJSON();
+			<%-- recenter the map --%>
+			map.setCenter(new GLatLng(mapCenter.lat,mapCenter.lng), mapZoom);			
+			drawOverlays();
+		}
+
+		adjustSidebarIE();
+	}
+
 	function editEvent(eventId) {
 		document.getElementById("eventSearchForm").isEditEvent.value = "true"; 
 		document.getElementById("eventSearchForm").eventId.value = eventId; 
@@ -54,60 +93,21 @@ request.setAttribute("basePath", basePath);
 		document.event.submit();
 	}
 	
-	function gLatLngToJSON( point ) {
-		return '{"lat":' + point.lat() + ',"lng":' + point.lng() + '}';
-	}
-
-	function initialize() {
-		initializeMap();
-		<%-- map center and map zoom --%>
-		var mapCenterJSON = document.getElementById("eventSearchForm").mapCenter.value;
-		
-		var mapZoom = parseInt(document.getElementById("eventSearchForm").mapZoom.value);
-
-		<%-- set map type from the event --%>
-		var mapType = document.getElementById("eventSearchForm").mapType.value;
-		if (mapType != '') {
-			map.setMapType(G_DEFAULT_MAP_TYPES[mapType]);
-		}
-
-		if (mapCenterJSON != "") {
-			var mapCenter = mapCenterJSON.parseJSON();
-			<%-- recenter the map --%>
-			map.setCenter(new GLatLng(mapCenter.lat,mapCenter.lng), mapZoom);			
-			drawPlacemarks();
-		}
-
-
-		adjustSidebarIE();
-	}
-
-	<%-- global array and index for dealing with markers --%>
-	var markers;
-	var markerIndex = 0;
-	var markerHtml;
-	
-	<%-- Create a base icon for all of our markers that specifies the
-	     shadow, icon dimensions, etc. --%>
-	var baseIcon = new GIcon();
-	baseIcon.shadow = "http://www.google.com/mapfiles/shadow50.png";
-	baseIcon.iconSize = new GSize(20, 34);
-	baseIcon.shadowSize = new GSize(37, 34);
-	baseIcon.iconAnchor = new GPoint(9, 34);
-	baseIcon.infoWindowAnchor = new GPoint(9, 2);
-	baseIcon.infoShadowAnchor = new GPoint(18, 25);
-		
-	function drawPlacemarks() {
+	<%-- TODO remove duplication with event.jsp --%>
+	function drawOverlays() {
 			var eventsJSON = document.getElementById("eventSearchForm").searchResults.value;
 			var events = eventsJSON.parseJSON();
-
 			<%-- make a new global array for storing the events --%>
 			markers = new Array(events.length);
 			markerHtml = new Array(events.length);
 			
-			<%-- create the markers --%>
+			<%-- create the overlays --%>
 			for (var i =0; i<events.length; i++) {
-			  map.addOverlay( createMarker(events[i]) );
+				if (events[i].gtype == 'point') {
+			  	map.addOverlay( createMarker(events[i]) );
+			  } else if (events[i].gtype == 'line') {
+			  	<%-- draw line overlay --%>
+			  }
 			} 
 	}
 
@@ -125,13 +125,7 @@ request.setAttribute("basePath", basePath);
 				html +=  '<br/><a href="<c:out value="${basePath}"/>/event.htm?listid=' + event.id + '">edit</a>' +  
 				' &nbsp; <a href="#">flag</a><br/></div>'
 				;
-				'<div class="result" style="width:450px;margin-bottom:10px"><b>' + event.summary+'</b><br/>' + event.when + '<br/>' +
-				event.description + '<br/>' +
-				'<br/><b>Tags: </b>' + event.tags + '<br/>' + 
-				'<b>Source: </b>' + event.source + '<br/>' + 
-				'<a href="<c:out value="${basePath}"/>/event.htm?listid=' + event.id + '">edit</a>' +  
-				' &nbsp; <a href="#">flag</a><br/></div>'
-				;
+				
 				<%-- save this marker. --%>
 				markers[markerIndex] = marker;
 				markerHtml[markerIndex] = html;
