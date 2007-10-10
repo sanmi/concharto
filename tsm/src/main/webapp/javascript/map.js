@@ -81,4 +81,18 @@
 			e.returnValue = false;
 	}
 				
-			
+	function createOverlays(events, excludeEventId) {
+		for (var i =0; i<events.length; i++) {
+			var event = events[i];
+			if ((excludeEventId == null) || (event.id != excludeEventId)) {
+				if (event.gtype == 'point') {
+				  createMarker(event);
+				} else if (event.gtype == 'line') {
+					createPolyline(event);					
+				}
+			}
+		} 
+	}
+
+
+				
