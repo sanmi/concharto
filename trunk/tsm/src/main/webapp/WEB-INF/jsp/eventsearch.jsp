@@ -21,21 +21,28 @@ request.setAttribute("basePath", basePath);
 		//<![CDATA[
 		
 
-	<%-- global array and index for dealing with markers --%>
-	var markers;
-	var markerIndex = 0;
-	var markerHtml;
+	<%-- global array and index for dealing with overlays --%>
+	var _overlays = [];
+	var _overlayIndex = 0;
 	
 	<%-- Create a base icon for all of our markers that specifies the
 	     shadow, icon dimensions, etc. --%>
-	var baseIcon = new GIcon();
-	baseIcon.shadow = "http://www.google.com/mapfiles/shadow50.png";
-	baseIcon.iconSize = new GSize(20, 34);
-	baseIcon.shadowSize = new GSize(37, 34);
-	baseIcon.iconAnchor = new GPoint(9, 34);
-	baseIcon.infoWindowAnchor = new GPoint(9, 2);
-	baseIcon.infoShadowAnchor = new GPoint(18, 25);
+	var _baseIcon = new GIcon();
+	_baseIcon.shadow = "http://www.google.com/mapfiles/shadow50.png";
+	_baseIcon.iconSize = new GSize(20, 34);
+	_baseIcon.shadowSize = new GSize(37, 34);
+	_baseIcon.iconAnchor = new GPoint(9, 34);
+	_baseIcon.infoWindowAnchor = new GPoint(9, 2);
+	_baseIcon.infoShadowAnchor = new GPoint(18, 25);
 		
+  <%-- BEGIN OBJECT DEFINITIONS ============================= --%>
+  function overlayItem(overlay, html, type) {
+  	this.overlay = overlay;
+  	this.html = html;
+  	this.type = type;
+  }
+  <%-- END OBJECT DEFINITIONS ============================= --%>
+  <%-- BEGIN PRE FUNCTIONS (initialization) ============================= --%>
 	function initialize() {
 		initializeMap();
 		<%-- map center and map zoom --%>
@@ -53,12 +60,93 @@ request.setAttribute("basePath", basePath);
 			var mapCenter = mapCenterJSON.parseJSON();
 			<%-- recenter the map --%>
 			map.setCenter(new GLatLng(mapCenter.lat,mapCenter.lng), mapZoom);			
-			drawOverlays();
+
+			var eventsJSON = document.getElementById("eventSearchForm").searchResults.value;
+			var events = eventsJSON.parseJSON();
+			createOverlays(events);
 		}
 
 		adjustSidebarIE();
 	}
+	
+	function createMarker(event) {
+	  <%-- Create a lettered icon for this point using our icon class --%>
+	  var letter = String.fromCharCode("A".charCodeAt(0) + _overlayIndex);
+	  var letteredIcon = new GIcon(_baseIcon);
+	  letteredIcon.image = "http://www.google.com/mapfiles/marker" + letter + ".png";
+	
+	  <%-- Set up our GMarkerOptions object --%>
+	  var markerOptions = { icon:letteredIcon };
+		var marker = new GMarker(new GLatLng(event.latLng.lat, event.latLng.lng), markerOptions);
+		var html = makeOverlayHtml(event);
+		marker.bindInfoWindowHtml(html);
+		map.addOverlay(marker);
+		
+		<%-- record so the user can click on the sidebar and see a popup in the map --%>
+		recordOverlay( marker, html, "point")
+	}
+	
+	function recordOverlay( overlay, html, type) {
+		<%-- save this marker. --%>
+		item = new overlayItem(overlay, html, type);
+		_overlays[_overlayIndex] = item;
+		_overlayIndex++;
+	}
+	
+	function createPolyline(event) {
+		var points = [];
+		var line = event.latLng;
+		for (i=0; i<line.length; i++) {
+			var vertex = new GLatLng(line[i].lat, line[i].lng);
+			points.push(vertex);
+		}
+		var polyline = new GPolyline(points,'#FF0000', 4, .5, {geodesic:true});
+		
+		var html = makeOverlayHtml(event);
+		GEvent.addListener(polyline, "click", function(point) {		    
+	    map.openInfoWindowHtml(point, html);
+	  });
+	  
+		map.addOverlay(polyline);
 
+		<%-- record so the user can click on the sidebar and see a popup in the map --%>
+		recordOverlay(polyline, html, "line")
+	}
+	
+	function makeOverlayHtml(event) {
+		return createInfoWindowHtml(event) +  
+			'<br/><a href="#" onclick="editEvent(' + event.id + ')">edit</a>' +  
+			' &nbsp; <a href="#">flag</a><br/></div>';
+	}
+
+  <%-- END PRE FUNCTIONS (initialization) ============================= --%>
+
+  <%-- BEGIN WHILE FUNCTIONS  ============================= --%>
+	function openMarker(index) {	
+		if (_overlays[index].type == "point")	{
+			_overlays[index].overlay.openInfoWindowHtml(_overlays[index].html);
+		} else {
+			overlay = _overlays[index].overlay;
+			var bounds = overlay.getBounds();
+			var vertex = overlay.getVertex(0);
+			var zoom = map.getBoundsZoomLevel(bounds);
+			if (zoom <= map.getZoom()) {
+				map.setZoom(zoom);
+			}
+			map.openInfoWindow(vertex, _overlays[index].html);
+		}
+	}
+
+	function adjustSidebarIE() {
+		<%-- adjust the map --%>
+		setMapExtent();
+    	var top = document.getElementById("map").offsetTop;
+    	var height = getHeight() - top - 45;
+    	document.getElementById("results").style.height=height+"px";
+	}
+  <%-- END WHILEFUNCTIONS  ============================= --%>
+
+  <%-- BEGIN POST FUNCTIONS  ============================= --%>
 	function editEvent(eventId) {
 		document.getElementById("eventSearchForm").isEditEvent.value = "true"; 
 		document.getElementById("eventSearchForm").eventId.value = eventId; 
@@ -92,62 +180,7 @@ request.setAttribute("basePath", basePath);
 		document.getElementById("eventSearchForm").mapZoom.value = map.getZoom();
 		document.event.submit();
 	}
-	
-	<%-- TODO remove duplication with event.jsp --%>
-	function drawOverlays() {
-			var eventsJSON = document.getElementById("eventSearchForm").searchResults.value;
-			var events = eventsJSON.parseJSON();
-			<%-- make a new global array for storing the events --%>
-			markers = new Array(events.length);
-			markerHtml = new Array(events.length);
-			
-			<%-- create the overlays --%>
-			for (var i =0; i<events.length; i++) {
-				if (events[i].gtype == 'point') {
-			  	map.addOverlay( createMarker(events[i]) );
-			  } else if (events[i].gtype == 'line') {
-			  	<%-- draw line overlay --%>
-			  }
-			} 
-	}
-
-	function createMarker(event) {
-			  <%-- Create a lettered icon for this point using our icon class --%>
-			  var letter = String.fromCharCode("A".charCodeAt(0) + markerIndex);
-			  var letteredIcon = new GIcon(baseIcon);
-			  letteredIcon.image = "http://www.google.com/mapfiles/marker" + letter + ".png";
-			
-			  <%-- Set up our GMarkerOptions object --%>
-			  markerOptions = { icon:letteredIcon };
-				var marker = new GMarker(new GLatLng(event.latLng.lat, event.latLng.lng), markerOptions);
-
-				var html = createInfoWindowHtml(event);
-				html +=  '<br/><a href="<c:out value="${basePath}"/>/event.htm?listid=' + event.id + '">edit</a>' +  
-				' &nbsp; <a href="#">flag</a><br/></div>'
-				;
-				
-				<%-- save this marker. --%>
-				markers[markerIndex] = marker;
-				markerHtml[markerIndex] = html;
-				markerIndex++;
-
-				//marker.bindInfoWindow(document.getElementById("result_A"));
-				marker.bindInfoWindowHtml(html);
-
-				return marker;
-	}
-	
-	function adjustSidebarIE() {
-		<%-- adjust the map --%>
-		setMapExtent();
-    	var top = document.getElementById("map").offsetTop;
-    	var height = getHeight() - top - 45;
-    	document.getElementById("results").style.height=height+"px";
-	}
-
-	function openMarker(index) {	
-		markers[index].openInfoWindowHtml(markerHtml[index]);
-	}
+  <%-- BEGIN POST FUNCTIONS  ============================= --%>
 
 		//]]>
 		</script>
