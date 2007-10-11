@@ -31,7 +31,7 @@ public class EventSearchServiceHib implements EventSearchService {
         "AND (t.end between :earliest AND :latest)";
 
     private static String SQL_MBRWITHIN_CLAUSE = 
-        "AND MBRWithin(geometryCollection, Envelope(GeomFromText(:geom_text))) ";
+        "AND MBRIntersects(geometryCollection, Envelope(GeomFromText(:geom_text))) ";
 
     private static String SQL_MATCH_CLAUSE = 
         "AND MATCH (es.summary, es._where, es.usertags, es.description, es.source) AGAINST (:search_text) ";

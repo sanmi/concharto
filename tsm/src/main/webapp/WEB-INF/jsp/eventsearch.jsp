@@ -130,7 +130,7 @@ request.setAttribute("basePath", basePath);
 			_overlays[index].overlay.openInfoWindowHtml(_overlays[index].html);
 		} else {
 			overlay = _overlays[index].overlay;
-			map.openInfoWindow(vertex, _overlays[index].html);
+			map.openInfoWindow(0, _overlays[index].html);
 			fitToOverlay(overlay);
 		}
 	}
@@ -149,7 +149,6 @@ request.setAttribute("basePath", basePath);
 		document.getElementById("eventSearchForm").isEditEvent.value = "true"; 
 		document.getElementById("eventSearchForm").eventId.value = eventId; 
 		document.getElementById("eventSearchForm").mapType.value = getMapTypeIndex();
-		
 		
 		<%-- don't geocode, but do everything else.  --%>
 		saveAndSubmit(map.getCenter());		
