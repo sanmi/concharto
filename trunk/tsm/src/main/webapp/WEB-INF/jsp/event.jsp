@@ -32,7 +32,6 @@ request.setAttribute("basePath", basePath);
 	_entPointIcon = new GIcon();
 	_entPointIcon.image = "<c:out value="${basePath}"/>images/icons/square.png";
 	_entPointIcon.shadow = "<c:out value="${basePath}"/>images/icons/square_shadow.png";
-//	_entPointIcon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
 	_entPointIcon.iconSize = new GSize(10, 10);
 	_entPointIcon.shadowSize = new GSize(12, 12);
 	_entPointIcon.iconAnchor = new GPoint(5, 5);
@@ -41,6 +40,8 @@ request.setAttribute("basePath", basePath);
 	
 	var _editableMarker;
 	var _editablePolyline;
+	var _polylineMarkers = [];
+	var _currMarker = 0;
 		
   <%-- BEGIN PRE FUNCTIONS (initialization) ============================= --%>
 	<%-- the main initialize function --%>
@@ -62,12 +63,24 @@ request.setAttribute("basePath", basePath);
 		var excludeEventId = document.getElementById("eventForm").id.value;
 		createOverlays(events, excludeEventId);
 		createEditableOverlay();
+		clickListener();		
 	}
 	
+	<%-- If we are editing a line, add listener for clicking on the map --%>
+	function clickListener() {
+		if (getGeometryType() == "line") {
+			GEvent.addListener(map,"click", function(overlay, point) {     
+				addMarker(point);
+				drawLine();
+			});
+		}
+	}
+	
+	<%-- create a non-editable polyline from an event --%>
 	function createPolyline(event) {
 		var points = [];
 		var line = event.latLng;
-		for (i=0; i<line.length; i++) {
+		for (var i=0; i<line.length; i++) {
 			var vertex = new GLatLng(line[i].lat, line[i].lng);
 			points.push(vertex);
 		}
@@ -80,12 +93,14 @@ request.setAttribute("basePath", basePath);
 		map.addOverlay(polyline);
 	}
 	
+	<%-- create a non-editable marker from an event --%>
 	function createMarker(event) {
 		var point = new GLatLng(event.latLng.lat, event.latLng.lng);
 		var marker = new GMarker(point, {icon:_markerIcon});  
 		marker.bindInfoWindowHtml(createInfoWindowHtml(event));
 		map.addOverlay(marker);
 	}
+	
 	<%-- create and draw the editable overlay --%>
 	function createEditableOverlay() {
 		var geometryType = getGeometryType();
@@ -96,14 +111,15 @@ request.setAttribute("basePath", basePath);
 		}
 	}
 
+	<%-- create an editable marker from a json point object --%>
 	function createEditableMarker(point) {
 		if (point == null) {
 			<%-- we are adding a new point here --%>
 			point = map.getCenter();
 		}
-		marker = new GMarker(point, {draggable: true});
+		var marker = new GMarker(point, {draggable: true});
 		marker.enableDragging();
-		html = "<b>Drag me</b> <br/>anywhere on the map";
+		var html = "<b>Drag me</b> <br/>anywhere on the map";
 		marker.bindInfoWindowHtml(html);
 		map.addOverlay(marker);
 		GEvent.addListener(marker, "dragstart", function() {
@@ -114,27 +130,92 @@ request.setAttribute("basePath", basePath);
 		_editableMarker = marker;
 	}
 	
+	<%-- create an editable polyline from a json line object --%>
 	function createEditablePolyline(line) {
 		var points = [];
-		for (i=0; i<line.length; i++) {
+		var marker;
+		for (var i=0; i<line.length; i++) {
 			var vertex = new GLatLng(line[i].lat, line[i].lng);
 			points.push(vertex);
-			marker = new GMarker(vertex, {icon:_entPointIcon});			
-			map.addOverlay(marker);
+			addMarker(vertex);
 		}
-		var polyline = new GPolyline(points,'#FF0000', 4, .5, {geodesic:true});
-		
-		html = "<b>Drag a point </b> to edit the line";
-		GEvent.addListener(polyline, "click", function(point) {		    
-	    map.openInfoWindowHtml(point, html);
-	  });
-		map.addOverlay(polyline);
+		<%-- draw the line between them --%>
+		drawLine();
+
+		<%-- we create a polyline here just so we can find the centroid --%>
+		var polyline = new GPolyline(points, '#FF0000', 4, .5, {geodesic:true});
 		map.setCenter(polyline.getBounds().getCenter(), getZoom());
-		map.openInfoWindow(map.getCenter(), html);
-		_editablePolyline = polyline;
+		
+		<%-- if the map is too zoomed in, we should zoom out to fit the line --%>
+		fitToOverlay(polyline);
+		
+		var html = "<b>Drag a point </b> to edit the line.<br/> <b>Click anywhere</b> on the map to add a point";
+		drawLine();
+	}
+
+	<%-- add a marker to the polyline --%>
+	function addMarker(point) {
+		<%-- When the user clicks on an overlay, not the map, then the point is null 
+				 In that case, we don't want to add apoint --%>
+		if (point != null) {
+			_polylineMarkers[_currMarker] = new GMarker(point, {icon:_entPointIcon, draggable: true});
+			drawMarker(_polylineMarkers[_currMarker], _currMarker);
+			_currMarker++;
+		}
 	}
 	
-  <%-- END PRE FUNCTIONS (initialization) ============================= --%>
+	<%-- draw the marker, add drag listener, add infoWindow --%>
+	function drawMarker(marker, index) {
+		map.addOverlay(marker);
+		marker.enableDragging();
+		GEvent.addListener(marker,'drag',function(){
+			drawLine()
+		});
+		var html = '<a href="#" onclick="deleteMarker('+ 
+			index +  ')">Delete</a> <a href="#">';
+		marker.bindInfoWindowHtml(html);
+	}
+
+	<%-- delete an overlay marker --%>
+	function deleteMarker(index) {
+		var marker = _polylineMarkers[index];
+		map.removeOverlay(marker);
+		removeFromArray(_polylineMarkers, index); 
+		if (_currMarker >0) {
+			_currMarker--;
+		}
+		redrawOverlayMarkers();
+		drawLine();
+	}
+	
+	<%-- redraw the overlay vertex markers --%>
+	function redrawOverlayMarkers() {
+		for (var i=0; i<_polylineMarkers.length; i++) {
+			map.removeOverlay(_polylineMarkers[i]);
+			drawMarker(_polylineMarkers[i], i);
+		}
+	}
+
+	<%-- remove item from an array and shift everything down --%>
+	function removeFromArray(array, index) {
+	  array.splice(index, 1);
+	}
+
+	<%-- redraw the line --%>
+	function drawLine() {
+		if (_editablePolyline) {
+			map.removeOverlay(_editablePolyline);
+		}
+		var points = [];
+		for (var i=0; i<_polylineMarkers.length; i++) {
+			if (_polylineMarkers[i]) {
+				points.push(_polylineMarkers[i].getPoint());
+			}
+		}		
+		_editablePolyline = new GPolyline(points, '#FF0000', 4, .5, {geodesic:true})
+		map.addOverlay(_editablePolyline);
+	}
+	<%-- END PRE FUNCTIONS (initialization) ============================= --%>
 	
   <%-- BEGIN MISC FUNCTIONS ============================= --%>
   function getEventFormPoint() {
@@ -187,22 +268,23 @@ request.setAttribute("basePath", basePath);
 		if (geometryType == "point") {
 			document.getElementById("eventForm").point.value = gLatLngToJSON(_editableMarker.getLatLng());
 		} else if (geometryType == "line") {
-			alert ("not implemented");
 			//TODO FOR DEBUGGING
-/*			var points = [];
+/*
+			var points = [];
 			points.push(_editableMarker.getLatLng());
 			points.push(map.getCenter());
-			var gPolyline = new GPolyline(points);
-			*/
-			document.getElementById("eventForm").line.value = gPolylineToJSON(_line);
+			points.push(map.getBounds().getSouthWest());
+			_editablePolyline = new GPolyline(points);
+*/
+			document.getElementById("eventForm").line.value = markersToJSON(_polylineMarkers);
 		}
 	}
 
-	function gPolylineToJSON(polyline) {
+	function markersToJSON(markers) {
 		var str = '{"line":[';
-		for (i=0; i<polyline.getVertexCount(); i++) {
-			str += gLatLngToJSON( polyline.getVertex(i));
-			if (i != polyline.getVertexCount()-1) {
+		for (var i=0; i<markers.length; i++) {
+			str += gLatLngToJSON( markers[i].getPoint());
+			if (i != markers.length-1) {
 				str += ',';
 			}
 		}
