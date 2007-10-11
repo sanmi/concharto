@@ -93,6 +93,17 @@
 			}
 		} 
 	}
+	
+	function fitToOverlay(overlay) {
+		var bounds = overlay.getBounds();
+		var vertex = overlay.getVertex(0);
+		var zoom = map.getBoundsZoomLevel(bounds);
+		if (zoom <= map.getZoom()) {
+			map.setZoom(zoom);
+		}
+	}
+
+	
 
 
 				

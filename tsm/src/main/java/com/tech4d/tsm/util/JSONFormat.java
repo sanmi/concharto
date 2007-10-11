@@ -1,13 +1,18 @@
 package com.tech4d.tsm.util;
 
-import com.tech4d.tsm.model.TsEvent;
-import com.vividsolutions.jts.geom.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import com.tech4d.tsm.model.TsEvent;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Point;
 
 public class JSONFormat {
     public static final String FIELD_ID = "id";
@@ -51,7 +56,7 @@ public class JSONFormat {
     }
     
     public static String toJSON(LineString line) {
-        Set<JSONObject> JSONPoints = new HashSet<JSONObject>(); 
+        List<JSONObject> JSONPoints = new ArrayList<JSONObject>(); 
         for (int i=0; i<line.getNumPoints(); i++) {
             JSONPoints.add(toJSONObject(line.getPointN(i)));
         }
@@ -70,7 +75,7 @@ public class JSONFormat {
     }
     
     public static String toJSONObject(Collection<Point> points) {
-        Set<JSONObject> JSONPoints = new HashSet<JSONObject>(); 
+        List<JSONObject> JSONPoints = new ArrayList<JSONObject>(); 
         for (Point point : points) {
             JSONPoints.add(toJSONObject(point));
         }

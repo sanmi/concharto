@@ -43,11 +43,6 @@ var icon;
 _mSvgEnabled = true;
 _mSvgForced  = true;
 
-var marker=[];
-var point=[];
-var poly=[];
-var line=[];
-
 function initialize() {
 	////map
 	map = new GMap2(document.getElementById("map"));
@@ -65,31 +60,6 @@ function initialize() {
 	icon.iconAnchor = new GPoint(6, 20);
 	//icon.infoWindowAnchor = new GPoint(5, 1);
 
-	/////////////////////// 
-	point.push(new GLatLng(37.441218, -122.146404));
-	point.push(new GLatLng(37.441882, -122.147391));
-	point.push(new GLatLng(37.442478, -122.146811));
-	point.push(new GLatLng(37.441524, -122.145309));
-	point.push(new GLatLng(37.441831, -122.144237));
-	point.push(new GLatLng(37.443109, -122.146189));
-	point.push(new GLatLng(37.443722, -122.145674));
-	point.push(new GLatLng(37.444472, -122.146876));
-	point.push(new GLatLng(37.445000, -122.146404));
-	point.push(new GLatLng(37.445272, -122.146425));
-	point.push(new GLatLng(37.445886, -122.147477));
-	point.push(new GLatLng(37.444676, -122.148678));
-	point.push(new GLatLng(37.443893, -122.147369));
-
-	for(var n=0;n<point.length;n++)
-	{
-		marker[n] = new GMarker(point[n], {icon:icon, draggable: true});
-		map.addOverlay(marker[n]);
-		marker[n].enableDragging();
-		GEvent.addListener(marker[n],'drag',function(){
-			draw()
-		});
-	};
-
 	//Add listener for clicking on the map
 	GEvent.addListener(map,"click", function(overlay, point) {     
 		//var myHtml = "The GPoint value is: " + map.fromLatLngToDivPixel(point) + " at zoom level " + map.getZoom();
@@ -97,7 +67,6 @@ function initialize() {
 		createMarker(point);
 	});
 
-	draw();//fit();
 }
 
 function draw()
@@ -113,8 +82,6 @@ function draw()
 		map.addOverlay(line[i]);
 }};
 
-
-var newPoint = [];
 var newMarker = [];
 var currPoint = 0;
 var newLine =[];
@@ -134,7 +101,7 @@ function createMarker(point) {
 function drawNew()
 {
 	newPoly.length=0; 
-	for(var i=0;i<newMarker.length;i++)
+	for(var i=0; i<newMarker.length; i++)
 	{
 		if(newLine[i]){
 			map.removeOverlay(newLine[i])

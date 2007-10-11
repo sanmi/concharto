@@ -69,7 +69,8 @@ request.setAttribute("basePath", basePath);
 		adjustSidebarIE();
 	}
 	
-	function createMarker(event) {
+	<%-- called by createOverlay --%>
+	function createMarker(event) { 
 	  <%-- Create a lettered icon for this point using our icon class --%>
 	  var letter = String.fromCharCode("A".charCodeAt(0) + _overlayIndex);
 	  var letteredIcon = new GIcon(_baseIcon);
@@ -86,13 +87,7 @@ request.setAttribute("basePath", basePath);
 		recordOverlay( marker, html, "point")
 	}
 	
-	function recordOverlay( overlay, html, type) {
-		<%-- save this marker. --%>
-		item = new overlayItem(overlay, html, type);
-		_overlays[_overlayIndex] = item;
-		_overlayIndex++;
-	}
-	
+	<%-- called by createOverlay --%>
 	function createPolyline(event) {
 		var points = [];
 		var line = event.latLng;
@@ -101,7 +96,6 @@ request.setAttribute("basePath", basePath);
 			points.push(vertex);
 		}
 		var polyline = new GPolyline(points,'#FF0000', 4, .5, {geodesic:true});
-		
 		var html = makeOverlayHtml(event);
 		GEvent.addListener(polyline, "click", function(point) {		    
 	    map.openInfoWindowHtml(point, html);
@@ -113,6 +107,15 @@ request.setAttribute("basePath", basePath);
 		recordOverlay(polyline, html, "line")
 	}
 	
+	<%-- record overlay and html so we can pop up a window when the user clicks
+	     on info in the sidebar s--%>
+	function recordOverlay( overlay, html, type) {
+		var item = new overlayItem(overlay, html, type);
+		_overlays[_overlayIndex] = item;
+		_overlayIndex++;
+	}
+
+	<%-- create html for info bubbles --%>	
 	function makeOverlayHtml(event) {
 		return createInfoWindowHtml(event) +  
 			'<br/><a href="#" onclick="editEvent(' + event.id + ')">edit</a>' +  
@@ -127,16 +130,11 @@ request.setAttribute("basePath", basePath);
 			_overlays[index].overlay.openInfoWindowHtml(_overlays[index].html);
 		} else {
 			overlay = _overlays[index].overlay;
-			var bounds = overlay.getBounds();
-			var vertex = overlay.getVertex(0);
-			var zoom = map.getBoundsZoomLevel(bounds);
-			if (zoom <= map.getZoom()) {
-				map.setZoom(zoom);
-			}
 			map.openInfoWindow(vertex, _overlays[index].html);
+			fitToOverlay(overlay);
 		}
 	}
-
+	
 	function adjustSidebarIE() {
 		<%-- adjust the map --%>
 		setMapExtent();
