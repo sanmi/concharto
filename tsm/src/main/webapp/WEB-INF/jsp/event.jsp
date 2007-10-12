@@ -86,7 +86,7 @@ request.setAttribute("basePath", basePath);
 	<%-- create a non-editable poly from an event --%>
 	function createPoly(event) {
 		var points = [];
-		var line = event.latLng.line;
+		var line = event.geom.line;
 		for (var i=0; i<line.length; i++) {
 			var vertex = new GLatLng(line[i].lat, line[i].lng);
 			points.push(vertex);
@@ -102,7 +102,7 @@ request.setAttribute("basePath", basePath);
 	
 	<%-- create a non-editable marker from an event --%>
 	function createMarker(event) {
-		var point = new GLatLng(event.latLng.lat, event.latLng.lng);
+		var point = new GLatLng(event.geom.lat, event.geom.lng);
 		var marker = new GMarker(point, {icon:_markerIcon});  
 		marker.bindInfoWindowHtml(createInfoWindowHtml(event));
 		map.addOverlay(marker);
@@ -112,9 +112,9 @@ request.setAttribute("basePath", basePath);
 	function createEditableOverlay() {
 		var geometryType = getGeometryType();
 		if (geometryType == "point") {
-			createEditableMarker(getEventFormPoint());
+			createEditableMarker(getEventFormGeom());
 		} else if ((geometryType == "line") || (geometryType == "polygon")) {
-			createEditablePoly(getEventFormLine());
+			createEditablePoly(getEventFormGeom());
 		}
 	}
 
@@ -145,9 +145,13 @@ request.setAttribute("basePath", basePath);
 		<%-- if we are adding, then line will be null --%>
 		if (line) {
 			for (var i=0; i<line.length; i++) {
-				var vertex = new GLatLng(line[i].lat, line[i].lng);
-				points.push(vertex);
-				addMarker(vertex);
+				<%-- If this marker is a polygon clusure, i.e. it is the same as element 0, 
+				then we don't want to drag it --%>
+				if (!((i!=0) && (line[0].lat == line[i].lat) && (line[0].lng == line[i].lng))) {
+					var vertex = new GLatLng(line[i].lat, line[i].lng);
+					points.push(vertex);
+					addMarker(vertex);
+				}			
 			}
 			<%-- draw the line between them --%>
 			drawPoly();
@@ -267,25 +271,21 @@ request.setAttribute("basePath", basePath);
 	<%-- END WHILE FUNCTIONS (initialization) ============================= --%>
 	
   <%-- BEGIN MISC FUNCTIONS ============================= --%>
-  function getEventFormPoint() {
-			var pointJSON = document.getElementById("eventForm").point.value;
-			if (pointJSON != '') {
-				var pt = pointJSON.parseJSON();			
-				return new GLatLng(pt.lat, pt.lng)
+	function getEventFormGeom() {
+			var geomJSON = document.getElementById("eventForm").geometry.value;
+			var geometryType = getGeometryType();
+			if (geomJSON != '') {
+				if (geometryType == 'point') {
+					var pt = geomJSON.parseJSON();			
+					return new GLatLng(pt.lat, pt.lng)
+				} else {
+					return geomJSON.parseJSON();
+				}
 			} else {
 				return null;
 			}
 	}
 	
-	function getEventFormLine() {
-			var lineJSON = document.getElementById("eventForm").line.value;
-			if (lineJSON != '') {
-				return lineJSON.parseJSON();
-			} else {
-				return null;
-			}
-	}
-  
   function getGeometryType() {
 		if (document.getElementById("eventForm").geometryType1.checked) {
 			return "point";
@@ -324,25 +324,10 @@ request.setAttribute("basePath", basePath);
 	function saveGeometry() {
 		var geometryType = getGeometryType();
 		if (geometryType == "point") {
-			document.getElementById("eventForm").point.value = gLatLngToJSON(_editableMarker.getLatLng());
-			document.getElementById("eventForm").line.value = '';
+			document.getElementById("eventForm").geometry.value = gLatLngToJSON(_editableMarker.getLatLng());
 		} else if ((geometryType == "line") || (geometryType == "polygon")) {
-			document.getElementById("eventForm").line.value = markersToJSON(_polyMarkers, geometryType);
-			document.getElementById("eventForm").point.value = '';
+			document.getElementById("eventForm").geometry.value = markersToJSON(_polyMarkers, geometryType);
 		}
-	}
-
-	<%-- create a json string for the markers --%>
-	function markersToJSON(markers, geometryType) {
-		var str = '{"gtype":"' + geometryType + '","line":[';
-		for (var i=0; i<markers.length; i++) {
-			str += gLatLngToJSON( markers[i].getPoint());
-			if (i != markers.length-1) {
-				str += ',';
-			}
-		}
-		str +=']}';
-		return str;
 	}
 	
 	<%-- addAddressToMap() is called when the geocoder returns an answer.  --%>
@@ -384,8 +369,7 @@ request.setAttribute("basePath", basePath);
 			<td id="sidebar">
         <form:form name="event" id="eventForm" commandName="event"  method="post" onsubmit="saveEvent(); return false">
 					<form:hidden path="id"/>
-					<form:hidden path="point" htmlEscape="true"/>
-					<form:hidden path="line" htmlEscape="true"/>
+					<form:hidden path="geometry" htmlEscape="true"/>
 					<form:hidden path="zoomLevel"/>
 					<form:hidden path="mapType"/>
 					<form:hidden path="searchResults" htmlEscape="true"/>

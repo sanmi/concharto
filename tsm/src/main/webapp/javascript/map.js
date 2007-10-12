@@ -68,7 +68,19 @@
   function gLatLngToJSON( point ) {
 		return '{"gtype":"point","lat":' + point.lat() + ',"lng":' + point.lng() + '}';
 	}
-		
+	
+	function markersToJSON(markers, geometryType) {
+		var str = '{"gtype":"' + geometryType + '","line":[';
+		for (var i=0; i<markers.length; i++) {
+			str += gLatLngToJSON( markers[i].getPoint());
+			if (i != markers.length-1) {
+				str += ',';
+			}
+		}
+		str +=']}';
+		return str;
+	}
+	
 	///prevent page scroll
 	function wheelevent(e)
 	{

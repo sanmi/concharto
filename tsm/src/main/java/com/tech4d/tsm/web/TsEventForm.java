@@ -2,7 +2,6 @@ package com.tech4d.tsm.web;
 
 import com.tech4d.tsm.model.geometry.TimeRange;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
 
 public class TsEventForm {
     private String summary;
@@ -13,8 +12,7 @@ public class TsEventForm {
     private TimeRange when;
     private String source;
     private String geometryType;
-    private Point point;
-    private Geometry line;
+    private Geometry geometry;
     private Integer zoomLevel;
     private Integer mapType;
     private String searchResults;
@@ -71,20 +69,12 @@ public class TsEventForm {
         this.geometryType = geometryType;
     }
 
-    public Geometry getLine() {
-        return line;
+    public Geometry getGeometry() {
+        return geometry;
     }
 
-    public void setLine(Geometry line) {
-        this.line = line;
-    }
-
-    public Point getPoint() {
-        return point;
-    }
-
-    public void setPoint(Point point) {
-        this.point = point;
+    public void setGeometry(Geometry line) {
+        this.geometry = line;
     }
 
     public TimeRange getWhen() {

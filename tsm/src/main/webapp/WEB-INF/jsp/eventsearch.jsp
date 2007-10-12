@@ -78,7 +78,7 @@ request.setAttribute("basePath", basePath);
 	
 	  <%-- Set up our GMarkerOptions object --%>
 	  var markerOptions = { icon:letteredIcon };
-		var marker = new GMarker(new GLatLng(event.latLng.lat, event.latLng.lng), markerOptions);
+		var marker = new GMarker(new GLatLng(event.geom.lat, event.geom.lng), markerOptions);
 		var html = makeOverlayHtml(event);
 		marker.bindInfoWindowHtml(html);
 		map.addOverlay(marker);
@@ -90,13 +90,13 @@ request.setAttribute("basePath", basePath);
 	<%-- called by createOverlay --%>
 	function createPoly(event) {
 		var points = [];
-		var line = event.latLng.line;
+		var line = event.geom.line;
 		
 		for (i=0; i<line.length; i++) {
 			var vertex = new GLatLng(line[i].lat, line[i].lng);
 			points.push(vertex);
 		}
-		var poly = newPoly(points, event.latLng.gtype);
+		var poly = newPoly(points, event.geom.gtype);
 		var html = makeOverlayHtml(event);
 		GEvent.addListener(poly, "click", function(point) {		    
 	    map.openInfoWindowHtml(point, html);
