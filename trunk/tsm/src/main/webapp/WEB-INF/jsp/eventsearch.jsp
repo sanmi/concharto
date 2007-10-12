@@ -130,9 +130,22 @@ request.setAttribute("basePath", basePath);
 			_overlays[index].overlay.openInfoWindowHtml(_overlays[index].html);
 		} else {
 			overlay = _overlays[index].overlay;
-			map.openInfoWindow(0, _overlays[index].html);
-			fitToOverlay(overlay);
+			var point = findClosestVertex(map.getCenter(), overlay);
+			map.openInfoWindow(point, _overlays[index].html);
 		}
+	}
+	
+	function findClosestVertex(point, overlay) {
+		var minDistance = 9999999;
+		var closest = 0;
+		for (var i=0; i<overlay.getVertexCount(); i++) {
+			distance = point.distanceFrom(overlay.getVertex(i));
+			if (distance < minDistance) {
+				closest = i;
+				minDistance = distance;
+			}
+		}
+		return overlay.getVertex(closest);
 	}
 	
 	function adjustSidebarIE() {
