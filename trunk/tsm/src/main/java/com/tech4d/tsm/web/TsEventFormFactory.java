@@ -4,9 +4,9 @@ import com.tech4d.tsm.model.TsEvent;
 import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.tech4d.tsm.util.GeometryType;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 public class TsEventFormFactory {
 
@@ -36,7 +36,8 @@ public class TsEventFormFactory {
         if (GeometryType.POINT.equals(tsEventForm.getGeometryType())) {
             TsGeometry tsPoint = new TsGeometry(tsEventForm.getPoint());
             tsEvent.setTsGeometry(tsPoint);
-        } else if (GeometryType.LINE.equals(tsEventForm.getGeometryType())) {
+        } else if (GeometryType.LINE.equals(tsEventForm.getGeometryType()) || 
+                   GeometryType.POLYGON.equals(tsEventForm.getGeometryType())) {
             TsGeometry tsLine = new TsGeometry(tsEventForm.getLine());
             tsEvent.setTsGeometry(tsLine);
         }
@@ -58,8 +59,11 @@ public class TsEventFormFactory {
                 tsEventForm.setPoint((Point) geom);
                 tsEventForm.setGeometryType(GeometryType.POINT);
             } else if (geom instanceof LineString) {
-                tsEventForm.setLine((LineString) geom);
+                tsEventForm.setLine(geom);
                 tsEventForm.setGeometryType(GeometryType.LINE);
+            } else if (geom instanceof Polygon) {
+                tsEventForm.setLine(geom);
+                tsEventForm.setGeometryType(GeometryType.POLYGON);
             }
         }
         if (tsEvent.getUserTags() != null) {

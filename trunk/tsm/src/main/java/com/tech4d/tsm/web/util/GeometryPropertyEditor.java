@@ -5,6 +5,7 @@ import java.beans.PropertyEditorSupport;
 import org.apache.commons.lang.StringUtils;
 
 import com.tech4d.tsm.util.JSONFormat;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 
@@ -12,13 +13,13 @@ import com.vividsolutions.jts.geom.Point;
  * Converts JSON string to a LineString and vica versa.
  * TODO fix this!  
  */
-public class LineStringPropertyEditor extends PropertyEditorSupport {
+public class GeometryPropertyEditor extends PropertyEditorSupport {
 
-    private LineString line;
+    private Geometry line;
     
     @Override
     public void setValue(Object value) {
-        this.line = (LineString) value;
+        this.line = (Geometry) value;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class LineStringPropertyEditor extends PropertyEditorSupport {
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
         if (!StringUtils.isEmpty(text)) {
-            this.line = JSONFormat.fromJSONLineString(text);
+            this.line = (Geometry) JSONFormat.fromJSONGeomString(text);
         }
     }
     

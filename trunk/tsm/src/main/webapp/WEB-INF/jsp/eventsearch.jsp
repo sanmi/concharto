@@ -88,23 +88,24 @@ request.setAttribute("basePath", basePath);
 	}
 	
 	<%-- called by createOverlay --%>
-	function createPolyline(event) {
+	function createPoly(event) {
 		var points = [];
-		var line = event.latLng;
+		var line = event.latLng.line;
+		
 		for (i=0; i<line.length; i++) {
 			var vertex = new GLatLng(line[i].lat, line[i].lng);
 			points.push(vertex);
 		}
-		var polyline = new GPolyline(points,'#FF0000', 4, .5, {geodesic:true});
+		var poly = newPoly(points, event.latLng.gtype);
 		var html = makeOverlayHtml(event);
-		GEvent.addListener(polyline, "click", function(point) {		    
+		GEvent.addListener(poly, "click", function(point) {		    
 	    map.openInfoWindowHtml(point, html);
 	  });
 	  
-		map.addOverlay(polyline);
+		map.addOverlay(poly);
 
 		<%-- record so the user can click on the sidebar and see a popup in the map --%>
-		recordOverlay(polyline, html, "line")
+		recordOverlay(poly, html, "line")
 	}
 	
 	<%-- record overlay and html so we can pop up a window when the user clicks

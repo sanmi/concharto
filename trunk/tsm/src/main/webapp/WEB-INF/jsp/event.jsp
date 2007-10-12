@@ -39,8 +39,8 @@ request.setAttribute("basePath", basePath);
 	_entPointIcon.infoShadowAnchor = new GPoint(12, 12);
 	
 	var _editableMarker;
-	var _editablePolyline;
-	var _polylineMarkers = [];
+	var _editablePoly;
+	var _polyMarkers = [];
 	var _currMarker = 0;
 	var _clickListener;
 		
@@ -64,34 +64,40 @@ request.setAttribute("basePath", basePath);
 		var excludeEventId = document.getElementById("eventForm").id.value;
 		createOverlays(events, excludeEventId);
 		createEditableOverlay();
-		clickListener();		
+		addClickListener();		
 	}
 	
-	<%-- If we are editing a line, add listener for clicking on the map --%>
-	function clickListener() {
-		if (getGeometryType() == "line") {
+	<%-- If we are editing a poly, add listener for clicking on the map --%>
+	function addClickListener() {
+		<%-- only add if it is missing --%>
+		if (_clickListener == null) {
 			_clickListener = GEvent.addListener(map,"click", function(overlay, point) {     
 				addMarker(point);
-				drawLine();
+				drawPoly();
 			});
 		} 
 	}
+
+	function removeClickListener() {
+		GEvent.removeListener(_clickListener);
+		_clickListener = null;		
+	}
 	
-	<%-- create a non-editable polyline from an event --%>
-	function createPolyline(event) {
+	<%-- create a non-editable poly from an event --%>
+	function createPoly(event) {
 		var points = [];
-		var line = event.latLng;
+		var line = event.latLng.line;
 		for (var i=0; i<line.length; i++) {
 			var vertex = new GLatLng(line[i].lat, line[i].lng);
 			points.push(vertex);
 		}
-		var polyline = new GPolyline(points,'#FF0000', 4, .5, {geodesic:true});
+		var poly = newPoly(points, event.gtype);
 		
 		var html = createInfoWindowHtml(event);
-		GEvent.addListener(polyline, "click", function(point) {		    
+		GEvent.addListener(poly, "click", function(point) {		    
 	    map.openInfoWindowHtml(point, html);
 	  });
-		map.addOverlay(polyline);
+		map.addOverlay(poly);
 	}
 	
 	<%-- create a non-editable marker from an event --%>
@@ -107,8 +113,8 @@ request.setAttribute("basePath", basePath);
 		var geometryType = getGeometryType();
 		if (geometryType == "point") {
 			createEditableMarker(getEventFormPoint());
-		} else if (geometryType == "line") {
-			createEditablePolyline(getEventFormLine());
+		} else if ((geometryType == "line") || (geometryType == "polygon")) {
+			createEditablePoly(getEventFormLine());
 		}
 	}
 
@@ -131,10 +137,11 @@ request.setAttribute("basePath", basePath);
 		_editableMarker = marker;
 	}
 	
-	<%-- create an editable polyline from a json line object --%>
-	function createEditablePolyline(line) {
+	<%-- create an editable poly from a json poly object --%>
+	function createEditablePoly(jsonLine) {
 		var points = [];
 		var marker;
+		var line = jsonLine.line;
 		<%-- if we are adding, then line will be null --%>
 		if (line) {
 			for (var i=0; i<line.length; i++) {
@@ -143,29 +150,29 @@ request.setAttribute("basePath", basePath);
 				addMarker(vertex);
 			}
 			<%-- draw the line between them --%>
-			drawLine();
+			drawPoly();
 	
-			<%-- we create a polyline here just so we can find the centroid --%>
-			var polyline = new GPolyline(points, '#FF0000', 4, .5, {geodesic:true});
-			map.setCenter(polyline.getBounds().getCenter(), getZoom());
+			<%-- we create a poly here just so we can find the centroid --%>
+			var poly = new newPoly(points, getGeometryType());
+			map.setCenter(poly.getBounds().getCenter(), getZoom());
 			
 			<%-- if the map is too zoomed in, we should zoom out to fit the line --%>
-			fitToOverlay(polyline);
+			fitToOverlay(poly);
 		}
 		
 		var html = " <b>Click anywhere</b> on the map to add a point<br/><b>Drag a point </b> to edit the line.";
     map.openInfoWindowHtml(map.getCenter(), html);
 
-		drawLine();
+		drawPoly();
 	}
 
-	<%-- add a marker to the polyline --%>
+	<%-- add a marker to the poly --%>
 	function addMarker(point) {
 		<%-- When the user clicks on an overlay, not the map, then the point is null 
 				 In that case, we don't want to add apoint --%>
 		if (point != null) {
-			_polylineMarkers[_currMarker] = new GMarker(point, {icon:_entPointIcon, draggable: true});
-			drawMarker(_polylineMarkers[_currMarker], _currMarker);
+			_polyMarkers[_currMarker] = new GMarker(point, {icon:_entPointIcon, draggable: true});
+			drawMarker(_polyMarkers[_currMarker], _currMarker);
 			_currMarker++;
 		}
 	}
@@ -175,7 +182,7 @@ request.setAttribute("basePath", basePath);
 		map.addOverlay(marker);
 		marker.enableDragging();
 		GEvent.addListener(marker,'drag',function(){
-			drawLine()
+			drawPoly()
 		});
 		var html = '<a href="#" onclick="deleteMarker('+ 
 			index +  ')">Delete</a> <a href="#">';
@@ -184,21 +191,21 @@ request.setAttribute("basePath", basePath);
 
 	<%-- delete an overlay marker --%>
 	function deleteMarker(index) {
-		var marker = _polylineMarkers[index];
+		var marker = _polyMarkers[index];
 		map.removeOverlay(marker);
-		removeFromArray(_polylineMarkers, index); 
+		removeFromArray(_polyMarkers, index); 
 		if (_currMarker >0) {
 			_currMarker--;
 		}
 		redrawOverlayMarkers();
-		drawLine();
+		drawPoly();
 	}
 	
 	<%-- redraw the overlay vertex markers --%>
 	function redrawOverlayMarkers() {
-		for (var i=0; i<_polylineMarkers.length; i++) {
-			map.removeOverlay(_polylineMarkers[i]);
-			drawMarker(_polylineMarkers[i], i);
+		for (var i=0; i<_polyMarkers.length; i++) {
+			map.removeOverlay(_polyMarkers[i]);
+			drawMarker(_polyMarkers[i], i);
 		}
 	}
 
@@ -208,18 +215,18 @@ request.setAttribute("basePath", basePath);
 	}
 
 	<%-- redraw the line --%>
-	function drawLine() {
-		if (_editablePolyline) {
-			map.removeOverlay(_editablePolyline);
+	function drawPoly() {
+		if (_editablePoly) {
+			map.removeOverlay(_editablePoly);
 		}
 		var points = [];
-		for (var i=0; i<_polylineMarkers.length; i++) {
-			if (_polylineMarkers[i]) {
-				points.push(_polylineMarkers[i].getPoint());
+		for (var i=0; i<_polyMarkers.length; i++) {
+			if (_polyMarkers[i]) {
+				points.push(_polyMarkers[i].getPoint());
 			}
 		}		
-		_editablePolyline = new GPolyline(points, '#FF0000', 4, .5, {geodesic:true})
-		map.addOverlay(_editablePolyline);
+		_editablePoly = newPoly(points, getGeometryType());
+		map.addOverlay(_editablePoly);
 	}
 	
 	
@@ -228,28 +235,35 @@ request.setAttribute("basePath", basePath);
 	<%-- BEGIN WHILE FUNCTIONS (initialization) ============================= --%>
 	<%-- user is creating a point --%>
 	function setupNewPoint() {
-		if (_editablePolyline) {
-			map.removeOverlay(_editablePolyline);
-			for (var i=0; i<_polylineMarkers.length; i++) {
-				map.removeOverlay(_polylineMarkers[i]);
-			}
-		}
+		removeEditableOverlay();
 		createEditableOverlay();
-		GEvent.removeListener(_clickListener);
+		removeClickListener();
 	}
 	
-	<%-- user is creating a polyline --%>
-	function setupNewPolyline() {
+	<%-- user is creating a poly --%>
+	function setupNewPoly() {
+		removeEditableOverlay();
+		for (var i=0; i<_polyMarkers.length; i++) {
+			map.addOverlay(_polyMarkers[i]);
+		}
+		drawPoly();
+		//createEditableOverlay();
+		addClickListener();
+	}
+	
+	<%-- remove point AND poly overlay --%>
+	function removeEditableOverlay() {
 		if (_editableMarker) {
 			map.removeOverlay(_editableMarker);
 		} 		
-		for (var i=0; i<_polylineMarkers.length; i++) {
-			map.addOverlay(_polylineMarkers[i]);
+		if (_editablePoly) {
+			map.removeOverlay(_editablePoly);
+			for (var i=0; i<_polyMarkers.length; i++) {
+				map.removeOverlay(_polyMarkers[i]);
+			}
 		}
-		drawLine();
-		//createEditableOverlay();
-		clickListener();
 	}
+	
 	<%-- END WHILE FUNCTIONS (initialization) ============================= --%>
 	
   <%-- BEGIN MISC FUNCTIONS ============================= --%>
@@ -277,6 +291,8 @@ request.setAttribute("basePath", basePath);
 			return "point";
 		} else if (document.getElementById("eventForm").geometryType2.checked) {
 			return "line";
+		} else if (document.getElementById("eventForm").geometryType3.checked) {
+			return "polygon";
 		} else {
 			return "none";
 		}
@@ -310,14 +326,15 @@ request.setAttribute("basePath", basePath);
 		if (geometryType == "point") {
 			document.getElementById("eventForm").point.value = gLatLngToJSON(_editableMarker.getLatLng());
 			document.getElementById("eventForm").line.value = '';
-		} else if (geometryType == "line") {
-			document.getElementById("eventForm").line.value = markersToJSON(_polylineMarkers);
+		} else if ((geometryType == "line") || (geometryType == "polygon")) {
+			document.getElementById("eventForm").line.value = markersToJSON(_polyMarkers, geometryType);
 			document.getElementById("eventForm").point.value = '';
 		}
 	}
 
-	function markersToJSON(markers) {
-		var str = '{"line":[';
+	<%-- create a json string for the markers --%>
+	function markersToJSON(markers, geometryType) {
+		var str = '{"gtype":"' + geometryType + '","line":[';
 		for (var i=0; i<markers.length; i++) {
 			str += gLatLngToJSON( markers[i].getPoint());
 			if (i != markers.length-1) {
@@ -377,12 +394,15 @@ request.setAttribute("basePath", basePath);
    		    	<span class="miniTabSelected">Edit</span>
    		    	<a class="miniTabUnselected" href="#" onclick="changeHistory(); return false;">Change History</a>
 	 		    </div>
-   		    
+   		    <div>
+   		    	<form:errors path="*"/>
+   		    </div>
    		    <div class="inputcell">
 		        
 		        <span class="radio">
 							Point: <form:radiobutton path="geometryType" value="point" onclick="setupNewPoint()"/> 
-	        		Line: <form:radiobutton path="geometryType" value="line" onclick="setupNewPolyline()"/> 
+	        		Line: <form:radiobutton path="geometryType" value="line" onclick="setupNewPoly()"/> 
+	        		Shape: <form:radiobutton path="geometryType" value="polygon" onclick="setupNewPoly()"/> 
         		</span>
    		    </div>
    		    <div class="inputcell">
