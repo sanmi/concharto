@@ -31,6 +31,7 @@
 		<property name="tsEventDao" ref="tsEventDao" />
 	</bean>
 
+	<bean id="tsEventFormValidator" class="com.tech4d.tsm.web.util.TsEventFormValidator"/>
 	<bean class="com.tech4d.tsm.web.EventController" parent="baseEventController">
 		<property name="bindOnNewForm" value="true" />
 		<property name="commandName" value="event" />
@@ -38,6 +39,7 @@
 		<property name="formView" value="event" />
 		<property name="successView" value="redirect:eventsearch.htm" />
 		<property name="tsEventDao" ref="tsEventDao" />
+		<property name="validator" ref="tsEventFormValidator"></property>
 	</bean>
 
 	<bean class="com.tech4d.tsm.web.ChangeHistoryController" parent="baseEventController">
