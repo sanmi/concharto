@@ -65,8 +65,8 @@
 		return mapTypeIndex;
 	}
 		
-    function gLatLngToJSON( point ) {
-		return '{"lat":' + point.lat() + ',"lng":' + point.lng() + '}';
+  function gLatLngToJSON( point ) {
+		return '{"gtype":"point","lat":' + point.lat() + ',"lng":' + point.lng() + '}';
 	}
 		
 	///prevent page scroll
@@ -87,8 +87,8 @@
 			if ((excludeEventId == null) || (event.id != excludeEventId)) {
 				if (event.gtype == 'point') {
 				  createMarker(event);
-				} else if (event.gtype == 'line') {
-					createPolyline(event);					
+				} else if ((event.gtype == 'line') || (event.gtype == 'polygon')) {
+					createPoly(event);					
 				}
 			}
 		} 
@@ -102,6 +102,15 @@
 			map.setZoom(zoom);
 		}
 	}
+	
+	function newPoly(points, geometryType) {
+		if (geometryType == 'line') {
+			return new GPolyline(points,'#FF0000', 4, .5, {geodesic:true});
+		} else if (geometryType == 'polygon') {
+			return new GPolygon(points,"#f33f00", 4, .8, '#FF0000', .25);
+		}
+	}
+	
 
 	
 

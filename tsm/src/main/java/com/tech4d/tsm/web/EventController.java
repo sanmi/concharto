@@ -4,11 +4,9 @@ import com.tech4d.tsm.dao.TsEventDao;
 import com.tech4d.tsm.model.TsEvent;
 import com.tech4d.tsm.model.geometry.TimeRange;
 import com.tech4d.tsm.util.GeometryType;
-import com.tech4d.tsm.web.util.LineStringPropertyEditor;
-import com.tech4d.tsm.web.util.PointPropertyEditor;
+import com.tech4d.tsm.web.util.GeometryPropertyEditor;
 import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Geometry;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -31,8 +29,7 @@ public class EventController extends SimpleFormController {
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder)
             throws Exception {
         binder.registerCustomEditor(TimeRange.class, new TimeRangePropertyEditor());
-        binder.registerCustomEditor(Point.class, new PointPropertyEditor());
-        binder.registerCustomEditor(LineString.class, new LineStringPropertyEditor());
+        binder.registerCustomEditor(Geometry.class, new GeometryPropertyEditor());
         super.initBinder(request, binder);
     }
     

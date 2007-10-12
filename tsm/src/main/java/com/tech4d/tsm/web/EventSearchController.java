@@ -1,14 +1,15 @@
 package com.tech4d.tsm.web;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.model.geometry.TimeRange;
+import com.tech4d.tsm.service.EventSearchService;
+import com.tech4d.tsm.util.JSONFormat;
+import com.tech4d.tsm.web.util.GeometryPropertyEditor;
+import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.util.GeometricShapeFactory;
 import org.springframework.beans.propertyeditors.CustomBooleanEditor;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -17,16 +18,9 @@ import org.springframework.web.servlet.mvc.AbstractFormController;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
-import com.tech4d.tsm.model.TsEvent;
-import com.tech4d.tsm.model.geometry.TimeRange;
-import com.tech4d.tsm.service.EventSearchService;
-import com.tech4d.tsm.util.JSONFormat;
-import com.tech4d.tsm.web.util.PointPropertyEditor;
-import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.util.GeometricShapeFactory;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 public class EventSearchController extends AbstractFormController {
     public static final String SESSION_EVENT_SEARCH_FORM = "eventSearchForm";
@@ -41,7 +35,7 @@ public class EventSearchController extends AbstractFormController {
 
     public String getFormView() {
         return formView;
-    }
+    }                              
 
 
     public void setFormView(String formView) {
@@ -72,7 +66,7 @@ public class EventSearchController extends AbstractFormController {
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder)
             throws Exception {
         binder.registerCustomEditor(TimeRange.class, new TimeRangePropertyEditor());
-        binder.registerCustomEditor(Point.class, new PointPropertyEditor());
+        binder.registerCustomEditor(Geometry.class, new GeometryPropertyEditor());
         binder.registerCustomEditor(Boolean.class, new CustomBooleanEditor("true", "false", true));
         super.initBinder(request, binder);
     }

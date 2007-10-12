@@ -1,7 +1,7 @@
 package com.tech4d.tsm.web;
 
 import com.tech4d.tsm.model.geometry.TimeRange;
-import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
 public class TsEventForm {
@@ -14,7 +14,7 @@ public class TsEventForm {
     private String source;
     private String geometryType;
     private Point point;
-    private LineString line;
+    private Geometry line;
     private Integer zoomLevel;
     private Integer mapType;
     private String searchResults;
@@ -71,11 +71,11 @@ public class TsEventForm {
         this.geometryType = geometryType;
     }
 
-    public LineString getLine() {
+    public Geometry getLine() {
         return line;
     }
 
-    public void setLine(LineString line) {
+    public void setLine(Geometry line) {
         this.line = line;
     }
 
