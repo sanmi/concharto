@@ -58,7 +58,6 @@ public class EventController extends SimpleFormController {
             //this is a new form
             tsEventForm = new TsEventForm();
             if (eventSearchForm != null) {
-                tsEventForm.setPoint(eventSearchForm.getMapCenter());
                 tsEventForm.setZoomLevel(eventSearchForm.getMapZoom());
                 tsEventForm.setSearchResults(eventSearchForm.getSearchResults());
                 //default geometry type is point

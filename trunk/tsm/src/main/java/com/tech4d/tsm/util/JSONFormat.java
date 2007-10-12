@@ -30,11 +30,11 @@ public class JSONFormat {
     public static final String FIELD_WHEN = "when";
     public static final String FIELD_TAGS = "tags";
     public static final String FIELD_SOURCE = "source";
-    public static final String FIELD_LAT_LNG = "latLng";
     public static final String FIELD_GEOMETRYTYPE="gtype";
     public static final String FIELD_LNG = "lng";
     public static final String FIELD_LAT = "lat";
-    public static final String FIELD_POINTS = "line";
+    public static final String FIELD_GEOMETRY = "geom";
+    public static final String FIELD_LINE = "line";
 
     public static String toJSON(Collection<TsEvent> events) {
         JSONArray jsonEvents = new JSONArray();
@@ -55,18 +55,8 @@ public class JSONFormat {
         jsonEvent.put(FIELD_TAGS, event.getUserTagsAsString());
         jsonEvent.put(FIELD_SOURCE, event.getSourceUrl());
         Geometry geom = event.getTsGeometry().getGeometry();
-        if (geom instanceof Point) {
-            jsonEvent.put(FIELD_LAT_LNG, toJSON((Point)geom));
-            jsonEvent.put(FIELD_GEOMETRYTYPE, GeometryType.POINT);            
-        } else if (geom instanceof LineString) {
-            jsonEvent.put(FIELD_LAT_LNG, toJSON((LineString)geom));
-            jsonEvent.put(FIELD_GEOMETRYTYPE, GeometryType.LINE);            
-            
-        } else if (geom instanceof Polygon) {
-            jsonEvent.put(FIELD_LAT_LNG, toJSON((Polygon)geom));
-            jsonEvent.put(FIELD_GEOMETRYTYPE, GeometryType.POLYGON);            
-            
-        }
+        jsonEvent.put(FIELD_GEOMETRYTYPE, GeometryType.getGeometryType(geom));
+        jsonEvent.put(FIELD_GEOMETRY, toJSON(geom));
         return jsonEvent.toString(); 
     }
     
@@ -93,7 +83,7 @@ public class JSONFormat {
         for (int i=0; i<line.getNumPoints(); i++) {
             jsonPoints.add(toJSONObject(line.getPointN(i)));
         }
-        jo.put(FIELD_POINTS, jsonPoints);
+        jo.put(FIELD_LINE, jsonPoints);
         return jo.toString();
     }
 
@@ -122,26 +112,7 @@ public class JSONFormat {
         Double x = json.getDouble(FIELD_LNG);
         GeometryFactory gf = new GeometryFactory();
         return gf.createPoint(new Coordinate(x, y));    }
-
-/*    public static Point fromJSONPoint(String text) {
-        JSONObject json = JSONObject.fromObject(text);
-        return fromJSONPoint(json);
-    }
-    
-
-    public static LineString fromJSONLineString(String text) {
-        JSONObject json = JSONObject.fromObject(text);
-        JSONArray jsonPoints = json.getJSONArray(FIELD_POINTS);
-        Coordinate[] coordinates = new Coordinate[jsonPoints.size()];
-        int i=0;
-        for (Object obj : jsonPoints) {
-            Point point = fromJSONPoint((JSONObject) obj);
-            coordinates[i++] = point.getCoordinate();
-        }
-        GeometryFactory gf = new GeometryFactory();
-        return gf.createLineString(coordinates);
-    }
-*/    
+ 
     public static Geometry fromJSONGeomString(String text) {
         JSONObject json = JSONObject.fromObject(text);
         String geometryType = json.getString(FIELD_GEOMETRYTYPE);
