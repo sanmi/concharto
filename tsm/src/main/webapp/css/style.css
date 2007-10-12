@@ -60,15 +60,21 @@ background-color:#333333;
     background-color: #F9FBFD;
     border: 1px solid #D7E5F2;
     padding: 10px 4px 5px 2px;
-    font: large Verdana, Geneva, Arial, Helvetica, sans-serif;
-    color: #3670A7;
     margin: 0 .2em 2px .2em;
 }
-.mapedit #eventForm .radio {
+.mapedit #eventForm .inputlabel, .errorlabel {
+    font: Verdana, Geneva, Arial, Helvetica, sans-serif;
     color: #3670A7;
-    border: none;
-    padding: 2px;
-    font: x-small;
+}
+.mapedit #eventForm .errorlabel {
+    color: red;
+    font-style:bold;
+}
+
+.mapedit #eventForm .radio {
+    padding: .4em .2em .2em .2em;
+    border: 1px solid #D7E5F2;
+    margin: .2em;
 }
 
 .mapedit .miniTabBar {

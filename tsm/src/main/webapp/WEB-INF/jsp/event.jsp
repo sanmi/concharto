@@ -64,20 +64,8 @@ request.setAttribute("basePath", basePath);
 		var excludeEventId = document.getElementById("eventForm").id.value;
 		createOverlays(events, excludeEventId);
 		createEditableOverlay();
-		addClickListener();		
 	}
 	
-	<%-- If we are editing a poly, add listener for clicking on the map --%>
-	function addClickListener() {
-		<%-- only add if it is missing --%>
-		if (_clickListener == null) {
-			_clickListener = GEvent.addListener(map,"click", function(overlay, point) {     
-				addMarker(point);
-				drawPoly();
-			});
-		} 
-	}
-
 	function removeClickListener() {
 		GEvent.removeListener(_clickListener);
 		_clickListener = null;		
@@ -97,7 +85,9 @@ request.setAttribute("basePath", basePath);
 		GEvent.addListener(poly, "click", function(point) {		    
 	    map.openInfoWindowHtml(point, html);
 	  });
-		map.addOverlay(poly);
+	  if (poly) {
+			map.addOverlay(poly);
+	  }
 	}
 	
 	<%-- create a non-editable marker from an event --%>
@@ -112,9 +102,28 @@ request.setAttribute("basePath", basePath);
 	function createEditableOverlay() {
 		var geometryType = getGeometryType();
 		if (geometryType == "point") {
-			createEditableMarker(getEventFormGeom());
+			var geom = getEventFormGeom();
+			var point;
+			if ((!geom) || (geom.gtype != "point")) {
+				point = map.getCenter();
+			} else {
+				point = new GLatLng(geom.lat, geom.lng)
+			}
+			createEditableMarker(point);
 		} else if ((geometryType == "line") || (geometryType == "polygon")) {
 			createEditablePoly(getEventFormGeom());
+			addClickListener();					
+		}
+	}
+
+	<%-- If we are editing a poly, add listener for clicking on the map --%>
+	function addClickListener() {
+		<%-- only add if it is missing --%>
+		if (_clickListener == null) {
+			_clickListener = GEvent.addListener(map,"click", function(overlay, point) {     
+				addMarker(point);
+				drawPoly();
+			});
 		}
 	}
 
@@ -158,16 +167,20 @@ request.setAttribute("basePath", basePath);
 	
 			<%-- we create a poly here just so we can find the centroid --%>
 			var poly = new newPoly(points, getGeometryType());
-			map.setCenter(poly.getBounds().getCenter(), getZoom());
-			
-			<%-- if the map is too zoomed in, we should zoom out to fit the line --%>
-			fitToOverlay(poly);
+			if (poly) {
+				map.setCenter(poly.getBounds().getCenter(), getZoom());
+				<%-- if the map is too zoomed in, we should zoom out to fit the line --%>
+				fitToOverlay(poly);
+			}
 		}
 		
+		showPolyMessage();
+		drawPoly();
+	}
+	
+	function showPolyMessage() {
 		var html = " <b>Click anywhere</b> on the map to add a point<br/><b>Drag a point </b> to edit the line.";
     map.openInfoWindowHtml(map.getCenter(), html);
-
-		drawPoly();
 	}
 
 	<%-- add a marker to the poly --%>
@@ -230,7 +243,9 @@ request.setAttribute("basePath", basePath);
 			}
 		}		
 		_editablePoly = newPoly(points, getGeometryType());
-		map.addOverlay(_editablePoly);
+		if (_editablePoly) {
+			map.addOverlay(_editablePoly);
+		}
 	}
 	
 	
@@ -251,7 +266,7 @@ request.setAttribute("basePath", basePath);
 			map.addOverlay(_polyMarkers[i]);
 		}
 		drawPoly();
-		//createEditableOverlay();
+		showPolyMessage();
 		addClickListener();
 	}
 	
@@ -273,14 +288,8 @@ request.setAttribute("basePath", basePath);
   <%-- BEGIN MISC FUNCTIONS ============================= --%>
 	function getEventFormGeom() {
 			var geomJSON = document.getElementById("eventForm").geometry.value;
-			var geometryType = getGeometryType();
 			if (geomJSON != '') {
-				if (geometryType == 'point') {
-					var pt = geomJSON.parseJSON();			
-					return new GLatLng(pt.lat, pt.lng)
-				} else {
-					return geomJSON.parseJSON();
-				}
+				return geomJSON.parseJSON();			
 			} else {
 				return null;
 			}
@@ -378,23 +387,29 @@ request.setAttribute("basePath", basePath);
    		    	<span class="miniTabSelected">Edit</span>
    		    	<a class="miniTabUnselected" href="#" onclick="changeHistory(); return false;">Change History</a>
 	 		    </div>
-   		    <div>
-   		    	<form:errors path="*"/>
-   		    </div>
    		    <div class="inputcell">
-		        
 		        <span class="radio">
-							Point: <form:radiobutton path="geometryType" value="point" onclick="setupNewPoint()"/> 
-	        		Line: <form:radiobutton path="geometryType" value="line" onclick="setupNewPoly()"/> 
-	        		Shape: <form:radiobutton path="geometryType" value="polygon" onclick="setupNewPoly()"/> 
+		        	<span class="inputlabel">Point:</span>
+		        	<form:radiobutton path="geometryType" value="point" onclick="setupNewPoint()"/> 
+		        </span>
+		        <span class="radio">
+		        	<span class="inputlabel">Line:</span>
+	        		<form:radiobutton path="geometryType" value="line" onclick="setupNewPoly()"/> 
+		        </span>
+		        <span class="radio">
+	        		<span class="inputlabel">Shape:</span>
+	        		<form:radiobutton path="geometryType" value="polygon" onclick="setupNewPoly()"/> 
         		</span>
    		    </div>
    		    <div class="inputcell">
-		        Summary <br/>
+		        <span class="errorlabel"><form:errors path="summary" element="div"/></span>
+		        <span class="inputlabel">Summary</span> 
+		        <br/>
 		        <form:input path="summary" size="45" htmlEscape="true"/>
    		    </div>
    		    <div class="inputcell">
-   		    	Where
+		        <span class="errorlabel"><form:errors path="where" element="div"/></span>
+   		    	<span class="inputlabel">Where</span>
 	          <small>e.g., "gettysburg, pa" </small><br/>
 	          <form:input path="where" size="45" htmlEscape="true"/>
 	          <br/>
@@ -402,22 +417,26 @@ request.setAttribute("basePath", basePath);
 	          <small id="tip"><b>Tip:</b> drag and drop the lollypop!</small>
    		    </div>
    		    <div class="inputcell">
-		         When
-		         <small>
-		           e.g. "1962" or "March, 1064" or "1880 - 1886" <a href="#">hints</a>
-		         </small><br/>
-		         <form:input path="when" size="45"/>
+		        <span class="errorlabel"><form:errors path="when" element="div"/></span>
+		        <span class="inputlabel">When</span> 
+	          <small>
+	            e.g. "1962" or "March, 1064" or "1880 - 1886" <a href="#">hints</a>
+	          </small><br/>
+		        <form:input path="when" size="45"/>
    		    </div>
    		    <div class="inputcell">
-	   		    Description<br/>
+		        <span class="errorlabel"><form:errors path="description" element="div"/></span>
+	   		    <span class="inputlabel">Description</span><br/>
 						<form:textarea rows="5" cols="35" path="description"/>
    		    </div>
    		    <div class="inputcell">
-   		    	Tags<br/>
+		        <span class="errorlabel"><form:errors path="tags" element="div"/></span>
+   		    	<span class="inputlabel">Tags</span><br/>
 		        <form:input path="tags" size="45" htmlEscape="true"/>
   		    </div>
    		    <div class="inputcell">
-   		    	Source 
+		        <span class="errorlabel"><form:errors path="source" element="div"/></span>
+   		    	<span class="inputlabel">Source</span>
 			      <form:input path="source" size="45" htmlEscape="true"/>
    		    </div>
 					<div class="inputcell">

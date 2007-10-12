@@ -116,11 +116,14 @@
 	}
 	
 	function newPoly(points, geometryType) {
-		if (geometryType == 'line') {
-			return new GPolyline(points,'#FF0000', 4, .5, {geodesic:true});
-		} else if (geometryType == 'polygon') {
-			return new GPolygon(points,"#f33f00", 4, .8, '#FF0000', .25);
+		if (points.length > 0) {
+			if ((geometryType == 'line')){
+				return new GPolyline(points,'#FF0000', 4, .5, {geodesic:true});
+			} else if (geometryType == 'polygon') {
+				return new GPolygon(points,"#f33f00", 4, .8, '#FF0000', .25);
+			}
 		}
+		return null;
 	}
 	
 

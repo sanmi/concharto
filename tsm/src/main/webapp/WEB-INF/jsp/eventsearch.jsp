@@ -97,15 +97,17 @@ request.setAttribute("basePath", basePath);
 			points.push(vertex);
 		}
 		var poly = newPoly(points, event.geom.gtype);
-		var html = makeOverlayHtml(event);
-		GEvent.addListener(poly, "click", function(point) {		    
-	    map.openInfoWindowHtml(point, html);
-	  });
-	  
-		map.addOverlay(poly);
-
-		<%-- record so the user can click on the sidebar and see a popup in the map --%>
-		recordOverlay(poly, html, "line")
+		if (poly) {
+			var html = makeOverlayHtml(event);
+			GEvent.addListener(poly, "click", function(point) {		    
+		    map.openInfoWindowHtml(point, html);
+		  });
+		  
+			map.addOverlay(poly);
+	
+			<%-- record so the user can click on the sidebar and see a popup in the map --%>
+			recordOverlay(poly, html, "line")
+		}
 	}
 	
 	<%-- record overlay and html so we can pop up a window when the user clicks
