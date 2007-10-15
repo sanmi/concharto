@@ -61,15 +61,10 @@ public class EventSearchServiceHib implements EventSearchService {
     }
 
     public Long getCount(String textFilter, TimeRange timeRange, Geometry boundingBox) {
-        String sql = createQuery(SQL_PREFIX_GET_COUNT, textFilter, timeRange,boundingBox);
-        List result = this.sessionFactory.getCurrentSession()
-                .createSQLQuery(sql)
-                .addScalar("count(*)", Hibernate.LONG)
-                .setString("geom_text", boundingBox.toText())
-                .setString("search_text", textFilter)
-                .setDate("earliest", timeRange.getBegin())
-                .setDate("latest", timeRange.getEnd())
-                .list();
+        LapTimer timer = new LapTimer(this.logger);
+        SQLQuery sqlQuery = createQuery(SQL_PREFIX_GET_COUNT, textFilter, timeRange, boundingBox);
+        List result = sqlQuery.addScalar("count(*)", Hibernate.LONG).list();
+        timer.timeIt("count").logDebugTime();
         return (Long) result.get(0);
     }
 
@@ -81,31 +76,21 @@ public class EventSearchServiceHib implements EventSearchService {
      *      com.vividsolutions.jts.geom.Geometry)
      */
     @SuppressWarnings("unchecked")
-    public List<TsEvent> search(int maxResults, String textFilter, TimeRange timeRange,
+    public List<TsEvent> search(int maxResults, int firstResult, String textFilter, TimeRange timeRange,
             Geometry boundingBox) {
         LapTimer timer = new LapTimer(this.logger);
-        String sql = createQuery(SQL_PREFIX_SEARCH, textFilter, timeRange,boundingBox);
-        // Note: Hibernate always uses prepared statements
-        SQLQuery sqlQuery = this.sessionFactory.getCurrentSession()
-                .createSQLQuery(sql)
-                .addEntity(TsEvent.class);
-        if (boundingBox != null) {
-            sqlQuery.setString("geom_text", boundingBox.toText());
-        }
-        if (!StringUtils.isEmpty(textFilter)) {
-            sqlQuery.setString("search_text", textFilter);
-        }
-        if (timeRange != null) {
-            sqlQuery.setDate("earliest", timeRange.getBegin());
-            sqlQuery.setDate("latest", timeRange.getEnd());
-        }
+        SQLQuery sqlQuery = createQuery(SQL_PREFIX_SEARCH, textFilter, timeRange, boundingBox);
                
-        List<TsEvent> tsEvents = sqlQuery.setMaxResults(maxResults).list(); 
+        List<TsEvent> tsEvents = sqlQuery
+            .addEntity(TsEvent.class)
+            .setMaxResults(maxResults)
+            .setFirstResult(firstResult)
+            .list(); 
         timer.timeIt("search").logDebugTime();
         return tsEvents;
     }
 
-    private String createQuery(String prefix, String textFilter, TimeRange timeRange, Geometry boundingBox) {
+    private SQLQuery createQuery(String prefix, String textFilter, TimeRange timeRange, Geometry boundingBox) {
         StringBuffer query = new StringBuffer(prefix).append(SQL_SELECT_STUB);
         if (!StringUtils.isEmpty(textFilter)) {
             query.append(SQL_MATCH_CLAUSE);
@@ -117,7 +102,24 @@ public class EventSearchServiceHib implements EventSearchService {
             query.append(SQL_TIMERANGE_CLAUSE);
         }
         query.append(SQL_ORDER_CLAUSE);
-        return query.toString();
+
+        // Note: Hibernate always uses prepared statements
+        SQLQuery sqlQuery = this.sessionFactory.getCurrentSession()
+                .createSQLQuery(query.toString());
+        
+        if (boundingBox != null) {
+            sqlQuery.setString("geom_text", boundingBox.toText());
+        }
+        if (!StringUtils.isEmpty(textFilter)) {
+            sqlQuery.setString("search_text", textFilter);
+        }
+        if (timeRange != null) {
+            sqlQuery.setDate("earliest", timeRange.getBegin());
+            sqlQuery.setDate("latest", timeRange.getEnd());
+        }
+        return sqlQuery;
     }
+    
+
 
 }

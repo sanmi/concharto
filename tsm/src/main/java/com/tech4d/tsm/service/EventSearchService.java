@@ -14,7 +14,7 @@ public interface EventSearchService {
 
     public SessionFactory getSessionFactory();
 
-    public List<TsEvent> search(int maxResults, String textFilter, TimeRange timeRange,
+    public List<TsEvent> search(int maxResults, int firstResult, String textFilter, TimeRange timeRange,
             Geometry boundingBox);
 
     public Long getCount(String textFilter, TimeRange timeRange, Geometry boundingBox);
