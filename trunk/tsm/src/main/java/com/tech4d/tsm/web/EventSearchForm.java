@@ -20,8 +20,11 @@ public class EventSearchForm {
     private Integer mapType;
     private Boolean isGeocodeSuccess;
     private String searchResults;
+    private Integer currentRecord;
+    private Integer totalResultCount;
     private Boolean isEditEvent;
     private Integer eventId;
+    private String pageCommand;
     
     public Integer getMapZoom() {
         return mapZoom;
@@ -76,6 +79,18 @@ public class EventSearchForm {
     public void setSearchResults(String searchResults) {
         this.searchResults = searchResults;
     }
+    public Integer getCurrentRecord() {
+        return currentRecord;
+    }
+    public void setCurrentRecord(Integer currentRecord) {
+        this.currentRecord = currentRecord;
+    }
+    public Integer getTotalResultCount() {
+        return totalResultCount;
+    }
+    public void setTotalResultCount(Integer totalResultCount) {
+        this.totalResultCount = totalResultCount;
+    }
     public Boolean getIsEditEvent() {
         return isEditEvent;
     }
@@ -100,5 +115,10 @@ public class EventSearchForm {
     public void setIsGeocodeSuccess(Boolean isGeocodeSuccess) {
         this.isGeocodeSuccess = isGeocodeSuccess;
     }
-    
+    public String getPageCommand() {
+        return pageCommand;
+    }
+    public void setPageCommand(String pageCommand) {
+        this.pageCommand = pageCommand;
+    }
 }

@@ -163,6 +163,7 @@ request.setAttribute("basePath", basePath);
   <%-- END WHILEFUNCTIONS  ============================= --%>
 
   <%-- BEGIN POST FUNCTIONS  ============================= --%>
+	<%-- user has clicked on 'add to map' --%>
 	function editEvent(eventId) {
 		document.getElementById("eventSearchForm").isEditEvent.value = "true"; 
 		document.getElementById("eventSearchForm").eventId.value = eventId; 
@@ -172,12 +173,14 @@ request.setAttribute("basePath", basePath);
 		saveAndSubmit(map.getCenter());		
 	}
 
+	<%-- user has clicked on 'search' --%>
 	function search() {
  		document.getElementById("eventSearchForm").isEditEvent.value = "false"; 
   	<%-- Geocode before submitting so that we can get the map extent first!	 --%>
 		geocode(document.getElementById("eventSearchForm").where.value);
 	}			
 	
+	<%-- geocode using the search form --%>
 	function geocode(address) {
 		<%-- geocoder uses a callback mechanism don't submit until we get the results --%>
  		document.getElementById("eventSearchForm").isGeocodeSuccess.value = "true"; 
@@ -188,6 +191,7 @@ request.setAttribute("basePath", basePath);
     }
 	}
 
+	<%-- callback user to submit form as soon as the geocode is complete --%>
 	function saveAndSubmit (latLng) {
 		<%-- set the center so we can calulate the map bounds to be passed to the geographic search --%>
 		if (!latLng) {
@@ -207,6 +211,14 @@ request.setAttribute("basePath", basePath);
 		     that the geocode failed --%>
 	
 		document.getElementById("eventSearchForm").mapZoom.value = map.getZoom();
+		document.getElementById("eventSearchForm").currentRecord.value = 0;
+		document.getElementById("eventSearchForm").pageCommand.value = '';
+		document.event.submit();
+	}
+	
+	<%-- user has clicked on next, prev or a page number --%>
+	function nextPage(pageCommand) {
+		document.getElementById("eventSearchForm").pageCommand.value = pageCommand;
 		document.event.submit();
 	}
   <%-- BEGIN POST FUNCTIONS  ============================= --%>
@@ -228,6 +240,8 @@ request.setAttribute("basePath", basePath);
 			<form:hidden path="isGeocodeSuccess"/>
 			<form:hidden path="isEditEvent"/>
 			<form:hidden path="eventId"/>
+			<form:hidden path="currentRecord"/>
+			<form:hidden path="pageCommand"/>
 	  	<div>
 	     	<span style="position:absolute; left:250px; top:34px;" >
 	        <table class="searchbar">
@@ -265,7 +279,19 @@ request.setAttribute("basePath", basePath);
 		 <%-- Pull the center from the form object so we can center using javascript (see above) --%>
 			<table><tbody><tr>			
 				<td id="sidebar">
-		  		<span class="resultcount">${fn:length(events)} Events found</span>
+		  		<span class="resultcount">
+		  			<c:choose>
+		  				<c:when test="${fn:length(events) > 0}">
+				  			Displaying <b>${eventSearch.currentRecord} - ${eventSearch.currentRecord + fn:length(events)}</b> Events 
+				  			<c:if test="${totalResults > fn:length(events)}"> 
+				  				of <b><c:out value="${totalResults}"/></b>
+				  			</c:if>
+			 				</c:when>
+		  				<c:otherwise>
+			  				No Events found
+		  				</c:otherwise>
+		  			</c:choose>
+		  		</span>
 		    	<div id="results" >
 		    		<form:errors path="where" cssClass="errorLabel" element="div"/>
 						<form:errors path="when" cssClass="errorLabel" element="div"/>
@@ -301,6 +327,14 @@ request.setAttribute("basePath", basePath);
 			          
 							</div>
 				    </c:forEach>
+				    <div class="nextPrev">
+					    <c:if test="${eventSearch.currentRecord > 0}"> 
+						    	<a class="nextPrev" href="#" onclick="nextPage('previous')">Previous</a>
+					    </c:if>
+					    <c:if test="${totalResults > fn:length(events)}"> 
+						    	<a class="nextPrev" href="#" onclick="nextPage('next')">Next</a>
+					    </c:if>
+				    </div>
 			  	</div>
 			  </td>
 			  <td>

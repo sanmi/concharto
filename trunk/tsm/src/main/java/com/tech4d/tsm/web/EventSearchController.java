@@ -24,39 +24,38 @@ import java.util.*;
 
 public class EventSearchController extends AbstractFormController {
     public static final String SESSION_EVENT_SEARCH_FORM = "eventSearchForm";
+    public static final String MODEL_EVENTS = "events";
+    public static final String MODEL_TOTAL_RESULTS = "totalResults";
+    public static final String MODEL_CURRENT_RECORD = "currRecord";
+    public static final String MODEL_PAGESIZE = "pageSize";
+    public static final String FORM_NEXT = "next";
+    public static final String FORM_PREVIOUS = "previous";
     
-    private static final int MAX_RECORDS = 26;
+    public static final int MAX_RECORDS = 26;
     private static final double LONGITUDE_180 = 180d;
-    private static final String MODEL_EVENTS = "events";
     private EventSearchService eventSearchService;
     private String formView;
     private String successView;
     
-
     public String getFormView() {
         return formView;
     }                              
-
 
     public void setFormView(String formView) {
         this.formView = formView;
     }
 
-
     public String getSuccessView() {
         return successView;
     }
-
 
     public void setSuccessView(String successView) {
         this.successView = successView;
     }
 
-
     public EventSearchService getEventSearchService() {
         return eventSearchService;
     }
-
 
     public void setEventSearchService(EventSearchService eventSearchService) {
         this.eventSearchService = eventSearchService;
@@ -70,7 +69,6 @@ public class EventSearchController extends AbstractFormController {
         binder.registerCustomEditor(Boolean.class, new CustomBooleanEditor("true", "false", true));
         super.initBinder(request, binder);
     }
-
 
     private EventSearchForm getEventSearchForm(HttpServletRequest request) {
         return (EventSearchForm) WebUtils.getSessionAttribute(request, EventSearchController.SESSION_EVENT_SEARCH_FORM);
@@ -123,7 +121,6 @@ public class EventSearchController extends AbstractFormController {
         return polygons;
     }
 
-
     private Geometry makeRectangle(Double height, Double width, Double eastMost, Double southMost) {
         GeometricShapeFactory gsf = new GeometricShapeFactory();
         gsf.setNumPoints(4);
@@ -132,7 +129,6 @@ public class EventSearchController extends AbstractFormController {
         gsf.setWidth(width);
         return gsf.createRectangle();
     }
-
 
     @SuppressWarnings("unchecked")
     @Override
@@ -172,17 +168,28 @@ public class EventSearchController extends AbstractFormController {
          * level we are at. 2. Parse the time field to extract a time range 3.
          * Do a searcg to find the count of all events within that text filter,
          * time range and bounding box
+         * TODO cache the total results if nothing has changed (e.g. pagination)
          */
         Map model = errors.getModel();
         if (eventSearchForm.getMapCenter() != null) {
+            int firstRecord = calculateFirstRecord(eventSearchForm);
+            eventSearchForm.setCurrentRecord(firstRecord);
             List<TsEvent> events = new ArrayList<TsEvent>(); 
-            Set<Geometry> boxes = getBoundingBox(eventSearchForm);  //there may be two 
+            Set<Geometry> boxes = getBoundingBox(eventSearchForm);  //there may be two
+            Long totalResults = 0L;
+            //There are 1 or 2 bounding boxes (see comment above)
             for (Geometry geometry : boxes) {
                 logger.debug(geometry.toText());
-                List results = eventSearchService.search(MAX_RECORDS, eventSearchForm.getWhat(), eventSearchForm.getWhen(), geometry);
+                List results = eventSearchService.search(MAX_RECORDS, firstRecord, eventSearchForm.getWhat(), eventSearchForm.getWhen(), geometry);
                 events.addAll(results);
+                //if there are MAX_RECORDS, then there are probably more records, so get the count
+                if (results.size() >= MAX_RECORDS) {
+                    totalResults += eventSearchService.getCount(eventSearchForm.getWhat(), eventSearchForm.getWhen(), geometry);
+                } else {
+                    totalResults += results.size();
+                }
             }
-
+            model.put(MODEL_TOTAL_RESULTS, totalResults);
             model.put(MODEL_EVENTS, events);
             //NOTE: we are putting the events into the command so that the page javascript
             //functions can properly display them using google's mapping API
@@ -191,6 +198,27 @@ public class EventSearchController extends AbstractFormController {
         return model;
     }
 
+    /**
+     * If the user clicked next, previous or a page number, they want us to page
+     * through the search results.  Otherwise we return 0.
+     * @param eventSearchForm search form
+     * @return firstRecord to start the search results
+     */
+    private int calculateFirstRecord(EventSearchForm eventSearchForm) {
+        String pageCommand = eventSearchForm.getPageCommand();
+        int currRecord = eventSearchForm.getCurrentRecord(); 
+        if (FORM_NEXT.equals(pageCommand)) {
+            currRecord +=  MAX_RECORDS;
+        }
+        if (FORM_PREVIOUS.equals(pageCommand)) {
+            currRecord -=  MAX_RECORDS;
+            //Just in case someone is messing with us
+            if (currRecord < 0) {
+                currRecord = 0;
+            }
+        }
+        return currRecord;
+    }
 
     @Override
     protected ModelAndView showForm(
@@ -208,7 +236,5 @@ public class EventSearchController extends AbstractFormController {
             return showForm(request, errors, getFormView());
         }
     }
-    
-
     
 }
