@@ -137,15 +137,18 @@ public class EventSearchController extends AbstractFormController {
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+        EventSearchForm eventSearchForm = (EventSearchForm) command;
+        
         if (errors.hasErrors()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Data binding errors: " + errors.getErrorCount());
             }
+            //clear out the search results
+            eventSearchForm.setSearchResults(null);
             return showForm(request, response, errors);
         }
         else {
             logger.debug("No errors -> processing submit");
-            EventSearchForm eventSearchForm = (EventSearchForm) command;
             Map model = doSearch(errors, eventSearchForm);
             //put the data into the session in case we are leaving
             WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
@@ -171,7 +174,6 @@ public class EventSearchController extends AbstractFormController {
          * time range and bounding box
          */
         Map model = errors.getModel();
-        //TODO set max results from somewhere?
         if (eventSearchForm.getMapCenter() != null) {
             List<TsEvent> events = new ArrayList<TsEvent>(); 
             Set<Geometry> boxes = getBoundingBox(eventSearchForm);  //there may be two 
@@ -194,10 +196,12 @@ public class EventSearchController extends AbstractFormController {
     protected ModelAndView showForm(
             HttpServletRequest request, HttpServletResponse response, BindException errors)
             throws Exception {
+        
         //if there is a form, we should redo the search, just in case things have been
         //added since we left (for instance the user just added a point to the map)
+        //don't search if there are errors
         EventSearchForm eventSearchForm = getEventSearchForm(request);
-        if (eventSearchForm != null) {
+        if ((eventSearchForm != null) && (!errors.hasErrors())){
             Map model = doSearch(errors, eventSearchForm);
             return new ModelAndView(getFormView(), model);
         } else {

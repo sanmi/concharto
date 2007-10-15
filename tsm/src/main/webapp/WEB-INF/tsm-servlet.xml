@@ -39,7 +39,7 @@
 		<property name="formView" value="event" />
 		<property name="successView" value="redirect:eventsearch.htm" />
 		<property name="tsEventDao" ref="tsEventDao" />
-		<property name="validator" ref="tsEventFormValidator"></property>
+		<property name="validator" ref="tsEventFormValidator"/>
 	</bean>
 
 	<bean class="com.tech4d.tsm.web.ChangeHistoryController" parent="baseEventController">
@@ -47,12 +47,14 @@
 		<property name="auditEntryDao" ref="auditEntryDao" />
 	</bean>
 
+	<bean id="eventSearchFormValidator" class="com.tech4d.tsm.web.util.EventSearchFormValidator"/>
 	<bean class="com.tech4d.tsm.web.EventSearchController" parent="baseEventController">
 		<property name="commandName" value="eventSearch" />
 		<property name="commandClass" value="com.tech4d.tsm.web.EventSearchForm" />
 		<property name="formView" value="eventsearch" />
 		<property name="successView" value="eventsearch" />
 		<property name="eventSearchService" ref="eventSearchService" />
+		<property name="validator" ref="eventSearchFormValidator"/>
 	</bean>
 
 </beans>

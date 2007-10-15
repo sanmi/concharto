@@ -52,6 +52,7 @@ public class EventController extends SimpleFormController {
             tsEventForm = com.tech4d.tsm.web.TsEventFormFactory.getTsEventForm(tsEvent);
             if (eventSearchForm != null) {
                 tsEventForm.setSearchResults(eventSearchForm.getSearchResults());
+                tsEventForm.setMapCenter(eventSearchForm.getMapCenter());
             }
         } else {
             //this is a new form
