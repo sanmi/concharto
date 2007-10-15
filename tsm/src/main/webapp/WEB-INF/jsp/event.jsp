@@ -101,18 +101,19 @@ request.setAttribute("basePath", basePath);
 	<%-- create and draw the editable overlay --%>
 	function createEditableOverlay() {
 		var geometryType = getGeometryType();
-		if (geometryType == "point") {
-			var geom = getEventFormGeom();
-			var point;
-			if ((!geom) || (geom.gtype != "point")) {
-				point = map.getCenter();
-			} else {
-				point = new GLatLng(geom.lat, geom.lng)
+		var geom = getEventFormGeom();
+		if (geom == null) {
+			<%-- this means we are adding to the map.  Default is "point" --%>
+			var center = getEventFormCenter();
+			createEditableMarker(new GLatLng(center.lat,center.lng));
+			
+		} else {
+			if (geometryType == "point") {
+				createEditableMarker(new GLatLng(geom.lat, geom.lng));
+			} else if ((geometryType == "line") || (geometryType == "polygon")) {
+				createEditablePoly(geom);
+				addClickListener();					
 			}
-			createEditableMarker(point);
-		} else if ((geometryType == "line") || (geometryType == "polygon")) {
-			createEditablePoly(getEventFormGeom());
-			addClickListener();					
 		}
 	}
 
@@ -129,10 +130,6 @@ request.setAttribute("basePath", basePath);
 
 	<%-- create an editable marker from a json point object --%>
 	function createEditableMarker(point) {
-		if (point == null) {
-			<%-- we are adding a new point here --%>
-			point = map.getCenter();
-		}
 		var marker = new GMarker(point, {draggable: true});
 		marker.enableDragging();
 		var html = "<b>Drag me</b> <br/>anywhere on the map";
@@ -294,6 +291,15 @@ request.setAttribute("basePath", basePath);
 				return null;
 			}
 	}
+
+	function getEventFormCenter() {
+			var centerJSON = document.getElementById("eventForm").mapCenter.value;
+			if (centerJSON != '') {
+				return centerJSON.parseJSON();			
+			} else {
+				return null;
+			}
+	}
 	
   function getGeometryType() {
 		if (document.getElementById("eventForm").geometryType1.checked) {
@@ -381,6 +387,7 @@ request.setAttribute("basePath", basePath);
 					<form:hidden path="geometry" htmlEscape="true"/>
 					<form:hidden path="zoomLevel"/>
 					<form:hidden path="mapType"/>
+					<form:hidden path="mapCenter" htmlEscape="true"/>
 					<form:hidden path="searchResults" htmlEscape="true"/>
 					
    		    <div class="miniTabBar">

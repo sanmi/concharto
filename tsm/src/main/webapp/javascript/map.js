@@ -48,7 +48,9 @@
     }
 	
 	function createInfoWindowHtml(event) {
-	   var html = '<div class="result" style="width:450px;margin-bottom:10px"><b>' + event.summary+'</b><br/>' + event.when + '<br/>' +
+	   var html = '<div class="result" style="width:450px;margin-bottom:10px">' + 
+	   		event.when + '<br/><b>' + event.summary+'</b><br/><em>' + 
+				event.where + '</em><br/>' +
 				event.description + '<br/>' +
 				'<br/><b>Tags: </b>' + event.tags + '<br/>' + 
 				'<b>Source: </b>' + event.source;

@@ -2,6 +2,7 @@ package com.tech4d.tsm.web;
 
 import com.tech4d.tsm.model.geometry.TimeRange;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
 
 public class TsEventForm {
     private String summary;
@@ -15,6 +16,7 @@ public class TsEventForm {
     private Geometry geometry;
     private Integer zoomLevel;
     private Integer mapType;
+    private Point mapCenter;
     private String searchResults;
 
     public Long getId() {
@@ -115,6 +117,14 @@ public class TsEventForm {
 
     public void setMapType(Integer mapType) {
         this.mapType = mapType;
+    }
+
+    public Point getMapCenter() {
+        return mapCenter;
+    }
+
+    public void setMapCenter(Point mapCenter) {
+        this.mapCenter = mapCenter;
     }
 
     /**

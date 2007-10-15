@@ -43,7 +43,6 @@ public class EventController extends SimpleFormController {
         TsEvent tsEvent;
         TsEventForm tsEventForm; 
         EventSearchForm eventSearchForm = getEventSearchForm(request);
-        
         if (id != null) {
             //get the event
             tsEvent = this.tsEventDao.findById(id);
@@ -62,6 +61,7 @@ public class EventController extends SimpleFormController {
                 tsEventForm.setSearchResults(eventSearchForm.getSearchResults());
                 //default geometry type is point
                 tsEventForm.setGeometryType(GeometryType.POINT);
+                tsEventForm.setMapCenter(eventSearchForm.getMapCenter());
             } 
         }
         return tsEventForm;
