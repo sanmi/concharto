@@ -412,13 +412,13 @@ request.setAttribute("basePath", basePath);
 		        <span class="errorlabel"><form:errors path="summary" element="div"/></span>
 		        <span class="inputlabel">Summary</span> 
 		        <br/>
-		        <form:input path="summary" size="45" htmlEscape="true"/>
+		        <form:input path="summary" size="45" maxlength="${event.SZ_SUMMARY}" htmlEscape="true"/>
    		    </div>
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="where" element="div"/></span>
    		    	<span class="inputlabel">Where</span>
 	          <small>e.g., "gettysburg, pa" </small><br/>
-	          <form:input path="where" size="45" htmlEscape="true"/>
+	          <form:input path="where" size="45" maxlength="${event.SZ_WHERE}" htmlEscape="true"/>
 	          <br/>
 	          <input  type="button" name="Find" value="Go to Location" onclick="showAddress(document.event.where.value); return false"/>             
 	          <small id="tip"><b>Tip:</b> drag and drop the lollypop!</small>
@@ -439,12 +439,12 @@ request.setAttribute("basePath", basePath);
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="tags" element="div"/></span>
    		    	<span class="inputlabel">Tags</span><br/>
-		        <form:input path="tags" size="45" htmlEscape="true"/>
+		        <form:input path="tags" size="45" maxlength="${event.SZ_TAGS}" htmlEscape="true"/>
   		    </div>
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="source" element="div"/></span>
    		    	<span class="inputlabel">Source</span>
-			      <form:input path="source" size="45" htmlEscape="true"/>
+			      <form:input path="source" size="45" maxlength="${event.SZ_SOURCE}" htmlEscape="true"/>
    		    </div>
 					<div class="inputcell">
 					 <input type="submit" name="Save" value="Save This Event" />

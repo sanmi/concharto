@@ -14,8 +14,16 @@ public class TsEventFormValidator implements Validator {
     }
 
     public void validate(Object target, Errors errors) {
-        ValidationUtils.rejectIfEmpty(errors, "summary", "summary.empty");
-        ValidationUtils.rejectIfEmpty(errors, "when", "when.empty");
+        TsEventForm tsEventForm = (TsEventForm) target; 
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "summary", "summary.empty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "when", "when.empty");
+        
+        if (tsEventForm.getDescription().length() >= TsEventForm.SZ_DESCRIPTION) {
+            errors.rejectValue("description", 
+                    "exceededMaxSize.event.description", 
+                    new Object[]{TsEventForm.SZ_DESCRIPTION, tsEventForm.getDescription().length()}, 
+                    null);
+        }
     }
     
 }

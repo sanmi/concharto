@@ -5,6 +5,13 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
 public class TsEventForm {
+    //NOTE: the DB typically allows more chars than specified here. Done for 
+    //upgrade flexibility
+    public static final int SZ_TAGS = 256;
+    public static final int SZ_WHERE = 128;
+    public static final int SZ_SOURCE = 1024;
+    public static final int SZ_SUMMARY = 80;
+    public static final int SZ_DESCRIPTION = 1024;
     private String summary;
     private String description;
     private String tags;
@@ -141,4 +148,24 @@ public class TsEventForm {
         this.searchResults = searchResults;
     }
 
+    public int getSZ_DESCRIPTION() {
+        return SZ_DESCRIPTION;
+    }
+
+    public int getSZ_SOURCE() {
+        return SZ_SOURCE;
+    }
+
+    public int getSZ_SUMMARY() {
+        return SZ_SUMMARY;
+    }
+
+    public int getSZ_TAGS() {
+        return SZ_TAGS;
+    }
+
+    public int getSZ_WHERE() {
+        return SZ_WHERE;
+    }
+    
 }
