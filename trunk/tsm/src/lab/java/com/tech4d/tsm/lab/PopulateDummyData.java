@@ -35,6 +35,11 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 
 public class PopulateDummyData {
     
+    private static final int SZ_TAGS = 70;
+    private static final int SZ_WHERE = 80;
+    private static final int SZ_SOURCE = 100;
+    private static final int SZ_SUMMARY = 50;
+    private static final int SZ_DESCRIPTION = 240;
     private static final String TEXT_FILE = "src/lab/data/a-tale-of-two-cities.txt";
     private static TsEventTesterDao tsEventTesterDao;
     private static TsEventUtil tsEventUtil;
@@ -84,11 +89,11 @@ public class PopulateDummyData {
         LapTimer timer = new LapTimer(this); 
         for (int i = 0; i < NUM_EVENTS; i++) {
             TsEvent event = tsEventUtil.createTsEvent(null, null, getNextPoint(), getNextTimeRange(), null,
-                    getNextText(50), getNextText(240));
+                    getNextText(SZ_SUMMARY), getNextText(SZ_DESCRIPTION));
             event.setSnippet(null);
-            event.setSourceUrl(getNextText(100));
-            event.setWhere(getNextText(80));
-            event.setUserTagsAsString(getNextText(70));
+            event.setSourceUrl(getNextText(SZ_SOURCE));
+            event.setWhere(getNextText(SZ_WHERE));
+            event.setUserTagsAsString(getNextText(SZ_TAGS));
             events.add(event);
             
             if (i % COLLECTION_SIZE == 0) {
