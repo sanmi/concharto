@@ -267,7 +267,6 @@ request.setAttribute("basePath", basePath);
 				<td id="sidebar">
 		  		<span class="resultcount">${fn:length(events)} Events found</span>
 		    	<div id="results" >
-		    		<form:errors path="*" cssClass="errorLabel" element="div"/>
 		    		<form:errors path="where" cssClass="errorLabel" element="div"/>
 						<form:errors path="when" cssClass="errorLabel" element="div"/>
 						<form:errors path="when">
