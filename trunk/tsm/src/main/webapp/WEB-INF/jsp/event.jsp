@@ -109,7 +109,16 @@ request.setAttribute("basePath", basePath);
 			
 		} else {
 			if (geometryType == "point") {
-				createEditableMarker(new GLatLng(geom.lat, geom.lng));
+				<%-- if we are switcing from one geometry type to the other, the geometry may not
+				match.  TODO make this simpler --%>
+				var point;
+				if (geom.gtype == 'point') {
+					point = new GLatLng(geom.lat, geom.lng);
+				} else {
+					<%-- we switched from a line or poly to a point - just use the map center --%>
+					point = map.getCenter();
+				}
+				createEditableMarker(point);
 			} else if ((geometryType == "line") || (geometryType == "polygon")) {
 				createEditablePoly(geom);
 				addClickListener();					
@@ -160,19 +169,23 @@ request.setAttribute("basePath", basePath);
 				}			
 			}
 			<%-- draw the line between them --%>
-			drawPoly();
+			//drawPoly();
 	
 			<%-- we create a poly here just so we can find the centroid --%>
 			var poly = new newPoly(points, getGeometryType());
-			if (poly) {
-				map.setCenter(poly.getBounds().getCenter(), getZoom());
-				<%-- if the map is too zoomed in, we should zoom out to fit the line --%>
-				fitToOverlay(poly);
-			}
+			goToPoly(poly);
 		}
 		
 		showPolyMessage();
 		drawPoly();
+	}
+	
+	function goToPoly(poly) {
+		if (poly) {
+			map.setCenter(poly.getBounds().getCenter(), getZoom());
+			<%-- if the map is too zoomed in, we should zoom out to fit the line --%>
+			fitToOverlay(poly);
+		}
 	}
 	
 	function showPolyMessage() {
@@ -262,6 +275,7 @@ request.setAttribute("basePath", basePath);
 		for (var i=0; i<_polyMarkers.length; i++) {
 			map.addOverlay(_polyMarkers[i]);
 		}
+		goToPoly(_editablePoly);
 		drawPoly();
 		showPolyMessage();
 		addClickListener();

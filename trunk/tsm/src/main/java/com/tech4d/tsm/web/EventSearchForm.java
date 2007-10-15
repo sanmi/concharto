@@ -18,6 +18,7 @@ public class EventSearchForm {
     private Point BoundingBoxNE;
     private Integer mapZoom;
     private Integer mapType;
+    private Boolean isGeocodeSuccess;
     private String searchResults;
     private Boolean isEditEvent;
     private Integer eventId;
@@ -92,6 +93,12 @@ public class EventSearchForm {
     }
     public void setMapType(Integer mapType) {
         this.mapType = mapType;
+    }
+    public Boolean getIsGeocodeSuccess() {
+        return isGeocodeSuccess;
+    }
+    public void setIsGeocodeSuccess(Boolean isGeocodeSuccess) {
+        this.isGeocodeSuccess = isGeocodeSuccess;
     }
     
 }

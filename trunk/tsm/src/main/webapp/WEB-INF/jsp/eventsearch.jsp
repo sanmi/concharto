@@ -62,8 +62,10 @@ request.setAttribute("basePath", basePath);
 			map.setCenter(new GLatLng(mapCenter.lat,mapCenter.lng), mapZoom);			
 
 			var eventsJSON = document.getElementById("eventSearchForm").searchResults.value;
-			var events = eventsJSON.parseJSON();
-			createOverlays(events);
+			if (eventsJSON != '') {
+				var events = eventsJSON.parseJSON();
+				createOverlays(events);
+			}
 		}
 
 		adjustSidebarIE();
@@ -177,19 +179,33 @@ request.setAttribute("basePath", basePath);
 	}			
 	
 	function geocode(address) {
-			<%-- geocoder uses a callback mechanism don't submit until we get the results --%>
-	    geocoder.getLatLng(address, saveAndSubmit);
+		<%-- geocoder uses a callback mechanism don't submit until we get the results --%>
+ 		document.getElementById("eventSearchForm").isGeocodeSuccess.value = "true"; 
+		if (address) {
+    	geocoder.getLatLng(address, saveAndSubmit);
+    } else {
+    	saveAndSubmit(map.getCenter());
+    }
 	}
 
 	function saveAndSubmit (latLng) {
-		map.setCenter(latLng);
+		<%-- set the center so we can calulate the map bounds to be passed to the geographic search --%>
+		if (!latLng) {
+	 		document.getElementById("eventSearchForm").isGeocodeSuccess.value = "false"; 
+	 		document.getElementById("eventSearchForm").mapCenter.value = gLatLngToJSON(map.getCenter());
+		} else {
+			map.setCenter(latLng);
+			document.getElementById("eventSearchForm").mapCenter.value = gLatLngToJSON(latLng);
+		}
+		
 		var boundingBox = map.getBounds();
 		document.getElementById("eventSearchForm").boundingBoxSW.value = 
 			gLatLngToJSON(boundingBox.getSouthWest());
 		document.getElementById("eventSearchForm").boundingBoxNE.value = 
 			gLatLngToJSON(boundingBox.getNorthEast());
-		document.getElementById("eventSearchForm").mapCenter.value = 
-			gLatLngToJSON(map.getCenter());
+		<%-- if the geocode failed, we will get a null.  Pass this back to the controller to indicate
+		     that the geocode failed --%>
+	
 		document.getElementById("eventSearchForm").mapZoom.value = map.getZoom();
 		document.event.submit();
 	}
@@ -202,76 +218,104 @@ request.setAttribute("basePath", basePath);
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 
 	<jsp:body>
-  	<div>
-     	<span style="position:absolute; left:250px; top:34px;" >
-	    <form:form name="event" id="eventSearchForm" commandName="eventSearch" onsubmit="search(); return false">
-	    	<form:hidden path="boundingBoxSW" htmlEscape="true"/>
-	    	<form:hidden path="boundingBoxNE" htmlEscape="true"/>
-	    	<form:hidden path="mapCenter" htmlEscape="true"/>
-	    	<form:hidden path="searchResults" htmlEscape="true"/>
-	    	<form:hidden path="mapZoom"/>
-	    	<form:hidden path="mapType"/>
-	    	<form:hidden path="isEditEvent"/>
-	    	<form:hidden path="eventId"/>
-        <table class="searchbar">
-          <tr>
-            <td class="labelcell">Where 
+		<form:form name="event" id="eventSearchForm" commandName="eventSearch" onsubmit="search(); return false">
+			<form:hidden path="boundingBoxSW" htmlEscape="true"/>
+			<form:hidden path="boundingBoxNE" htmlEscape="true"/>
+			<form:hidden path="mapCenter" htmlEscape="true"/>
+			<form:hidden path="searchResults" htmlEscape="true"/>
+			<form:hidden path="mapZoom"/>
+			<form:hidden path="mapType"/>
+			<form:hidden path="isGeocodeSuccess"/>
+			<form:hidden path="isEditEvent"/>
+			<form:hidden path="eventId"/>
+	  	<div>
+	     	<span style="position:absolute; left:250px; top:34px;" >
+	        <table class="searchbar">
+	          <tr>
+	            <td class="labelcell">
+				    		<form:errors path="where"><span class="errorLabel"></form:errors>
+		  	          Where 
+				    		<form:errors path="where"></span></form:errors>
                 <small>e.g., "gettysburg, pa" </small><br/>
                 <form:input path="where" size="22"/>
-            </td>
-            <td class="labelcell">
-              When
-              <small>
-                e.g. "1962" or "March, 1064" or "1880 - 1886" 
-              </small><br/>
-              <form:input path="when" size="35"/>
-            </td>
-            <td class="labelcell">What<br/>
-                <form:input path="what" size="22"/>
+	            </td>
+	            <td class="labelcell">
+	              <form:errors path="when"><span class="errorLabel"></form:errors>
+	              	When
+	              <form:errors path="when"></span></form:errors>
+	              <small>
+	                e.g. "1962" or "Oct 14, 1066" or "1880-1886" 
+	              </small><br/>
+	              <form:input path="when" size="35"/>
+	            </td>
+	            <td class="labelcell">
+	            	What
+	              <small>
+	                e.g. Battle 
+	              </small><br/>
+	                <form:input path="what" size="22"/>
+	            </td>
 	          </tr>
 	        </table>
 	        <input type="submit" name="Search" value="Search" />
-	        &nbsp;&nbsp;&nbsp;<input type="button" name="add" value="Add to the Map!" onclick="editEvent(null)"/>
-		    </form:form>
-        </span>
-	  </div>
-	  
-	 <%-- Pull the center from the form object so we can center using javascript (see above) --%>
-		<table><tbody><tr>			
-			<td id="sidebar">
-	  		<span class="resultcount">${fn:length(events)} Events found</span>
-	    	<div id="results" >
-		    	<c:set var="test" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ"/>
-			    <c:forEach items="${events}" var="event" varStatus="status">
-			    	<div class="result">
-            	<span class="letter">(<c:out value="${fn:substring(test,status.count-1,status.count)}"/>)</span>
-		          <span class="when"><c:out value="${event.when.asText}"/></span>, 
-		          <a class="summary" href="#" onclick="openMarker(<c:out value='${status.count-1}'/>)"><c:out value="${event.summary}"/></a><br/>
-		          <span class="where"><c:out value="${event.where}"/></span>, <br/>
-		          
-		          <c:out value="${fn:substring(event.description,0,300)}"/> 
-		          <c:if test="${fn:length(event.description) > 300}">
-		          	<a class="more" href="#" onclick="openMarker(<c:out value='${status.count-1}'/>)"> ... more</a>
-		          </c:if> 
-							<br/>	
-		          <a  class="links" href="#" onclick="editEvent(<c:out value='${event.id}'/>)">edit</a>
-		          &nbsp; <a class="links" href="#">flag</a><br/>
-		          
-						</div>
-			    </c:forEach>
-		  	</div>
-		  </td>
-		  <td>
-				<div id="map">
-				  <br/><br/>Map coming...
-				  <noscript>
-				    <p>
-				      JavaScript must be enabled to get the map.
-				    </p>
-				  </noscript>
-				</div>
-			</td>
-		</tr></tbody></table>
+	        &nbsp;&nbsp;&nbsp;<input type="button" name="add" value="Add to the Map!" onclick="editEvent('')"/>
+	      </span>
+		  </div>
+		  
+		 <%-- Pull the center from the form object so we can center using javascript (see above) --%>
+			<table><tbody><tr>			
+				<td id="sidebar">
+		  		<span class="resultcount">${fn:length(events)} Events found</span>
+		    	<div id="results" >
+		    		<form:errors path="*" cssClass="errorLabel" element="div"/>
+		    		<form:errors path="where" cssClass="errorLabel" element="div"/>
+						<form:errors path="when" cssClass="errorLabel" element="div"/>
+						<form:errors path="when">
+							<div class="errorHint">
+								Examples of valid time ranges are:
+								<ul>
+								<li>2000-2006</li>
+								<li>Feb 1884 - Jan 1886</li>
+								<li>Jine 22, 1992 12am - June 30, 1992</li>
+								<li>1992</li>
+								<li>October 1992</li>
+								<li>Oct 12, 1992, 12:23:05 am</li>
+								</ul>
+							</div>
+						</form:errors>
+						
+			    	<c:set var="test" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ"/>
+				    <c:forEach items="${events}" var="event" varStatus="status">
+				    	<div class="result">
+	            	<span class="letter">(<c:out value="${fn:substring(test,status.count-1,status.count)}"/>)</span>
+			          <span class="when"><c:out value="${event.when.asText}"/></span>, 
+			          <a class="summary" href="#" onclick="openMarker(<c:out value='${status.count-1}'/>)"><c:out value="${event.summary}"/></a><br/>
+			          <span class="where"><c:out value="${event.where}"/></span>, <br/>
+			          
+			          <c:out value="${fn:substring(event.description,0,300)}"/> 
+			          <c:if test="${fn:length(event.description) > 300}">
+			          	<a class="more" href="#" onclick="openMarker(<c:out value='${status.count-1}'/>)"> ... more</a>
+			          </c:if> 
+								<br/>	
+			          <a  class="links" href="#" onclick="editEvent(<c:out value='${event.id}'/>)">edit</a>
+			          &nbsp; <a class="links" href="#">flag</a><br/>
+			          
+							</div>
+				    </c:forEach>
+			  	</div>
+			  </td>
+			  <td>
+					<div id="map">
+					  <br/><br/>Map coming...
+					  <noscript>
+					    <p>
+					      JavaScript must be enabled to get the map.
+					    </p>
+					  </noscript>
+					</div>
+				</td>
+			</tr></tbody></table>
+	  </form:form>
 	 
 	</jsp:body>
 </tsm:page>

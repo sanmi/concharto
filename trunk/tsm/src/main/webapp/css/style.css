@@ -128,10 +128,28 @@ background-color:#333333;
     overflow:-moz-scrollbars-vertical!important;
 }
 
-.mapedit .resultcount {
+.mapedit .resultcount, .errorLabel, .errorHint {
 	padding-left: 5px;
 	font-weight: bold;
 }
+.mapedit .errorLabel, .errorHint {
+	color:red;
+	margin-bottom:.2em;
+	margin-top:.2em;
+}
+.mapedit .errorHint {
+	font-weight: normal;
+}
+.mapedit .errorHint ul {
+	margin-left:10px;
+	padding-left:10px;
+	margin-top:.2em;
+}
+.mapedit .errorHint li {
+	margin-left:5px;
+	padding-left:5px;
+}
+
 
 .mapedit .result, .changeEntry{
 	padding:.2em;
