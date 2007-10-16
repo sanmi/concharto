@@ -1,25 +1,36 @@
 package com.tech4d.tsm.dao;
 
-import java.util.List;
-
+import com.tech4d.tsm.model.Auditable;
+import com.tech4d.tsm.model.audit.AuditEntry;
+import com.tech4d.tsm.util.ClassName;
+import com.tech4d.tsm.util.LapTimer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tech4d.tsm.model.Auditable;
-import com.tech4d.tsm.model.audit.AuditEntry;
-import com.tech4d.tsm.util.ClassName;
-import com.tech4d.tsm.util.LapTimer;
+import java.util.List;
 
 /**
  * class to persist audit log entities
  */
 @Transactional
 public class AuditEntryDaoHib implements AuditEntryDao {
+    private static final String FIELD_ID = "id";
+    private static final String FIELD_CLASS_NAME = "className";
     protected final Log logger = LogFactory.getLog(getClass());
     private SessionFactory sessionFactory;
 
+    private static final String AUDIT_ENTRIES_HQL = 
+        "from AuditEntry auditEntry " +
+        "where auditEntry.entityClass = :className " +
+        "and auditEntry.entityId = :id ";
+        
+    private static final String ALL_AUDIT_ENTRIES_HQL = 
+        "select auditEntry " + AUDIT_ENTRIES_HQL + "order by auditEntry.version desc";
+    private static final String COUNT_AUDIT_ENTRIES_HQL = 
+        "select count(auditEntry) " + AUDIT_ENTRIES_HQL;  
+        
     /*
      * (non-Javadoc)
      * 
@@ -29,23 +40,30 @@ public class AuditEntryDaoHib implements AuditEntryDao {
         this.sessionFactory = sessionFactory;
     }
 
-    private static final String GET_AUDIT_ENTRIES_SQL = 
-        "select auditEntry from AuditEntry auditEntry " +
-        "where auditEntry.entityClass = :className " +
-        "and auditEntry.entityId = :id " +
-        "order by auditEntry.version desc";
     @SuppressWarnings("unchecked")
     public List<AuditEntry> getAuditEntries(Auditable auditable, int firstResult, int maxResults) {
         LapTimer timer = new LapTimer(this.logger);
         String className = ClassName.getClassName(auditable);
         List auditEntries = this.sessionFactory.getCurrentSession()
-            .createQuery(GET_AUDIT_ENTRIES_SQL)
-            .setString("className", className)
-            .setLong("id", auditable.getId())
+            .createQuery(ALL_AUDIT_ENTRIES_HQL)
+            .setString(FIELD_CLASS_NAME, className)
+            .setLong(FIELD_ID, auditable.getId())
             .setFirstResult(firstResult)
             .setMaxResults(maxResults)
             .list();
         timer.timeIt("search").logDebugTime();
         return auditEntries;
+    }
+    
+    public Long getAuditEntriesCount(Auditable auditable) {
+        LapTimer timer = new LapTimer(this.logger);
+        String className = ClassName.getClassName(auditable);
+        List auditEntries = this.sessionFactory.getCurrentSession()
+            .createQuery(COUNT_AUDIT_ENTRIES_HQL)
+            .setString(FIELD_CLASS_NAME, className)
+            .setLong(FIELD_ID, auditable.getId())
+            .list();
+        timer.timeIt("count").logDebugTime();
+        return (Long) auditEntries.get(0);
     }
 }

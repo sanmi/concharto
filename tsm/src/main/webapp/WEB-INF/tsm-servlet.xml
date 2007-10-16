@@ -43,7 +43,10 @@
 	</bean>
 
 	<bean class="com.tech4d.tsm.web.ChangeHistoryController" parent="baseEventController">
-		<property name="eventDao" ref="eventDao" />
+		<property name="commandName" value="changeHistory"/>
+		<property name="commandClass" value="com.tech4d.tsm.web.ChangeHistoryForm"/>
+		<property name="formView" value="changehistory" />
+		<property name="successView" value="changehistory" />
 		<property name="auditEntryDao" ref="auditEntryDao" />
 	</bean>
 

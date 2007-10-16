@@ -5,6 +5,7 @@ import com.tech4d.tsm.model.geometry.TimeRange;
 import com.tech4d.tsm.service.EventSearchService;
 import com.tech4d.tsm.util.JSONFormat;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
+import com.tech4d.tsm.web.util.PaginatingFormHelper;
 import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -28,8 +29,6 @@ public class EventSearchController extends AbstractFormController {
     public static final String MODEL_TOTAL_RESULTS = "totalResults";
     public static final String MODEL_CURRENT_RECORD = "currRecord";
     public static final String MODEL_PAGESIZE = "pageSize";
-    public static final String FORM_NEXT = "next";
-    public static final String FORM_PREVIOUS = "previous";
     
     public static final int MAX_RECORDS = 26;
     private static final double LONGITUDE_180 = 180d;
@@ -146,7 +145,7 @@ public class EventSearchController extends AbstractFormController {
         else {
             logger.debug("No errors -> processing submit");
             Map model = doSearch(errors, eventSearchForm);
-            //put the data into the session in case we are leaving
+            //put the data into the session in case we are leaving to edit, and then want to come back
             WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
             if (eventSearchForm.getIsEditEvent()) {
                 if (eventSearchForm.getEventId() != null) {
@@ -172,7 +171,7 @@ public class EventSearchController extends AbstractFormController {
          */
         Map model = errors.getModel();
         if (eventSearchForm.getMapCenter() != null) {
-            int firstRecord = calculateFirstRecord(eventSearchForm);
+            int firstRecord = PaginatingFormHelper.calculateFirstRecord(eventSearchForm, MAX_RECORDS);
             eventSearchForm.setCurrentRecord(firstRecord);
             List<Event> events = new ArrayList<Event>();
             Set<Geometry> boxes = getBoundingBox(eventSearchForm);  //there may be two
@@ -196,28 +195,6 @@ public class EventSearchController extends AbstractFormController {
             eventSearchForm.setSearchResults(JSONFormat.toJSON(events));
         }
         return model;
-    }
-
-    /**
-     * If the user clicked next, previous or a page number, they want us to page
-     * through the search results.  Otherwise we return 0.
-     * @param eventSearchForm search form
-     * @return firstRecord to start the search results
-     */
-    private int calculateFirstRecord(EventSearchForm eventSearchForm) {
-        String pageCommand = eventSearchForm.getPageCommand();
-        int currRecord = eventSearchForm.getCurrentRecord(); 
-        if (FORM_NEXT.equals(pageCommand)) {
-            currRecord +=  MAX_RECORDS;
-        }
-        if (FORM_PREVIOUS.equals(pageCommand)) {
-            currRecord -=  MAX_RECORDS;
-            //Just in case someone is messing with us
-            if (currRecord < 0) {
-                currRecord = 0;
-            }
-        }
-        return currRecord;
     }
 
     @Override

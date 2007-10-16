@@ -99,10 +99,18 @@ public class IntegrationTestAuditEntry {
         auditEntries = auditEntryDao.getAuditEntries(empty, 0, MAX_RESULTS);
         assertEquals(2, auditEntries.size());
         
+        //now test getting the count
+        Long count = auditEntryDao.getAuditEntriesCount(empty);
+        assertEquals(2L, count);
+
         //now test a bad ID
         empty.setId(4344L);
         auditEntries = auditEntryDao.getAuditEntries(empty, 0, MAX_RESULTS);
         assertEquals(0, auditEntries.size());
+        
+        //now test getting the count
+        count = auditEntryDao.getAuditEntriesCount(empty);
+        assertEquals(0L, count);
         
     }
   
