@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Authorization filter.  We don't want to rely on the servlet container to do this because we
@@ -22,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class LoginFilter implements Filter{
     private static final String[] PATTERN_REQUIRES_AUTHENTICATION = {"edit","admin"};
+    private static final Log log = LogFactory.getLog(LoginFilter.class);
     
     public void init(FilterConfig filterConfig) throws ServletException {
     }
@@ -40,6 +43,9 @@ public class LoginFilter implements Filter{
 
     private boolean isAuthenticated(HttpServletRequest httpRequest) {
         HttpSession session = httpRequest.getSession();
+        if (log.isDebugEnabled()) {
+            log.debug("login filter");
+        }
         //TODO reliance on session may be a problem for scalability
         if (null == session.getAttribute(AuthConstants.AUTH_USERNAME)) {
             //save the target so we can get there after authentication
