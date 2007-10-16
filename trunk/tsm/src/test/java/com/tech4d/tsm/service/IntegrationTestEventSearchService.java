@@ -12,10 +12,10 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 
 import com.tech4d.tsm.dao.StyleUtil;
-import com.tech4d.tsm.dao.TsEventDao;
-import com.tech4d.tsm.dao.TsEventTesterDao;
-import com.tech4d.tsm.dao.TsEventUtil;
-import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.dao.EventDao;
+import com.tech4d.tsm.dao.EventTesterDao;
+import com.tech4d.tsm.dao.EventUtil;
+import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.geometry.TimeRange;
 import com.tech4d.tsm.util.ContextUtil;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -28,10 +28,10 @@ import com.vividsolutions.jts.util.GeometricShapeFactory;
 public class IntegrationTestEventSearchService {
     private static EventSearchService eventSearchService;
 
-    private static TsEventDao tsEventDao;
-    private static TsEventTesterDao tsEventTesterDao;
+    private static EventDao eventDao;
+    private static EventTesterDao eventTesterDao;
 
-    private static TsEventUtil tsEventUtil;
+    private static EventUtil eventUtil;
     private static Polygon searchBox = makeBoundingRectangle(300, 300);
     private static TimeRange searchTimeRange = new TimeRange(makeDate(2005, 2, 22), makeDate(2007, 2, 22));
     private static Polygon failBox = makeBoundingRectangle(3000, 3000);
@@ -100,7 +100,7 @@ public class IntegrationTestEventSearchService {
     private static TimeRange halfwayOutsideTimeRange = new TimeRange(makeDate(2000, 2, 22), makeDate(2007, 2,
             22));
     private static TimeRange outsideTimeRange = new TimeRange(makeDate(2000, 2, 22), makeDate(2002, 2, 22));
-    private static TsEvent actual;
+    private static Event actual;
 
     // search parameters
     private static int MAX_RESULTS = 3;
@@ -109,10 +109,10 @@ public class IntegrationTestEventSearchService {
     public static void setUpClass() throws ParseException {
         ApplicationContext appCtx = ContextUtil.getCtx();
         eventSearchService = (EventSearchService) appCtx.getBean("eventSearchService");
-        tsEventDao = (TsEventDao) appCtx.getBean("tsEventDao");
-        tsEventTesterDao = (TsEventTesterDao) appCtx.getBean("tsEventTesterDao");
-        tsEventUtil = new TsEventUtil(eventSearchService.getSessionFactory());
-        tsEventTesterDao.deleteAll();
+        eventDao = (EventDao) appCtx.getBean("eventDao");
+        eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
+        eventUtil = new EventUtil(eventSearchService.getSessionFactory());
+        eventTesterDao.deleteAll();
         StyleUtil.setupStyle();
 
         insideTheBox = new WKTReader().read("POINT (330 330)");
@@ -121,15 +121,15 @@ public class IntegrationTestEventSearchService {
         // sample data
         // these two pass with all parameters
         for (int i=0; i< shouldMatchDescription.length; i++) {
-            actual = makeSearchTsEvent(insideTheBox, insideTimeRange, shouldMatchSummary[i], shouldMatchDescription[i]);
+            actual = makeSearchEvent(insideTheBox, insideTimeRange, shouldMatchSummary[i], shouldMatchDescription[i]);
         }
         // the rest have at least one thing out of bounds
-        makeSearchTsEvent(outsideTheBox, insideTimeRange, shouldMatchSummary[0], shouldMatchDescription[0]);
-        makeSearchTsEvent(insideTheBox, outsideTimeRange, shouldMatchSummary[0], shouldMatchDescription[0]);
-        makeSearchTsEvent(insideTheBox, halfwayOutsideTimeRange, shouldMatchSummary[0], shouldMatchDescription[0]);
-        makeSearchTsEvent(insideTheBox, insideTimeRange, shouldNotMatch, shouldNotMatch);
-        makeSearchTsEvent(outsideTheBox, insideTimeRange, shouldNotMatch, shouldNotMatch);
-        makeSearchTsEvent(outsideTheBox, outsideTimeRange, shouldNotMatch, shouldNotMatch);
+        makeSearchEvent(outsideTheBox, insideTimeRange, shouldMatchSummary[0], shouldMatchDescription[0]);
+        makeSearchEvent(insideTheBox, outsideTimeRange, shouldMatchSummary[0], shouldMatchDescription[0]);
+        makeSearchEvent(insideTheBox, halfwayOutsideTimeRange, shouldMatchSummary[0], shouldMatchDescription[0]);
+        makeSearchEvent(insideTheBox, insideTimeRange, shouldNotMatch, shouldNotMatch);
+        makeSearchEvent(outsideTheBox, insideTimeRange, shouldNotMatch, shouldNotMatch);
+        makeSearchEvent(outsideTheBox, outsideTimeRange, shouldNotMatch, shouldNotMatch);
     }
 
 
@@ -138,10 +138,10 @@ public class IntegrationTestEventSearchService {
 
         for (int i=0; i<searchStrings.length; i++) {
             String searchString = searchStrings[i];
-            List<TsEvent> tsEvents = eventSearchService.search(MAX_RESULTS, 0, searchString,
+            List<Event> events = eventSearchService.search(MAX_RESULTS, 0, searchString,
                     searchTimeRange, searchBox);
-            assertEquals("matches against '" + searchString + "'", matches[i], tsEvents.size());
-            TsEvent returned = tsEvents.get(0);
+            assertEquals("matches against '" + searchString + "'", matches[i], events.size());
+            Event returned = events.get(0);
             assertEquals(insideTheBox.toText(), (returned.getTsGeometry()).getGeometry().toText());
             //it should be one of the description strings
             boolean failDescriptionMatch = true;
@@ -155,7 +155,7 @@ public class IntegrationTestEventSearchService {
             }
             assertEquals(insideTimeRange.getBegin(), returned.getWhen().getBegin());
             // Make sure we can get everything
-            tsEventUtil.assertEquivalent(actual, tsEvents.get(0));
+            eventUtil.assertEquivalent(actual, events.get(0));
         }
     }
     
@@ -212,10 +212,10 @@ public class IntegrationTestEventSearchService {
         return gsf.createRectangle();
     }
 
-    private static TsEvent makeSearchTsEvent(Geometry geometry, TimeRange timeRange, String summary, String description) {
-        TsEvent tsEvent = tsEventUtil.createTsEvent(geometry, timeRange, summary, description);
-        tsEventDao.save(tsEvent);
-        return tsEvent;
+    private static Event makeSearchEvent(Geometry geometry, TimeRange timeRange, String summary, String description) {
+        Event event = eventUtil.createEvent(geometry, timeRange, summary, description);
+        eventDao.save(event);
+        return event;
     }
 
     private static Date makeDate(int year, int month, int day) {

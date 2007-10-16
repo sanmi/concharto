@@ -7,26 +7,24 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import com.tech4d.tsm.dao.AuditEntryDao;
-import com.tech4d.tsm.dao.TsEventDao;
-import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.dao.EventDao;
+import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.audit.AuditEntry;
 import com.tech4d.tsm.web.util.AuditEntryFormat;
-import com.tech4d.tsm.web.util.TsEventAuditFormat;
+import com.tech4d.tsm.web.util.EventAuditFormat;
 
 public class ChangeHistoryController extends AbstractController {
     private static final int MAX_RESULTS = 20;
-    TsEventDao tsEventDao;
+    EventDao eventDao;
     AuditEntryDao auditEntryDao;
 
 
-    public void setTsEventDao(TsEventDao tsEventDao) {
-        this.tsEventDao = tsEventDao;
+    public void setEventDao(EventDao eventDao) {
+        this.eventDao = eventDao;
     }
 
     public void setAuditEntryDao(AuditEntryDao auditEntryDao) {
@@ -41,14 +39,14 @@ public class ChangeHistoryController extends AbstractController {
         System.out.println("--------- '" + idStr + "', " + id);
         Map model = new HashMap();
         if (id != null) {
-            TsEvent event = new TsEvent();
+            Event event = new Event();
             event.setId(id);
             List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(event, 0, MAX_RESULTS);
             System.out.println("num records " + auditEntries.size());
             model.put("auditEntries", auditEntries);
             model.put("id", id);
             model.put("actionLabels", AuditEntryFormat.ACTION_LABELS);
-            model.put("propertyLabels", TsEventAuditFormat.PROPERTY_LABELS);
+            model.put("propertyLabels", EventAuditFormat.PROPERTY_LABELS);
         }
         return new ModelAndView("changehistory", model);
     }

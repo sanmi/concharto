@@ -17,10 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tech4d.tsm.dao.AuditEntryDao;
 import com.tech4d.tsm.dao.StyleUtil;
-import com.tech4d.tsm.dao.TsEventDao;
-import com.tech4d.tsm.dao.TsEventTesterDao;
-import com.tech4d.tsm.dao.TsEventUtil;
-import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.dao.EventDao;
+import com.tech4d.tsm.dao.EventTesterDao;
+import com.tech4d.tsm.dao.EventUtil;
+import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.audit.AuditEntry;
 import com.tech4d.tsm.util.ContextUtil;
 import com.vividsolutions.jts.io.ParseException;
@@ -29,11 +29,11 @@ import com.vividsolutions.jts.io.ParseException;
 public class IntegrationTestAuditEntry {
 
     private static final int MAX_RESULTS = 100;
-    private static TsEventDao tsEventDao;
-    private static TsEventTesterDao tsEventTesterDao;
+    private static EventDao eventDao;
+    private static EventTesterDao eventTesterDao;
     private static AuditEntryDao auditEntryDao;
 
-    private static TsEventUtil tsEventUtil;
+    private static EventUtil eventUtil;
 
     private Date begin;
     private Date end;
@@ -50,11 +50,11 @@ public class IntegrationTestAuditEntry {
     @BeforeClass
     public static void setUpClass() {
         ApplicationContext appCtx = ContextUtil.getCtx();
-        tsEventDao = (TsEventDao) appCtx.getBean("tsEventDao");
-        tsEventTesterDao = (TsEventTesterDao) appCtx.getBean("tsEventTesterDao");
+        eventDao = (EventDao) appCtx.getBean("eventDao");
+        eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
         auditEntryDao = (AuditEntryDao) appCtx.getBean("auditEntryDao");
-        tsEventUtil = new TsEventUtil(tsEventTesterDao.getSessionFactory());
-        tsEventTesterDao.deleteAll();
+        eventUtil = new EventUtil(eventTesterDao.getSessionFactory());
+        eventTesterDao.deleteAll();
         StyleUtil.setupStyle();
     }
     
@@ -65,23 +65,23 @@ public class IntegrationTestAuditEntry {
      */
     @Test
     public void testSaveAndResave() throws ParseException, InterruptedException {
-        TsEvent event = tsEventUtil.createTsEvent(begin, end);
+        Event event = eventUtil.createEvent(begin, end);
         event.setDescription("This is some description.");
-        Serializable id = tsEventDao.save(event);
-        TsEvent returned = tsEventDao.findById((Long) id);
+        Serializable id = eventDao.save(event);
+        Event returned = eventDao.findById((Long) id);
         event.setDescription("sdfsdf");
         Thread.sleep(1000);
-        tsEventDao.saveOrUpdate(event);
+        eventDao.saveOrUpdate(event);
         //save, but don't make any changes.  Ensure no superfluous audit records
-        tsEventDao.saveOrUpdate(event);
-        tsEventDao.saveOrUpdate(event);
-        TsEvent returned2 = tsEventDao.findById((Long) id);
-        assertEquals(TsEventUtil.filterMilliseconds(event.getCreated()), returned.getCreated());
+        eventDao.saveOrUpdate(event);
+        eventDao.saveOrUpdate(event);
+        Event returned2 = eventDao.findById((Long) id);
+        assertEquals(EventUtil.filterMilliseconds(event.getCreated()), returned.getCreated());
         //make sure the last modified dates are different for the two instances we edited
         assertTrue(returned.getLastModified().compareTo(returned2.getLastModified()) != 0);
         
         //create another so that there are more than 2 total audit records
-        tsEventDao.save(tsEventUtil.createTsEvent(begin, end));
+        eventDao.save(eventUtil.createEvent(begin, end));
         
         //now ensure two audit entries were created for this event
         List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(event, 0, MAX_RESULTS);
@@ -94,7 +94,7 @@ public class IntegrationTestAuditEntry {
         }
         
         //now test retrieval by fake object
-        TsEvent empty = new TsEvent();
+        Event empty = new Event();
         empty.setId(event.getId());
         auditEntries = auditEntryDao.getAuditEntries(empty, 0, MAX_RESULTS);
         assertEquals(2, auditEntries.size());

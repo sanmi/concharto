@@ -1,6 +1,6 @@
 package com.tech4d.tsm.web;
 
-import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.geometry.TimeRange;
 import com.tech4d.tsm.service.EventSearchService;
 import com.tech4d.tsm.util.JSONFormat;
@@ -174,7 +174,7 @@ public class EventSearchController extends AbstractFormController {
         if (eventSearchForm.getMapCenter() != null) {
             int firstRecord = calculateFirstRecord(eventSearchForm);
             eventSearchForm.setCurrentRecord(firstRecord);
-            List<TsEvent> events = new ArrayList<TsEvent>(); 
+            List<Event> events = new ArrayList<Event>();
             Set<Geometry> boxes = getBoundingBox(eventSearchForm);  //there may be two
             Long totalResults = 0L;
             //There are 1 or 2 bounding boxes (see comment above)

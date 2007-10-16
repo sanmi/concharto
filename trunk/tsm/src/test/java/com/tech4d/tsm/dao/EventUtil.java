@@ -12,7 +12,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 
-import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.User;
 import com.tech4d.tsm.model.UserTag;
 import com.tech4d.tsm.model.geometry.Style;
@@ -22,7 +22,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
-public class TsEventUtil {
+public class EventUtil {
     public SessionFactory sessionFactory;
     private Date begin;
     private Date end;
@@ -32,7 +32,7 @@ public class TsEventUtil {
      * that we can refresh objects
      * @param sessionFactory
      */
-    public TsEventUtil(SessionFactory sessionFactory) {
+    public EventUtil(SessionFactory sessionFactory) {
         super();
         this.sessionFactory = sessionFactory;
         Calendar cal = new GregorianCalendar(107 + 1900, 8, 22, 12, 22, 3);
@@ -50,30 +50,30 @@ public class TsEventUtil {
         return end;
     }
 
-    public TsEvent createTsEvent() throws ParseException {
-        return createTsEvent(new Date(), new Date());
+    public Event createEvent() throws ParseException {
+        return createEvent(new Date(), new Date());
     }
 
-    public TsEvent createTsEvent(Date begin, Date end) throws ParseException {
-        return createTsEvent(new WKTReader().read("POINT (20 20)"), new TimeRange(begin, end));
+    public Event createEvent(Date begin, Date end) throws ParseException {
+        return createEvent(new WKTReader().read("POINT (20 20)"), new TimeRange(begin, end));
 
     }
 
-    public TsEvent createTsEvent(Geometry geometry, TimeRange timeRange) {
-        return createTsEvent(geometry, timeRange, StyleUtil.getStyle(), null, null);
+    public Event createEvent(Geometry geometry, TimeRange timeRange) {
+        return createEvent(geometry, timeRange, StyleUtil.getStyle(), null, null);
     }
 
-    public TsEvent createTsEvent(Geometry geometry, TimeRange timeRange,
+    public Event createEvent(Geometry geometry, TimeRange timeRange,
             String description) {
-        return createTsEvent(geometry, timeRange, StyleUtil.getStyle(), null, description);
+        return createEvent(geometry, timeRange, StyleUtil.getStyle(), null, description);
     }
 
-    public TsEvent createTsEvent(Geometry geometry, TimeRange timeRange,
+    public Event createEvent(Geometry geometry, TimeRange timeRange,
             String summary, String description) {
-        return createTsEvent(geometry, timeRange, StyleUtil.getStyle(), summary, description);
+        return createEvent(geometry, timeRange, StyleUtil.getStyle(), summary, description);
     }
 
-    public TsEvent createTsEvent(Geometry geometry, TimeRange timeRange,
+    public Event createEvent(Geometry geometry, TimeRange timeRange,
             Style style, String summary, String description) {
 
         List<User> people = new ArrayList<User>();
@@ -84,29 +84,29 @@ public class TsEventUtil {
         tags.add(new UserTag("tag a"));
         tags.add(new UserTag("tag b"));
         tags.add(new UserTag("tag b"));
-        return createTsEvent(people, tags, geometry, timeRange, style, summary, description) ;
+        return createEvent(people, tags, geometry, timeRange, style, summary, description) ;
     }
     
-    public TsEvent createTsEvent(List<User> participants, List<UserTag> usertags, Geometry geometry, TimeRange timeRange,
+    public Event createEvent(List<User> participants, List<UserTag> usertags, Geometry geometry, TimeRange timeRange,
             Style style, String summary, String description) {
-        TsEvent tsEvent = new TsEvent();
-        tsEvent.setWhere("17 Mockinbird Ln, Nameless, TN, 60606");
-        tsEvent.setSnippet("This is like some sort of small description yo");
-        tsEvent.setSummary(summary);
-        tsEvent.setDescription(description);
+        Event event = new Event();
+        event.setWhere("17 Mockinbird Ln, Nameless, TN, 60606");
+        event.setSnippet("This is like some sort of small description yo");
+        event.setSummary(summary);
+        event.setDescription(description);
 
         TsGeometry tsPoint = new TsGeometry(geometry);
-        tsEvent.setTsGeometry(tsPoint);
-        tsEvent.setWhen(timeRange);
-        tsEvent.setStyleSelector(style);
-        tsEvent.setSourceUrl("http://www.wikipedia.com");
-        tsEvent.setUserTags(usertags);
-        tsEvent.setContributors(participants);
+        event.setTsGeometry(tsPoint);
+        event.setWhen(timeRange);
+        event.setStyleSelector(style);
+        event.setSourceUrl("http://www.wikipedia.com");
+        event.setUserTags(usertags);
+        event.setContributors(participants);
         
-        return tsEvent;
+        return event;
     }
     
-    public void assertEquivalent(TsEvent expected, TsEvent actual) {
+    public void assertEquivalent(Event expected, Event actual) {
         SessionFactory sessionFactory = this.sessionFactory;
         Session session = SessionFactoryUtils.getSession(sessionFactory, true);
         session.refresh(actual);

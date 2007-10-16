@@ -11,38 +11,38 @@ import org.hibernate.Transaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tech4d.tsm.model.EventSearchText;
-import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.model.Event;
 
 @Transactional
-public class TsEventTesterDaoHib implements TsEventTesterDao {
+public class EventTesterDaoHib implements EventTesterDao {
     private SessionFactory sessionFactory;
     protected final Log logger = LogFactory.getLog(this.getClass());
 
     /* (non-Javadoc)
-     * @see com.tech4d.tsm.lab.TsEventTesterDao#setSessionFactory(org.hibernate.SessionFactory)
+     * @see com.tech4d.tsm.lab.EventTesterDao#setSessionFactory(org.hibernate.SessionFactory)
      */
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
     /* (non-Javadoc)
-     * @see com.tech4d.tsm.lab.TsEventTesterDao#getSessionFactory()
+     * @see com.tech4d.tsm.lab.EventTesterDao#getSessionFactory()
      */
     public SessionFactory getSessionFactory() {
         return sessionFactory;
     }
 
     /* (non-Javadoc)
-     * @see com.tech4d.tsm.lab.TsEventTesterDao#deleteAll()
+     * @see com.tech4d.tsm.lab.EventTesterDao#deleteAll()
      */
     public void deleteAll() {
         //TODO -  this is ugly, but it offers the best performance.  There don't
         //seem to be simpler cascade options using HQL delete
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from TsGeometry").executeUpdate();
-        this.sessionFactory.getCurrentSession().createSQLQuery("delete from TsEvent_Usertag").executeUpdate();
+        this.sessionFactory.getCurrentSession().createSQLQuery("delete from Event_Usertag").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from Usertag").executeUpdate();
-        this.sessionFactory.getCurrentSession().createSQLQuery("delete from TsEvent_User").executeUpdate();
+        this.sessionFactory.getCurrentSession().createSQLQuery("delete from Event_User").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from User").executeUpdate();
-        this.sessionFactory.getCurrentSession().createSQLQuery("delete from TsEvent").executeUpdate();
+        this.sessionFactory.getCurrentSession().createSQLQuery("delete from Event").executeUpdate();
 //        this.sessionFactory.getCurrentSession().createSQLQuery("delete from EventSearchText").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from TimePrimitive").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from AuditFieldChange").executeUpdate();
@@ -52,27 +52,27 @@ public class TsEventTesterDaoHib implements TsEventTesterDao {
     /*
      * (non-Javadoc)
      * 
-     * @see com.tech4d.tsm.lab.TsEventDao#findAll()
+     * @see com.tech4d.tsm.lab.EventDao#findAll()
      */
     /* (non-Javadoc)
-     * @see com.tech4d.tsm.lab.TsEventTesterDao#findAll()
+     * @see com.tech4d.tsm.lab.EventTesterDao#findAll()
      */
     @SuppressWarnings("unchecked")
-    public List<TsEvent> findAll() {
+    public List<Event> findAll() {
         return this.sessionFactory.getCurrentSession().createQuery(
-                "select tsEvent from TsEvent tsEvent").list();
+                "select event from Event event").list();
     }
 
     /* (non-Javadoc)
-     * @see com.tech4d.tsm.lab.TsEventTesterDao#save(java.util.Set)
+     * @see com.tech4d.tsm.lab.EventTesterDao#save(java.util.Set)
      */
-    public void save(Set<TsEvent> events) {
+    public void save(Set<Event> events) {
         
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
 
         int i=0;
-        for (TsEvent event : events) {
+        for (Event event : events) {
             i++;
             event.setEventSearchText(new EventSearchText(event));
             session.save(event);

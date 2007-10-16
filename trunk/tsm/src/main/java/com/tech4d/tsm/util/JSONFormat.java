@@ -7,7 +7,7 @@ import java.util.List;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.model.Event;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -36,16 +36,16 @@ public class JSONFormat {
     public static final String FIELD_GEOMETRY = "geom";
     public static final String FIELD_LINE = "line";
 
-    public static String toJSON(Collection<TsEvent> events) {
+    public static String toJSON(Collection<Event> events) {
         JSONArray jsonEvents = new JSONArray();
-        for (TsEvent event : events) {
+        for (Event event : events) {
             jsonEvents.add(toJSON(event));
         }
         return jsonEvents.toString();
     }
     
     //TODO add null checking
-    public static String toJSON(TsEvent event) {
+    public static String toJSON(Event event) {
         JSONObject jsonEvent = new JSONObject();
         jsonEvent.put(FIELD_ID, event.getId());
         jsonEvent.put(FIELD_SUMMARY, event.getSummary());

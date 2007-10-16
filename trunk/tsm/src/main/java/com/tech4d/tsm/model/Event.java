@@ -29,7 +29,7 @@ import com.tech4d.tsm.model.geometry.TsGeometry;
  * be serialized to KML and can be searched using a spatial query.
  */
 @Entity
-public class TsEvent extends BaseAuditableEntity {
+public class Event extends BaseAuditableEntity {
     
     public final static int SZ_DESCRIPTION = 2048;
     public static final int SZ_SNIPPET = 1024;

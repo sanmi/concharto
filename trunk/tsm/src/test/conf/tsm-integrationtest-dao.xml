@@ -4,7 +4,7 @@
 <beans>
 	
 	<!-- Begin Daos -->
-	<bean id="tsEventTesterDao" class="com.tech4d.tsm.dao.TsEventTesterDaoHib">
+	<bean id="eventTesterDao" class="com.tech4d.tsm.dao.EventTesterDaoHib">
 		<property name="sessionFactory">
 			<ref bean="mySessionFactory"/>
 		</property>

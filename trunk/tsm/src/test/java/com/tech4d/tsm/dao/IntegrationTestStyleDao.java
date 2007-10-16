@@ -24,11 +24,11 @@ public class IntegrationTestStyleDao {
     @Before
     public void setUp() {
         ApplicationContext appCtx = ContextUtil.getCtx();
-        TsEventTesterDao tsEventTesterDao = (TsEventTesterDao) appCtx.getBean("tsEventTesterDao");
+        EventTesterDao eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
         styleDao = (StyleDao) appCtx.getBean("styleDao");
 
         //delete everything and save 1 style object
-        tsEventTesterDao.deleteAll();
+        eventTesterDao.deleteAll();
         StyleUtil.setupStyle();
     }
 

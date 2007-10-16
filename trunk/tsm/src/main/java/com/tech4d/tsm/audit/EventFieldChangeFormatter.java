@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import org.apache.commons.lang.StringUtils;
 
 import com.tech4d.tsm.model.Auditable;
-import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.audit.AuditEntry;
 import com.tech4d.tsm.model.audit.AuditFieldChange;
 import com.tech4d.tsm.util.ClassName;
 import com.tech4d.tsm.util.TimeRangeFormat;
 
-public class TsEventFieldChangeFormatter implements AuditFieldChangeFormatter{
+public class EventFieldChangeFormatter implements AuditFieldChangeFormatter{
     public static final int SUMMARY = 0;
     public static final int DESCRIPTION = 1;
     public static final int WHERE = 2;
@@ -21,7 +21,7 @@ public class TsEventFieldChangeFormatter implements AuditFieldChangeFormatter{
     public static final int WHEN = 6;
 
     public boolean supports(Class clazz) {
-        return clazz == TsEvent.class;
+        return clazz == Event.class;
     }
 
     /**
@@ -30,7 +30,7 @@ public class TsEventFieldChangeFormatter implements AuditFieldChangeFormatter{
      */
     public void refresh(Auditable auditable) {
         //this is enough to fetch into memory
-        ((TsEvent)auditable).getUserTags().size();
+        ((Event)auditable).getUserTags().size();
     }
     
     /**
@@ -73,8 +73,8 @@ public class TsEventFieldChangeFormatter implements AuditFieldChangeFormatter{
      */
     public AuditEntry createUpdateAuditItems(Auditable currentA, Auditable previousA) {
         AuditEntry auditEntry = makeAuditEntry(currentA, AuditEntry.ACTION_UPDATE);
-        TsEvent current = (TsEvent) currentA;
-        TsEvent previous = (TsEvent) previousA;
+        Event current = (Event) currentA;
+        Event previous = (Event) previousA;
 
         makeChange(SUMMARY,  current.getSummary(), previous.getSummary(), auditEntry);
         makeChange(DESCRIPTION, current.getDescription(), previous.getDescription(), auditEntry);

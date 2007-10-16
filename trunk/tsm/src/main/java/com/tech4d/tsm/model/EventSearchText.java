@@ -19,51 +19,51 @@ public class EventSearchText extends BaseEntity {
     private String where;
     
 
-    public EventSearchText(TsEvent tsEvent) {
-        copyFrom(tsEvent);
+    public EventSearchText(Event event) {
+        copyFrom(event);
     }
     
-    public void copyFrom(TsEvent tsEvent) {
-        this.setSummary(tsEvent.getSummary());
-        this.setDescription(tsEvent.getDescription());
-        this.setUserTags(tsEvent.getUserTagsAsString());
-        this.setSource(tsEvent.getSourceUrl());
-        this.setWhere(tsEvent.getWhere());
+    public void copyFrom(Event event) {
+        this.setSummary(event.getSummary());
+        this.setDescription(event.getDescription());
+        this.setUserTags(event.getUserTagsAsString());
+        this.setSource(event.getSourceUrl());
+        this.setWhere(event.getWhere());
     }
     
     public EventSearchText() {
         super();
     }
 
-    @Column(length=TsEvent.SZ_DESCRIPTION)
+    @Column(length= Event.SZ_DESCRIPTION)
     public String getDescription() {
         return description;
     }
     public void setDescription(String description) {
         this.description = description;
     }
-    @Column(length=TsEvent.SZ_SOURCEURL)
+    @Column(length= Event.SZ_SOURCEURL)
     public String getSource() {
         return source;
     }
     public void setSource(String source) {
         this.source = source;
     }
-    @Column(length=TsEvent.SZ_SUMMARY)
+    @Column(length= Event.SZ_SUMMARY)
     public String getSummary() {
         return summary;
     }
     public void setSummary(String summary) {
         this.summary = summary;
     }
-    @Column(length=TsEvent.SZ_USERTAGS)
+    @Column(length= Event.SZ_USERTAGS)
     public String getUserTags() {
         return userTags;
     }
     public void setUserTags(String tags) {
         this.userTags = tags;
     }
-    @Column(name = "_where", length=TsEvent.SZ_WHERE)  //'where' is a sql reserved word 
+    @Column(name = "_where", length= Event.SZ_WHERE)  //'where' is a sql reserved word
     public String getWhere() {
         return where;
     }
