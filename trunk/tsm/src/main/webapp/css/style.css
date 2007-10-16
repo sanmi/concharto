@@ -24,11 +24,15 @@ body {
 }
 
 #nav ul li a{
-    color:#003063;
+    color:blue;
     text-decoration:underline;
     padding:0 5px 0 5px;
     text-align:center;
     width: 9em;
+}
+
+#nav .name {
+    color:black;
 }
 
 #container { 
@@ -201,4 +205,9 @@ a.nexPrev:link, a.nextPrev:visited {
 
 .mapedit .searchbar{
     width:auto;
+}
+
+.loginForm {
+    margin:10px 0 10px 40px;
+    padding 50px;
 }

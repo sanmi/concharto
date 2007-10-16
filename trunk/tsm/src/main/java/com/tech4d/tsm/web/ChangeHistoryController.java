@@ -98,6 +98,6 @@ public class ChangeHistoryController extends AbstractFormController {
         model.put(MODEL_PROPERTY_LABELS, EventAuditFormat.PROPERTY_LABELS);
         model.put(MODEL_TOTAL_RESULTS, totalResults);
 
-        return new ModelAndView("changehistory", model);
+        return new ModelAndView(getFormView(), model);
     }
 }

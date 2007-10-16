@@ -13,9 +13,19 @@
         </param-value>
     </context-param>
     <context-param>
-		<param-name>log4jConfigLocation</param-name>
-		<param-value>/WEB-INF/log4j.properties</param-value>
-	</context-param>
+			<param-name>log4jConfigLocation</param-name>
+			<param-value>/WEB-INF/log4j.properties</param-value>
+		</context-param>
+
+    <filter>
+        <filter-name>authorizationFilter</filter-name>
+        <filter-class>com.tech4d.tsm.auth.LoginFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>authorizationFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+	
     <listener>
         <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
     </listener>
@@ -48,5 +58,44 @@
             <taglib-location>/WEB-INF/tld/fmt.tld</taglib-location>
         </taglib>
     </jsp-config>
+
+    <!-- Security roles referenced by this web application -->
+    <security-role>
+      <role-name>canEdit</role-name>
+    </security-role>
+    <security-role>
+      <role-name>canDelete</role-name>
+    </security-role>
+
+		<!-- SECURITY CONSTRAINT 
+      <security-constraint>
+        <web-resource-collection>
+          <web-resource-name>event</web-resource-name>
+          <url-pattern>/edit/*</url-pattern>
+          <http-method> GET</http-method>
+          <http-method>POST</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+          <role-name>canEdit</role-name>
+        </auth-constraint>
+      </security-constraint>
+           -->
+    <!-- Define the Login Configuration for this Application -->
+    <!-- LOGIN CONFIGURATION 
+			<login-config>
+			  <auth-method>BASIC</auth-method>
+			</login-config>
+			-->
+			<!-- Define the Login Configuration for this Application 
+			<login-config>
+		    <auth-method>FORM</auth-method>
+		    <realm-name>Time Space Map</realm-name>
+		    <form-login-config>
+		        <form-login-page>/login.htm</form-login-page>
+		        <form-error-page>/login.htm</form-error-page>
+		    </form-login-config>
+			</login-config>
+     -->
+    
 
 </web-app>

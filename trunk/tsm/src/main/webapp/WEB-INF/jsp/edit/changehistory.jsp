@@ -98,8 +98,8 @@
 				  	<a class="nextPrev" href="#" onclick="nextPage('next')">Next</a>
 				  </c:if>
 				</div>			
-	  	</div>     
-	  	
+	  	</div>   
+	  	  
 	  	<input type="button" value="Done" onclick="edit(); return false;"/>
 	  	
 	 	</tr></table>
