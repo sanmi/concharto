@@ -15,7 +15,7 @@ public class EventSearchFormValidator implements Validator{
     public void validate(Object target, Errors errors) {
         EventSearchForm eventSearchForm = (EventSearchForm) target;
         //if the geocode failed        
-        if (!eventSearchForm.getIsGeocodeSuccess()) {
+        if ((eventSearchForm.getIsGeocodeSuccess() != null) && !eventSearchForm.getIsGeocodeSuccess()) {
             errors.rejectValue("where", 
                     "failedGeocode.eventSearch.where", 
                     new Object[]{eventSearchForm.getWhere()}, null);
