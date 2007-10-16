@@ -2,14 +2,14 @@ package com.tech4d.tsm.service;
 
 import java.util.List;
 
-import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.model.Event;
 
 /**
  * Data object for holding search results
  * @author frank
  */
 public class EventSearchResult {
-    private List<TsEvent> tsEvents;
+    private List<Event> events;
     private int maxReturnedRecords;
     private int maxPossibleSearchResults;
     private int startRecord;
@@ -39,11 +39,11 @@ public class EventSearchResult {
     public void setStartRecord(int startRecord) {
         this.startRecord = startRecord;
     }
-    public List<TsEvent> getTsEvents() {
-        return tsEvents;
+    public List<Event> getEvents() {
+        return events;
     }
-    public void setTsEvents(List<TsEvent> tsEvents) {
-        this.tsEvents = tsEvents;
+    public void setEvents(List<Event> events) {
+        this.events = events;
     }
     
 }

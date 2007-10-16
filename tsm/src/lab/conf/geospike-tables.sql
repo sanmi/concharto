@@ -84,43 +84,43 @@ select count(*) FROM address WHERE Equals(geom,GeomFromText('GEOMETRYCOLLECTION(
 select count(*) FROM address WHERE MBREqual(addressLocation,Envelope(GeomFromText('POLYGON((330 330,340 330,340 340,330 340,330 330))'))) = 1
 
 
---DEBUG tsEvent
+--DEBUG event
 SELECT *, AsText(geom) FROM tsgeometry g 
-SELECT * FROM tsEvent f, tsgeometry g
+SELECT * FROM event f, tsgeometry g
 WHERE f.tsgeometry_id = g.id
 AND MBRWithin(geom,Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))'))) = 1
 
 SELECT * 
-FROM tsEvent f, tsgeometry g
+FROM event f, tsgeometry g
 WHERE f.geometry_id = g.id 
 AND MBRWithin(geom, Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))'))) = 1
 
 delete from tsgeometry;
 drop table tsgeometry;
-drop table tsEvent;
+drop table event;
 
-delete from tsgeometry where id in (select id from tsEvent)
+delete from tsgeometry where id in (select id from event)
 
 ALTER TABLE address CHANGE geom geom GEOMETRYCOLLECTION NOT NULL;
 
-Select * from TimePrimitive where id = (select timeprimitive_id from tsEvent where id = 4)
+Select * from TimePrimitive where id = (select timeprimitive_id from event where id = 4)
 
 --DEBUG big search queries
 
 --geography and text
-SELECT * FROM tsevent f, tsgeometry g, eventsearchtext es
+SELECT * FROM event f, tsgeometry g, eventsearchtext es
 WHERE f.tsgeometry_id = g.id 
 AND f.eventsearchtext_id = es.id
 AND MBRWithin(geometryCollection, Envelope(GeomFromText('POLYGON ((300 300, 400 300, 400 400, 300 400, 300 300))')))
 AND MATCH (es.summary, es.description, es.usertags, es.source) AGAINST ('description')
 
 -- just geography
-SELECT * FROM tsevent f,  tsgeometry g
+SELECT * FROM event f,  tsgeometry g
 WHERE f.tsgeometry_id = g.id 
 AND MBRWithin(geometryCollection, Envelope(GeomFromText('POLYGON ((-77.34169006347656 40.85433181694295, -76.81365966796875 40.85433181694295, -76.81365966796875 41.13884745373145, -77.34169006347656 41.13884745373145, -77.34169006347656 40.85433181694295))')))
 
 --Just time
-explain SELECT * FROM tsevent f, timeprimitive t
+explain SELECT * FROM event f, timeprimitive t
 WHERE f.when_id = t.id
 AND (t.begin BETWEEN DATE('1905-03-22') AND DATE('1907-03-22') )
 AND (t.end BETWEEN DATE('1905-03-22') AND DATE('1907-03-22') );
@@ -130,12 +130,12 @@ SELECT count(*) FROM eventsearchtext es
 WHERE MATCH (es.summary, es._where, es.usertags, es.description, es.source) AGAINST ('description')
 
 --just text
-SELECT count(*) FROM tsevent f, eventsearchtext es
+SELECT count(*) FROM event f, eventsearchtext es
 WHERE f.eventsearchtext_id = es.id
 AND MATCH (es.summary, es._where, es.usertags, es.description, es.source) AGAINST ('description')
 
 --everything
-SELECT * FROM tsevent f, tsgeometry g, eventsearchtext es, timeprimitive t
+SELECT * FROM event f, tsgeometry g, eventsearchtext es, timeprimitive t
 WHERE f.tsgeometry_id = g.id 
 AND f.eventsearchtext_id = es.id
 AND f.when_id = t.id

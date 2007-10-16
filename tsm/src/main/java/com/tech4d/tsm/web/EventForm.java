@@ -4,7 +4,7 @@ import com.tech4d.tsm.model.geometry.TimeRange;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
-public class TsEventForm {
+public class EventForm {
     //NOTE: the DB typically allows more chars than specified here. Done for 
     //upgrade flexibility
     public static final int SZ_TAGS = 256;
@@ -34,11 +34,11 @@ public class TsEventForm {
         this.id = id;
     }
 
-    public TsEventForm() {
+    public EventForm() {
         super();
     }
 
-    public TsEventForm(Long id, String summary, String description, String tags) {
+    public EventForm(Long id, String summary, String description, String tags) {
         super();
         this.id = id;
         this.summary = summary;
@@ -138,7 +138,7 @@ public class TsEventForm {
      * Search results in JSON format need to be passed as a hidden value
      * in the form so that the google maps API javascript functions can retrieve them
      * TODO refactor because this is also on the EventSearchForm 
-     * @return resutls JSON formatted array of TsEvent objects
+     * @return resutls JSON formatted array of Event objects
      */
     public String getSearchResults() {
         return searchResults;

@@ -22,9 +22,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 
-import com.tech4d.tsm.dao.TsEventTesterDao;
-import com.tech4d.tsm.dao.TsEventUtil;
-import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.dao.EventTesterDao;
+import com.tech4d.tsm.dao.EventUtil;
+import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.geometry.TimeRange;
 import com.tech4d.tsm.util.ContextUtil;
 import com.tech4d.tsm.util.LapTimer;
@@ -41,8 +41,8 @@ public class PopulateDummyData {
     private static final int SZ_SUMMARY = 50;
     private static final int SZ_DESCRIPTION = 240;
     private static final String TEXT_FILE = "src/lab/data/a-tale-of-two-cities.txt";
-    private static TsEventTesterDao tsEventTesterDao;
-    private static TsEventUtil tsEventUtil;
+    private static EventTesterDao eventTesterDao;
+    private static EventUtil eventUtil;
     private GeometryFactory gf = new GeometryFactory();
     protected static final Log logger = LogFactory.getLog(PopulateDummyData.class);
 
@@ -55,15 +55,15 @@ public class PopulateDummyData {
     public static void setUpClass() throws FileNotFoundException {
         ApplicationContext appCtx = ContextUtil.getCtx();
         
-        tsEventTesterDao = (TsEventTesterDao) appCtx.getBean("tsEventTesterDao");
+        eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
         SessionFactory sessionFactory = (SessionFactory) appCtx.getBean("myTestDbSessionFactory");
         //replace the default with the test db
-        tsEventTesterDao.setSessionFactory(sessionFactory);
+        eventTesterDao.setSessionFactory(sessionFactory);
 
-        tsEventUtil = new TsEventUtil(tsEventTesterDao.getSessionFactory());
+        eventUtil = new EventUtil(eventTesterDao.getSessionFactory());
         logger.debug("deleting");
         LapTimer timer = new LapTimer(logger);
-        tsEventTesterDao.deleteAll();
+        eventTesterDao.deleteAll();
         timer.timeIt("delete").logDebugTime();
         
         openTextFileReader();
@@ -85,10 +85,10 @@ public class PopulateDummyData {
     private static final int COLLECTION_SIZE = 1000;
     @Test
     public void makeData() throws ParseException, IOException {
-        Set<TsEvent> events = new HashSet<TsEvent>();
+        Set<Event> events = new HashSet<Event>();
         LapTimer timer = new LapTimer(this); 
         for (int i = 0; i < NUM_EVENTS; i++) {
-            TsEvent event = tsEventUtil.createTsEvent(null, null, getNextPoint(), getNextTimeRange(), null,
+            Event event = eventUtil.createEvent(null, null, getNextPoint(), getNextTimeRange(), null,
                     getNextText(SZ_SUMMARY), getNextText(SZ_DESCRIPTION));
             event.setSnippet(null);
             event.setSourceUrl(getNextText(SZ_SOURCE));
@@ -98,14 +98,14 @@ public class PopulateDummyData {
             
             if (i % COLLECTION_SIZE == 0) {
                 timer.timeIt("create " + i);
-                tsEventTesterDao.save(events);
+                eventTesterDao.save(events);
                 timer.timeIt("save").logDebugTime();
                 events.clear();
                 timer.init();
             }
         }
         timer.timeIt("create");
-        tsEventTesterDao.save(events);
+        eventTesterDao.save(events);
         timer.timeIt("save").logDebugTime();
 
         //System.out.println(minLng +", " + minLat + ", " + maxLng + ", " + maxLat );

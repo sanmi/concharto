@@ -5,9 +5,9 @@ import java.util.Set;
 
 import org.hibernate.SessionFactory;
 
-import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.model.Event;
 
-public interface TsEventTesterDao {
+public interface EventTesterDao {
 
     public void setSessionFactory(SessionFactory sessionFactory);
 
@@ -22,11 +22,11 @@ public interface TsEventTesterDao {
     /*
      * (non-Javadoc)
      * 
-     * @see com.tech4d.tsm.lab.TsEventDao#findAll()
+     * @see com.tech4d.tsm.lab.EventDao#findAll()
      */
     @SuppressWarnings("unchecked")
-    public List<TsEvent> findAll();
+    public List<Event> findAll();
 
-    public void save(Set<TsEvent> events);
+    public void save(Set<Event> events);
 
 }

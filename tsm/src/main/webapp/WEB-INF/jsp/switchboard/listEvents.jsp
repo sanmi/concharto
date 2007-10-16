@@ -20,7 +20,7 @@
     		<td colspan="2">&nbsp;</td>
     	</thead>
 
-    <c:forEach items="${tsEventList}" var="event">
+    <c:forEach items="${eventList}" var="event">
         <tr>
             <td>${event.id}&nbsp;</td>
             <td>${event.summary}&nbsp;</td>

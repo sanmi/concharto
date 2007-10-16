@@ -1,7 +1,7 @@
 package com.tech4d.tsm.web;
 
-import com.tech4d.tsm.dao.TsEventDao;
-import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.dao.EventDao;
+import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.geometry.TimeRange;
 import com.tech4d.tsm.util.GeometryType;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
@@ -18,11 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class EventController extends SimpleFormController {
-    private static final String SESSION_TSEVENT = "TSEVENT";
-    TsEventDao tsEventDao;
+    private static final String SESSION_EVENT = "EVENT";
+    EventDao eventDao;
 
-    public void setTsEventDao(TsEventDao tsEventDao) {
-        this.tsEventDao = tsEventDao;
+    public void setEventDao(EventDao eventDao) {
+        this.eventDao = eventDao;
     }
     
     @Override
@@ -40,46 +40,46 @@ public class EventController extends SimpleFormController {
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
         Long id = ServletRequestUtils.getLongParameter(request, "listid");
-        TsEvent tsEvent;
-        TsEventForm tsEventForm; 
+        Event event;
+        EventForm eventForm;
         EventSearchForm eventSearchForm = getEventSearchForm(request);
         if (id != null) {
             //get the event
-            tsEvent = this.tsEventDao.findById(id);
+            event = this.eventDao.findById(id);
             //TODO don't use session if possible!!!
             //save it in the session for later modification
-            WebUtils.setSessionAttribute(request, SESSION_TSEVENT, tsEvent);
-            tsEventForm = com.tech4d.tsm.web.TsEventFormFactory.getTsEventForm(tsEvent);
+            WebUtils.setSessionAttribute(request, SESSION_EVENT, event);
+            eventForm = com.tech4d.tsm.web.EventFormFactory.getEventForm(event);
             if (eventSearchForm != null) {
-                tsEventForm.setSearchResults(eventSearchForm.getSearchResults());
-                tsEventForm.setMapCenter(eventSearchForm.getMapCenter());
+                eventForm.setSearchResults(eventSearchForm.getSearchResults());
+                eventForm.setMapCenter(eventSearchForm.getMapCenter());
             }
         } else {
             //this is a new form
-            tsEventForm = new TsEventForm();
+            eventForm = new EventForm();
             if (eventSearchForm != null) {
-                tsEventForm.setZoomLevel(eventSearchForm.getMapZoom());
-                tsEventForm.setSearchResults(eventSearchForm.getSearchResults());
+                eventForm.setZoomLevel(eventSearchForm.getMapZoom());
+                eventForm.setSearchResults(eventSearchForm.getSearchResults());
                 //default geometry type is point
-                tsEventForm.setGeometryType(GeometryType.POINT);
-                tsEventForm.setMapCenter(eventSearchForm.getMapCenter());
+                eventForm.setGeometryType(GeometryType.POINT);
+                eventForm.setMapCenter(eventSearchForm.getMapCenter());
             } 
         }
-        return tsEventForm;
+        return eventForm;
     }
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        TsEventForm tsEventForm = (TsEventForm)command;
-        TsEvent tsEvent;
-        if (tsEventForm.getId() != null) {
-            //get the tsEvent from the session
-            tsEvent = (TsEvent) WebUtils.getSessionAttribute(request, SESSION_TSEVENT);
-            tsEvent = com.tech4d.tsm.web.TsEventFormFactory.updateTsEvent(tsEvent, tsEventForm);
+        EventForm eventForm = (EventForm)command;
+        Event event;
+        if (eventForm.getId() != null) {
+            //get the event from the session
+            event = (Event) WebUtils.getSessionAttribute(request, SESSION_EVENT);
+            event = com.tech4d.tsm.web.EventFormFactory.updateEvent(event, eventForm);
         } else {
-            tsEvent = com.tech4d.tsm.web.TsEventFormFactory.createTsEvent(tsEventForm);
+            event = com.tech4d.tsm.web.EventFormFactory.createEvent(eventForm);
         }
-        this.tsEventDao.saveOrUpdate(tsEvent);
+        this.eventDao.saveOrUpdate(event);
         return new ModelAndView(getSuccessView());
     }
 

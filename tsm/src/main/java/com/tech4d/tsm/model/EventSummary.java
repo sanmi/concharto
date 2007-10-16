@@ -7,7 +7,7 @@ import org.hibernate.annotations.Type;
 import com.vividsolutions.jts.geom.Point;
 
 @Entity
-public class TsEventSummary extends BaseAuditableEntity {
+public class EventSummary extends BaseAuditableEntity {
 
     private String summary;
 
@@ -17,11 +17,11 @@ public class TsEventSummary extends BaseAuditableEntity {
 
     private Point centroid;
 
-    public TsEventSummary() {
+    public EventSummary() {
         super();
     }
 
-    public TsEventSummary(String summary, String snippet, String description,
+    public EventSummary(String summary, String snippet, String description,
             Point centroid) {
         super();
         this.summary = summary;

@@ -10,7 +10,7 @@ import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tech4d.tsm.model.TsEvent;
+import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.geometry.TimeRange;
 import com.tech4d.tsm.util.LapTimer;
 import com.vividsolutions.jts.geom.Geometry;
@@ -21,7 +21,7 @@ public class EventSearchServiceHib implements EventSearchService {
     /** Logger that is available to subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private static String SQL_SELECT_STUB = " FROM tsevent f, tsgeometry g, eventsearchtext es, timeprimitive t "
+    private static String SQL_SELECT_STUB = " FROM event f, tsgeometry g, eventsearchtext es, timeprimitive t "
             + "WHERE f.tsgeometry_id = g.id "
             + "AND f.eventsearchtext_id = es.id "
             + "AND f.when_id = t.id ";
@@ -76,18 +76,18 @@ public class EventSearchServiceHib implements EventSearchService {
      *      com.vividsolutions.jts.geom.Geometry)
      */
     @SuppressWarnings("unchecked")
-    public List<TsEvent> search(int maxResults, int firstResult, String textFilter, TimeRange timeRange,
+    public List<Event> search(int maxResults, int firstResult, String textFilter, TimeRange timeRange,
             Geometry boundingBox) {
         LapTimer timer = new LapTimer(this.logger);
         SQLQuery sqlQuery = createQuery(SQL_PREFIX_SEARCH, textFilter, timeRange, boundingBox);
                
-        List<TsEvent> tsEvents = sqlQuery
-            .addEntity(TsEvent.class)
+        List<Event> events = sqlQuery
+            .addEntity(Event.class)
             .setMaxResults(maxResults)
             .setFirstResult(firstResult)
             .list(); 
         timer.timeIt("search").logDebugTime();
-        return tsEvents;
+        return events;
     }
 
     private SQLQuery createQuery(String prefix, String textFilter, TimeRange timeRange, Geometry boundingBox) {
