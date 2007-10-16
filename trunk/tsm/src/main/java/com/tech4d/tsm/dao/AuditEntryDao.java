@@ -1,11 +1,10 @@
 package com.tech4d.tsm.dao;
 
-import java.util.List;
-
-import org.hibernate.SessionFactory;
-
 import com.tech4d.tsm.model.Auditable;
 import com.tech4d.tsm.model.audit.AuditEntry;
+import org.hibernate.SessionFactory;
+
+import java.util.List;
 
 /**
  * Dao for querying audit records
@@ -16,5 +15,7 @@ public interface AuditEntryDao {
     public void setSessionFactory(SessionFactory sessionFactory);
 
     public List<AuditEntry> getAuditEntries(Auditable auditable, int firstResult, int maxResults);
+
+    public Long getAuditEntriesCount(Auditable auditable);
 
 }

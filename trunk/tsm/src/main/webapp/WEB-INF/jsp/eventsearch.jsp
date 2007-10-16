@@ -331,7 +331,7 @@ request.setAttribute("basePath", basePath);
 					    <c:if test="${eventSearch.currentRecord > 0}"> 
 						    	<a class="nextPrev" href="#" onclick="nextPage('previous')">Previous</a>
 					    </c:if>
-					    <c:if test="${totalResults > fn:length(events)}"> 
+					    <c:if test="${totalResults > eventSearch.currentRecord + fn:length(events)}"> 
 						    	<a class="nextPrev" href="#" onclick="nextPage('next')">Next</a>
 					    </c:if>
 				    </div>
