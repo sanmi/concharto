@@ -3,14 +3,24 @@
         "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
 <beans>
 
-	<!-- maps request URLs to Controller names -->
-	<bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping">
+	<!-- map controllers to URLs -->
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="interceptors">
 			<list>
 				<!-- so we can traverse hibernate lazy loaded collections, etc -->
 				<ref bean="openSessionInViewInterceptor" /> 
 			</list>
 		</property>
+		<property name="mappings">
+			<props>
+          <prop key="login.htm">loginController</prop>
+          <prop key="logout.htm">switchBoardController</prop>
+          <prop key="eventsearch.htm">eventSearchController</prop>
+          <prop key="edit/event.htm">eventController</prop>
+          <prop key="edit/changehistory.htm">changeHistoryController</prop>
+          <prop key="admin/listEvents.htm">switchBoardController</prop>
+      </props>
+		</property>		
 	</bean>
 
 	<!-- this bean with the well known name generates view names for us -->
@@ -27,31 +37,38 @@
 	<bean id="baseEventController" abstract="true"></bean>
 
 	<!-- Controller names are not important when using the above HandlerMapping implementation -->
-	<bean class="com.tech4d.tsm.web.SwitchBoardController" parent="baseEventController" >
+	<bean id="switchBoardController" class="com.tech4d.tsm.web.SwitchBoardController" parent="baseEventController" >
 		<property name="eventDao" ref="eventDao" />
 	</bean>
 
+	<bean id="loginController" class="com.tech4d.tsm.web.login.LoginController" parent="baseEventController">
+		<property name="commandName" value="login"/>
+		<property name="commandClass" value="com.tech4d.tsm.web.login.LoginForm"/>
+		<property name="formView" value="login" />
+		<property name="successView" value="login" />
+	</bean>
+	
 	<bean id="eventFormValidator" class="com.tech4d.tsm.web.util.EventFormValidator"/>
-	<bean class="com.tech4d.tsm.web.EventController" parent="baseEventController">
+	<bean id="eventController" class="com.tech4d.tsm.web.EventController" parent="baseEventController">
 		<property name="bindOnNewForm" value="true" />
 		<property name="commandName" value="event" />
 		<property name="commandClass" value="com.tech4d.tsm.web.EventForm" />
-		<property name="formView" value="event" />
-		<property name="successView" value="redirect:eventsearch.htm" />
+		<property name="formView" value="edit/event" />
+		<property name="successView" value="redirect:/eventsearch.htm" />
 		<property name="eventDao" ref="eventDao" />
 		<property name="validator" ref="eventFormValidator"/>
 	</bean>
 
-	<bean class="com.tech4d.tsm.web.ChangeHistoryController" parent="baseEventController">
+	<bean id="changeHistoryController" class="com.tech4d.tsm.web.ChangeHistoryController" parent="baseEventController">
 		<property name="commandName" value="changeHistory"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.ChangeHistoryForm"/>
-		<property name="formView" value="changehistory" />
-		<property name="successView" value="changehistory" />
+		<property name="formView" value="edit/changehistory" />
+		<property name="successView" value="edit/changehistory" />
 		<property name="auditEntryDao" ref="auditEntryDao" />
 	</bean>
 
 	<bean id="eventSearchFormValidator" class="com.tech4d.tsm.web.util.EventSearchFormValidator"/>
-	<bean class="com.tech4d.tsm.web.EventSearchController" parent="baseEventController">
+	<bean id="eventSearchController" class="com.tech4d.tsm.web.EventSearchController" parent="baseEventController">
 		<property name="commandName" value="eventSearch" />
 		<property name="commandClass" value="com.tech4d.tsm.web.EventSearchForm" />
 		<property name="formView" value="eventsearch" />

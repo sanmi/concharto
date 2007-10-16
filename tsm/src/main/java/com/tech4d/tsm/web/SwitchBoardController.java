@@ -23,7 +23,9 @@ import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.WebUtils;
 
+import com.tech4d.tsm.auth.AuthConstants;
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.dao.EventDaoHib;
 
@@ -64,8 +66,10 @@ public class SwitchBoardController extends MultiActionController {
         return new ModelAndView(new RedirectView("/switchboard/listEvents.htm", true));
     }
 
-    public ModelAndView page0(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return new ModelAndView();
+    public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        //remove the token from the session
+        WebUtils.setSessionAttribute(request, AuthConstants.AUTH_USERNAME, null);
+        return new ModelAndView("redirect:/");
     }
     
     public ModelAndView page1(HttpServletRequest request, HttpServletResponse response) throws Exception {

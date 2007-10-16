@@ -462,18 +462,18 @@ request.setAttribute("basePath", basePath);
    		    </div>
 					<div class="inputcell">
 					 <input type="submit" name="Save" value="Save This Event" />
-					 <input type="button" name="Cancel" value="Cancel" onclick="javascript:document.location='eventsearch.htm';"/>
+					 <input type="button" name="Cancel" value="Cancel" onclick="javascript:document.location='${basePath}eventsearch.htm';"/>
 					</div>
 	      </form:form>
 			</td>		   
 			<td>
 				<div id="map">
-				     Map coming...
-				     <noscript>
-				       <p>
-				         JavaScript must be enabled to get the map.
-				       </p>
-				     </noscript>
+					Map coming...
+					<noscript>
+					  <p>
+					    JavaScript must be enabled to get the map.
+					  </p>
+					</noscript>
 				</div>
 			</td>
 	 	</tr></table>
