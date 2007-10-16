@@ -19,6 +19,7 @@
           <prop key="edit/event.htm">eventController</prop>
           <prop key="edit/changehistory.htm">changeHistoryController</prop>
           <prop key="admin/listEvents.htm">switchBoardController</prop>
+          <prop key="admin/signup.htm">signupController</prop>
       </props>
 		</property>		
 	</bean>
@@ -41,11 +42,27 @@
 		<property name="eventDao" ref="eventDao" />
 	</bean>
 
+	<bean id="loginFormValidator" class="com.tech4d.tsm.web.login.LoginFormValidator">
+		<property name="userDao" ref="userDao"/>
+	</bean>
 	<bean id="loginController" class="com.tech4d.tsm.web.login.LoginController" parent="baseEventController">
 		<property name="commandName" value="login"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.login.LoginForm"/>
 		<property name="formView" value="login" />
-		<property name="successView" value="login" />
+		<property name="successView" value="redirect:/" />
+		<property name="validator" ref="loginFormValidator"/>
+	</bean>
+	
+	<bean id="signupFormValidator" class="com.tech4d.tsm.web.signup.SignupFormValidator">
+		<property name="userDao" ref="userDao"/>
+	</bean>
+	<bean id="signupController" class="com.tech4d.tsm.web.signup.SignupController" parent="baseEventController">
+		<property name="commandName" value="signup"/>
+		<property name="commandClass" value="com.tech4d.tsm.web.signup.SignupForm"/>
+		<property name="formView" value="admin/signup" />
+		<property name="successView" value="redirect:/" />
+		<property name="userDao" ref="userDao"/>
+		<property name="validator" ref="signupFormValidator"/>
 	</bean>
 	
 	<bean id="eventFormValidator" class="com.tech4d.tsm.web.util.EventFormValidator"/>

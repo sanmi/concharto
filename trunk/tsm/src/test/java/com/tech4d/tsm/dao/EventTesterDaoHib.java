@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tech4d.tsm.model.EventSearchText;
 import com.tech4d.tsm.model.Event;
+import com.tech4d.tsm.model.Role;
 
 @Transactional
 public class EventTesterDaoHib implements EventTesterDao {
@@ -41,9 +42,11 @@ public class EventTesterDaoHib implements EventTesterDao {
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from Event_Usertag").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from Usertag").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from Event_User").executeUpdate();
+        this.sessionFactory.getCurrentSession().createSQLQuery("delete from User_Role").executeUpdate();
+        this.sessionFactory.getCurrentSession().createSQLQuery("delete from Role").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from User").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from Event").executeUpdate();
-//        this.sessionFactory.getCurrentSession().createSQLQuery("delete from EventSearchText").executeUpdate();
+        this.sessionFactory.getCurrentSession().createSQLQuery("delete from EventSearchText").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from TimePrimitive").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from AuditFieldChange").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from AuditEntry").executeUpdate();
@@ -87,4 +90,11 @@ public class EventTesterDaoHib implements EventTesterDao {
         session.close();    
     }
 
+    /**
+     * Just for testing.  Normally, roles are loaded by hand
+     * @param role object to save
+     */
+    public void save(Role role) {
+        this.sessionFactory.getCurrentSession().save(role);
+    }
 }

@@ -16,6 +16,6 @@ public interface StyleDao {
 
     public abstract List<Style> findAll();
 
-    public abstract Style findById(Long id);
+    public abstract Style find(Long id);
 
 }

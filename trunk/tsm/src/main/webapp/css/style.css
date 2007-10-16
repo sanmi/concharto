@@ -208,6 +208,9 @@ a.nexPrev:link, a.nextPrev:visited {
 }
 
 .loginForm {
-    margin:10px 0 10px 40px;
+    margin:40px 0 60px 60px;
     padding 50px;
+}
+.loginForm .errorLabel {
+	color:red;
 }

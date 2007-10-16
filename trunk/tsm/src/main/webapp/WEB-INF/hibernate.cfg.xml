@@ -20,6 +20,7 @@
         <mapping class="com.tech4d.tsm.model.geometry.Style"/>
         <mapping class="com.tech4d.tsm.model.geometry.StyleMap"/>
         <mapping class="com.tech4d.tsm.model.User"/>
+        <mapping class="com.tech4d.tsm.model.Role"/>
         <mapping class="com.tech4d.tsm.model.UserTag"/>
         <mapping class="com.tech4d.tsm.model.ChangeGroup"/>
         <mapping class="com.tech4d.tsm.model.ChangeItem"/>
