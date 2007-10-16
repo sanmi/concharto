@@ -36,7 +36,7 @@ public class IntegrationTestStyleDao {
     public void save() {
         //save a second style
         Style original = StyleUtil.getStyle();
-        Style style = styleDao.findById(StyleUtil.getStyle().getId());
+        Style style = styleDao.find(StyleUtil.getStyle().getId());
         assertEquals(original.getId(), style.getId());
         assertEquals(original.getLineStyle().getWidth(), style.getLineStyle().getWidth());
         assertEquals(original.getBaloonStyle().getBgColor(), style.getBaloonStyle().getBgColor());
@@ -45,7 +45,7 @@ public class IntegrationTestStyleDao {
     @Test
     public void delete() {
         styleDao.delete(StyleUtil.getStyle());
-        Style style = styleDao.findById(StyleUtil.getStyle().getId());
+        Style style = styleDao.find(StyleUtil.getStyle().getId());
         assertNull(style);
     }
 
@@ -53,7 +53,7 @@ public class IntegrationTestStyleDao {
     public void deleteById() {
         //test delete by
         styleDao.delete(StyleUtil.getStyle().getId());
-        Style style = styleDao.findById(StyleUtil.getStyle().getId());
+        Style style = styleDao.find(StyleUtil.getStyle().getId());
         assertNull(style);
     }
 

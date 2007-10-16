@@ -7,12 +7,12 @@ String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
 
-<tsm:page title="Login">
+<tsm:page title="Signup">
 	<jsp:body>
-	  <form:form id="loginForm" name="login" commandName="login"> 
+		<form:form id="signupForm" name="signup" commandName="signup"> 
 	  	<div class="loginForm">
-				<h2>Welcome to the Time Space Map Pilot <br/>Please Login</h2>
-				<form:errors path="*" cssClass="errorLabel" element="div"/>
+	  		<h2>Sign Up</h2>
+	  		<form:errors path="*" cssClass="errorLabel" element="div"/>
 		  	<table>
 		  		<tr>
 		  			<td>Username</td>
@@ -27,16 +27,34 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		  			</td>
 		  		</tr>
 		  		<tr>
+		  			<td>Password (confirm)</td>
+		  			<td>
+		  				<form:password path="passwordConfirm"/>
+		  			</td>
+		  		</tr>
+		  		<tr>
+		  			<td>Email address</td>
+		  			<td>
+		  				<form:input path="email"/>
+		  			</td>
+		  		</tr>
+		  		<tr>
+		  			<td colspan="2">
+		  				<form:checkbox path="agreeToTermsOfService"/>
+  						I agree with the Time Space Map <a href="#">Terms of Service</a>
+		  			</td>
+		  		</tr>
+		  		<tr>
 		  			<td colspan="2">
 		  				<form:checkbox path="rememberMe"/>
   						Remember me next time
 		  			</td>
 		  		</tr>
 		  	</table>
-			  <input type="submit" value="Login"/>
+			  <input type="submit" value="Signup"/>
 		  </div>
 	  </form:form>
-	  
+		
 	  
 	</jsp:body>
 </tsm:page>

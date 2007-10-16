@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.ForeignKey;
@@ -20,6 +21,8 @@ public class User extends BaseAuditableEntity {
     private List<EventSummary> eventSummaries;
 
     private List<UserTag> userTags;
+    
+    private List<Role> roles;
 
     public User(String username, String password, String email) {
         super();
@@ -74,6 +77,16 @@ public class User extends BaseAuditableEntity {
 
     public void setUserTags(List<UserTag> userTags) {
         this.userTags = userTags;
+    }
+
+    @ManyToMany(cascade={CascadeType.ALL})
+    @ForeignKey(name="FK_USER_ROLE", inverseName = "FK_ROLE_USER")
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
 }

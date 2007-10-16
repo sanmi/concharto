@@ -6,6 +6,7 @@ import java.util.Set;
 import org.hibernate.SessionFactory;
 
 import com.tech4d.tsm.model.Event;
+import com.tech4d.tsm.model.Role;
 
 public interface EventTesterDao {
 
@@ -28,5 +29,7 @@ public interface EventTesterDao {
     public List<Event> findAll();
 
     public void save(Set<Event> events);
+    
+    public void save(Role role);
 
 }

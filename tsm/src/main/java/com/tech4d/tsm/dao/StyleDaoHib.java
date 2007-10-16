@@ -78,7 +78,7 @@ public class StyleDaoHib implements StyleDao {
      * 
      * @see com.tech4d.tsm.lab.StyleDao#findById(java.lang.Long)
      */
-    public Style findById(Long id) {
+    public Style find(Long id) {
         return (Style) this.sessionFactory.getCurrentSession().get(
                 Style.class, id);
     }

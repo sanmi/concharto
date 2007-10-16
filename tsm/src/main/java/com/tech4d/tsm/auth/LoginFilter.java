@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Authorization filter.  We don't want to rely on the servlet container to do this because we
@@ -23,20 +21,17 @@ import org.apache.commons.logging.LogFactory;
  *
  */
 public class LoginFilter implements Filter{
-    private static final Log log = LogFactory.getLog(LoginFilter.class);
-
+    private static final String[] PATTERN_REQUIRES_AUTHENTICATION = {"edit","admin"};
     
     public void init(FilterConfig filterConfig) throws ServletException {
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        System.out.println("---------------------------- filter!!");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         
         if (requiresAuthentication(httpRequest)) {
             if (!isAuthenticated(httpRequest)) {
-                System.out.println("----------- redirecting!! ------");
                 httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getContextPath() + "/login.htm"));                
             }
         }
@@ -56,8 +51,11 @@ public class LoginFilter implements Filter{
     }
 
     private boolean requiresAuthentication(HttpServletRequest httpRequest) {
-        if (StringUtils.contains(httpRequest.getRequestURI(), "edit")) {
-            return true;
+        for (String pattern : PATTERN_REQUIRES_AUTHENTICATION) {
+            if (StringUtils.contains(httpRequest.getRequestURI(), pattern)) {
+                return true;
+            }
+           
         }
         return false;
     }
