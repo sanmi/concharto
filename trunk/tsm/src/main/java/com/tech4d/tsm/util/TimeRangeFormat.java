@@ -1,6 +1,7 @@
 package com.tech4d.tsm.util;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -9,7 +10,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang.time.DateUtils;
 
 import com.tech4d.tsm.model.time.SimpleTimeRange;
 import com.tech4d.tsm.model.time.TimeRange;
@@ -233,11 +233,11 @@ public class TimeRangeFormat  {
      * 
      * @param text text to parse
      * @return TimeRange a time range
+     * @throws ParseException when text can't be parsed
      */
-    private static TimeRange parseSingleDate(String text) {
+    private static TimeRange parseSingleDate(String text) throws ParseException {
 
         text = StringUtils.trimToEmpty(text);
-        try {
             
             Date begin = parseDate(text);
             
@@ -250,9 +250,6 @@ public class TimeRangeFormat  {
             
             return new TimeRange(begin, end);
             
-        } catch (ParseException e) {
-            throw new IllegalArgumentException(e);
-        }
     }
 
     /**
@@ -297,7 +294,9 @@ public class TimeRangeFormat  {
         text = StringUtils.replace(text, "   ", " ");
         text = StringUtils.replace(text, "  ", " ");
         text = normalizeCommas(text);
-        return DateUtils.parseDate(text, patterns);
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.setLenient(false);
+        return DateUtils.parseDate(sdf, text, patterns);
     }
 
     /**
