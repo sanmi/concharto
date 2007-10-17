@@ -1,9 +1,8 @@
-package com.tech4d.tsm.web.util;
+package com.tech4d.tsm.web.eventsearch;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.tech4d.tsm.web.EventSearchForm;
 
 public class EventSearchFormValidator implements Validator{
 

@@ -1,4 +1,4 @@
-package com.tech4d.tsm.web;
+package com.tech4d.tsm.web.edit;
 
 import com.tech4d.tsm.model.time.TimeRange;
 import com.vividsolutions.jts.geom.Geometry;

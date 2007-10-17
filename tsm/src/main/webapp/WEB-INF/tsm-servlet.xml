@@ -65,29 +65,29 @@
 		<property name="validator" ref="signupFormValidator"/>
 	</bean>
 	
-	<bean id="eventFormValidator" class="com.tech4d.tsm.web.util.EventFormValidator"/>
-	<bean id="eventController" class="com.tech4d.tsm.web.EventController" parent="baseEventController">
+	<bean id="eventFormValidator" class="com.tech4d.tsm.web.edit.EventFormValidator"/>
+	<bean id="eventController" class="com.tech4d.tsm.web.edit.EventController" parent="baseEventController">
 		<property name="bindOnNewForm" value="true" />
 		<property name="commandName" value="event" />
-		<property name="commandClass" value="com.tech4d.tsm.web.EventForm" />
+		<property name="commandClass" value="com.tech4d.tsm.web.edit.EventForm" />
 		<property name="formView" value="edit/event" />
 		<property name="successView" value="redirect:/eventsearch.htm" />
 		<property name="eventDao" ref="eventDao" />
 		<property name="validator" ref="eventFormValidator"/>
 	</bean>
 
-	<bean id="changeHistoryController" class="com.tech4d.tsm.web.ChangeHistoryController" parent="baseEventController">
+	<bean id="changeHistoryController" class="com.tech4d.tsm.web.changehistory.ChangeHistoryController" parent="baseEventController">
 		<property name="commandName" value="changeHistory"/>
-		<property name="commandClass" value="com.tech4d.tsm.web.ChangeHistoryForm"/>
+		<property name="commandClass" value="com.tech4d.tsm.web.changehistory.ChangeHistoryForm"/>
 		<property name="formView" value="edit/changehistory" />
 		<property name="successView" value="edit/changehistory" />
 		<property name="auditEntryDao" ref="auditEntryDao" />
 	</bean>
 
-	<bean id="eventSearchFormValidator" class="com.tech4d.tsm.web.util.EventSearchFormValidator"/>
-	<bean id="eventSearchController" class="com.tech4d.tsm.web.EventSearchController" parent="baseEventController">
+	<bean id="eventSearchFormValidator" class="com.tech4d.tsm.web.eventsearch.EventSearchFormValidator"/>
+	<bean id="eventSearchController" class="com.tech4d.tsm.web.eventsearch.EventSearchController" parent="baseEventController">
 		<property name="commandName" value="eventSearch" />
-		<property name="commandClass" value="com.tech4d.tsm.web.EventSearchForm" />
+		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
 		<property name="formView" value="eventsearch" />
 		<property name="successView" value="eventsearch" />
 		<property name="eventSearchService" ref="eventSearchService" />

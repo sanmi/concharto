@@ -1,10 +1,9 @@
-package com.tech4d.tsm.web.util;
+package com.tech4d.tsm.web.edit;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import com.tech4d.tsm.web.EventForm;
 
 public class EventFormValidator implements Validator {
 

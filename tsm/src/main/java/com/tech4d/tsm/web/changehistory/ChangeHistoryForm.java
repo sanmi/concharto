@@ -1,4 +1,6 @@
-package com.tech4d.tsm.web;
+package com.tech4d.tsm.web.changehistory;
+
+import com.tech4d.tsm.web.util.PaginatingForm;
 
 public class ChangeHistoryForm implements PaginatingForm {
     private String pageCommand;

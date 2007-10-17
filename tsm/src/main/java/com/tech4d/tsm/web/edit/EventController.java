@@ -1,9 +1,11 @@
-package com.tech4d.tsm.web;
+package com.tech4d.tsm.web.edit;
 
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.GeometryType;
+import com.tech4d.tsm.web.eventsearch.EventSearchController;
+import com.tech4d.tsm.web.eventsearch.EventSearchForm;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
 import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
 import com.vividsolutions.jts.geom.Geometry;
@@ -49,7 +51,7 @@ public class EventController extends SimpleFormController {
             //TODO don't use session if possible!!!
             //save it in the session for later modification
             WebUtils.setSessionAttribute(request, SESSION_EVENT, event);
-            eventForm = com.tech4d.tsm.web.EventFormFactory.getEventForm(event);
+            eventForm = com.tech4d.tsm.web.edit.EventFormFactory.getEventForm(event);
             if (eventSearchForm != null) {
                 eventForm.setSearchResults(eventSearchForm.getSearchResults());
                 eventForm.setMapCenter(eventSearchForm.getMapCenter());
@@ -75,9 +77,9 @@ public class EventController extends SimpleFormController {
         if (eventForm.getId() != null) {
             //get the event from the session
             event = (Event) WebUtils.getSessionAttribute(request, SESSION_EVENT);
-            event = com.tech4d.tsm.web.EventFormFactory.updateEvent(event, eventForm);
+            event = com.tech4d.tsm.web.edit.EventFormFactory.updateEvent(event, eventForm);
         } else {
-            event = com.tech4d.tsm.web.EventFormFactory.createEvent(eventForm);
+            event = com.tech4d.tsm.web.edit.EventFormFactory.createEvent(eventForm);
         }
         this.eventDao.saveOrUpdate(event);
         return new ModelAndView(getSuccessView());
