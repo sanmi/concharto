@@ -1,4 +1,4 @@
-package com.tech4d.tsm.model.geometry;
+package com.tech4d.tsm.model.kml;
 
 import java.util.Map;
 
@@ -9,16 +9,16 @@ import org.hibernate.annotations.ForeignKey;
 
 @Entity
 @DiscriminatorValue("map")
-public class StyleMap extends StyleSelector{
-    private Map<String, StyleUrl> map;
+public class StyleMap extends StyleSelector {
+    private Map<String, com.tech4d.tsm.model.kml.StyleUrl> map;
 
     @org.hibernate.annotations.CollectionOfElements
     @ForeignKey(name="FK_STYLEMAP")
-    public Map<String, StyleUrl> getMap() {
+    public Map<String, com.tech4d.tsm.model.kml.StyleUrl> getMap() {
         return map;
     }
 
-    public void setMap(Map<String, StyleUrl> map) {
+    public void setMap(Map<String, com.tech4d.tsm.model.kml.StyleUrl> map) {
         this.map = map;
     }
     

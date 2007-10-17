@@ -1,4 +1,4 @@
-package com.tech4d.tsm.model.geometry;
+package com.tech4d.tsm.model.kml;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -11,13 +11,13 @@ public class IconStyle {
 
     private Icon icon;
 
-    private Vec2 hotSpot;
+    private com.tech4d.tsm.model.kml.Vec2 hotSpot;
 
     public IconStyle() {
         super();
     }
 
-    public IconStyle(Float scale, Float heading, Icon icon, Vec2 hotSpot) {
+    public IconStyle(Float scale, Float heading, Icon icon, com.tech4d.tsm.model.kml.Vec2 hotSpot) {
         super();
         this.scale = scale;
         this.heading = heading;
@@ -50,11 +50,11 @@ public class IconStyle {
         this.icon = icon;
     }
 
-    public Vec2 getHotSpot() {
+    public com.tech4d.tsm.model.kml.Vec2 getHotSpot() {
         return hotSpot;
     }
 
-    public void setHotSpot(Vec2 hotSpot) {
+    public void setHotSpot(com.tech4d.tsm.model.kml.Vec2 hotSpot) {
         this.hotSpot = hotSpot;
     }
 

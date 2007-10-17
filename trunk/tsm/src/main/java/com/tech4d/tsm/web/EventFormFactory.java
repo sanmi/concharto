@@ -19,7 +19,7 @@ public class EventFormFactory {
         event.setId(eventForm.getId());
         event.setDescription(eventForm.getDescription());
         event.setSummary(eventForm.getSummary());
-        event.setSourceUrl(eventForm.getSource());
+        event.setSource(eventForm.getSource());
         event.setWhere(eventForm.getWhere());
         event.setTsGeometry(new TsGeometry(eventForm.getGeometry()));
         event.setUserTagsAsString(eventForm.getTags());
@@ -34,7 +34,7 @@ public class EventFormFactory {
         eventForm.setId(event.getId());
         eventForm.setDescription(event.getDescription());
         eventForm.setSummary(event.getSummary());
-        eventForm.setSource(event.getSourceUrl());
+        eventForm.setSource(event.getSource());
         eventForm.setWhere(event.getWhere());
         eventForm.setWhen(event.getWhen());
         eventForm.setZoomLevel(event.getZoomLevel());

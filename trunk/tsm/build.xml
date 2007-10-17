@@ -201,20 +201,34 @@
 	  <attribute name="include"/> 
 	  <attribute name="exclude"/> 
 	  <sequential>
-			<junit>
+			<junit
+			>
 				<!-- Default Formatter - brain-dead text file with almost 
 				no information, only prints failures and errors -->
 				<formatter type="brief" usefile="true"
 					unless="junit.formatter.plain" />
 				<classpath refid="test-classpath" />
 	
-				<batchtest todir="${target.test.reports.dir}" fork="no">
+				<batchtest todir="${target.test.reports.dir}" fork="no" 
+             failureproperty="junit.failure.property"
+             errorproperty="junit.error.property">
 					<fileset dir="${target.test.classes.dir}">
 						<include name="@{include}" />
 						<exclude name="@{exclude}" />
 					</fileset>
 				</batchtest>
 			</junit>
+      <condition property="test.build.error">
+        <or>
+          <isset property="junit.failure.property"/>
+          <isset property="junit.error.property"/>
+        </or>
+      </condition>
+      <fail if="test.build.error">-
+        ***********************************************************
+        **** One or more tests failed! Check the output ...    ****
+        ***********************************************************
+      </fail>
 	  </sequential>
 	</macrodef>
 	
@@ -222,7 +236,7 @@
 		<do-test include="**/IntegrationTest*.class" exclude="**/*$$*"/>
 	</target>
 	
-	<target name="unit-test" depends="create-db-dev, compile-tests">
+	<target name="unit-test" depends="compile-tests">
 		<do-test include="**/Test*.class" exclude="**/lab/*"/>
 	</target>
 

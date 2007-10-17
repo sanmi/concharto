@@ -2,7 +2,7 @@ package com.tech4d.tsm.web;
 
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.model.Event;
-import com.tech4d.tsm.model.geometry.TimeRange;
+import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.GeometryType;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
 import com.tech4d.tsm.web.util.TimeRangePropertyEditor;

@@ -1,26 +1,16 @@
 package com.tech4d.tsm.model;
 
+import com.tech4d.tsm.model.geometry.TsGeometry;
+import com.tech4d.tsm.model.time.TimeRange;
+
 import static org.apache.commons.lang.StringUtils.join;
 import static org.apache.commons.lang.StringUtils.split;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
-
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.ForeignKey;
 
-import com.tech4d.tsm.model.geometry.StyleSelector;
-import com.tech4d.tsm.model.geometry.TimeRange;
-import com.tech4d.tsm.model.geometry.TsGeometry;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2007, Time Space Map
@@ -34,7 +24,7 @@ public class Event extends BaseAuditableEntity {
     public final static int SZ_DESCRIPTION = 2048;
     public static final int SZ_SNIPPET = 1024;
     public static final int SZ_SUMMARY = 512;
-    public static final int SZ_SOURCEURL = 1024;
+    public static final int SZ_SOURCE = 1024;
     public static final int SZ_WHERE = 512;
     public static final int SZ_USERTAGS = 2048;  //this is used by validators and EventSearchText
     public static final int MAP_TYPE_MAP = 0;
@@ -45,13 +35,11 @@ public class Event extends BaseAuditableEntity {
     private String snippet;
     private String description;
     private TimeRange when;
-    private StyleSelector styleSelector;
+    private com.tech4d.tsm.model.kml.StyleSelector styleSelector;
     private TsGeometry tsGeometry;
     private List<UserTag> userTags;
     private Votes votes;
-    private List<ChangeGroup> history;
-    private List<User> contributors;
-    private String sourceUrl;
+    private String source;
     private Catalog catalog;
     public enum Catalog {ENCYCLOPEDIA, ANECDOTAL, PERSONAL, CURRENT_EVENT}
     private boolean visible;
@@ -112,11 +100,11 @@ public class Event extends BaseAuditableEntity {
 
     @ManyToOne(cascade = { CascadeType.REFRESH, CascadeType.MERGE })
     @ForeignKey(name="FK_EVENT_STYLE")
-    public StyleSelector getStyleSelector() {
+    public com.tech4d.tsm.model.kml.StyleSelector getStyleSelector() {
         return styleSelector;
     }
 
-    public void setStyleSelector(StyleSelector styleSelector) {
+    public void setStyleSelector(com.tech4d.tsm.model.kml.StyleSelector styleSelector) {
         this.styleSelector = styleSelector;
     }
 
@@ -130,13 +118,13 @@ public class Event extends BaseAuditableEntity {
     }
     
     //TODO change this to source
-    @Column(length=SZ_SOURCEURL)
-    public String getSourceUrl() {
-        return sourceUrl;
+    @Column(length= SZ_SOURCE)
+    public String getSource() {
+        return source;
     }
 
-    public void setSourceUrl(String sourceUrl) {
-        this.sourceUrl = sourceUrl;
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public Catalog getCatalog() {
@@ -145,16 +133,6 @@ public class Event extends BaseAuditableEntity {
 
     public void setCatalog(Catalog catalog) {
         this.catalog = catalog;
-    }
-
-    @OneToMany(cascade={CascadeType.ALL})
-    @ForeignKey(name="FK_EVENT_HISTORY", inverseName = "FK_HISTORY_EVENT")
-    public List<ChangeGroup> getHistory() {
-        return history;
-    }
-
-    public void setHistory(List<ChangeGroup> history) {
-        this.history = history;
     }
 
     //TODO this should probably be one to many!  many to many would be slow to fetch.
@@ -174,16 +152,6 @@ public class Event extends BaseAuditableEntity {
 
     public void setVotes(Votes votes) {
         this.votes = votes;
-    }
-
-    @ManyToMany(cascade={CascadeType.ALL})
-    @ForeignKey(name="FK_EVENT_CONTRIB", inverseName = "FK_CONTRIB_EVENT")
-    public List<User> getContributors() {
-        return contributors;
-    }
-
-    public void setContributors(List<User> participants) {
-        this.contributors = participants;
     }
 
     public Flag getFlag() {

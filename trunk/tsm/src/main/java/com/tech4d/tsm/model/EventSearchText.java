@@ -27,7 +27,7 @@ public class EventSearchText extends BaseEntity {
         this.setSummary(event.getSummary());
         this.setDescription(event.getDescription());
         this.setUserTags(event.getUserTagsAsString());
-        this.setSource(event.getSourceUrl());
+        this.setSource(event.getSource());
         this.setWhere(event.getWhere());
     }
     
@@ -42,7 +42,7 @@ public class EventSearchText extends BaseEntity {
     public void setDescription(String description) {
         this.description = description;
     }
-    @Column(length= Event.SZ_SOURCEURL)
+    @Column(length= Event.SZ_SOURCE)
     public String getSource() {
         return source;
     }

@@ -5,7 +5,7 @@ import java.util.List;
 import org.hibernate.SessionFactory;
 
 import com.tech4d.tsm.model.Event;
-import com.tech4d.tsm.model.geometry.TimeRange;
+import com.tech4d.tsm.model.time.TimeRange;
 import com.vividsolutions.jts.geom.Geometry;
 
 public interface EventSearchService {

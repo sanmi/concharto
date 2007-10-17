@@ -10,8 +10,8 @@ import java.util.GregorianCalendar;
 
 import org.junit.Test;
 
-import com.tech4d.tsm.model.geometry.SimpleTimeRange;
-import com.tech4d.tsm.model.geometry.TimeRange;
+import com.tech4d.tsm.model.time.SimpleTimeRange;
+import com.tech4d.tsm.model.time.TimeRange;
 
 public class TestTimeRangeFormat {
     //private TimeRangePropertyEditor timeRangePropertyEditor = new TimeRangePropertyEditor();   
@@ -116,7 +116,7 @@ public class TestTimeRangeFormat {
 
     private Object transformToText(int m1, int d1, int y1, int hh1, int mm1, int ss1, 
             int m2, int d2, int y2, int hh2, int mm2, int ss2) {
-        SimpleTimeRange timeRange = makeDayRange(m1, d1, y1, hh1, mm1, ss1, m2, d2, y2, hh2, mm2, ss2);
+        com.tech4d.tsm.model.time.SimpleTimeRange timeRange = makeDayRange(m1, d1, y1, hh1, mm1, ss1, m2, d2, y2, hh2, mm2, ss2);
         return TimeRangeFormat.format(timeRange);
     }
 
@@ -128,7 +128,7 @@ public class TestTimeRangeFormat {
         } 
     }
 
-    private SimpleTimeRange parseTimeRange(String text) throws ParseException {
+    private com.tech4d.tsm.model.time.SimpleTimeRange parseTimeRange(String text) throws ParseException {
         return TimeRangeFormat.parse(text);
     }
 
@@ -145,7 +145,7 @@ public class TestTimeRangeFormat {
         return new TimeRange(makeDate(m1, d1, y1, hh1, mm1, ss1), makeDate(m2, d2, y2, hh2, mm2, ss2));
     }
 
-    private void assertEquivalent(SimpleTimeRange expected, SimpleTimeRange actual) {
+    private void assertEquivalent(SimpleTimeRange expected, com.tech4d.tsm.model.time.SimpleTimeRange actual) {
         assertEquals(expected.getBegin(), actual.getBegin());
         assertEquals(expected.getEnd(), actual.getEnd());
     }

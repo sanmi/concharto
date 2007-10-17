@@ -1,4 +1,4 @@
-package com.tech4d.tsm.model.geometry;
+package com.tech4d.tsm.model.kml;
 
 import javax.persistence.Embeddable;
 

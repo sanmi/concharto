@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 
-import com.tech4d.tsm.model.geometry.Style;
+import com.tech4d.tsm.model.kml.Style;
 import com.tech4d.tsm.util.ContextUtil;
 
 /**
@@ -36,7 +36,7 @@ public class IntegrationTestStyleDao {
     public void save() {
         //save a second style
         Style original = StyleUtil.getStyle();
-        Style style = styleDao.find(StyleUtil.getStyle().getId());
+        com.tech4d.tsm.model.kml.Style style = styleDao.find(StyleUtil.getStyle().getId());
         assertEquals(original.getId(), style.getId());
         assertEquals(original.getLineStyle().getWidth(), style.getLineStyle().getWidth());
         assertEquals(original.getBaloonStyle().getBgColor(), style.getBaloonStyle().getBgColor());
@@ -45,7 +45,7 @@ public class IntegrationTestStyleDao {
     @Test
     public void delete() {
         styleDao.delete(StyleUtil.getStyle());
-        Style style = styleDao.find(StyleUtil.getStyle().getId());
+        com.tech4d.tsm.model.kml.Style style = styleDao.find(StyleUtil.getStyle().getId());
         assertNull(style);
     }
 
@@ -60,8 +60,8 @@ public class IntegrationTestStyleDao {
     @Test
     public void findAll() {
         //save a second style
-        styleDao.save(new Style());
-        List<Style> styles = styleDao.findAll();
+        styleDao.save(new com.tech4d.tsm.model.kml.Style());
+        List<com.tech4d.tsm.model.kml.Style> styles = styleDao.findAll();
         assertEquals(2, styles.size());
     }
 

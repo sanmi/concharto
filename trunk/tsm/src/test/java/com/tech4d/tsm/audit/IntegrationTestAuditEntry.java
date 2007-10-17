@@ -30,7 +30,6 @@ public class IntegrationTestAuditEntry {
 
     private static final int MAX_RESULTS = 100;
     private static EventDao eventDao;
-    private static EventTesterDao eventTesterDao;
     private static AuditEntryDao auditEntryDao;
 
     private static EventUtil eventUtil;
@@ -51,17 +50,17 @@ public class IntegrationTestAuditEntry {
     public static void setUpClass() {
         ApplicationContext appCtx = ContextUtil.getCtx();
         eventDao = (EventDao) appCtx.getBean("eventDao");
-        eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
+        EventTesterDao eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
         auditEntryDao = (AuditEntryDao) appCtx.getBean("auditEntryDao");
         eventUtil = new EventUtil(eventTesterDao.getSessionFactory());
         eventTesterDao.deleteAll();
         StyleUtil.setupStyle();
     }
-    
+
     /**
-     * Tests Auditing
-     * @throws ParseException
-     * @throws InterruptedException
+     * 
+     * @throws ParseException e
+     * @throws InterruptedException e
      */
     @Test
     public void testSaveAndResave() throws ParseException, InterruptedException {
@@ -88,11 +87,10 @@ public class IntegrationTestAuditEntry {
         assertEquals(2, auditEntries.size());
         //go down the list (entries are ordered by newest first)
         int version = auditEntries.size() - 1;
-        for (int i=0; i<auditEntries.size(); i++) {
-            AuditEntry auditEntry = auditEntries.get(i);
-            assertEquals((long) new Long(version--), auditEntry.getVersion());
+        for (AuditEntry auditEntry : auditEntries) {
+            assertEquals((long) version--, auditEntry.getVersion());
         }
-        
+
         //now test retrieval by fake object
         Event empty = new Event();
         empty.setId(event.getId());
@@ -101,7 +99,7 @@ public class IntegrationTestAuditEntry {
         
         //now test getting the count
         Long count = auditEntryDao.getAuditEntriesCount(empty);
-        assertEquals(2L, count);
+        assertEquals(2L, (long) count);
 
         //now test a bad ID
         empty.setId(4344L);
@@ -110,7 +108,7 @@ public class IntegrationTestAuditEntry {
         
         //now test getting the count
         count = auditEntryDao.getAuditEntriesCount(empty);
-        assertEquals(0L, count);
+        assertEquals(0L, (long) count);
         
     }
   

@@ -16,7 +16,7 @@ public class EventFieldChangeFormatter implements AuditFieldChangeFormatter{
     public static final int DESCRIPTION = 1;
     public static final int WHERE = 2;
     public static final int USERTAGS = 3;
-    public static final int SOURCEURL = 4;
+    public static final int SOURCE = 4;
     public static final int TSGEOMETRY = 5;
     public static final int WHEN = 6;
 
@@ -80,7 +80,7 @@ public class EventFieldChangeFormatter implements AuditFieldChangeFormatter{
         makeChange(DESCRIPTION, current.getDescription(), previous.getDescription(), auditEntry);
         makeChange(WHERE,  current.getWhere(), previous.getWhere(), auditEntry);
         makeChange(USERTAGS, current.getUserTagsAsString(), previous.getUserTagsAsString(), auditEntry);
-        makeChange(SOURCEURL, current.getSourceUrl(), previous.getSourceUrl(), auditEntry);
+        makeChange(SOURCE, current.getSource(), previous.getSource(), auditEntry);
         makeChange(TSGEOMETRY,
                 current.getTsGeometry().getGeometry().toText(), 
                 previous.getTsGeometry().getGeometry().toText(), auditEntry);

@@ -3,7 +3,6 @@ package com.tech4d.tsm.web.util;
 import java.beans.PropertyEditorSupport;
 import java.text.ParseException;
 
-import com.tech4d.tsm.model.geometry.SimpleTimeRange;
 import com.tech4d.tsm.util.TimeRangeFormat;
 
 /**
@@ -12,10 +11,10 @@ import com.tech4d.tsm.util.TimeRangeFormat;
  */
 public class TimeRangePropertyEditor extends PropertyEditorSupport {
 
-    private SimpleTimeRange timeRange;
+    private com.tech4d.tsm.model.time.SimpleTimeRange timeRange;
     @Override
     public void setValue(Object value) {
-        this.timeRange = (SimpleTimeRange) value;
+        this.timeRange = (com.tech4d.tsm.model.time.SimpleTimeRange) value;
     }
 
     @Override

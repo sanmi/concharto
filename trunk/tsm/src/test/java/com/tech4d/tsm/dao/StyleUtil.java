@@ -4,28 +4,25 @@ import java.awt.Color;
 
 import org.springframework.context.ApplicationContext;
 
-import com.tech4d.tsm.model.geometry.BalloonStyle;
-import com.tech4d.tsm.model.geometry.Icon;
-import com.tech4d.tsm.model.geometry.IconStyle;
-import com.tech4d.tsm.model.geometry.LabelStyle;
-import com.tech4d.tsm.model.geometry.LineStyle;
-import com.tech4d.tsm.model.geometry.PolyStyle;
-import com.tech4d.tsm.model.geometry.Style;
-import com.tech4d.tsm.model.geometry.Vec2;
+import com.tech4d.tsm.model.kml.BalloonStyle;
+import com.tech4d.tsm.model.kml.Icon;
+import com.tech4d.tsm.model.kml.LineStyle;
+import com.tech4d.tsm.model.kml.Style;
+import com.tech4d.tsm.model.kml.Vec2;
 import com.tech4d.tsm.util.ContextUtil;
 
 public class StyleUtil {
 
     private static Style style = new Style();
     static {
-        style.setLabelStyle(new LabelStyle(2.3f));
+        style.setLabelStyle(new com.tech4d.tsm.model.kml.LabelStyle(2.3f));
         style.setLineStyle(new LineStyle(2));
-        style.setIconStyle(new IconStyle(.1f, .2f, new Icon(
-                "http://localhost:8080/icons", "icon=house"), new Vec2(.2,
-                Vec2.UNITS_FRACTION, .4, Vec2.UNITS_FRACTION)));
+        style.setIconStyle(new com.tech4d.tsm.model.kml.IconStyle(.1f, .2f, new Icon(
+                "http://localhost:8080/icons", "icon=house"), new com.tech4d.tsm.model.kml.Vec2(.2,
+                com.tech4d.tsm.model.kml.Vec2.UNITS_FRACTION, .4, Vec2.UNITS_FRACTION)));
         style.setBaloonStyle(new BalloonStyle(Color.BLACK, Color.WHITE,
-                "Some text", BalloonStyle.DISPLAY_MODE_DEFAULT));
-        style.setPolyStyle(new PolyStyle(true, true));
+                "Some text", com.tech4d.tsm.model.kml.BalloonStyle.DISPLAY_MODE_DEFAULT));
+        style.setPolyStyle(new com.tech4d.tsm.model.kml.PolyStyle(true, true));
     }
 
     public static Style getStyle() {

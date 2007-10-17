@@ -53,7 +53,7 @@ public class JSONFormat {
         jsonEvent.put(FIELD_WHERE, event.getWhere());
         jsonEvent.put(FIELD_WHEN, TimeRangeFormat.format(event.getWhen()));
         jsonEvent.put(FIELD_TAGS, event.getUserTagsAsString());
-        jsonEvent.put(FIELD_SOURCE, event.getSourceUrl());
+        jsonEvent.put(FIELD_SOURCE, event.getSource());
         Geometry geom = event.getTsGeometry().getGeometry();
         jsonEvent.put(FIELD_GEOMETRYTYPE, GeometryType.getGeometryType(geom));
         jsonEvent.put(FIELD_GEOMETRY, toJSON(geom));

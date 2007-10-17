@@ -25,7 +25,7 @@ import org.springframework.context.ApplicationContext;
 import com.tech4d.tsm.dao.EventTesterDao;
 import com.tech4d.tsm.dao.EventUtil;
 import com.tech4d.tsm.model.Event;
-import com.tech4d.tsm.model.geometry.TimeRange;
+import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.ContextUtil;
 import com.tech4d.tsm.util.LapTimer;
 import com.tech4d.tsm.util.TimeRangeFormat;
@@ -88,10 +88,10 @@ public class PopulateDummyData {
         Set<Event> events = new HashSet<Event>();
         LapTimer timer = new LapTimer(this); 
         for (int i = 0; i < NUM_EVENTS; i++) {
-            Event event = eventUtil.createEvent(null, null, getNextPoint(), getNextTimeRange(), null,
+            Event event = eventUtil.createEvent( null, getNextPoint(), getNextTimeRange(), null,
                     getNextText(SZ_SUMMARY), getNextText(SZ_DESCRIPTION));
             event.setSnippet(null);
-            event.setSourceUrl(getNextText(SZ_SOURCE));
+            event.setSource(getNextText(SZ_SOURCE));
             event.setWhere(getNextText(SZ_WHERE));
             event.setUserTagsAsString(getNextText(SZ_TAGS));
             events.add(event);

@@ -11,8 +11,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 
-import com.tech4d.tsm.model.geometry.SimpleTimeRange;
-import com.tech4d.tsm.model.geometry.TimeRange;
+import com.tech4d.tsm.model.time.SimpleTimeRange;
+import com.tech4d.tsm.model.time.TimeRange;
 
 /**
  * Converts string to TimeRange and vica versa. Supports many human readable
