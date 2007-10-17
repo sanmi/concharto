@@ -1,4 +1,4 @@
-package com.tech4d.tsm.model.geometry;
+package com.tech4d.tsm.model.time;
 
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -10,7 +10,7 @@ import com.tech4d.tsm.model.BaseEntity;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "styleSelectorType", discriminatorType = DiscriminatorType.STRING)
-public class StyleSelector extends BaseEntity {
+@DiscriminatorColumn(name = "timePrimativeType", discriminatorType = DiscriminatorType.INTEGER)
+public abstract class TimePrimitive extends BaseEntity {
 
 }

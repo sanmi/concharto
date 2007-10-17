@@ -1,4 +1,7 @@
-package com.tech4d.tsm.model.geometry;
+package com.tech4d.tsm.model.kml;
+
+import com.tech4d.tsm.model.time.TimePrimitive;
+import com.tech4d.tsm.model.geometry.*;
 
 /**
  * Copyright 2007, Time Space Map
@@ -18,7 +21,7 @@ public interface KmlFeature {
 
     /**
      * Geometry - this can be a point, polygon, line, etc.
-     * @return {@link TsGeometry} Geometry of this feature
+     * @return {@link com.tech4d.tsm.model.geometry.TsGeometry} Geometry of this feature
      */
     TsGeometry getTsGeometry();
 
@@ -42,11 +45,11 @@ public interface KmlFeature {
 
     /**
      * StyleSelector to be used in rendering this KML feature
-     * @return {@link StyleSelector}  style to use to draw this feature
+     * @return {@link com.tech4d.tsm.model.kml.StyleSelector}  style to use to draw this feature
      */
-    StyleSelector getStyleSelector();
+    com.tech4d.tsm.model.kml.StyleSelector getStyleSelector();
 
-    void setStyleSelector(StyleSelector styleSelector);
+    void setStyleSelector(com.tech4d.tsm.model.kml.StyleSelector styleSelector);
 
     String getSummary();
 

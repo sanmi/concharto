@@ -9,8 +9,8 @@ import java.util.GregorianCalendar;
 
 import org.junit.Test;
 
-import com.tech4d.tsm.model.geometry.SimpleTimeRange;
-import com.tech4d.tsm.model.geometry.TimeRange;
+import com.tech4d.tsm.model.time.SimpleTimeRange;
+import com.tech4d.tsm.model.time.TimeRange;
 
 public class TestTimeRangePropertyEditor {
 
@@ -37,11 +37,11 @@ public class TestTimeRangePropertyEditor {
 
     private Date getBegin(String text) {
         timeRangePropertyEditor.setAsText(text);       
-        return ((SimpleTimeRange)(timeRangePropertyEditor.getValue())).getBegin();
+        return ((com.tech4d.tsm.model.time.SimpleTimeRange)(timeRangePropertyEditor.getValue())).getBegin();
     }
 
 
-    private SimpleTimeRange makeDayRange(int m1, int d1, int y1, int m2, int d2, int y2) {
+    private com.tech4d.tsm.model.time.SimpleTimeRange makeDayRange(int m1, int d1, int y1, int m2, int d2, int y2) {
         return new TimeRange(makeDate(m1, d1, y1), makeDate(m2, d2, y2));
     }
     

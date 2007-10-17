@@ -3,7 +3,7 @@ package com.tech4d.tsm.dao;
 import java.io.Serializable;
 import java.util.List;
 
-import com.tech4d.tsm.model.geometry.Style;
+import com.tech4d.tsm.model.kml.Style;
 
 public interface StyleDao {
     public abstract Serializable save(Style style);
@@ -16,6 +16,6 @@ public interface StyleDao {
 
     public abstract List<Style> findAll();
 
-    public abstract Style find(Long id);
+    public abstract com.tech4d.tsm.model.kml.Style find(Long id);
 
 }

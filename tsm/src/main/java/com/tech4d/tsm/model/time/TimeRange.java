@@ -1,4 +1,4 @@
-package com.tech4d.tsm.model.geometry;
+package com.tech4d.tsm.model.time;
 
 import java.util.Date;
 
@@ -12,7 +12,7 @@ import org.hibernate.annotations.Index;
 import com.tech4d.tsm.util.TimeRangeFormat;
 
 @Entity
-public class TimeRange extends TimePrimitive implements SimpleTimeRange {
+public class TimeRange extends TimePrimitive implements com.tech4d.tsm.model.time.SimpleTimeRange {
     private Date begin;
 
     private Date end;
@@ -28,7 +28,7 @@ public class TimeRange extends TimePrimitive implements SimpleTimeRange {
     }
 
     /* (non-Javadoc)
-     * @see com.tech4d.tsm.model.geometry.SimpleTimeRange#getBegin()
+     * @see com.tech4d.tsm.model.time.SimpleTimeRange#getBegin()
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Index(name="beginindex")
@@ -37,14 +37,14 @@ public class TimeRange extends TimePrimitive implements SimpleTimeRange {
     }
 
     /* (non-Javadoc)
-     * @see com.tech4d.tsm.model.geometry.SimpleTimeRange#setBegin(java.util.Date)
+     * @see com.tech4d.tsm.model.time.SimpleTimeRange#setBegin(java.util.Date)
      */
     public void setBegin(Date begin) {
         this.begin = begin;
     }
 
     /* (non-Javadoc)
-     * @see com.tech4d.tsm.model.geometry.SimpleTimeRange#getEnd()
+     * @see com.tech4d.tsm.model.time.SimpleTimeRange#getEnd()
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Index(name="endindex")
@@ -53,7 +53,7 @@ public class TimeRange extends TimePrimitive implements SimpleTimeRange {
     }
 
     /* (non-Javadoc)
-     * @see com.tech4d.tsm.model.geometry.SimpleTimeRange#setEnd(java.util.Date)
+     * @see com.tech4d.tsm.model.time.SimpleTimeRange#setEnd(java.util.Date)
      */
     public void setEnd(Date end) {
         this.end = end;

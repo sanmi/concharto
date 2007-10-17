@@ -1,6 +1,6 @@
 package com.tech4d.tsm.web;
 
-import com.tech4d.tsm.model.geometry.TimeRange;
+import com.tech4d.tsm.model.time.TimeRange;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 

@@ -32,7 +32,7 @@
             	<c:out value="${tag}"/>
             </c:forEach>&nbsp;
             </td>
-            <td>${event.sourceUrl}&nbsp;</td>
+            <td>${event.source}&nbsp;</td>
             <c:url value="/event.htm?listid=${event.id}" var="editLink"/>
             <td><a href="${editLink}">[edit]</a></td>
             <c:url value="/switchboard/deleteEvent.htm?listid=${event.id}" var="delLink"/>

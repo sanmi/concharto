@@ -15,9 +15,9 @@ import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.User;
 import com.tech4d.tsm.model.UserTag;
-import com.tech4d.tsm.model.geometry.Style;
-import com.tech4d.tsm.model.geometry.TimeRange;
+import com.tech4d.tsm.model.kml.Style;
 import com.tech4d.tsm.model.geometry.TsGeometry;
+import com.tech4d.tsm.model.time.TimeRange;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
@@ -75,7 +75,7 @@ public class EventUtil {
     }
 
     public Event createEvent(Geometry geometry, TimeRange timeRange,
-            Style style, String summary, String description) {
+            com.tech4d.tsm.model.kml.Style style, String summary, String description) {
 
 //        List<User> people = new ArrayList<User>();
 //        people.add(new User("Joe", "1234", "f@joe.com"));
@@ -85,10 +85,10 @@ public class EventUtil {
         tags.add(new UserTag("tag a"));
         tags.add(new UserTag("tag b"));
         tags.add(new UserTag("tag b"));
-        return createEvent(null, tags, geometry, timeRange, style, summary, description) ;
+        return createEvent(tags, geometry, timeRange, style, summary, description) ;
     }
     
-    public Event createEvent(List<User> participants, List<UserTag> usertags, Geometry geometry, TimeRange timeRange,
+    public Event createEvent( List<UserTag> usertags, Geometry geometry, TimeRange timeRange,
             Style style, String summary, String description) {
         Event event = new Event();
         event.setWhere("17 Mockinbird Ln, Nameless, TN, 60606");
@@ -100,9 +100,8 @@ public class EventUtil {
         event.setTsGeometry(tsPoint);
         event.setWhen(timeRange);
         event.setStyleSelector(style);
-        event.setSourceUrl("http://www.wikipedia.com");
+        event.setSource("http://www.wikipedia.com");
         event.setUserTags(usertags);
-        event.setContributors(participants);
         
         return event;
     }
@@ -115,8 +114,8 @@ public class EventUtil {
         Date correctedDate = filterMilliseconds(expected.getWhen()
                 .getBegin());
         assertEquals(correctedDate, actual.getWhen().getBegin());
-        Style expectedStyle = (Style) expected.getStyleSelector();
-        Style actualStyle = (Style) actual.getStyleSelector();
+        com.tech4d.tsm.model.kml.Style expectedStyle = (Style) expected.getStyleSelector();
+        com.tech4d.tsm.model.kml.Style actualStyle = (Style) actual.getStyleSelector();
         assertEquals(
                 expectedStyle.getBaloonStyle().getBgColor(), 
                 actualStyle.getBaloonStyle().getBgColor());

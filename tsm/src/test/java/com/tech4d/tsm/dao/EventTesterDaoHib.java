@@ -41,7 +41,6 @@ public class EventTesterDaoHib implements EventTesterDao {
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from TsGeometry").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from Event_Usertag").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from Usertag").executeUpdate();
-        this.sessionFactory.getCurrentSession().createSQLQuery("delete from Event_User").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from User_Role").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from Role").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from User").executeUpdate();

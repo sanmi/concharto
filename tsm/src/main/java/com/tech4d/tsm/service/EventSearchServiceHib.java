@@ -11,7 +11,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tech4d.tsm.model.Event;
-import com.tech4d.tsm.model.geometry.TimeRange;
+import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.LapTimer;
 import com.vividsolutions.jts.geom.Geometry;
 

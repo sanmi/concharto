@@ -1,4 +1,4 @@
-package com.tech4d.tsm.model.geometry;
+package com.tech4d.tsm.model.kml;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -26,7 +26,7 @@ public class Style extends StyleSelector {
     }
 
     /* (non-Javadoc)
-     * @see com.tech4d.tsm.model.geometry.StyleI#setLineStyle(com.tech4d.tsm.model.geometry.LineStyle)
+     * @see com.tech4d.tsm.model.geometry.StyleI#setLineStyle(com.tech4d.tsm.model.kml.LineStyle)
      */
     public void setLineStyle(LineStyle lineStyle) {
         this.lineStyle = lineStyle;
@@ -40,7 +40,7 @@ public class Style extends StyleSelector {
     }
 
     /* (non-Javadoc)
-     * @see com.tech4d.tsm.model.geometry.StyleI#setBaloonStyle(com.tech4d.tsm.model.geometry.BalloonStyle)
+     * @see com.tech4d.tsm.model.geometry.StyleI#setBaloonStyle(com.tech4d.tsm.model.kml.BalloonStyle)
      */
     public void setBaloonStyle(BalloonStyle baloonStyle) {
         this.baloonStyle = baloonStyle;
@@ -54,7 +54,7 @@ public class Style extends StyleSelector {
     }
 
     /* (non-Javadoc)
-     * @see com.tech4d.tsm.model.geometry.StyleI#setIconStyle(com.tech4d.tsm.model.geometry.IconStyle)
+     * @see com.tech4d.tsm.model.geometry.StyleI#setIconStyle(com.tech4d.tsm.model.kml.IconStyle)
      */
     public void setIconStyle(IconStyle iconStyle) {
         this.iconStyle = iconStyle;
@@ -68,7 +68,7 @@ public class Style extends StyleSelector {
     }
 
     /* (non-Javadoc)
-     * @see com.tech4d.tsm.model.geometry.StyleI#setLabelStyle(com.tech4d.tsm.model.geometry.LabelStyle)
+     * @see com.tech4d.tsm.model.geometry.StyleI#setLabelStyle(com.tech4d.tsm.model.kml.LabelStyle)
      */
     public void setLabelStyle(LabelStyle labelStyle) {
         this.labelStyle = labelStyle;
@@ -82,7 +82,7 @@ public class Style extends StyleSelector {
     }
 
     /* (non-Javadoc)
-     * @see com.tech4d.tsm.model.geometry.StyleI#setPolyStyle(com.tech4d.tsm.model.geometry.PolyStyle)
+     * @see com.tech4d.tsm.model.geometry.StyleI#setPolyStyle(com.tech4d.tsm.model.kml.PolyStyle)
      */
     public void setPolyStyle(PolyStyle polyStyle) {
         this.polyStyle = polyStyle;
