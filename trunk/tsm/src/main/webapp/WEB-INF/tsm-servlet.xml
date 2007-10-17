@@ -21,6 +21,7 @@
           <prop key="edit/changehistory.htm">changeHistoryController</prop>
           <prop key="admin/listEvents.htm">switchBoardController</prop>
           <prop key="admin/signup.htm">signupController</prop>
+          <prop key="member/settings.htm">settingsController</prop>
       </props>
 		</property>		
 	</bean>
@@ -94,4 +95,14 @@
 		<property name="validator" ref="eventSearchFormValidator"/>
 	</bean>
 
+	<bean id="settingsFormValidator" class="com.tech4d.tsm.web.member.SettingsFormValidator"/>
+	<bean id="settingsController" class="com.tech4d.tsm.web.member.SettingsController" parent="baseEventController">
+		<property name="commandName" value="settings"/>
+		<property name="commandClass" value="com.tech4d.tsm.web.member.SettingsForm"/>
+		<property name="formView" value="member/settings" />
+		<property name="successView" value="member/settings" />
+		<property name="validator" ref="settingsFormValidator"/>
+		<property name="userDao" ref="userDao"/>
+	</bean>
+	
 </beans>

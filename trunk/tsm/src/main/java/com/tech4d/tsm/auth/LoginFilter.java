@@ -25,7 +25,8 @@ import org.apache.commons.logging.LogFactory;
 public class LoginFilter implements Filter{
     private static final String REDIRECT_NOTAUTHORIZED = "/notauthorized.htm";
     private static final String REDIRECT_LOGIN = "/login.htm";
-    private static final String[] PATTERN_REQUIRES_AUTHENTICATION = {"edit","admin"};
+    private static final String[] PATTERN_REQUIRES_AUTHENTICATION = {"edit","admin","member"};
+    private static final String[] PATTERN_REQUIRES_AUTHORIZATION = {"edit","admin"};
     private static final Log log = LogFactory.getLog(LoginFilter.class);
     
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -63,7 +64,9 @@ public class LoginFilter implements Filter{
      */
     private boolean isAuthorized(HttpServletRequest httpRequest) {
         HttpSession session = httpRequest.getSession();
-        
+        if (!requiresAuthorization(httpRequest)) {
+            return true;
+        }
         if (null != session.getAttribute(AuthConstants.AUTH_ROLES)) {
             String roles = (String) session.getAttribute(AuthConstants.AUTH_ROLES);
             String uri = httpRequest.getRequestURI();
@@ -95,7 +98,11 @@ public class LoginFilter implements Filter{
         //TODO reliance on session may be a problem for scalability
         if (null == session.getAttribute(AuthConstants.AUTH_USERNAME)) {
             //save the target so we can get there after authentication
-            session.setAttribute(AuthConstants.AUTH_TARGET_URI, httpRequest.getRequestURI() + '?'+ httpRequest.getQueryString());
+            StringBuffer redirect = new StringBuffer(httpRequest.getRequestURI());
+            if (!StringUtils.isEmpty(httpRequest.getQueryString())) {
+                redirect.append('?').append(httpRequest.getQueryString());
+            }
+            session.setAttribute(AuthConstants.AUTH_TARGET_URI, redirect.toString() );
             return false;
         } else {
             return true;
@@ -104,6 +111,14 @@ public class LoginFilter implements Filter{
 
     private boolean requiresAuthentication(HttpServletRequest httpRequest) {
         for (String pattern : PATTERN_REQUIRES_AUTHENTICATION) {
+            if (StringUtils.contains(httpRequest.getRequestURI(), pattern)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean requiresAuthorization(HttpServletRequest httpRequest) {
+        for (String pattern : PATTERN_REQUIRES_AUTHORIZATION) {
             if (StringUtils.contains(httpRequest.getRequestURI(), pattern)) {
                 return true;
             }

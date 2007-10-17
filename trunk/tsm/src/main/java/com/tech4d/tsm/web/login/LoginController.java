@@ -1,6 +1,5 @@
 package com.tech4d.tsm.web.login;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +47,8 @@ public class LoginController extends SimpleFormController {
         LoginForm loginForm = (LoginForm) command;
         User user = userDao.find(loginForm.getUsername());
         
-        if (isPasswordValid(loginForm, user)) {
+        if ((user != null) && 
+            (PasswordUtil.isPasswordValid(log, loginForm.getPassword(), user.getPassword()))) {
             //matched username and password, ok to proceed
             log.debug("user " + loginForm.getUsername() + " signed in");
             //first save the username and roles in the session            
@@ -65,27 +65,11 @@ public class LoginController extends SimpleFormController {
             }
         } else {
             //tell the user there was a problem and let the default form handle the rest
-            errors.rejectValue("username", "invalidUserPasswd.loginForm.username");
-            return super.onSubmit(request, response, command, errors);
+            errors.rejectValue("username", "invalidUserPasswd.authForm.username");
+            return new ModelAndView(getFormView(), errors.getModel());
         }
     }
-    
-    private boolean isPasswordValid(LoginForm loginForm, User user) {
-        String hashedPassword = null;
-        try {
-            hashedPassword = PasswordUtil.encrypt(loginForm.getPassword());            
-        } catch (NoSuchAlgorithmException e) {
-            log.error("Exception while encrypting: " + e);
-        }
-        
-        if ((user == null) || (hashedPassword == null) || !user.getPassword().equals(hashedPassword)) {
-            //errors.rejectValue("username", "invalidUserPasswd.loginForm.username");
-            return false;
-        } else {
-            return true;
-        }
 
-    }
     private String makeRoles(List<Role> roles) {
         StringBuffer roleStr = new StringBuffer();
         if (roles != null) {
