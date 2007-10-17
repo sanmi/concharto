@@ -1,4 +1,4 @@
-package com.tech4d.tsm.web.util;
+package com.tech4d.tsm.web.changehistory;
 
 public class EventAuditFormat {
     public static final String[] PROPERTY_LABELS = {

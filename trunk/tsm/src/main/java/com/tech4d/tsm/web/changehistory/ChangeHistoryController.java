@@ -1,4 +1,4 @@
-package com.tech4d.tsm.web;
+package com.tech4d.tsm.web.changehistory;
 
 import java.util.List;
 import java.util.Map;
@@ -13,8 +13,6 @@ import org.springframework.web.servlet.mvc.AbstractFormController;
 import com.tech4d.tsm.dao.AuditEntryDao;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.audit.AuditEntry;
-import com.tech4d.tsm.web.util.AuditEntryFormat;
-import com.tech4d.tsm.web.util.EventAuditFormat;
 import com.tech4d.tsm.web.util.PaginatingFormHelper;
 
 public class ChangeHistoryController extends AbstractFormController {

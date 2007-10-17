@@ -1,6 +1,5 @@
 package com.tech4d.tsm.web.util;
 
-import com.tech4d.tsm.web.PaginatingForm;
 
 public class PaginatingFormHelper {
     public static final String FORM_NEXT = "next";

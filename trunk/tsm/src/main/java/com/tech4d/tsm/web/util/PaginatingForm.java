@@ -1,4 +1,4 @@
-package com.tech4d.tsm.web;
+package com.tech4d.tsm.web.util;
 
 public interface PaginatingForm {
 
