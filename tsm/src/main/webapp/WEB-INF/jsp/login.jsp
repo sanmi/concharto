@@ -8,6 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 %>
 
 <tsm:page title="Login">
+	<jsp:attribute name="bodyattr">onload="document.getElementById('loginForm').username.focus()"</jsp:attribute>
 	<jsp:body>
 	  <form:form id="loginForm" name="login" commandName="login"> 
 	  	<div class="loginForm">

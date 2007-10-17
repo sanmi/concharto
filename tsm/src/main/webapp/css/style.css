@@ -203,10 +203,21 @@ a.nexPrev:link, a.nextPrev:visited {
     width:auto;
 }
 
-.loginForm {
+.loginForm, .settingsForm {
     margin:40px 0 60px 60px;
     padding 50px;
 }
-.loginForm .errorLabel {
+.loginForm .errorLabel, .settingsForm .errorLabel {
+    padding-left: 0;
 	color:red;
+}
+.settingsForm h2 {
+    margin-bottom: .2em;
+}
+
+.settingsForm .successMessage {
+    border:1px solid #999999;
+    padding: .5em 1em .5em 1em;
+    background-color:#009900;
+	color:#FFFFFF;
 }
