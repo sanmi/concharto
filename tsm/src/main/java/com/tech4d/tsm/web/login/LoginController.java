@@ -1,8 +1,13 @@
 package com.tech4d.tsm.web.login;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.CustomBooleanEditor;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -12,6 +17,10 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.auth.AuthConstants;
+import com.tech4d.tsm.dao.UserDao;
+import com.tech4d.tsm.model.Role;
+import com.tech4d.tsm.model.User;
+import com.tech4d.tsm.util.PasswordUtil;
 
 /**
  * For authentication.  We aren't using the standard j2ee authentaction mechanisms because there
@@ -21,6 +30,12 @@ import com.tech4d.tsm.auth.AuthConstants;
  *
  */
 public class LoginController extends SimpleFormController {
+    private static final Log log = LogFactory.getLog(LoginController.class);
+    private UserDao userDao;
+    
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
@@ -31,19 +46,53 @@ public class LoginController extends SimpleFormController {
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         LoginForm loginForm = (LoginForm) command;
-        //if we got this far, the validator has matched username and password, we just 
-        //need to process things.         
-        //first save the username in the session            
-        WebUtils.setSessionAttribute(request, AuthConstants.AUTH_USERNAME, loginForm.getUsername());
-        String view = (String) WebUtils.getSessionAttribute(request, AuthConstants.AUTH_TARGET_URI);
-        //now erase the target so we don't use it another time
-        WebUtils.setSessionAttribute(request, AuthConstants.AUTH_TARGET_URI, null);
-        if (view != null) {
-            return new ModelAndView(new RedirectView(view));
+        User user = userDao.find(loginForm.getUsername());
+        
+        if (isPasswordValid(loginForm, user)) {
+            //matched username and password, ok to proceed
+            log.debug("user " + loginForm.getUsername() + " signed in");
+            //first save the username and roles in the session            
+            WebUtils.setSessionAttribute(request, AuthConstants.AUTH_USERNAME, loginForm.getUsername());
+            WebUtils.setSessionAttribute(request, AuthConstants.AUTH_ROLES, makeRoles(user.getRoles()));
+            //now go where we were originally heading
+            String view = (String) WebUtils.getSessionAttribute(request, AuthConstants.AUTH_TARGET_URI);
+            //now erase the target so we don't use it another time
+            WebUtils.setSessionAttribute(request, AuthConstants.AUTH_TARGET_URI, null);
+            if (view != null) {
+                return new ModelAndView(new RedirectView(view));
+            } else {
+                return new ModelAndView("redirect:/");
+            }
         } else {
-            return new ModelAndView("redirect:/");
+            //tell the user there was a problem and let the default form handle the rest
+            errors.rejectValue("username", "invalidUserPasswd.loginForm.username");
+            return super.onSubmit(request, response, command, errors);
         }
     }
     
-    
+    private boolean isPasswordValid(LoginForm loginForm, User user) {
+        String hashedPassword = null;
+        try {
+            hashedPassword = PasswordUtil.encrypt(loginForm.getPassword());            
+        } catch (NoSuchAlgorithmException e) {
+            log.error("Exception while encrypting: " + e);
+        }
+        
+        if ((user == null) || (hashedPassword == null) || !user.getPassword().equals(hashedPassword)) {
+            //errors.rejectValue("username", "invalidUserPasswd.loginForm.username");
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+    private String makeRoles(List<Role> roles) {
+        StringBuffer roleStr = new StringBuffer();
+        if (roles != null) {
+            for (Role role : roles) {
+                roleStr.append(role.getName()).append(" ");
+            }
+        }
+        return roleStr.toString();
+    }
 }
