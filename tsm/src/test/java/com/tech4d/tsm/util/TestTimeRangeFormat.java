@@ -19,7 +19,7 @@ public class TestTimeRangeFormat {
     @Test public void debug () throws ParseException {
     }
 
-    @Test public void setValueAsText() throws ParseException {
+    @Test public void parse() throws ParseException {
 
         //Test date formats
         assertEquals(makeDate(1,1,2007), getBegin("2007"));
@@ -64,9 +64,18 @@ public class TestTimeRangeFormat {
         assertEquivalent(makeDayRange(12,7,1941,10,0,0, 12,7,1941,12,0,0), parseTimeRange("Dec 7, 1941 10am - Dec 7, 1941 11am"));
         assertEquivalent(makeDayRange(12,7,1941,10,0,0, 12,7,1941,10,2,0), parseTimeRange("Dec 7, 1941 10:00am - Dec 7, 1941 10:01am"));
         assertEquivalent(makeDayRange(12,7,1941,10,0,0, 12,7,1941,10,0,2), parseTimeRange("Dec 7, 1941 10:00:00am - Dec 7, 1941 10:00:01am"));
-}
+    }
+    
+    @Test public void parseErrors() {
+        try {
+            TimeRangeFormat.parse("December 41, 1941").getBegin();
+            fail("should have thrown an exception");
+        } catch (ParseException e) {
+            //expected            
+        }
+    }
 
-    @Test public void getValueAsText() {
+    @Test public void format() {
 
         assertEquals("1941", formatTimeRange(1,1,1941,1,1,1942));
         assertEquals("1941 - 1942", formatTimeRange(1,1,1941,1,1,1943));
