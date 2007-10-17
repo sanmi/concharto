@@ -69,10 +69,11 @@ public class SwitchBoardController extends MultiActionController {
     public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
         //remove the token from the session
         WebUtils.setSessionAttribute(request, AuthConstants.AUTH_USERNAME, null);
+        WebUtils.setSessionAttribute(request, AuthConstants.AUTH_ROLES, null);
         return new ModelAndView("redirect:/");
     }
     
-    public ModelAndView page1(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView notauthorized(HttpServletRequest request, HttpServletResponse response) throws Exception {
         return new ModelAndView();
     }
 

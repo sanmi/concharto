@@ -1,11 +1,14 @@
 package com.tech4d.tsm.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -27,14 +30,14 @@ public class IntegrationTestUserDao {
     private static EventTesterDao eventTesterDao;
 
     @BeforeClass
-    public static void setupRoles() {
+    public static void setupClass() {
         ApplicationContext appCtx = ContextUtil.getCtx();
         userDao = (UserDao) appCtx.getBean("userDao");
         eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
+    }
+    
+    @Before public void setUp() {
         eventTesterDao.deleteAll();
-        eventTesterDao.save(new Role(ROLE_CAN_EDIT));
-        eventTesterDao.save(new Role("canDelete"));
-        eventTesterDao.save(new Role("canBan"));
     }
     
     @Test public void saveGet() {
@@ -58,8 +61,10 @@ public class IntegrationTestUserDao {
     }
     
     @Test public void roles() {
+        setupRoles();
         User user = new User("jonathan","diner","jon@tsm.com");
         List<Role> roles = userDao.getRoles();
+        assertEquals(3, roles.size());
         user.setRoles(roles);
         Long id = (Long) userDao.save(user);        
         User returned = userDao.find(id);
@@ -76,10 +81,25 @@ public class IntegrationTestUserDao {
     }
     
     @Test public void role() {
+        setupRoles();
         Role role = userDao.getRole(ROLE_CAN_EDIT);
         assertEquals(ROLE_CAN_EDIT, role.getName());
     }
 
+    @Test public void unique() {
+        User user = new User("jonathan","diner","jon@tsm.com");
+        userDao.save(user);
+        try {
+            userDao.save(user);
+            fail("should have thrown an exception");
+        } catch (ConstraintViolationException e) {
+            //expected
+        }
+    }
     
-
+    private void setupRoles() {
+        eventTesterDao.save(new Role(ROLE_CAN_EDIT));
+        eventTesterDao.save(new Role("canDelete"));
+        eventTesterDao.save(new Role("canBan"));
+    }
 }
