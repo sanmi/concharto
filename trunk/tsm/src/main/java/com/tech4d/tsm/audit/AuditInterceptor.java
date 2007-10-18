@@ -7,8 +7,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.CallbackException;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.HibernateException;
@@ -16,17 +14,18 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.type.Type;
 
+import com.tech4d.tsm.auth.ThreadLocalUserContext;
+import com.tech4d.tsm.auth.UserContext;
 import com.tech4d.tsm.dao.AuditLogWriter;
 import com.tech4d.tsm.model.Auditable;
 import com.tech4d.tsm.model.audit.AuditEntry;
 
 /**
- * hibernate interceptor to create AuditEntry records for all classes implementing the Auditable interface.  It will
- * record insertions, updates, and deletions.
+ * hibernate interceptor to create AuditEntry records for all classes implementing the 
+ * Auditable interface.  It will record insertions, updates, and deletions.
  */
 public class AuditInterceptor extends EmptyInterceptor {
     private static final long serialVersionUID = 1L;
-    private Log log = LogFactory.getLog(this.getClass());
     private ThreadLocalSets stateSets = new ThreadLocalSets();   // this is thread-safe
     private AuditLogWriter auditLogWriter;
     private SessionFactory sessionFactory;
@@ -142,7 +141,7 @@ public class AuditInterceptor extends EmptyInterceptor {
             Collection<AuditEntry> auditEntries = new HashSet<AuditEntry>();
             AuditFieldChangeFormatter formatter;
             Date dateCreated = new Date();
-            String user = getUserLoggedInUserId();
+            String user = getUsername();
             for (Object o : stateSets.getInserts()) {
                 Auditable auditable = (Auditable) o;
                 if (null != (formatter = getFormatter(auditable))) {
@@ -199,10 +198,9 @@ public class AuditInterceptor extends EmptyInterceptor {
      *
      * @return user id
      */
-    private String getUserLoggedInUserId() {
-//        UserContext userContext = ThreadLocalUserContext.getUserContext();
-//        return userContext.getUserId();
-        return null;
+    private String getUsername() {
+        UserContext userContext = ThreadLocalUserContext.getUserContext();
+        return userContext.getUsername();
     }
 
     /**
