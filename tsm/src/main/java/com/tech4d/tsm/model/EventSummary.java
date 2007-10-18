@@ -30,7 +30,7 @@ public class EventSummary extends BaseAuditableEntity {
         this.centroid = centroid;
     }
 
-    @Type(type = "com.tech4d.tsm.model.GeometryUserType")
+    @Type(type = "com.tech4d.tsm.model.geometry.GeometryUserType")
     public Point getCentroid() {
         return centroid;
     }

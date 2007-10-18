@@ -74,6 +74,34 @@ public class TestTimeRangeFormat {
             //expected            
         }
     }
+    
+    @Test public void parseOldDates() throws ParseException {
+        //back and forth
+        SimpleTimeRange tr = parseTimeRange("941 BC");
+        assertEquals("941 BC", TimeRangeFormat.format(tr));
+
+        //Test date formats
+        assertEquals(makeDate(1,1,-2007), getBegin("2007BC"));
+        assertEquals(makeDate(1,1,-2007), getBegin("2007 BC"));
+
+        assertEquals(makeDate(3,1,-2007), getBegin("2007 BC, March"));
+        assertEquals(makeDate(3,1,-2007), getBegin("March, 2007 BC"));
+        assertEquals(makeDate(3,1,-69), getBegin("March, 69 BC"));
+        assertEquals(makeDate(5,22,-69), getBegin("5/22/69 BC"));
+
+        //test date ranges
+        //full year fanciness
+        assertEquivalent(makeDayRange(1,1,-941, 1,1,-940), parseTimeRange("941 BC"));
+        assertEquivalent(makeDayRange(12,7,-1941, 12,8,-1941), parseTimeRange("December 7, 1941 BC"));
+        assertEquivalent(makeDayRange(12,7,-1941,10,1,0, 12,7,-1941,10,2,0), parseTimeRange("Dec 7, 1941 BC, 10:01AM"));
+        assertEquivalent(makeDayRange(12,7,-1941,10,1,1, 12,7,-1941,10,1,2), parseTimeRange("Dec 7, 1941 BC, 10:01:01AM"));
+        assertEquivalent(makeDayRange(1,1,-1941, 1,1,-1939), parseTimeRange("1941 BC - 1940 BC"));
+        assertEquivalent(makeDayRange(12,7,-1941, 12,8,-1940), parseTimeRange("Dec 7, 1941 BC - 12/7/1940 BC"));
+
+        //TODO should we allow negative ranges? Isn't that really a data validation issue?
+        assertException("1948 BC - 1949 BC");
+        assertException("Dec 7, 1942 BC - 12/7/1945 BC");
+    }
 
     @Test public void format() {
 
@@ -82,11 +110,11 @@ public class TestTimeRangeFormat {
         assertEquals("1941 - 1944", formatTimeRange(1,1,1941,1,1,1945));
 
         //if 12/1/1941 00:00 - 1/1/1942 00:00 = December 1941
-        assertEquals("December 1941", formatTimeRange(12,1,1941,1,1,1942));
+        assertEquals("December, 1941", formatTimeRange(12,1,1941,1,1,1942));
         //if 11/1/1941 00:00 - 1/1/1942 00:00 = November 1941 - December 1941 (subtract)
-        assertEquals("November 1941 - December 1941", formatTimeRange(11,1,1941,1,1,1942));
+        assertEquals("November, 1941 - December, 1941", formatTimeRange(11,1,1941,1,1,1942));
         //if 12/1/1941 00:00 - 12/1/1942 00:00 = December 1941 - December 1942
-        assertEquals("December 1941 - December 1942", formatTimeRange(12,1,1941,12,1,1942));
+        assertEquals("December, 1941 - December, 1942", formatTimeRange(12,1,1941,12,1,1942));
 
         //1) if 12/7/1941 00:00 - 12/8/1941 00:00 = December 7, 1941
         assertEquals("December 07, 1941", formatTimeRange(12,7,1941,12,8,1941));
@@ -115,9 +143,31 @@ public class TestTimeRangeFormat {
         assertEquals("December 07, 1941, 10:20:02AM", transformToText(12,7,1941,10, 20, 2, 12,7,1941, 10, 20, 3));
         assertEquals("December 07, 1941, 10:20:02AM - December 07, 1941, 10:20:03AM", transformToText(12,7,1941,10, 20, 2, 12,7,1941, 10, 20, 4));
         assertEquals("December 07, 1941, 10:20:02AM - December 07, 1942, 10:20:02AM", transformToText(12,7,1941,10, 20, 2, 12,7,1942, 10, 20, 2));
-
     }
     
+    @Test public void formatOldDates() {
+
+        assertEquals("941 AD", formatTimeRange(1,1,941,1,1,942));
+        assertEquals("941 AD - 942 AD", formatTimeRange(1,1,941,1,1,943));
+        assertEquals("941 AD - 944 AD", formatTimeRange(1,1,941,1,1,945));
+
+        assertEquals("941 BC - 940 BC", formatTimeRange(1,1,-941,1,1,-939));
+        assertEquals("56 BC - 100 AD", formatTimeRange(1,1,-56,1,1,101));
+        assertEquals("941 BC", formatTimeRange(1,1,-941,1,1,-940));
+        
+        assertEquals("March, 941 BC", formatTimeRange(3,1,-941,4,1,-941));
+        
+        /*        assertEquals("941 AD - 942 AD", formatTimeRange(1,1,941,1,1,943));
+        assertEquals("941 AD - 944 AD", formatTimeRange(1,1,941,1,1,945));
+
+        //if 12/1/1941 00:00 - 1/1/1942 00:00 = December 1941
+        assertEquals("December 1941", formatTimeRange(12,1,1941,1,1,1942));
+        //if 11/1/1941 00:00 - 1/1/1942 00:00 = November 1941 - December 1941 (subtract)
+        assertEquals("November 1941 - December 1941", formatTimeRange(11,1,1941,1,1,1942));
+        //if 12/1/1941 00:00 - 12/1/1942 00:00 = December 1941 - December 1942
+        assertEquals("December 1941 - December 1942", formatTimeRange(12,1,1941,12,1,1942));
+*/        
+    }
     private Object formatTimeRange(int m1, int d1, int y1, int m2, int d2, int y2) {
         SimpleTimeRange timeRange = makeDayRange(m1, d1, y1, m2, d2, y2);
         return TimeRangeFormat.format(timeRange);
@@ -171,6 +221,10 @@ public class TestTimeRangeFormat {
      */
     private Date makeDate(int month, int day, int year, int hour, int minute, int second) {
         Calendar cal = new GregorianCalendar();
+        if (year<0) {
+            year ++; //to account for year '0'
+            //cal.set(Calendar.ERA, GregorianCalendar.BC);
+        } 
         cal.set(year, month - 1, day, hour, minute, second);
         cal.set(Calendar.MILLISECOND, 0);
         return cal.getTime();

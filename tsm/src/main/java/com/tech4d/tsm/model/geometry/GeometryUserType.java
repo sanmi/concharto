@@ -1,4 +1,4 @@
-package com.tech4d.tsm.model;
+package com.tech4d.tsm.model.geometry;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
