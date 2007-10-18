@@ -18,6 +18,7 @@ import com.tech4d.tsm.dao.EventUtil;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.ContextUtil;
+import com.tech4d.tsm.util.TimeRangeFormat;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Polygon;
@@ -29,16 +30,16 @@ public class IntegrationTestEventSearchService {
     private static EventSearchService eventSearchService;
 
     private static EventDao eventDao;
-    private static EventTesterDao eventTesterDao;
 
     private static EventUtil eventUtil;
     private static Polygon searchBox = makeBoundingRectangle(300, 300);
+    //Feb 22, 2005 - Feb 22, 2007
     private static TimeRange searchTimeRange = new TimeRange(makeDate(2005, 2, 22), makeDate(2007, 2, 22));
     private static Polygon failBox = makeBoundingRectangle(3000, 3000);
+    //Feb 22, 1005 - Feb 22, 1007
     private static TimeRange failTimeRange = new TimeRange(makeDate(1005, 2, 22), makeDate(1007, 2, 22));
     private static String[] failStrings = { "the a is", "is", "sdfgsdfg" };
     private static Geometry insideTheBox;
-    private static Geometry outsideTheBox;
     //TODO refactor searchStrings and matches into one class
     private static String[] searchStrings = { 
         "description problem", 
@@ -49,9 +50,9 @@ public class IntegrationTestEventSearchService {
         "japanese" 
         };
     private static int[] matches = {
-        2, 
-        2, 
-        2, 
+        3, 
+        3, 
+        3, 
         1, 
         3, 
         1};
@@ -96,9 +97,12 @@ public class IntegrationTestEventSearchService {
         "(Council of State) and many lobbying organisations."
         };
     private static String shouldNotMatch = "there is nothing to match here";
+    //Feb 22, 2006 - Sept 22, 2006
     private static TimeRange insideTimeRange = new TimeRange(makeDate(2006, 2, 22), makeDate(2006, 9, 22));
-    private static TimeRange halfwayOutsideTimeRange = new TimeRange(makeDate(2000, 2, 22), makeDate(2007, 2,
-            22));
+    //Feb 22, 2000 - Feb 22, 2007
+    private static TimeRange halfwayOutsideTimeRange 
+                    = new TimeRange(makeDate(2000, 2, 22), makeDate(2007, 2, 22));
+    //Feb 22, 2000 - Feb 22, 2002
     private static TimeRange outsideTimeRange = new TimeRange(makeDate(2000, 2, 22), makeDate(2002, 2, 22));
     private static Event actual;
 
@@ -106,32 +110,32 @@ public class IntegrationTestEventSearchService {
     private static int MAX_RESULTS = 3;
 
     @BeforeClass
-    public static void setUpClass() throws ParseException {
+    public static void setUpBigSearch() throws ParseException {
         ApplicationContext appCtx = ContextUtil.getCtx();
         eventSearchService = (EventSearchService) appCtx.getBean("eventSearchService");
         eventDao = (EventDao) appCtx.getBean("eventDao");
-        eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
+        EventTesterDao eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
         eventUtil = new EventUtil(eventSearchService.getSessionFactory());
         eventTesterDao.deleteAll();
         StyleUtil.setupStyle();
 
         insideTheBox = new WKTReader().read("POINT (330 330)");
-        outsideTheBox = new WKTReader().read("POINT (130 130)");
+        Geometry outsideTheBox = new WKTReader().read("POINT (130 130)");
 
         // sample data
-        // these two pass with all parameters
+        // these three pass with all parameters
         for (int i=0; i< shouldMatchDescription.length; i++) {
             actual = makeSearchEvent(insideTheBox, insideTimeRange, shouldMatchSummary[i], shouldMatchDescription[i]);
         }
+        makeSearchEvent(insideTheBox, halfwayOutsideTimeRange, shouldMatchSummary[0], shouldMatchDescription[0]);
+
         // the rest have at least one thing out of bounds
         makeSearchEvent(outsideTheBox, insideTimeRange, shouldMatchSummary[0], shouldMatchDescription[0]);
         makeSearchEvent(insideTheBox, outsideTimeRange, shouldMatchSummary[0], shouldMatchDescription[0]);
-        makeSearchEvent(insideTheBox, halfwayOutsideTimeRange, shouldMatchSummary[0], shouldMatchDescription[0]);
         makeSearchEvent(insideTheBox, insideTimeRange, shouldNotMatch, shouldNotMatch);
         makeSearchEvent(outsideTheBox, insideTimeRange, shouldNotMatch, shouldNotMatch);
         makeSearchEvent(outsideTheBox, outsideTimeRange, shouldNotMatch, shouldNotMatch);
     }
-
 
     @Test
     public void testSearchReturnsSome() throws ParseException {
@@ -140,7 +144,10 @@ public class IntegrationTestEventSearchService {
             String searchString = searchStrings[i];
             List<Event> events = eventSearchService.search(MAX_RESULTS, 0, searchString,
                     searchTimeRange, searchBox);
-            assertEquals("matches against '" + searchString + "'", matches[i], events.size());
+            for (Event event : events) {
+                System.out.println(event.getDescription());
+            }
+            assertEquals("index " + i + " matches against '" + searchString + "'", matches[i], events.size());
             Event returned = events.get(0);
             assertEquals(insideTheBox.toText(), (returned.getTsGeometry()).getGeometry().toText());
             //it should be one of the description strings
@@ -153,10 +160,31 @@ public class IntegrationTestEventSearchService {
             if (failDescriptionMatch) {
                 fail("descriptions didn't match");
             }
-            assertEquals(insideTimeRange.getBegin(), returned.getWhen().getBegin());
-            // Make sure we can get everything
-            eventUtil.assertEquivalent(actual, events.get(0));
+            assertWithin(insideTimeRange, returned.getWhen());
+            // For one of them, make sure we can get everything
+            for (Event event : events) {
+                if (event.getId() == actual.getId()) {
+                    eventUtil.assertEquivalent(actual, event);
+                }
+            }
         }
+    }
+    
+ 
+    /**
+     * Given: Event = 1900 - 2000 and Search Range = 1920, we should return the event
+     * because the event spans 1920. 
+     * @throws java.text.ParseException  e
+     * 
+     */
+    @Test public void testInclusiveTimeRange() throws java.text.ParseException {
+        TimeRange timeRange = TimeRangeFormat.parse("Jan 1, 2007"); 
+        EventUtil.printTimeRange(searchTimeRange);
+        EventUtil.printTimeRange(timeRange);
+        EventUtil.printTimeRange(TimeRangeFormat.parse("Jan 1, 1007"));
+        List<Event> events = eventSearchService.search(MAX_RESULTS, 0, null,
+                timeRange, null);
+        assertEquals(1, events.size());
     }
     
     @Test public void noneInBox() {
@@ -191,9 +219,9 @@ public class IntegrationTestEventSearchService {
     }
 
     @Test public void checkCount() {
-        assertEquals(2, eventSearchService.search(MAX_RESULTS, 0, 
+        assertEquals(3, eventSearchService.search(MAX_RESULTS, 0, 
                 searchStrings[0], searchTimeRange, searchBox).size());
-        assertEquals(2L, (long) eventSearchService.getCount(
+        assertEquals(3L, (long) eventSearchService.getCount(
                 searchStrings[0], searchTimeRange, searchBox));
     }
 
@@ -221,5 +249,28 @@ public class IntegrationTestEventSearchService {
     private static Date makeDate(int year, int month, int day) {
         return new GregorianCalendar(year, month, day).getTime();
     }
+    
+    /**
+     * Verify the timerange is within expected 
+     * @param searchTr the search 
+     * @param evTr the one to verify
+     */
+    private void assertWithin(TimeRange searchTr, TimeRange evTr) {
+        boolean fail = true;
+        if ((evTr.getEnd().compareTo(searchTr.getBegin()) >= 0) && (evTr.getEnd().compareTo(searchTr.getEnd()) <= 0)) {  
+           fail = false; 
+        }
+        if ((evTr.getBegin().compareTo(searchTr.getBegin()) >= 0) && (evTr.getBegin().compareTo(searchTr.getEnd()) <= 0)) { 
+            fail = false; 
+        }
+        if ((evTr.getBegin().compareTo(searchTr.getBegin()) <= 0) && (evTr.getEnd().compareTo(searchTr.getEnd()) >= 0)) { 
+            fail = false; 
+        }
+        if (fail) {
+            fail ("event " + TimeRangeFormat.format(evTr) 
+                    + " doesn't fall within the date range " + TimeRangeFormat.format(searchTr));
+        }
+    }
+    
 
 }
