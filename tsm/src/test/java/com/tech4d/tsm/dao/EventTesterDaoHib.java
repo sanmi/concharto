@@ -38,12 +38,20 @@ public class EventTesterDaoHib implements EventTesterDao {
     public void deleteAll() {
         //TODO -  this is ugly, but it offers the best performance.  There don't
         //seem to be simpler cascade options using HQL delete
+        deleteEvents();
+        deleteUsers();
+        this.sessionFactory.getCurrentSession().createSQLQuery("delete from Role").executeUpdate();
+    }
+    
+    public void deleteUsers() {
+        this.sessionFactory.getCurrentSession().createSQLQuery("delete from User_Role").executeUpdate();
+        this.sessionFactory.getCurrentSession().createSQLQuery("delete from User").executeUpdate();
+    }
+    
+    public void deleteEvents() {
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from TsGeometry").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from Event_Usertag").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from Usertag").executeUpdate();
-        this.sessionFactory.getCurrentSession().createSQLQuery("delete from User_Role").executeUpdate();
-        this.sessionFactory.getCurrentSession().createSQLQuery("delete from Role").executeUpdate();
-        this.sessionFactory.getCurrentSession().createSQLQuery("delete from User").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from Event").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from EventSearchText").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from TimePrimitive").executeUpdate();

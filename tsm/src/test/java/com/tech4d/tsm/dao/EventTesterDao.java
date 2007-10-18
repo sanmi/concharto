@@ -19,6 +19,8 @@ public interface EventTesterDao {
      * TODO figure out how to remove this from the "production" dao interface
      */
     public void deleteAll();
+    public void deleteUsers();
+    public void deleteEvents();
 
     /*
      * (non-Javadoc)
