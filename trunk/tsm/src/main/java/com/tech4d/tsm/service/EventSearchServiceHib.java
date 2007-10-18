@@ -28,8 +28,9 @@ public class EventSearchServiceHib implements EventSearchService {
             + "AND f.when_id = t.id ";
 
     private static String SQL_TIMERANGE_CLAUSE = 
-        "AND (t.begin between :earliest AND :latest) " +  
-        "AND (t.end between :earliest AND :latest)";
+        "AND ((t.begin >= :earliest AND t.begin < :latest) OR " +  
+        "     (t.end > :earliest AND t.end <= :latest) OR " +
+        "     (t.begin < :earliest AND t.end > :latest)) ";
 
     private static String SQL_MBRWITHIN_CLAUSE = 
         "AND MBRIntersects(geometryCollection, Envelope(GeomFromText(:geom_text))) ";

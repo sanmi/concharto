@@ -133,4 +133,10 @@ public class EventUtil {
         return cal.getTime();
     }
 
+    public static void printTimeRange(TimeRange tr) {
+        System.out.println("begin: " + tr.getBegin().getTime() 
+            + ", end: " + tr.getEnd().getTime());
+    }
+
+
 }
