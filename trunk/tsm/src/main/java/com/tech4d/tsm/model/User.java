@@ -21,8 +21,6 @@ public class User extends BaseAuditableEntity {
 
     private List<EventSummary> eventSummaries;
 
-    private List<UserTag> userTags;
-    
     private List<Role> roles;
 
     public User(String username, String password, String email) {
@@ -68,16 +66,6 @@ public class User extends BaseAuditableEntity {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    @OneToMany(cascade={CascadeType.ALL})
-    @ForeignKey(name="FK_USER_USERTAG", inverseName = "FK_USERTAG_USER")
-    public List<UserTag> getUserTags() {
-        return userTags;
-    }
-
-    public void setUserTags(List<UserTag> userTags) {
-        this.userTags = userTags;
     }
 
     @ManyToMany(cascade={CascadeType.ALL})

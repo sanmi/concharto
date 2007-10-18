@@ -63,7 +63,7 @@ public class PopulateDummyData {
         eventUtil = new EventUtil(eventTesterDao.getSessionFactory());
         logger.debug("deleting");
         LapTimer timer = new LapTimer(logger);
-        eventTesterDao.deleteAll();
+        eventTesterDao.deleteEvents();
         timer.timeIt("delete").logDebugTime();
         
         openTextFileReader();
