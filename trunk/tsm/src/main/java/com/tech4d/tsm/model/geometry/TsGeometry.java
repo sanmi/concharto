@@ -32,7 +32,7 @@ public class TsGeometry extends BaseEntity {
         this.setGeometry(geometry);
     }
 
-    @Type(type = "com.tech4d.tsm.model.GeometryUserType")
+    @Type(type = "com.tech4d.tsm.model.geometry.GeometryUserType")
     @Column(name = "geometryCollection", columnDefinition = "GEOMETRYCOLLECTION", nullable = false)
     private GeometryCollection getGeom() {
         return geometryCollection;

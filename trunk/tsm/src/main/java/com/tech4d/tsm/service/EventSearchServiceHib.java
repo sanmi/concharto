@@ -1,5 +1,6 @@
 package com.tech4d.tsm.service;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -114,12 +115,10 @@ public class EventSearchServiceHib implements EventSearchService {
             sqlQuery.setString("search_text", textFilter);
         }
         if (timeRange != null) {
-            sqlQuery.setDate("earliest", timeRange.getBegin());
-            sqlQuery.setDate("latest", timeRange.getEnd());
+            sqlQuery.setBigInteger("earliest", BigInteger.valueOf(timeRange.getBegin().getTime()));
+            sqlQuery.setBigInteger("latest", BigInteger.valueOf(timeRange.getEnd().getTime()));
         }
         return sqlQuery;
     }
-    
-
 
 }

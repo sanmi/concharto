@@ -1,15 +1,12 @@
 package com.tech4d.tsm.model.time;
 
-import java.util.Date;
+import com.tech4d.tsm.util.TimeRangeFormat;
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.Index;
-
-import com.tech4d.tsm.util.TimeRangeFormat;
+import java.util.Date;
 
 @Entity
 public class TimeRange extends TimePrimitive implements com.tech4d.tsm.model.time.SimpleTimeRange {
@@ -30,7 +27,7 @@ public class TimeRange extends TimePrimitive implements com.tech4d.tsm.model.tim
     /* (non-Javadoc)
      * @see com.tech4d.tsm.model.time.SimpleTimeRange#getBegin()
      */
-    @Temporal(TemporalType.TIMESTAMP)
+    @Type(type = "com.tech4d.tsm.model.time.UtcDateTimeType")
     @Index(name="beginindex")
     public Date getBegin() {
         return begin;
@@ -46,7 +43,7 @@ public class TimeRange extends TimePrimitive implements com.tech4d.tsm.model.tim
     /* (non-Javadoc)
      * @see com.tech4d.tsm.model.time.SimpleTimeRange#getEnd()
      */
-    @Temporal(TemporalType.TIMESTAMP)
+    @Type(type = "com.tech4d.tsm.model.time.UtcDateTimeType")
     @Index(name="endindex")
     public Date getEnd() {
         return end;
@@ -61,7 +58,7 @@ public class TimeRange extends TimePrimitive implements com.tech4d.tsm.model.tim
     
     /**
      * Output a human readable string 
-     * @return
+     * @return text
      */
     @Transient
     public String getAsText() {

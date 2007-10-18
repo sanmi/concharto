@@ -32,6 +32,10 @@ import com.tech4d.tsm.model.time.TimeRange;
  */
 public class TimeRangeFormat  {
 
+    private static final int DIGITS_IN_YEAR = 4;
+    private static final int MAX_YEAR_TO_DISLPAY_ERA = 1000;
+    private static final String ERA_BC = "BC";
+    private static final String ERA_AD = "AD";
     public static final int PRECISION_SECOND = 0;
     public static final int PRECISION_MINUTE = 1;
     public static final int PRECISION_HOUR = 2;
@@ -40,16 +44,24 @@ public class TimeRangeFormat  {
     public static final int PRECISION_YEAR = 5;
     
     private static final String FMT_TO_YEAR = "yyyy";
-    private static final String FMT_TO_MONTH = "MMMM yyyy";
+    private static final String FMT_TO_MONTH = "MMMM, yyyy";
     private static final String FMT_TO_DAY = "MMMM dd, yyyy";
     private static final String FMT_TO_HOUR = "MMMM dd, yyyy, hha";
     private static final String FMT_TO_MINUTE = "MMMM dd, yyyy, hh:mma";
     private static final String FMT_TO_SECOND = "MMMM dd, yyyy, hh:mm:ssa";
-    
+
+    private static final String FMT_TO_YEAR_ERA = "yyyy G";
+    private static final String FMT_TO_MONTH_ERA = "MMMM, yyyy G";
+    private static final String FMT_TO_DAY_ERA = "MMMM dd, yyyy G";
+    private static final String FMT_TO_HOUR_ERA = "MMMM dd, yyyy G, hha";
+    private static final String FMT_TO_MINUTE_ERA = "MMMM dd, yyyy G, hh:mma";
+    private static final String FMT_TO_SECOND_ERA = "MMMM dd, yyyy G, hh:mm:ssa";
+
   
     private final static String[] yearPatterns = {
         "yyyy", 
-        "yyyyG"
+        "yyyyG",
+        "yyyy G"
     };
 
     private final static String[] dayPatterns = {
@@ -61,6 +73,13 @@ public class TimeRangeFormat  {
         "MMM yy", 
         "MMM, yy", 
         "yyyy, MMM", 
+
+        "MM/dd/yyyy G", 
+        "yyyy G/MM/dd", 
+        "MMM dd, yyyy G", 
+        "MMM, yyyy G", 
+        "yyyy G, dd MMM", 
+        "yyyy G, MMM", 
     };
     private final static String[] timePatterns = {
         " hha", 
@@ -90,12 +109,12 @@ public class TimeRangeFormat  {
         patterns = tmpPatterns.toArray(new String[tmpPatterns.size()]);
         
         //for calculating the date precision 
-        calendarPrecisions.add(new CalendarPrecision(PRECISION_SECOND, Calendar.SECOND, 0, FMT_TO_SECOND));
-        calendarPrecisions.add(new CalendarPrecision(PRECISION_MINUTE, Calendar.MINUTE, 0, FMT_TO_MINUTE));
-        calendarPrecisions.add(new CalendarPrecision(PRECISION_HOUR, Calendar.HOUR, 0, FMT_TO_HOUR));
-        calendarPrecisions.add(new CalendarPrecision(PRECISION_DAY, Calendar.DAY_OF_MONTH, 1, FMT_TO_DAY));
-        calendarPrecisions.add(new CalendarPrecision(PRECISION_MONTH, Calendar.MONTH, Calendar.JANUARY, FMT_TO_MONTH));
-        calendarPrecisions.add(new CalendarPrecision(PRECISION_YEAR, Calendar.YEAR, -1, FMT_TO_YEAR));  //no empty value
+        calendarPrecisions.add(new CalendarPrecision(PRECISION_SECOND, Calendar.SECOND, 0, FMT_TO_SECOND, FMT_TO_SECOND_ERA));
+        calendarPrecisions.add(new CalendarPrecision(PRECISION_MINUTE, Calendar.MINUTE, 0, FMT_TO_MINUTE, FMT_TO_MINUTE_ERA));
+        calendarPrecisions.add(new CalendarPrecision(PRECISION_HOUR, Calendar.HOUR, 0, FMT_TO_HOUR, FMT_TO_HOUR_ERA));
+        calendarPrecisions.add(new CalendarPrecision(PRECISION_DAY, Calendar.DAY_OF_MONTH, 1, FMT_TO_DAY, FMT_TO_DAY_ERA));
+        calendarPrecisions.add(new CalendarPrecision(PRECISION_MONTH, Calendar.MONTH, Calendar.JANUARY, FMT_TO_MONTH, FMT_TO_MONTH_ERA));
+        calendarPrecisions.add(new CalendarPrecision(PRECISION_YEAR, Calendar.YEAR, -1, FMT_TO_YEAR, FMT_TO_YEAR_ERA));  //no empty value
     }
     
     private static void addPatterns(String[] patterns, List<String> list) {
@@ -152,12 +171,12 @@ public class TimeRangeFormat  {
         //3) if 12/7/1941 00:00 - 12/7/1942 00:00 = December 7, 1941, December 7, 1941 (don't subtract)
         CalendarPrecision cp = getPrecision(timeRange);
         if (isOneApart(cp.getCalendarField(), timeRange)) { //case 1
-            return dateFormat(timeRange.getBegin(), cp.getFormat()); 
+            return dateFormat(timeRange.getBegin(), cp); 
         } else if (isEqual(cp.getCalendarField(), timeRange)){ //case 2
-            return rangeFormat(timeRange, cp.getFormat()); 
+            return rangeFormat(timeRange, cp); 
         } else { //case 3
             SimpleTimeRange adjusted = subtractOneFromEnd(cp.getCalendarField(), timeRange);
-            return rangeFormat(adjusted, cp.getFormat()); 
+            return rangeFormat(adjusted, cp); 
         }
     }
 
@@ -185,40 +204,84 @@ public class TimeRangeFormat  {
      * @return true if begin-end = separation for the given calendar field (e.g. Calendar.MONTH)
      */
     private static boolean isSeparatedBy(int calendarField, int separation, SimpleTimeRange tr) {
-        Calendar begin = getCalendar(tr.getBegin());
-        Calendar end = getCalendar(tr.getEnd());
+        GregorianCalendar begin = getCalendar(tr.getBegin());
+        GregorianCalendar end = getCalendar(tr.getEnd());
         //roll begin by the separation ammount (takes into account boundaries e.g. month 12 + 1 = month 1) 
-        begin.roll(calendarField, separation); 
-        return (0 == (end.get(calendarField) - begin.get(calendarField)));        
+        if (calendarField == Calendar.YEAR) {
+            if (end.get(Calendar.ERA) == GregorianCalendar.BC) {
+                separation = - separation;
+            }
+        }
+        begin.roll(calendarField, separation);
+        int endField = end.get(calendarField);
+        int beginField = begin.get(calendarField);
+        
+        return (0 == (endField - beginField));        
     }
 
-    private static Calendar getCalendar(Date date) {
-        Calendar cal = new GregorianCalendar();
+    private static GregorianCalendar getCalendar(Date date) {
+        GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(date);
         return cal;
     }
 
     /**
      * @param tr SimpleTimeRange
-     * @param format format string
+     * @param cp CalendarPrecision for getting one of the format strings
      * @return a string with both beginning and end in the format fmt - fmt
      *         (e.g. yyyy - yyyy or MMM yyyy - MMM yyyy)
      */
-    private static String rangeFormat(SimpleTimeRange tr, String format ) {
-        StringBuffer range = new StringBuffer(dateFormat(tr.getBegin(), format));
+    private static String rangeFormat(SimpleTimeRange tr, CalendarPrecision cp ) {
+        StringBuffer range = new StringBuffer(dateFormat(tr.getBegin(), cp));
         range.append(" - ");
-        range.append(dateFormat(tr.getEnd(), format));
+        range.append(dateFormat(tr.getEnd(), cp));
         return range.toString();
     }
 
     /** 
      * format a date
      * @param date date
-     * @param format string (see SimpleDateFormat)
+     * @param cp CalendarPrecision for getting one of the format strings
      * @return String formatted string
      */
-    private static String dateFormat(Date date, String format) {
-        return DateFormatUtils.format(date, format);
+    private static String dateFormat(Date date, CalendarPrecision cp) {
+        String format;
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        if (cal.get(Calendar.YEAR) < MAX_YEAR_TO_DISLPAY_ERA) {
+            format = cp.getFormatWithEra();
+        } else {
+            format = cp.getFormat();
+        }
+        
+        String text = DateFormatUtils.format(date, format);
+        return stripLeadingZeros(date, text);
+    }
+
+    /**
+     * Make formatted date more user friendly.  For example, '0092 BC' is converted
+     * to '92 BC'
+     * 
+     * @param date original date
+     * @param text formatted text representation of that date
+     * @return stripped text
+     */
+    private static String stripLeadingZeros(Date date, String text) {
+        //first we have to find the formatted year.
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        String year = Integer.toString(cal.get(Calendar.YEAR));
+        //find the start pos of the year.  If the year is 0093, we will get
+        //year = '93' so the start of year = pos of '93' minus 2.
+        int yearPos = text.indexOf(year) - DIGITS_IN_YEAR + year.length();
+        StringBuffer adjusted = new StringBuffer();
+        if (yearPos != 0) {
+            adjusted.append(text.substring(0, yearPos));
+        }
+        adjusted.append(year);
+        adjusted.append(text.substring(yearPos+DIGITS_IN_YEAR, text.length()));
+
+        return adjusted.toString();
     }
 
     /**
@@ -239,17 +302,16 @@ public class TimeRangeFormat  {
 
         text = StringUtils.trimToEmpty(text);
             
-            Date begin = parseDate(text);
-            
-            CalendarPrecision cp = getPrecision(begin);
-            //add 1 to the end at the given precision (e.g. when someone says 
-            //December 1 to December 2 they mean 12/1 00:00:00 to 12/3 00:00:00) 
-            Calendar cal = getCalendar(begin);
-            cal.add(cp.getCalendarField(), 1);
-            Date end = cal.getTime();
-            
-            return new TimeRange(begin, end);
-            
+        Date begin = parseDate(text);
+        
+        CalendarPrecision cp = getPrecision(begin);
+        //add 1 to the end at the given precision (e.g. when someone says 
+        //December 1 to December 2 they mean 12/1 00:00:00 to 12/3 00:00:00) 
+        Calendar cal = getCalendar(begin);
+        cal.add(cp.getCalendarField(), 1);
+        Date end = cal.getTime();
+        
+        return new TimeRange(begin, end);
     }
 
     /**
@@ -294,9 +356,48 @@ public class TimeRangeFormat  {
         text = StringUtils.replace(text, "   ", " ");
         text = StringUtils.replace(text, "  ", " ");
         text = normalizeCommas(text);
+        text = adjustADBC(text);
         SimpleDateFormat sdf = new SimpleDateFormat();
         sdf.setLenient(false);
         return DateUtils.parseDate(sdf, text, patterns);
+    }
+
+    /**
+     * Fix the date if there is a missing space between
+     * the year and the ERA designator.  For instance,
+     * '5000BC' is converted to '5000 BC' and 'March, 50BC' is 
+     * converted to 'March, 50 BC'.  If '5000 BC' is passed in
+     * no changes are made
+     * 
+     * @param text to convert
+     * @return converted text if necessary  
+     */
+    private static String adjustADBC(String text) {
+        
+        if (StringUtils.contains(text, ERA_AD)) {
+            text = padEra(ERA_AD, text);
+        } else if (StringUtils.contains(text, ERA_BC)) {
+            text = padEra(ERA_BC, text);
+        }
+        return text;
+    }
+
+    /**
+     * @see TimeRangeFormat#adjustADBC
+     * 
+     * @param era 'AD' or 'BC'
+     * @param text text to convert
+     * @return converted text if necessary
+     */
+    private static String padEra(String era, String text) {
+        //get the character just before the ERA text (e.g. AD or BC)
+        String before = StringUtils.substringBefore(text, era);
+        
+        if (' ' != before.charAt(before.length()-1)) {
+            //ok we need to insert a space right here
+            text = before + " " + text.subSequence(before.length(), text.length());
+        }
+        return text;
     }
 
     /**

@@ -31,7 +31,7 @@ public class EventUtil {
     /**
      * Instantiate this utility with a hibernate session factory so 
      * that we can refresh objects
-     * @param sessionFactory
+     * @param sessionFactory  hibernate session factory
      */
     public EventUtil(SessionFactory sessionFactory) {
         super();
@@ -111,9 +111,7 @@ public class EventUtil {
         Session session = SessionFactoryUtils.getSession(sessionFactory, true);
         session.refresh(actual);
 
-        Date correctedDate = filterMilliseconds(expected.getWhen()
-                .getBegin());
-        assertEquals(correctedDate, actual.getWhen().getBegin());
+        assertEquals(expected.getWhen().getBegin(), actual.getWhen().getBegin());
         com.tech4d.tsm.model.kml.Style expectedStyle = (Style) expected.getStyleSelector();
         com.tech4d.tsm.model.kml.Style actualStyle = (Style) actual.getStyleSelector();
         assertEquals(
