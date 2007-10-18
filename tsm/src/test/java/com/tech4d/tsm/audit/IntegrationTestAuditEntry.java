@@ -15,6 +15,8 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tech4d.tsm.auth.ThreadLocalUserContext;
+import com.tech4d.tsm.auth.UserContext;
 import com.tech4d.tsm.dao.AuditEntryDao;
 import com.tech4d.tsm.dao.StyleUtil;
 import com.tech4d.tsm.dao.EventDao;
@@ -28,6 +30,7 @@ import com.vividsolutions.jts.io.ParseException;
 @Transactional
 public class IntegrationTestAuditEntry {
 
+    private static final String USERNAME = "bob";
     private static final int MAX_RESULTS = 100;
     private static EventDao eventDao;
     private static AuditEntryDao auditEntryDao;
@@ -57,6 +60,12 @@ public class IntegrationTestAuditEntry {
         StyleUtil.setupStyle();
     }
 
+    @Before public void setupUserContext() {
+        UserContext userContext = new UserContext();
+        userContext.setUsername(USERNAME);
+        ThreadLocalUserContext.setUserContext(userContext);
+    }
+    
     /**
      * 
      * @throws ParseException e
@@ -86,9 +95,11 @@ public class IntegrationTestAuditEntry {
         List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(event, 0, MAX_RESULTS);
         assertEquals(2, auditEntries.size());
         //go down the list (entries are ordered by newest first)
+        //verify username is in the field
         int version = auditEntries.size() - 1;
         for (AuditEntry auditEntry : auditEntries) {
             assertEquals((long) version--, auditEntry.getVersion());
+            assertEquals(USERNAME, auditEntry.getUser());
         }
 
         //now test retrieval by fake object

@@ -1,58 +1,3 @@
--- debug
-DROP TABLE geom;
-CREATE TABLE geom (g GEOMETRY NOT NULL) ENGINE = MYISAM;
-ALTER TABLE geom ADD pt POINT;
-CREATE SPATIAL INDEX sp_index ON geom (g);
-
-CREATE TABLE geom (g GEOMETRY NOT NULL, SPATIAL INDEX(g));
-
--- Test Tables
-drop table address;
-CREATE TABLE address (
-  id bigint not null auto_increment,
-  address CHAR(80) NOT NULL,
-  addressLocation POINT NOT NULL,
-  PRIMARY KEY(id),
-  SPATIAL KEY(addressLocation)
-) ENGINE = MYISAM;
-
-drop table cab;
-CREATE TABLE cab (
-  cab_id INT AUTO_INCREMENT NOT NULL,
-  cab_driver CHAR(80) NOT NULL,
-  cab_loc POINT NOT NULL,
-  PRIMARY KEY(cab_id),
-  SPATIAL KEY(cab_loc)
-) ENGINE = MYISAM;
-
-INSERT INTO address VALUES(100, 'Foobar street 12', GeomFromText('POINT(2671 2500)'));
-INSERT INTO address VALUES(200, 'Foobar street 56', GeomFromText('POINT(2971 2520)'));
-INSERT INTO address VALUES(300, 'Foobar street 78', GeomFromText('POINT(3171 2510)'));
-INSERT INTO address VALUES(400, 'Foobar street 97', GeomFromText('POINT(5671 2530)'));
-INSERT INTO address VALUES(500, 'Foobar street 99', GeomFromText('POINT(6271 2460)'));
-INSERT INTO address VALUES(600, 'Bloggs lane 10', GeomFromText('POINT(5673 3520)'));
-INSERT INTO address VALUES(700, 'Bloggs lane 20', GeomFromText('POINT(5665 3550)'));
-INSERT INTO address VALUES(800, 'Bloggs lane 45', GeomFromText('POINT(5571 3510)'));
-
-INSERT INTO cab VALUES(100, 'Joe Bloggs', GeomFromText('POINT(2262 2100)'));
-INSERT INTO cab VALUES(200, 'Bill Bloggs', GeomFromText('POINT(2441 1980)'));
-INSERT INTO cab VALUES(300, 'Sam Spade', GeomFromText('POINT(5400 3200)'));
-
--- From MySQL 4.1, Example: query for the closest cab to a given location
-SELECT
-  c.cab_driver,
-  ROUND(GLength(LineStringFromWKB(LineString(AsBinary(c.cab_loc),
-                                             AsBinary(a.addressLocation)))))
-    AS distance
-FROM cab c, address a
-WHERE a.address = 'Foobar street 99'
-ORDER BY distance ASC LIMIT 1;
-
--- Show all
-SELECT c.cab_driver, GLength(LineStringFromWKB(LineString(AsBinary(c.cab_loc),AsBinary(a.addressLocation)))) as distance
-FROM cab c, address a
-WHERE a.address = 'Foobar street 99'
-ORDER BY distance;
 
 -- Find wirhin a bounding rectangle
 SELECT a.address, MBRWithin(a.addressLocation,Envelope(GeomFromText('LineString(2000 2000,5000 5000)')))
@@ -121,16 +66,14 @@ AND MBRWithin(geometryCollection, Envelope(GeomFromText('POLYGON ((-77.341690063
 
 --Just time
 -- Feb 22, 2005 - Feb 22, 2007
-SELECT * FROM event f, timeprimitive t
+SELECT count(*) FROM event f, timeprimitive t
 WHERE f.when_id = t.id
-AND (t.begin BETWEEN 1111467600000 AND 1174536000000 )
-AND (t.end BETWEEN 1111467600000 AND 1174536000000 );
+AND (
+(t.begin BETWEEN 1111467600000 AND 1174536000000 ) OR
+(t.end BETWEEN 1111467600000 AND 1174536000000 ) OR
+(t.begin < 1111467600000 AND t.end > 1174536000000)
+);
 
--- Jan 1, 2007 - Feb 1, 2007
-SELECT * FROM event f, timeprimitive t
-WHERE f.when_id = t.id
-AND (t.begin BETWEEN 1167627600000 AND 1199163600000 )
-AND (t.end BETWEEN 1111467600000 AND 1174536000000 );
 
 
 --just text no join

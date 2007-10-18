@@ -47,6 +47,13 @@ public class LoginFilter implements Filter{
                 httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getContextPath() + REDIRECT_NOTAUTHORIZED));
             }
         }
+        //setup the user context for those who can't get user and role data from
+        //the session (e.g. audit interceptor)
+        HttpSession session = httpRequest.getSession();
+        UserContext userContext = new UserContext();
+        userContext.setUsername((String) session.getAttribute(AuthConstants.AUTH_USERNAME));
+        userContext.setRoles((String) session.getAttribute(AuthConstants.AUTH_ROLES));
+        ThreadLocalUserContext.setUserContext(userContext);
         chain.doFilter(request, response);
     }
 

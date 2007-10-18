@@ -64,14 +64,16 @@
 	      		of <b>${totalResults}</b>
 	      	</span>
 				</div>
-				<div class="changeEntry">
-			    <c:if test="${changeHistory.currentRecord > 0}"> 
-				    	<a class="nextPrev" href="#" onclick="nextPage('previous')">Previous</a>
-			    </c:if>
-				  <c:if test="${totalResults > changeHistory.currentRecord + fn:length(auditEntries)}"> 
-				  	<a class="nextPrev" href="#" onclick="nextPage('next')">Next</a>
-				  </c:if>
-				</div>
+				<c:if test="${(changeHistory.currentRecord > 0) || (totalResults > changeHistory.currentRecord + fn:length(auditEntries))}"> 
+					<div class="changeEntry">
+				    <c:if test="${changeHistory.currentRecord > 0}"> 
+					    	<a class="nextPrev" href="#" onclick="nextPage('previous')">Previous</a>
+				    </c:if>
+					  <c:if test="${totalResults > changeHistory.currentRecord + fn:length(auditEntries)}"> 
+					  	<a class="nextPrev" href="#" onclick="nextPage('next')">Next</a>
+					  </c:if>
+					</div>
+				</c:if>
 	      <c:forEach items="${auditEntries}" var="auditEntry">
 	        <div class="changeEntry" >
 	      			Revision <c:out value="${auditEntry.version}"/>, 
@@ -90,14 +92,16 @@
 	      		<a href="#">revert</a>
 	        </div>
 	      </c:forEach>
-	      <div class="changeEntry">
-			    <c:if test="${changeHistory.currentRecord > 0}"> 
-				    	<a class="nextPrev" href="#" onclick="nextPage('previous')">Previous</a>
-			    </c:if>
-				  <c:if test="${totalResults > changeHistory.currentRecord + fn:length(auditEntries)}"> 
-				  	<a class="nextPrev" href="#" onclick="nextPage('next')">Next</a>
-				  </c:if>
-				</div>			
+				<c:if test="${(changeHistory.currentRecord > 0) || (totalResults > changeHistory.currentRecord + fn:length(auditEntries))}"> 
+		      <div class="changeEntry">
+				    <c:if test="${changeHistory.currentRecord > 0}"> 
+					    	<a class="nextPrev" href="#" onclick="nextPage('previous')">Previous</a>
+				    </c:if>
+					  <c:if test="${totalResults > changeHistory.currentRecord + fn:length(auditEntries)}"> 
+					  	<a class="nextPrev" href="#" onclick="nextPage('next')">Next</a>
+					  </c:if>
+					</div>			
+				</c:if>
 	  	</div>   
 	  	  
 	  	<input type="button" value="Done" onclick="edit(); return false;"/>
