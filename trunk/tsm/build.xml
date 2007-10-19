@@ -8,6 +8,7 @@
 	<property name="name" value="${ant.project.name}" />
 
 	<property name="webroot.dir" value="src/main/webapp" />
+	<property name="webroot.messages.dir" value="src/main/messages" />
 	<property name="webroot.webinf.dir" value="${webroot.dir}/WEB-INF" />
 	<property name="db.ddl.dir" value="${webroot.webinf.dir}" />
 	<property name="db.additional.ddl.dir" value="database" />
@@ -179,6 +180,18 @@
 		<copy todir="${target.webapp.dir}/WEB-INF/classes"
 			preservelastmodified="true">
 			<fileset dir="${target.classes.dir}">
+				<include name="**/*" />
+			</fileset>
+			<fileset dir="${webroot.messages.dir}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		<copy todir="${target.webapp.dir}/WEB-INF/lib"
+			preservelastmodified="true">
+			<fileset dir="${lib.deploy.dir}">
+				<include name="**/*" />
+			</fileset>
+			<fileset dir="${lib.local.dir}">
 				<include name="**/*" />
 			</fileset>
 		</copy>
