@@ -22,7 +22,7 @@ public class EventSearchServiceHib implements EventSearchService {
     /** Logger that is available to subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private static String SQL_SELECT_STUB = " FROM event f, tsgeometry g, eventsearchtext es, timeprimitive t "
+    private static String SQL_SELECT_STUB = " FROM Event f, TsGeometry g, EventSearchText es, TimePrimitive t "
             + "WHERE f.tsgeometry_id = g.id "
             + "AND f.eventsearchtext_id = es.id "
             + "AND f.when_id = t.id ";

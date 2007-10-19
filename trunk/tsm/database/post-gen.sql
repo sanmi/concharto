@@ -13,7 +13,7 @@ ALTER TABLE EventSearchText ENGINE = MyISAM;
 CREATE FULLTEXT INDEX ft_event ON EventSearchText (summary, _where, usertags, description, source);
 
 -- user roles
-INSERT INTO role (id,created,lastModified,version,name) VALUES 
+INSERT INTO Role (id,created,lastModified,version,name) VALUES 
 (1,CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,0,'admin'),
 (2,CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,0,'edit'),
 (3,CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,0,'canDelete'),
@@ -21,10 +21,10 @@ INSERT INTO role (id,created,lastModified,version,name) VALUES
 (5,CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,0,'canMove');
 
 -- Admin user pw='cat'
-INSERT INTO user (id,created,lastModified,version,email,username,password) 
+INSERT INTO User (id,created,lastModified,version,email,username,password) 
 VALUES(1,CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0,'frank@fsanmiguel.com','sanmi','P5iePyfcng7DOJ/IVfFCw9QPDFA=');
 
 --give him all the admin roles
-INSERT INTO user_role (user_id, roles_id) VALUES
+INSERT INTO User_Role (user_id, roles_id) VALUES
 (1,1),(1,2),(1,3),(1,4),(1,5);
 
