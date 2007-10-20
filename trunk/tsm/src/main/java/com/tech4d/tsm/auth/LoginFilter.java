@@ -25,7 +25,8 @@ import org.apache.commons.logging.LogFactory;
 public class LoginFilter implements Filter{
     private static final String REDIRECT_NOTAUTHORIZED = "/notauthorized.htm";
     private static final String REDIRECT_LOGIN = "/login.htm";
-    private static final String[] PATTERN_REQUIRES_AUTHENTICATION = {"edit","admin","member"};
+    //TODO search requires authentication only during the private pilot
+    private static final String[] PATTERN_REQUIRES_AUTHENTICATION = {"search","edit","admin","member"};
     private static final String[] PATTERN_REQUIRES_AUTHORIZATION = {"edit","admin"};
     private static final Log log = LogFactory.getLog(LoginFilter.class);
     
@@ -118,17 +119,15 @@ public class LoginFilter implements Filter{
 
     private boolean requiresAuthentication(HttpServletRequest httpRequest) {
         //TODO this is for the beta period.  Remove later!!
-        if (httpRequest.getServerName().equals("www.map4d.com")) {
+        if (httpRequest.getServerName().equals("www.map-4d.com")) {
             return false;
-        } else {
-            return true;
+        } 
+        for (String pattern : PATTERN_REQUIRES_AUTHENTICATION) {
+            if (StringUtils.contains(httpRequest.getRequestURI(), pattern)) {
+                return true;
+            }
         }
-//        for (String pattern : PATTERN_REQUIRES_AUTHENTICATION) {
-//            if (StringUtils.contains(httpRequest.getRequestURI(), pattern)) {
-//                return true;
-//            }
-//        }
-//        return false;
+        return false;
     }
     private boolean requiresAuthorization(HttpServletRequest httpRequest) {
         for (String pattern : PATTERN_REQUIRES_AUTHORIZATION) {

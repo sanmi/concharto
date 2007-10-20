@@ -6,7 +6,7 @@
 <tsm:page title="Events">
     <c:url value="/event.htm" var="addLink"/>
     <a href="${addLink}">Add an Event</a>
-    <c:url value="/eventsearch.htm" var="searchLink"/>
+    <c:url value="/search/eventsearch.htm" var="searchLink"/>
     <a href="${searchLink}">Search</a>
     <table class="eventlist">
     	<thead>

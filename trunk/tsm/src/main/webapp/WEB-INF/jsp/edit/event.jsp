@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 <%
 String path = request.getContextPath();
@@ -462,7 +463,7 @@ request.setAttribute("basePath", basePath);
    		    </div>
 					<div class="inputcell">
 					 <input type="submit" name="Save" value="Save This Event" />
-					 <input type="button" name="Cancel" value="Cancel" onclick="javascript:document.location='${basePath}eventsearch.htm';"/>
+					 <input type="button" name="Cancel" value="Cancel" onclick="javascript:document.location='${basePath}search/eventsearch.htm';"/>
 					</div>
 	      </form:form>
 			</td>		   
