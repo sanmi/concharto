@@ -12,7 +12,7 @@ request.setAttribute("basePath", basePath);
 <tsm:page title="Event">
 	<jsp:attribute name="head">
 		<script
-			src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=ABQIAAAA1DZDDhaKApTfIDHGfvo13hSQekddw1ZVY1OywWYSY7GTmNOxgRQ1UKcA9cKipDAZNLJ5R_X-JJcYhw"
+			src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=<spring:message code='map.key'/>"
 			type="text/javascript">
 		</script>		
 		<script type="text/javascript">

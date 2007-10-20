@@ -117,12 +117,18 @@ public class LoginFilter implements Filter{
     }
 
     private boolean requiresAuthentication(HttpServletRequest httpRequest) {
-        for (String pattern : PATTERN_REQUIRES_AUTHENTICATION) {
-            if (StringUtils.contains(httpRequest.getRequestURI(), pattern)) {
-                return true;
-            }
+        //TODO this is for the beta period.  Remove later!!
+        if (httpRequest.getServerName().equals("www.map4d.com")) {
+            return false;
+        } else {
+            return true;
         }
-        return false;
+//        for (String pattern : PATTERN_REQUIRES_AUTHENTICATION) {
+//            if (StringUtils.contains(httpRequest.getRequestURI(), pattern)) {
+//                return true;
+//            }
+//        }
+//        return false;
     }
     private boolean requiresAuthorization(HttpServletRequest httpRequest) {
         for (String pattern : PATTERN_REQUIRES_AUTHORIZATION) {
