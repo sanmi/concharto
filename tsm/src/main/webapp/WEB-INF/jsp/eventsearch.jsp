@@ -2,6 +2,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%
@@ -14,7 +15,7 @@ request.setAttribute("basePath", basePath);
 	<jsp:attribute name="head">
 		<script
 			<%-- TODO: put the API key a properties file, probably best to use localization api <c:fmt> --%>
-			src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=ABQIAAAA1DZDDhaKApTfIDHGfvo13hSQekddw1ZVY1OywWYSY7GTmNOxgRQ1UKcA9cKipDAZNLJ5R_X-JJcYhw"
+			src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=<spring:message code='map.key'/>"
 			type="text/javascript">
 		</script>		
 		<script type="text/javascript">
