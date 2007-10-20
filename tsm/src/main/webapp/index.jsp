@@ -2,4 +2,4 @@
 
 <!-- simply redirects to the main switchboard page of the showcase web application -->
 
-<c:redirect url="/eventsearch.htm"/>
+<c:redirect url="/search/eventsearch.htm"/>
