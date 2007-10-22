@@ -12,8 +12,9 @@ public class TestPasswordUtil {
 
     @Test 
     public void encrypt() throws NoSuchAlgorithmException {
-        String pwd = "somepassword";
+        String pwd = "cat";
         String hashed = PasswordUtil.encrypt(pwd);
+        System.out.println("hashed = " + hashed);
         assertTrue(!pwd.equals(hashed));
         assertEquals(hashed, PasswordUtil.encrypt(pwd));
     }

@@ -61,6 +61,9 @@
 	<classpathentry kind="lib" path="lib/deploy/commons-beanutils.jar"/>
 	<classpathentry kind="lib" path="lib/deploy/ezmorph.jar"/>
 	<classpathentry kind="lib" path="lib/lab/geonames-0.5.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/commons-codec.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/icu4j.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/jasypt.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="src/main/webapp/WEB-INF/classes"/>
 </classpath>
