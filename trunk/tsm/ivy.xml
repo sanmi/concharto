@@ -24,16 +24,19 @@
 		<dependency org="taglibs" name="standard" rev="1.1.2" conf="deploy->default; build->default"/>
 		<dependency org="javax.servlet" name="jstl" rev="1.1.2" conf="deploy->default; build->default"/>
 		<dependency org="commons-collections" name="commons-collections" rev="3.2" conf="deploy->default; build->default"/> <!-- for json -->        
-        <dependency org="commons-io" name="commons-io" rev="1.3.1" conf="deploy->default; build->default"/>
-        
-        <!--  Problem with json-lib at the maven repository because of the jdk15 addition at the end of the version -->
-        <dependency org="net.sf.json-lib" name="json-lib" rev="2.0" conf="deploy->default; build->default">
-	        <artifact name="json-lib-2.0-jdk15" type="jar" url="http://repo1.maven.org/maven2/net/sf/json-lib/json-lib/2.0/json-lib-2.0-jdk15.jar"/>
-	        <include name="*"/>
-        </dependency>
-        <dependency org="commons-beanutils" name="commons-beanutils" rev="1.7.0" conf="deploy->default; build->default"/>
-        <dependency org="net.sf.ezmorph" name="ezmorph" rev="1.0.2" conf="deploy->default; build->default"/>
-        <!--  end json-lib dependencies -->
+    <dependency org="commons-io" name="commons-io" rev="1.3.1" conf="deploy->default; build->default"/>
+    <dependency org="commons-codec" name="commons-codec" rev="1.3" conf="deploy->default; build->default"/>
+    <dependency org="com.ibm.icu" name="icu4j" rev="3.4.4" conf="deploy->default; build->default"/>
+    <dependency org="org.jasypt" name="jasypt" rev="1.3.1" conf="deploy->default; build->default"/>
+       
+    <!--  Problem with json-lib at the maven repository because of the jdk15 addition at the end of the version -->
+    <dependency org="net.sf.json-lib" name="json-lib" rev="2.0" conf="deploy->default; build->default">
+     <artifact name="json-lib-2.0-jdk15" type="jar" url="http://repo1.maven.org/maven2/net/sf/json-lib/json-lib/2.0/json-lib-2.0-jdk15.jar"/>
+     <include name="*"/>
+    </dependency>
+    <dependency org="commons-beanutils" name="commons-beanutils" rev="1.7.0" conf="deploy->default; build->default"/>
+    <dependency org="net.sf.ezmorph" name="ezmorph" rev="1.0.2" conf="deploy->default; build->default"/>
+    <!--  end json-lib dependencies -->
 
 		<!--  build only  -->
 		<!--<dependency org="jdom" name="jdom" rev="1.0" conf="tools->default"/> --> <!-- for geonames lab -->
