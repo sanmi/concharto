@@ -14,7 +14,6 @@ request.setAttribute("basePath", basePath);
 <tsm:page title="Event">
 	<jsp:attribute name="head">
 		<script
-			<%-- TODO: put the API key a properties file, probably best to use localization api <c:fmt> --%>
 			src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=<spring:message code='map.key'/>"
 			type="text/javascript">
 		</script>		
