@@ -7,6 +7,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 request.setAttribute("username", (String)request.getSession().getAttribute("username"));
 %>
 <div id="nav">
+<ul class="nav_left"><li><a href="<%=path %>/">Home</a></li
+></ul>
+<ul class="nav_left"><li><a href="#" onclick="alert('Not Yet Implemented');">Add From Wikipedia</a></li
+></ul>
 <ul>
 <c:if test="${username == null}">
 <li><a href="<%=path %>/login.htm">Sign in / create account</a></li
@@ -15,3 +19,4 @@ request.setAttribute("username", (String)request.getSession().getAttribute("user
 ><li><a href="<%=path %>/logout.htm">Sign out</a></li
 ></c:if></ul>
 </div>
+
