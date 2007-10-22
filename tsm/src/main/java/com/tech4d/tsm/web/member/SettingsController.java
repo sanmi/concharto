@@ -5,8 +5,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -20,7 +18,6 @@ import com.tech4d.tsm.util.PasswordUtil;
 public class SettingsController extends SimpleFormController {
     private static final String MODEL_SUCCESS = "success";
     private static final String MODEL_USER = "user";
-    private static final Log log = LogFactory.getLog(SettingsController.class);
     private UserDao userDao;
 
     public void setUserDao(UserDao userDao) {
@@ -65,7 +62,7 @@ public class SettingsController extends SimpleFormController {
         
         //verify the old password is correct
         if ((user != null) && 
-            (PasswordUtil.isPasswordValid(log, settingsForm.getExistingPassword(), user.getPassword()))) {
+            (PasswordUtil.isPasswordValid(settingsForm.getExistingPassword(), user.getPassword()))) {
             //ok we can change the information
             user.setPassword(PasswordUtil.encrypt(settingsForm.getPassword()));
             user.setEmail(settingsForm.getEmail());

@@ -4,7 +4,7 @@
 	<classpathentry excluding="com/tech4d/tsm/model/test/|com.tech4d.tsm.model.test/" kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry excluding="**" kind="src" output="src/test/conf" path="src/test/conf"/>
 	<classpathentry excluding="**|classes/" kind="src" output="src/main/webapp/WEB-INF" path="src/main/webapp/WEB-INF"/>
-	<classpathentry kind="src" path="src/lab/java"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/lab/java"/>
 	<classpathentry kind="src" path="src/main/messages"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
@@ -63,7 +63,11 @@
 	<classpathentry kind="lib" path="lib/lab/geonames-0.5.jar"/>
 	<classpathentry kind="lib" path="lib/deploy/commons-codec.jar"/>
 	<classpathentry kind="lib" path="lib/deploy/icu4j.jar"/>
-	<classpathentry kind="lib" path="lib/deploy/jasypt.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/jasypt.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/apps/lib/jasypt-1.3.1-bin/api/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="src/main/webapp/WEB-INF/classes"/>
 </classpath>

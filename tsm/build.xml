@@ -253,6 +253,10 @@
 		<do-test include="**/Test*.class" exclude="**/lab/*"/>
 	</target>
 
+	<target name="single-test" depends="compile-tests">
+		<do-test include="${single.test}.class" exclude="**/*$$*"/>
+	</target>
+
 	<target name="test" depends="integration-test, unit-test"/>
 	<!-- end test targets -->
 	

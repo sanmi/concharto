@@ -48,7 +48,7 @@ public class LoginController extends SimpleFormController {
         User user = userDao.find(loginForm.getUsername());
         
         if ((user != null) && 
-            (PasswordUtil.isPasswordValid(log, loginForm.getPassword(), user.getPassword()))) {
+            (PasswordUtil.isPasswordValid(loginForm.getPassword(), user.getPassword()))) {
             //matched username and password, ok to proceed
             log.debug("user " + loginForm.getUsername() + " signed in");
             //first save the username and roles in the session            
