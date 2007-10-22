@@ -313,6 +313,9 @@
         <root url="jar://$PROJECT_DIR$/lib/deploy/spring.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/deploy/standard.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/deploy/json-lib-2.0-jdk15.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/deploy/icu4j.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/deploy/jasypt.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/deploy/commons-codec.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
