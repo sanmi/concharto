@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<style type="text/css">
+    @import url("../../../main/webapp/css/style.css");
+</style>
+
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.3.1/build/container/assets/container.css"/>
+<!-- Dependencies -->
+<script type="text/javascript" src="http://yui.yahooapis.com/2.3.1/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+<!-- Source file -->
+<script type="text/javascript" src="http://yui.yahooapis.com/2.3.1/build/container/container-min.js"></script>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Test YUI</title>
+
+<script
+  src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=ABQIAAAA1DZDDhaKApTfIDHGfvo13hSQekddw1ZVY1OywWYSY7GTmNOxgRQ1UKcA9cKipDAZNLJ5R_X-JJcYhw"
+  type="text/javascript">
+</script>		
+
+		<script type="text/javascript">
+		//<![CDATA[
+	//some of the globals
+	var map;
+	var geocoder = null;
+	var myDialog;
+	
+	function initializeMap() {
+		myDialog = new YAHOO.widget.Dialog("myDialog"); 
+		myDialog.render(); 
+		
+		if (GBrowserIsCompatible()) {
+			// map and its equipment
+			map = new GMap2(document.getElementById("map"));
+			//map.enableContinuousZoom();
+			map.addControl(new GMapTypeControl(1));
+			map.addControl(new GLargeMapControl());
+			map.enableDoubleClickZoom();
+			map.enableScrollWheelZoom();
+	
+			//prevent scrolling the window when the mouse is inside of the map
+			GEvent.addDomListener(map.getContainer(), "DOMMouseScroll", wheelevent);
+			map.getContainer().onmousewheel = wheelevent; 
+			
+			map.setCenter(new GLatLng(40.879721,-76.998322),10);  //la la land, PA 
+			setMapExtent();
+			map.checkResize() //tell the map that we have resized it
+		}
+	}
+	
+	function setMapExtent() {
+				var top = document.getElementById("map").offsetTop;
+				var height = getHeight() - top - 20;
+				document.getElementById("map").style.height=height+"px";
+	}
+
+function getHeight() {
+  var myWidth = 0, myHeight = 0;
+  if( typeof( window.innerWidth ) == 'number' ) {
+    //Non-IE
+    myWidth = window.innerWidth;
+    myHeight = window.innerHeight;
+  } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
+    //IE 6+ in 'standards compliant mode'
+    myWidth = document.documentElement.clientWidth;
+    myHeight = document.documentElement.clientHeight;
+  } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
+    //IE 4 compatible
+    myWidth = document.body.clientWidth;
+    myHeight = document.body.clientHeight;
+  }
+	return myHeight;
+}
+
+	///prevent page scroll
+	function wheelevent(e)
+	{
+			if (!e){
+				e = window.event
+			}
+			if (e.preventDefault){
+				e.preventDefault()
+			}
+			e.returnValue = false;
+	}
+	
+	function showDialog() {
+		myDialog.show();
+	}
+			
+		//]]>
+		</script>
+
+</head>
+
+<body class="mapedit" onload="initializeMap();" onresize="setMapExtent();">
+<div id="nav">
+<ul>
+<li><a href="/tsm">Home</a></li
+><li><a href="#">Logout</a></li
+></ul>
+</div>
+
+<div id="head">
+		<table style="width:100%">
+    	<tr>
+      	<td width="125">
+			    <img src="../images/logo.png" alt="" />
+        </td>
+        <td>
+			    <img style="float: right" src="../images/banner-timeline.png" alt="" width="506" height="63" />
+        </td>
+      </tr>
+    </table>    	
+</div>
+<div >
+<table id="content" style="width:100%"><tr>
+<td id="sidebar" onclick="showDialog()">
+<div id="eventForm" style="height:400px; overflow-x:hidden; overflow-y:scroll;overflow:-moz-scrollbars-vertical!important;">
+<div class="eventlist" >
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs 
+  </div>
+<div class="eventlist">
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+</div>
+<div class="eventlist">
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+</div>
+<div class="eventlist">
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+  zfs fgsd gsfd gsdf gsdfg sdfg sfdg sdfg sfdg sfd gsfdgs zfs <br/>
+</div>
+	<br/><br /> 
+
+<!--  <div class="labelcell">
+  zfs fgsd gsfd gsdf gsdfg sdf <br/>
+  </div>
+  <div class="fieldcell">
+  <input type="text" size="48"/>
+  </div>
+
+  <div class="labelcell">
+  zfs fgsd gsfd gsdf gsdfg sdf <br/>
+  </div>
+  <div class="fieldcell">
+  <input type="text" size="48"/>
+  </div>
+
+  <div class="labelcell">
+  zfs fgsd gsfd gsdf gsdfg sdf <br/>
+  </div>
+  <div class="fieldcell">
+  <input type="text" size="48"/>
+  </div>
+
+  <div class="labelcell">
+  zfs fgsd gsfd gsdf gsdfg sdf <br/>
+  </div>
+  <div class="fieldcell">
+  <input type="text" size="48"/>
+  </div>
+-->
+</div>
+</td>
+<td style="" >
+	<div id="map" style="width:100%;border:1px solid #999999; margin:-1px">
+	     Map coming...
+	     <noscript>
+	       <p>
+	         JavaScript must be enabled to get the map.
+	       </p>
+	     </noscript>
+	</div>
+</td>
+
+</tr></table>
+</div>
+
+	<div id="footer">
+	  <hr/>
+	  <div id="clearFloat"/>  
+		Time Space Map
+  </div>
+  
+  
+<div id="myDialog">
+	<div class="hd">Please enter your information</div>
+	<div class="bd">
+		<form name="dlgForm" method="post" action="php/post.php">
+			<p>Please enter your personal contact information:</p>
+			<label for="firstname">First Name:</label><input type="text" name="firstname" />
+			<label for="lastname">Last Name:</label><input type="text" name="lastname" />
+		</form>
+	</div>
+</div>
+  
+</body>
+</html>

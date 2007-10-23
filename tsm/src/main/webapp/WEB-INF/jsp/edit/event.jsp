@@ -359,7 +359,7 @@ request.setAttribute("basePath", basePath);
 			document.getElementById("eventForm").geometry.value = markersToJSON(_polyMarkers, geometryType);
 		}
 	}
-	
+
 	<%-- addAddressToMap() is called when the geocoder returns an answer.  --%>
 	function addAddressToMap(response) {
 	  if (!response || response.Status.code != 200) {

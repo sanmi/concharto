@@ -133,5 +133,6 @@ public class IntegrationTestEventDao {
         Event event = eventDao.findById((Long) id);
         assertNull(event);
     }
+    
 
 }

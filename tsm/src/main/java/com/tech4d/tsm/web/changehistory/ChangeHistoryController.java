@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.AbstractFormController;
 import com.tech4d.tsm.dao.AuditEntryDao;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.audit.AuditEntry;
+import com.tech4d.tsm.model.audit.AuditEntryFormat;
 import com.tech4d.tsm.web.util.PaginatingFormHelper;
 
 public class ChangeHistoryController extends AbstractFormController {

@@ -2,13 +2,16 @@
 	var map;
 	var geocoder = null;
 	
-	function initializeMap() {
+	function initializeMap(control) {
 		if (GBrowserIsCompatible()) {
 			// map and its equipment
 			map = new GMap2(document.getElementById("map"));
 			//map.enableContinuousZoom();
 			map.addControl(new GMapTypeControl(1));
-			map.addControl(new GLargeMapControl());
+			if (control == null) {
+				control = new GLargeMapControl();
+			}
+			map.addControl(control);
 			map.enableDoubleClickZoom();
 			map.enableScrollWheelZoom();
 			geocoder = new GClientGeocoder();
@@ -19,7 +22,7 @@
 			
 			map.setCenter(new GLatLng(40.879721,-76.998322),10);  //la la land, PA 
 			setMapExtent();
-			map.checkResize() //tell the map that we have resized it
+			map.checkResize(); //tell the map that we have resized it
 		}
 	}
 

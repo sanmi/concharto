@@ -19,9 +19,14 @@
           <prop key="search/eventsearch.htm">eventSearchController</prop>
           <prop key="edit/event.htm">eventController</prop>
           <prop key="edit/changehistory.htm">changeHistoryController</prop>
+          <prop key="edit/flagevent.htm">flagEventController</prop>
+          <prop key="edit/flageventsuccess.htm">flagEventController</prop>
+          <prop key="edit/listflags.htm">switchBoardController</prop>
+          <prop key="admin/flagdisposition.htm">switchBoardController</prop>
           <prop key="admin/listEvents.htm">switchBoardController</prop>
           <prop key="admin/signup.htm">signupController</prop>
           <prop key="member/settings.htm">settingsController</prop>
+          <prop key="search/mapthumbnail.htm">switchBoardController</prop>
       </props>
 		</property>		
 	</bean>
@@ -42,6 +47,7 @@
 	<!-- Controller names are not important when using the above HandlerMapping implementation -->
 	<bean id="switchBoardController" class="com.tech4d.tsm.web.SwitchBoardController" parent="baseEventController" >
 		<property name="eventDao" ref="eventDao" />
+		<property name="flagDao" ref="flagDao" />
 	</bean>
 
 	<bean id="loginFormValidator" class="com.tech4d.tsm.web.login.LoginFormValidator"/>
@@ -103,6 +109,17 @@
 		<property name="successView" value="member/settings" />
 		<property name="validator" ref="settingsFormValidator"/>
 		<property name="userDao" ref="userDao"/>
+	</bean>
+
+	<bean id="flagEventFormValidator" class="com.tech4d.tsm.web.flagevent.FlagEventFormValidator"/>
+	<bean id="flagEventController" class="com.tech4d.tsm.web.flagevent.FlagEventController" parent="baseEventController">
+		<property name="commandName" value="flagEvent"/>
+		<property name="commandClass" value="com.tech4d.tsm.web.flagevent.FlagEventForm"/>
+		<property name="formView" value="edit/flagevent" />
+		<property name="successView" value="edit/flageventsuccess" />
+		<property name="userDao" ref="userDao"/>
+		<property name="eventDao" ref="eventDao" />
+		<property name="flagDao" ref="flagDao" />
 	</bean>
 	
 </beans>

@@ -6,8 +6,8 @@ import java.util.List;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tech4d.tsm.model.EventSearchText;
 import com.tech4d.tsm.model.Event;
+import com.tech4d.tsm.model.EventSearchText;
 
 @Transactional
 public class EventDaoHib implements EventDao {
@@ -77,5 +77,6 @@ public class EventDaoHib implements EventDao {
         return (Event) this.sessionFactory.getCurrentSession().get(
                 Event.class, id);
     }
+    
 
 }

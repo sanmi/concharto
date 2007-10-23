@@ -1,33 +1,35 @@
 body {
 	font-family: Arial;
 	font-size: small;
+	margin:0;
+	padding:0;
 }
 
-#nav{
+.nav {
     border-bottom: 1px solid #D7E5F2;
     text-align:right;
     padding: 0 0 .4em 0;
-	margin: -3px 0 0 0;
+	margin: 0 0 0 0;
 }
 
 .nav_left {
 	float:left;
 }
 
-#nav ul{
+.nav ul{
 	padding: 0;
 	margin: 0;
 	background-color:#FFFFFF;
 	color: #003366;
 }
 
-#nav ul li{
+.nav ul li{
     display: inline;
     padding: 0 0 2em .1em;
     margin: 0;
 }
 
-#nav ul li a{
+.nav ul li a{
     color:blue;
     text-decoration:underline;
     padding:0 5px 0 5px;
@@ -35,7 +37,7 @@ body {
     width: 9em;
 }
 
-#nav .name {
+.nav .name {
     color:black;
 }
 
@@ -115,10 +117,13 @@ body {
 	font-size:xx-small;
 	color: gray;
 }
-.mapedit #footer {
-    width: 99%;
+#footer {
+    border-top: 1px solid #D7E5F2;
+	  width: 99%;
     left: 0;
     top: 0;
+    padding: .2em;
+    margin: .2em;
 }
 .clearfloat { /* this class should be placed on a div or break element and should be the final element before the close of a container that should fully contain a float */
 	clear:both;
@@ -155,7 +160,7 @@ body {
 	padding-left:5px;
 }
 
-.mapedit .result, .changeEntry {
+.mapedit .result {
 	padding:.2em;
 	border: 1px solid #e0e0e0;
 	margin: .1em .2em .1em .2em;
@@ -189,6 +194,9 @@ a.summary:link, a.summary:visited, a.links:link, a.links:visited, a.more:link, a
     color: blue;
 }
 
+a.errorlinks:link, a.errorlinks:visited {
+    color: red;
+}
 .mapedit .nextPrev {
     margin: 1em .2em 1em .2em;
     font-size: large;
@@ -200,8 +208,15 @@ a.nexPrev:link, a.nextPrev:visited {
 }
 
 .mapedit .changes {
-	padding: 5px 0;
+	padding: 1em;
+	margin: .2em;
 	border:1px solid #999999;
+}
+
+.mapedit .changeEntry{
+	padding: .5em;
+	margin: .2em;
+	border: 1px solid #e0e0e0;
 }
 
 .mapedit .searchbar{
@@ -210,7 +225,6 @@ a.nexPrev:link, a.nextPrev:visited {
 
 .loginForm, .settingsForm {
     margin:40px 0 60px 60px;
-    padding 50px;
 }
 .loginForm .errorLabel, .settingsForm .errorLabel {
     padding-left: 0;
@@ -221,8 +235,75 @@ a.nexPrev:link, a.nextPrev:visited {
 }
 
 .settingsForm .successMessage {
-    border:1px solid #999999;
-    padding: .5em 1em .5em 1em;
-    background-color:#009900;
+  border:1px solid #999999;
+  padding: .5em 1em .5em 1em;
+  background-color:#009900;
 	color:#FFFFFF;
 }
+
+.simpleForm {
+    margin:40px 0 60px 60px;
+    padding-right: 50px;
+}
+
+.simpleForm .formLabel {
+	font-weight: bold;
+}
+.simpleForm .formRow {
+	margin-top: .5em;
+	margin-bottom: .2em;
+}
+
+.simpleForm .errorLabel{
+  padding-left: 0;
+	color:red;
+}
+
+.simpleForm .infoBox {
+	padding: 1em;
+	border: 1px solid #e0e0e0;
+	margin-bottom: .2em;
+}
+
+.simpleForm li, ul {
+	padding: 0 0 0 1em ;
+	margin-bottom: .2em;
+}
+
+.simpleForm h2{
+    margin-bottom: .2em;
+    margin-top: .2em;
+}
+
+.simpleForm h3 {
+    margin-top: .5em;
+    margin-bottom: .2em;
+}
+
+.simpleForm table, tr, iframe {
+	padding:0;
+	margin:0;
+}
+
+.simpleForm td {
+	padding-right:1em;
+}
+
+.simpleForm .action {
+	padding-right:1em;
+}
+
+#modal_container {
+	padding:5px;
+	background-color:#fff;
+	border:1px solid #666;
+	overflow:auto;
+	color:#333;
+	text-align:left;
+}
+
+#modal_overlay {
+	background-color:#000;
+}
+
+
