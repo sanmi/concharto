@@ -6,7 +6,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 // TODO this is gross, fix this 
 request.setAttribute("username", (String)request.getSession().getAttribute("username"));
 %>
-<div id="nav">
+<div class="nav">
 <ul class="nav_left"><li><a href="<%=path %>/">Home</a></li
 ></ul>
 <ul class="nav_left"><li><a href="#" onclick="alert('Not Yet Implemented');">Add From Wikipedia</a></li

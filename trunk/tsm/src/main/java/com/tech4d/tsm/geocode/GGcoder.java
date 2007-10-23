@@ -11,8 +11,6 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
 
-import com.tech4d.tsm.support.ApplicationConstants;
-
 /**
  * Geocoder class for google maps.  
  * TODO consider using a DynaBean instead of GAddress object.  Move strings to another global config object
@@ -91,7 +89,7 @@ public class GGcoder {
     }
 
     public static GAddress geocode(String address) throws Exception {
-        return geocode(address, ApplicationConstants.GOOGLE_MAP_API_KEY);
+        return geocode(address, "enter key here");
     }
 
     /* allow query for json nested objects, ie. Placemark[0].address */

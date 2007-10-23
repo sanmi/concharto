@@ -18,4 +18,5 @@ public interface EventDao {
     public abstract List<Event> findAll(int maxResults);
 
     public abstract Event findById(Long id);
+    
 }

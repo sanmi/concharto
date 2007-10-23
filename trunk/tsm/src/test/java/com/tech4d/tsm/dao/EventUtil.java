@@ -117,8 +117,11 @@ public class EventUtil {
         assertEquals(
                 expectedStyle.getBaloonStyle().getBgColor(), 
                 actualStyle.getBaloonStyle().getBgColor());
-        //assertEquals(expected.getContributors().size(), actual.getContributors().size());
         assertEquals(expected.getUserTags().size(), actual.getUserTags().size());
+        
+        if (expected.getFlags() != null) {
+            assertEquals(expected.getFlags().size(), actual.getFlags().size());
+        }
 
         session.close();
     }

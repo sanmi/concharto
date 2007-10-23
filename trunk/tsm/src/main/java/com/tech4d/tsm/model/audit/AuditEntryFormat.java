@@ -1,4 +1,4 @@
-package com.tech4d.tsm.web.changehistory;
+package com.tech4d.tsm.model.audit;
 
 /**
  * User friendly Labels (or resource keys) to match the audit entries

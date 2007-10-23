@@ -5,6 +5,7 @@
 <%@attribute name="script" required="false" type="java.lang.String"%>
 <%@attribute name="stylesheet" required="false" type="java.lang.String"%>
 <%@attribute name="bodyattr" required="false" type="java.lang.String"%>
+<%@attribute name="stripped" required="false" type="java.lang.String"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd" >
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
@@ -28,17 +29,19 @@
 
 <body ${bodyattr}>
 
-	<jsp:include flush="true" page="/WEB-INF/jsp/include/topmenu.jsp"/>
-	<jsp:include flush="true" page="/WEB-INF/jsp/include/head.jsp"/>
-  
+	<c:if test="${stripped != 'true'}">
+		<jsp:include flush="true" page="/WEB-INF/jsp/include/topmenu.jsp"/>
+		<jsp:include flush="true" page="/WEB-INF/jsp/include/head.jsp"/>
+  </c:if>
 	<div id="content">
 		<jsp:doBody />
 	</div>
 
-  <div id="footer">
-	  <hr/>
-	  <div id="clearFloat"/>  
-		Time Space Map
-  </div>
+	<c:if test="${stripped != 'true'}">
+	  <div id="footer">
+		  <div id="clearFloat"/>  
+			Time Space Map
+	  </div>
+  </c:if>
   </body>
 </html>

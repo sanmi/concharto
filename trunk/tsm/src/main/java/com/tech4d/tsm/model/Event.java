@@ -5,10 +5,13 @@ import com.tech4d.tsm.model.time.TimeRange;
 
 import static org.apache.commons.lang.StringUtils.join;
 import static org.apache.commons.lang.StringUtils.split;
+
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.ForeignKey;
 
 import javax.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +46,7 @@ public class Event extends BaseAuditableEntity {
     private Catalog catalog;
     public enum Catalog {ENCYCLOPEDIA, ANECDOTAL, PERSONAL, CURRENT_EVENT}
     private boolean visible;
-    private Flag flag;
-    public enum Flag {FOR_DELETION, FOR_CONTENT}
+    private List<Flag> flags;
     private EventSearchText eventSearchText;
     private Integer zoomLevel;
     private Integer mapType;
@@ -154,15 +156,26 @@ public class Event extends BaseAuditableEntity {
         this.votes = votes;
     }
 
-    public Flag getFlag() {
-        return flag;
-    }
+    @OneToMany(mappedBy="event", cascade={CascadeType.ALL})
+    public List<Flag> getFlags() {
+		return flags;
+	}
 
-    public void setFlag(Flag flag) {
-        this.flag = flag;
-    }
+	public void setFlags(List<Flag> flags) {
+		this.flags = flags;
+	}
+	
+	@Transient
+	public boolean getHasUnresolvedFlags() {
+		for (Flag flag : flags) {
+			if (StringUtils.isEmpty(flag.getDisposition()) ) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    public boolean isVisible() {
+	public boolean isVisible() {
         return visible;
     }
 

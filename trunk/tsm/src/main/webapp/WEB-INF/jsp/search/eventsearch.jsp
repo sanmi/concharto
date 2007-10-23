@@ -124,7 +124,7 @@ request.setAttribute("basePath", basePath);
 	function makeOverlayHtml(event) {
 		return createInfoWindowHtml(event) +  
 			'<br/><a href="#" onclick="editEvent(' + event.id + ')">edit</a>' +  
-			' &nbsp; <a href="#">flag</a><br/></div>';
+			' &nbsp; <a href="/edit/flagevent.htm?id=' + event.id + '">flag</a><br/></div>';
 	}
 
   <%-- END PRE FUNCTIONS (initialization) ============================= --%>
@@ -221,8 +221,8 @@ request.setAttribute("basePath", basePath);
 		document.getElementById("eventSearchForm").pageCommand.value = pageCommand;
 		document.event.submit();
 	}
-  <%-- BEGIN POST FUNCTIONS  ============================= --%>
-
+  <%-- END POST FUNCTIONS  ============================= --%>
+  
 		//]]>
 		</script>
 	</jsp:attribute>
@@ -293,6 +293,7 @@ request.setAttribute("basePath", basePath);
 		  			</c:choose>
 		  		</span>
 		    	<div id="results" >
+		    		
 		    		<form:errors path="where" cssClass="errorLabel" element="div"/>
 						<form:errors path="when" cssClass="errorLabel" element="div"/>
 						<form:errors path="when">
@@ -323,7 +324,11 @@ request.setAttribute("basePath", basePath);
 			          </c:if> 
 								<br/>	
 			          <a  class="links" href="#" onclick="editEvent(<c:out value='${event.id}'/>)">edit</a>
-			          &nbsp; <a class="links" href="#">flag</a><br/>
+			          &nbsp; <a class="links" href="${basePath}edit/flagevent.htm?id=${event.id}" >flag</a>
+			          <c:if test="${event.hasUnresolvedFlags}">
+			          	<span class="errorLabel"><em>This event has been <a class="errorlinks" href="${basePath}edit/listflags.htm?id=${event.id}">flagged!</a></em></span>
+			          </c:if>
+			          <br/>
 			          
 							</div>
 				    </c:forEach>
@@ -349,7 +354,7 @@ request.setAttribute("basePath", basePath);
 				</td>
 			</tr></tbody></table>
 	  </form:form>
-	 
+	  
 	</jsp:body>
 </tsm:page>
 
