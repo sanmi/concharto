@@ -6,12 +6,12 @@
 <%@attribute name="stylesheet" required="false" type="java.lang.String"%>
 <%@attribute name="bodyattr" required="false" type="java.lang.String"%>
 <%@attribute name="stripped" required="false" type="java.lang.String"%>
-<%@ tag import="com.tech4d.tsm.auth.AuthConstants" %>
+<%@tag import="com.tech4d.tsm.auth.AuthConstants" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 request.setAttribute("basePath", basePath);
-String roles = (String)request.getSession().getAttribute(AuthConstants.AUTH_ROLES);
+String roles = (String)request.getSession().getAttribute(AuthConstants.SESSION_AUTH_ROLES);
 request.setAttribute("rolse", roles);
 %>
 
