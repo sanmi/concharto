@@ -20,7 +20,8 @@ public class EventFieldChangeFormatter implements AuditFieldChangeFormatter{
     public static final int TSGEOMETRY = 5;
     public static final int WHEN = 6;
 
-    public boolean supports(Class clazz) {
+    @SuppressWarnings("unchecked")
+	public boolean supports(Class clazz) {
         return clazz == Event.class;
     }
 

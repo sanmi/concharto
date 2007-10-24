@@ -18,7 +18,6 @@ import com.tech4d.tsm.web.util.PaginatingFormHelper;
 
 public class ChangeHistoryController extends AbstractFormController {
     private static final String MODEL_TOTAL_RESULTS = "totalResults";
-    private static final String MODEL_PROPERTY_LABELS = "propertyLabels";
     private static final String MODEL_ACTION_LABELS = "actionLabels";
     private static final String MODEL_ID = "id";
     private static final String MODEL_AUDIT_ENTRIES = "auditEntries";
@@ -47,7 +46,8 @@ public class ChangeHistoryController extends AbstractFormController {
         this.auditEntryDao = auditEntryDao;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         ChangeHistoryForm changeHistoryForm = (ChangeHistoryForm) command;
         Map model = errors.getModel();
@@ -94,7 +94,6 @@ public class ChangeHistoryController extends AbstractFormController {
         model.put(MODEL_AUDIT_ENTRIES, auditEntries);
         model.put(MODEL_ID, id);
         model.put(MODEL_ACTION_LABELS, AuditEntryFormat.ACTION_LABELS);
-        model.put(MODEL_PROPERTY_LABELS, EventAuditFormat.PROPERTY_LABELS);
         model.put(MODEL_TOTAL_RESULTS, totalResults);
 
         return new ModelAndView(getFormView(), model);
