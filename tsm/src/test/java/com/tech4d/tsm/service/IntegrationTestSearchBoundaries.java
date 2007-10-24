@@ -54,7 +54,7 @@ public class IntegrationTestSearchBoundaries {
     
     private void assertSearchMatch(int matchesExpected, String dateText) throws java.text.ParseException {
         List<Event> events = eventSearchService.search(MAX_RESULTS, 0, null,
-                TimeRangeFormat.parse(dateText), null, true);
+                TimeRangeFormat.parse(dateText), null, Visibility.NORMAL);
         assertEquals(matchesExpected, events.size());        
     }
     
@@ -82,10 +82,10 @@ public class IntegrationTestSearchBoundaries {
         event.setVisible(false);
         eventDao.saveOrUpdate(event);
         //should only see one
-        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, null, null, true).size());        
+        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, null, null, Visibility.NORMAL).size());        
         
         //now test showing only invisible
-        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, null, null, false).size());        
+        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, null, null, Visibility.HIDDEN).size());        
         
     }
     

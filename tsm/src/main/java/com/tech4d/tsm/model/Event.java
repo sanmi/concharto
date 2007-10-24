@@ -23,7 +23,6 @@ import java.util.List;
  */
 @Entity
 public class Event extends BaseAuditableEntity {
-    
     public final static int SZ_DESCRIPTION = 2048;
     public static final int SZ_SNIPPET = 1024;
     public static final int SZ_SUMMARY = 512;
@@ -46,6 +45,7 @@ public class Event extends BaseAuditableEntity {
     private Catalog catalog;
     public enum Catalog {ENCYCLOPEDIA, ANECDOTAL, PERSONAL, CURRENT_EVENT}
     private Boolean visible;
+    private Boolean hasUnresolvedFlag;
     private List<Flag> flags;
     private EventSearchText eventSearchText;
     private Integer zoomLevel;
@@ -183,7 +183,15 @@ public class Event extends BaseAuditableEntity {
         this.visible = visible;
     }
 
-    public Integer getZoomLevel() {
+    public Boolean getHasUnresolvedFlag() {
+		return hasUnresolvedFlag;
+	}
+
+	public void setHasUnresolvedFlag(Boolean unresolvedFlag) {
+		this.hasUnresolvedFlag = unresolvedFlag;
+	}
+
+	public Integer getZoomLevel() {
         return zoomLevel;
     }
 

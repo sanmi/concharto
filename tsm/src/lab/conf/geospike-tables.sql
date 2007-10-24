@@ -85,13 +85,20 @@ SELECT count(*) FROM event f, eventsearchtext es
 WHERE f.eventsearchtext_id = es.id
 AND MATCH (es.summary, es._where, es.usertags, es.description, es.source) AGAINST ('description')
 
+--just flags
+SELECT * FROM Event ev
+INNER JOIN Flag AS fl ON fl.event_id = ev.id
+
 --everything
-SELECT * FROM event f, tsgeometry g, eventsearchtext es, timeprimitive t
-WHERE f.tsgeometry_id = g.id 
-AND f.eventsearchtext_id = es.id
-AND f.when_id = t.id
+SELECT * FROM event ev
+INNER JOIN TsGeometry AS g ON ev.tsgeometry_id = g.id 
+INNER JOIN EventSearchText AS es ON ev.eventsearchtext_id = es.id 
+INNER JOIN TimePrimitive AS t ON ev.when_id = t.id
 AND MBRWithin(geometryCollection, Envelope(GeomFromText('POLYGON ((-78.34169006347656 40.85433181694295, -76.81365966796875 40.85433181694295, -76.81365966796875 41.13884745373145, -78.34169006347656 41.13884745373145, -78.34169006347656 40.85433181694295))')))
 AND MATCH (es.summary, es._where, es.usertags, es.description, es.source) AGAINST ('description')
-AND (t.begin BETWEEN DATE('1905-03-22') AND DATE('1907-03-22') )
-AND (t.end BETWEEN DATE('1905-03-22') AND DATE('1907-03-22') );
+AND (
+(t.begin BETWEEN 1111467600000 AND 1174536000000 ) OR
+(t.end BETWEEN 1111467600000 AND 1174536000000 ) OR
+(t.begin < 1111467600000 AND t.end > 1174536000000)
+);
 

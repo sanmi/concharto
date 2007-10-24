@@ -1,12 +1,11 @@
 package com.tech4d.tsm.service;
 
-import java.util.List;
-
-import org.hibernate.SessionFactory;
-
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.vividsolutions.jts.geom.Geometry;
+import org.hibernate.SessionFactory;
+
+import java.util.List;
 
 public interface EventSearchService {
 
@@ -26,7 +25,7 @@ public interface EventSearchService {
      * @return list of Event objects
      */
     public List<Event> search(int maxResults, int firstResult, String textFilter, TimeRange timeRange,
-            Geometry boundingBox, boolean showVisible);
+            Geometry boundingBox, Visibility showVisible);
 
     /**
      * Get count of total records matching the search criteria.  Used for displaying search results.
@@ -37,5 +36,5 @@ public interface EventSearchService {
      * the search will return only events with visible=false.
      * @return count of records matching the search criteria
      */
-    public Long getCount(String textFilter, TimeRange timeRange, Geometry boundingBox, boolean showVisible);
+    public Long getCount(String textFilter, TimeRange timeRange, Geometry boundingBox, Visibility showVisible);
 }

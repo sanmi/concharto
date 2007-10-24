@@ -60,10 +60,18 @@ body {
     margin:-1px;
 }
 
-.adminField {
+.adminField, .adminAction {
 	font-style: italic;
 	color: blue;
 }
+
+.adminAction{
+    padding-right:1em;
+    padding-left:1em;
+    border-left:1px solid #e0e0e0;
+}
+
+
 .mapedit table {
     width:100%;
 }
@@ -230,6 +238,7 @@ a.nexPrev:link, a.nextPrev:visited {
 .mapedit .action{
     padding-right:1em;
 }
+
 
 .loginForm, .settingsForm {
     margin:40px 0 60px 60px;

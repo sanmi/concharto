@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.propertyeditors.CustomBooleanEditor;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -21,6 +22,7 @@ import com.tech4d.tsm.auth.AuthHelper;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.service.EventSearchService;
+import com.tech4d.tsm.service.Visibility;
 import com.tech4d.tsm.util.JSONFormat;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
 import com.tech4d.tsm.web.util.PaginatingFormHelper;
@@ -192,7 +194,7 @@ public class EventSearchController extends AbstractFormController {
                 //if there are MAX_RECORDS, then there are probably more records, so get the count
                 if (results.size() >= MAX_RECORDS) {
                     totalResults += eventSearchService.getCount(eventSearchForm.getWhat(), 
-                    		eventSearchForm.getWhen(), geometry, true);
+                    		eventSearchForm.getWhen(), geometry, getVisibility(eventSearchForm));
                 } else {
                     totalResults += results.size();
                 }
@@ -207,18 +209,23 @@ public class EventSearchController extends AbstractFormController {
     }
 
     /** 
-     * Only administrators are allowed to see invisible events.  We need to check for proper authorization
+     * Only administrators are allowed to see removed events.  We need to check for proper authorization
      * because the user could have hacked the HTML to add the showInvisible parameter
-     * @param eventSearchForm
+     * @param eventSearchForm  EventSearchForm
      * @return true if we are supposed to show visible events.  false if we are supposed to show invisible events.
      */
-    private boolean getVisibility(EventSearchForm eventSearchForm) {
+    private Visibility getVisibility(EventSearchForm eventSearchForm) {
     	if (AuthHelper.isUserAnAdmin()) {
-    		if (eventSearchForm.getShowInvisible() != null) {
-    			return !eventSearchForm.getShowInvisible();
-    		}
+    		//TODO probably a better way than this
+    		if (StringUtils.equals(EventSearchForm.SHOW_HIDDEN,eventSearchForm.getShow())) {
+    			return Visibility.HIDDEN;
+    		} else if (StringUtils.equals(EventSearchForm.SHOW_NORMAL,eventSearchForm.getShow())) {
+    			return Visibility.NORMAL;
+    		} else if (StringUtils.equals(EventSearchForm.SHOW_FLAGGED,eventSearchForm.getShow())) {
+    			return Visibility.FLAGGED;
+    		} 
     	}
-    	return true;
+    	return Visibility.NORMAL;
     }
     
     @SuppressWarnings("unchecked")
