@@ -81,7 +81,7 @@ public class PopulateDummyData {
         }
     }
     
-    private static final int NUM_EVENTS = 1000;
+    private static final int NUM_EVENTS = 10000;
     private static final int COLLECTION_SIZE = 1000;
     @Test
     public void makeData() throws ParseException, IOException {

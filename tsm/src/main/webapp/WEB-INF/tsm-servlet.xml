@@ -19,9 +19,10 @@
           <prop key="search/eventsearch.htm">eventSearchController</prop>
           <prop key="edit/event.htm">eventController</prop>
           <prop key="edit/changehistory.htm">changeHistoryController</prop>
+          <prop key="edit/changehistoryframe.htm">changeHistoryFrameController</prop>
           <prop key="edit/flagevent.htm">flagEventController</prop>
           <prop key="edit/flageventsuccess.htm">flagEventController</prop>
-          <prop key="edit/listflags.htm">switchBoardController</prop>
+          <prop key="edit/eventdetails.htm">switchBoardController</prop>
           <prop key="admin/flagdisposition.htm">switchBoardController</prop>
           <prop key="admin/listEvents.htm">switchBoardController</prop>
           <prop key="admin/signup.htm">signupController</prop>
@@ -90,6 +91,13 @@
 		<property name="successView" value="edit/changehistory" />
 		<property name="auditEntryDao" ref="auditEntryDao" />
 	</bean>
+	<bean id="changeHistoryFrameController" class="com.tech4d.tsm.web.changehistory.ChangeHistoryController" parent="baseEventController">
+		<property name="commandName" value="changeHistory"/>
+		<property name="commandClass" value="com.tech4d.tsm.web.changehistory.ChangeHistoryForm"/>
+		<property name="formView" value="edit/changehistoryframe" />
+		<property name="successView" value="edit/changehistoryframe" />
+		<property name="auditEntryDao" ref="auditEntryDao" />
+	</bean>
 
 	<bean id="eventSearchFormValidator" class="com.tech4d.tsm.web.eventsearch.EventSearchFormValidator"/>
 	<bean id="eventSearchController" class="com.tech4d.tsm.web.eventsearch.EventSearchController" parent="baseEventController">
@@ -117,6 +125,7 @@
 		<property name="commandClass" value="com.tech4d.tsm.web.flagevent.FlagEventForm"/>
 		<property name="formView" value="edit/flagevent" />
 		<property name="successView" value="edit/flageventsuccess" />
+		<property name="validator" ref="flagEventFormValidator"/>
 		<property name="userDao" ref="userDao"/>
 		<property name="eventDao" ref="eventDao" />
 		<property name="flagDao" ref="flagDao" />

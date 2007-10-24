@@ -46,7 +46,7 @@ public class FlagEventController extends SimpleFormController {
 			HttpServletResponse response, Object command, BindException errors)
 			throws Exception {
 		Long eventId = new Long(request.getParameter(REQUEST_ID));
-		String username = (String) WebUtils.getSessionAttribute(request, AuthConstants.AUTH_USERNAME);
+		String username = (String) WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME);
 		FlagEventForm flagEventForm = (FlagEventForm) command;
 		
 		saveFlag(flagEventForm, eventId, username);

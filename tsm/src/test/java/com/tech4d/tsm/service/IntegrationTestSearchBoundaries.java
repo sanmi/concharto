@@ -17,12 +17,9 @@ import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.ContextUtil;
 import com.tech4d.tsm.util.TimeRangeFormat;
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
-import com.vividsolutions.jts.util.GeometricShapeFactory;
 
 public class IntegrationTestSearchBoundaries {
     private static EventSearchService eventSearchService;
@@ -32,13 +29,6 @@ public class IntegrationTestSearchBoundaries {
 
     private static EventUtil eventUtil;
 
-    private static Polygon searchBox = makeBoundingRectangle(300, 300);
-    //Feb 22, 2005 - Feb 22, 2007
-    
-    private static Polygon failBox = makeBoundingRectangle(3000, 3000);
-    
-    //Feb 22, 1005 - Feb 22, 1007
-    private static String[] failStrings = { "the a is", "is", "sdfgsdfg" };
     private static Geometry insideTheBox;
 
     private int MAX_RESULTS = 100;
@@ -64,7 +54,7 @@ public class IntegrationTestSearchBoundaries {
     
     private void assertSearchMatch(int matchesExpected, String dateText) throws java.text.ParseException {
         List<Event> events = eventSearchService.search(MAX_RESULTS, 0, null,
-                TimeRangeFormat.parse(dateText), null);
+                TimeRangeFormat.parse(dateText), null, true);
         assertEquals(matchesExpected, events.size());        
     }
     
@@ -82,18 +72,29 @@ public class IntegrationTestSearchBoundaries {
         assertSearchMatch(1, "1520-1540");
     }
 
-    private static Polygon makeBoundingRectangle(int x, int y) {
-        GeometricShapeFactory gsf = new GeometricShapeFactory();
-        gsf.setSize(100);
-        gsf.setNumPoints(4);
-        gsf.setBase(new Coordinate(x, y)); // pretend these are lat/longs
-        return gsf.createRectangle();
+    @Test public void testInvisible() throws java.text.ParseException {
+    	//first one is visible
+        Event event = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522-1527"), "Stuff", null);
+        event.setVisible(true);
+        eventDao.saveOrUpdate(event);
+        //second one is invisible
+        event = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522-1527"), "Stuff", null);
+        event.setVisible(false);
+        eventDao.saveOrUpdate(event);
+        //should only see one
+        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, null, null, true).size());        
+        
+        //now test showing only invisible
+        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, null, null, false).size());        
+        
     }
-
+    
+    
     private static Event makeSearchEvent(Geometry geometry, TimeRange timeRange, String summary, String description) {
         Event event = eventUtil.createEvent(geometry, timeRange, summary, description);
         eventDao.save(event);
         return event;
     }
+    
 
 }

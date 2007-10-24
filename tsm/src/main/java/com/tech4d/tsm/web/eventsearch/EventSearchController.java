@@ -1,5 +1,23 @@
 package com.tech4d.tsm.web.eventsearch;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.propertyeditors.CustomBooleanEditor;
+import org.springframework.validation.BindException;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractFormController;
+import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.WebUtils;
+
+import com.tech4d.tsm.auth.AuthHelper;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.service.EventSearchService;
@@ -11,17 +29,6 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
-import org.springframework.beans.propertyeditors.CustomBooleanEditor;
-import org.springframework.validation.BindException;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractFormController;
-import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.util.WebUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
 
 public class EventSearchController extends AbstractFormController {
     public static final String SESSION_EVENT_SEARCH_FORM = "eventSearchForm";
@@ -179,11 +186,13 @@ public class EventSearchController extends AbstractFormController {
             //There are 1 or 2 bounding boxes (see comment above)
             for (Geometry geometry : boxes) {
                 logger.debug(geometry.toText());
-                List results = eventSearchService.search(MAX_RECORDS, firstRecord, eventSearchForm.getWhat(), eventSearchForm.getWhen(), geometry);
+                List results = eventSearchService.search(MAX_RECORDS, firstRecord, 
+                		eventSearchForm.getWhat(), eventSearchForm.getWhen(), geometry, getVisibility(eventSearchForm));
                 events.addAll(results);
                 //if there are MAX_RECORDS, then there are probably more records, so get the count
                 if (results.size() >= MAX_RECORDS) {
-                    totalResults += eventSearchService.getCount(eventSearchForm.getWhat(), eventSearchForm.getWhen(), geometry);
+                    totalResults += eventSearchService.getCount(eventSearchForm.getWhat(), 
+                    		eventSearchForm.getWhen(), geometry, true);
                 } else {
                     totalResults += results.size();
                 }
@@ -197,7 +206,23 @@ public class EventSearchController extends AbstractFormController {
         return model;
     }
 
-    @Override
+    /** 
+     * Only administrators are allowed to see invisible events.  We need to check for proper authorization
+     * because the user could have hacked the HTML to add the showInvisible parameter
+     * @param eventSearchForm
+     * @return true if we are supposed to show visible events.  false if we are supposed to show invisible events.
+     */
+    private boolean getVisibility(EventSearchForm eventSearchForm) {
+    	if (AuthHelper.isUserAnAdmin()) {
+    		if (eventSearchForm.getShowInvisible() != null) {
+    			return !eventSearchForm.getShowInvisible();
+    		}
+    	}
+    	return true;
+    }
+    
+    @SuppressWarnings("unchecked")
+	@Override
     protected ModelAndView showForm(
             HttpServletRequest request, HttpServletResponse response, BindException errors)
             throws Exception {

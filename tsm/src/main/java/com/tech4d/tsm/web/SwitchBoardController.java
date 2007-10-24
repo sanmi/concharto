@@ -16,6 +16,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.auth.AuthConstants;
+import com.tech4d.tsm.auth.AuthHelper;
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.dao.FlagDao;
 import com.tech4d.tsm.model.Event;
@@ -64,8 +65,8 @@ public class SwitchBoardController extends MultiActionController {
 
     public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
         //remove the token from the session
-        WebUtils.setSessionAttribute(request, AuthConstants.AUTH_USERNAME, null);
-        WebUtils.setSessionAttribute(request, AuthConstants.AUTH_ROLES, null);
+        WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME, null);
+        WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_ROLES, null);
         return new ModelAndView("redirect:/");
     }
     
@@ -84,14 +85,23 @@ public class SwitchBoardController extends MultiActionController {
     }
 
     @SuppressWarnings("unchecked")
-	public Map listflags(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ModelAndView eventdetails(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map model = new HashMap();
 		Event event = getEvent(request);
-    	if (event != null) {
-    		model.put("event", event);
+    	if (event == null) {
+            return searchModelAndView(request);
     	}
+    	//Regular users don't get to see it if it has been removed by an admin
+    	else if (!AuthHelper.isUserAnAdmin() && !event.isVisible()) {
+    		return searchModelAndView(request);
+    	}
+		model.put("event", event);
     	model.put(MODEL_DISPOSITIONS, Flag.DISPOSITION_CODES);
-        return model;
+        return new ModelAndView().addAllObjects(model);
+    }
+    
+    private ModelAndView searchModelAndView(HttpServletRequest request) {
+    	return new ModelAndView(new RedirectView(request.getContextPath() + "/search/eventsearch.htm", true));
     }
     
     private Event getEvent(HttpServletRequest request) {
@@ -104,17 +114,31 @@ public class SwitchBoardController extends MultiActionController {
     }
 
     public ModelAndView flagdisposition(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        
+        //TODO make this into a full fledged controller so we can add disposition comments, etc
         Long id = ServletRequestUtils.getLongParameter(request, PARAM_ID);
         String disposition = ServletRequestUtils.getStringParameter(request, PARAM_DISPOSITION);
         if (id != null) {
-        	log.debug("user " + WebUtils.getSessionAttribute(request, AuthConstants.AUTH_USERNAME) + 
+        	log.debug("user " + WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME) + 
         			" disposition of flag " + id + " is " + disposition);
-            
         }
         Flag flag = flagDao.setFlagDisposition(id, disposition);
+        if (Flag.DISPOSITION_REMOVED.equals(disposition)) {
+        	//if REMOVED, then we need to remove the event by making it invisible
+        	Event event = flag.getEvent();
+        	event.setVisible(false);
+        	eventDao.save(event);
+        } else if (Flag.DISPOSITION_DELETED.equals(disposition)) {
+        	eventDao.delete(flag.getEvent());
+            //redirect back to search
+            return searchModelAndView(request);
+        } else if (null == disposition) {
+        	//we are being asked to reopen it.  TODO fix this kludge!
+        	Event event = flag.getEvent();
+        	event.setVisible(true);
+        	eventDao.save(event);
+        }
         //redirect back to the list
-        return new ModelAndView(new RedirectView(request.getContextPath() + "/edit/listflags.htm?id=" + flag.getEvent().getId(), true));
+        return new ModelAndView(new RedirectView(request.getContextPath() + "/edit/eventdetails.htm?id=" + flag.getEvent().getId(), true));
     }
     	
  }

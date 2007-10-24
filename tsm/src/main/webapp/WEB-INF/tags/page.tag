@@ -6,6 +6,15 @@
 <%@attribute name="stylesheet" required="false" type="java.lang.String"%>
 <%@attribute name="bodyattr" required="false" type="java.lang.String"%>
 <%@attribute name="stripped" required="false" type="java.lang.String"%>
+<%@ tag import="com.tech4d.tsm.auth.AuthConstants" %>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+request.setAttribute("basePath", basePath);
+String roles = (String)request.getSession().getAttribute(AuthConstants.AUTH_ROLES);
+request.setAttribute("rolse", roles);
+%>
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd" >
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>

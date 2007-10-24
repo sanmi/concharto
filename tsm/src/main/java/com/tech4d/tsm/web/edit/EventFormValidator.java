@@ -4,25 +4,27 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import com.tech4d.tsm.web.util.ValidationHelper;
+
 
 public class EventFormValidator implements Validator {
 
-    public boolean supports(Class clazz) {
-        
+    @SuppressWarnings("unchecked")
+	public boolean supports(Class clazz) {
         return EventForm.class.equals(clazz);
     }
 
     public void validate(Object target, Errors errors) {
-        EventForm eventForm = (EventForm) target;
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "summary", "summary.empty");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "when", "when.empty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "summary", "empty.event.summary");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "when", "empty.event.when");
         
-        if (eventForm.getDescription().length() >= EventForm.SZ_DESCRIPTION) {
-            errors.rejectValue("description", 
-                    "exceededMaxSize.event.description", 
-                    new Object[]{EventForm.SZ_DESCRIPTION, eventForm.getDescription().length()},
-                    null);
-        }
+        ValidationHelper.rejectIfTooLong(errors, "description", EventForm.SZ_DESCRIPTION, "tooLong");
+
+        //These should never trigger if the HTML is coded correctly
+        ValidationHelper.rejectIfTooLong(errors, "summary", EventForm.SZ_SUMMARY, "tooLong");
+        ValidationHelper.rejectIfTooLong(errors, "tags", EventForm.SZ_TAGS, "tooLong");
+        ValidationHelper.rejectIfTooLong(errors, "where", EventForm.SZ_WHERE, "tooLong");
+        ValidationHelper.rejectIfTooLong(errors, "source", EventForm.SZ_SOURCE, "tooLong");
     }
     
 }

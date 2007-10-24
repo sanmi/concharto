@@ -9,11 +9,6 @@
 		<script type="text/javascript">
 		//<![CDATA[
 
-	function edit() {
-		var id = <c:out value="${id}"/>;
-		document.location="event.htm?listid=" + id;
-	}
-	
 		<%-- user has clicked on next, prev or a page number --%>
 	function nextPage(pageCommand) {
 		document.getElementById("changeHistoryForm").pageCommand.value = pageCommand;
@@ -24,21 +19,14 @@
 		</script>
 	</jsp:attribute>
 	<jsp:attribute name="bodyattr">class="mapedit"</jsp:attribute>
+	<jsp:attribute name="stripped">true</jsp:attribute>
 
 <jsp:body>
 	<form:form name="change" id="changeHistoryForm" commandName="changeHistory" >
 		<form:hidden path="currentRecord"/>
 		<form:hidden path="pageCommand"/>
 		<table><tr><td>			
-			<div class="changes">
-				<div class="miniTabBar">
-					<a href="#" class="miniTabUnselected" onclick="edit(); return false;">Edit</a>
-					<span class="miniTabSelected" >Change History</span>
-	      </div>
-	      <jsp:include page="include/showchangehistory.jsp"/>   
-	  	  
-	  	<input type="button" value="Back to Edit" onclick="edit(); return false;"/>
-	  	
+				<jsp:include page="include/showchangehistory.jsp"/>				
 	 	</td></tr></table>
 	</form:form>
 </jsp:body>

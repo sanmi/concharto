@@ -25,8 +25,15 @@ public class EventSearchForm implements PaginatingForm {
     private Integer eventId;
     private Integer currentRecord;
     private String pageCommand;
+    private Boolean showInvisible;
     
-    public Integer getMapZoom() {
+    public Boolean getShowInvisible() {
+		return showInvisible;
+	}
+	public void setShowInvisible(Boolean showInvisible) {
+		this.showInvisible = showInvisible;
+	}
+	public Integer getMapZoom() {
         return mapZoom;
     }
     public void setMapZoom(Integer mapZoom) {

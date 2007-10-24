@@ -10,7 +10,7 @@ import org.hibernate.annotations.ForeignKey;
  * @author frank
  */
 @Entity
-public class Flag extends BaseEntity {
+public class Flag extends BaseAuditableEntity {
 	public static final int SZ_DISPOSITION = 32;
 	public static final int SZ_DISPOSITION_COMMENT = 512;
 	public static final int SZ_REASON = 32;
@@ -18,8 +18,13 @@ public class Flag extends BaseEntity {
 	public static final String[] REASON_CODES = {
 		"toPersonal", "toFiction","isFake","isCopyrighted"
 	};
+	public static final String DISPOSITION_DELETED = "deleted";
+	public static final String DISPOSITION_REMOVED = "removed";
+	public static final String DISPOSITION_INVALID = "invalid";
+	public static final String DISPOSITION_WONTFIX = "wontfix";
+	public static final String DISPOSITION_FIXED = "fixed";
 	public static final String[] DISPOSITION_CODES = {
-		"invalid", "wontfix","fixed","deleted"
+		DISPOSITION_DELETED, DISPOSITION_REMOVED, DISPOSITION_INVALID, DISPOSITION_WONTFIX, DISPOSITION_FIXED
 	};
 	private String comment;
 	private User user;

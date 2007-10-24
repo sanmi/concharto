@@ -45,7 +45,7 @@ public class Event extends BaseAuditableEntity {
     private String source;
     private Catalog catalog;
     public enum Catalog {ENCYCLOPEDIA, ANECDOTAL, PERSONAL, CURRENT_EVENT}
-    private boolean visible;
+    private Boolean visible;
     private List<Flag> flags;
     private EventSearchText eventSearchText;
     private Integer zoomLevel;
@@ -175,11 +175,11 @@ public class Event extends BaseAuditableEntity {
 		return false;
 	}
 
-	public boolean isVisible() {
+	public Boolean isVisible() {
         return visible;
     }
 
-    public void setVisible(boolean visible) {
+    public void setVisible(Boolean visible) {
         this.visible = visible;
     }
 
