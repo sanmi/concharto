@@ -5,10 +5,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.hibernate.Session;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,6 +26,7 @@ import com.tech4d.tsm.dao.EventTesterDao;
 import com.tech4d.tsm.dao.EventUtil;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.audit.AuditEntry;
+import com.tech4d.tsm.model.audit.AuditFieldChange;
 import com.tech4d.tsm.util.ContextUtil;
 import com.vividsolutions.jts.io.ParseException;
 
@@ -34,6 +37,7 @@ public class IntegrationTestAuditEntry {
     private static final int MAX_RESULTS = 100;
     private static EventDao eventDao;
     private static AuditEntryDao auditEntryDao;
+    private static EventTesterDao eventTesterDao;
 
     private static EventUtil eventUtil;
 
@@ -53,7 +57,7 @@ public class IntegrationTestAuditEntry {
     public static void setUpClass() {
         ApplicationContext appCtx = ContextUtil.getCtx();
         eventDao = (EventDao) appCtx.getBean("eventDao");
-        EventTesterDao eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
+        eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
         auditEntryDao = (AuditEntryDao) appCtx.getBean("auditEntryDao");
         eventUtil = new EventUtil(eventTesterDao.getSessionFactory());
         eventTesterDao.deleteAll();
@@ -111,6 +115,16 @@ public class IntegrationTestAuditEntry {
         //now test getting the count
         Long count = auditEntryDao.getAuditEntriesCount(empty);
         assertEquals(2L, (long) count);
+        
+        //now test getting one of the entries
+        Session session = eventTesterDao.getSessionFactory().openSession();
+        session.refresh(auditEntries.get(0));
+        Collection<AuditFieldChange> changes = auditEntries.get(0).getAuditEntryFieldChange();
+        for (AuditFieldChange auditFieldChange : changes) {
+            AuditFieldChange newChange = auditEntryDao.getAuditFieldChange(auditFieldChange.getId());
+            assertEquals(newChange.getNewValue(), auditFieldChange.getNewValue());
+		}
+        session.close();
 
         //now test a bad ID
         empty.setId(4344L);

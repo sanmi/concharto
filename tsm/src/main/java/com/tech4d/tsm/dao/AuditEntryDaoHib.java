@@ -1,15 +1,17 @@
 package com.tech4d.tsm.dao;
 
-import com.tech4d.tsm.model.Auditable;
-import com.tech4d.tsm.model.audit.AuditEntry;
-import com.tech4d.tsm.util.ClassName;
-import com.tech4d.tsm.util.LapTimer;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.tech4d.tsm.model.Auditable;
+import com.tech4d.tsm.model.audit.AuditEntry;
+import com.tech4d.tsm.model.audit.AuditFieldChange;
+import com.tech4d.tsm.util.ClassName;
+import com.tech4d.tsm.util.LapTimer;
 
 /**
  * class to persist audit log entities
@@ -55,7 +57,8 @@ public class AuditEntryDaoHib implements AuditEntryDao {
         return auditEntries;
     }
     
-    public Long getAuditEntriesCount(Auditable auditable) {
+    @SuppressWarnings("unchecked")
+	public Long getAuditEntriesCount(Auditable auditable) {
         LapTimer timer = new LapTimer(this.logger);
         String className = ClassName.getClassName(auditable);
         List auditEntries = this.sessionFactory.getCurrentSession()
@@ -66,4 +69,8 @@ public class AuditEntryDaoHib implements AuditEntryDao {
         timer.timeIt("count").logDebugTime();
         return (Long) auditEntries.get(0);
     }
+
+	public AuditFieldChange getAuditFieldChange(Long id) {		
+		return (AuditFieldChange) this.sessionFactory.getCurrentSession().get(AuditFieldChange.class, id);
+	}
 }

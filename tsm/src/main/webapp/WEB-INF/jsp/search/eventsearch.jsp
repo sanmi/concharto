@@ -118,8 +118,8 @@
 	<%-- create html for info bubbles --%>	
 	function makeOverlayHtml(event) {
 		var html = createInfoWindowHtml(event) +  
-			'<br/><a href="#" onclick="editEvent(' + event.id + ')">edit</a>' +  
-			' &nbsp; <a href="/edit/flagevent.htm?id=' + event.id + '">flag</a> &nbsp;';
+			'<br/><a class="links" href="#" onclick="editEvent(' + event.id + ')">edit</a> &nbsp;' +  
+			'<a class="links" href="/edit/flagevent.htm?id=' + event.id + '">flag</a> &nbsp;';
 		if (event.hasUnresolvedFlags == 'true') {
 			html += '<span class="errorLabel"><em>This event has been <a class="errorlinks" href="${basePath}edit/eventdetails.htm?id=' + event.id + '">flagged!</a></em></span>';
 		} else {

@@ -28,6 +28,7 @@
           <prop key="admin/signup.htm">signupController</prop>
           <prop key="member/settings.htm">settingsController</prop>
           <prop key="search/mapthumbnail.htm">switchBoardController</prop>
+          <prop key="search/auditmapthumbnail.htm">switchBoardController</prop>
       </props>
 		</property>		
 	</bean>
@@ -49,6 +50,7 @@
 	<bean id="switchBoardController" class="com.tech4d.tsm.web.SwitchBoardController" parent="baseEventController" >
 		<property name="eventDao" ref="eventDao" />
 		<property name="flagDao" ref="flagDao" />
+		<property name="auditEntryDao" ref="auditEntryDao" />
 	</bean>
 
 	<bean id="loginFormValidator" class="com.tech4d.tsm.web.login.LoginFormValidator"/>
