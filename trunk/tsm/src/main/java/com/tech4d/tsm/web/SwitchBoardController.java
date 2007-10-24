@@ -155,21 +155,36 @@ public class SwitchBoardController extends MultiActionController {
         			" disposition of flag " + id + " is " + disposition);
         }
         Flag flag = flagDao.setFlagDisposition(id, disposition);
-        if (Flag.DISPOSITION_REMOVED.equals(disposition)) {
-        	//if REMOVED, then we need to remove the event by making it invisible
-        	Event event = flag.getEvent();
-        	event.setVisible(false);
-        	eventDao.save(event);
-        } else if (Flag.DISPOSITION_DELETED.equals(disposition)) {
+    	Event event = flag.getEvent();
+    	if (Flag.DISPOSITION_DELETED.equals(disposition)) {
         	eventDao.delete(flag.getEvent());
             //redirect back to search
             return searchModelAndView(request);
-        } else if (null == disposition) {
-        	//we are being asked to reopen it.  TODO fix this kludge!
-        	Event event = flag.getEvent();
-        	event.setVisible(true);
+        } else {
+            if (Flag.DISPOSITION_REMOVED.equals(disposition)) {
+            	//if REMOVED, then we need to remove the event by making it invisible
+            	event.setVisible(false);
+            } else if (null == disposition) {
+            	//we are being asked to reopen it.  TODO fix this kludge!
+            	event.setVisible(true);
+            }  
+            //if there are unresolved flags, set this on the event
+            boolean unresolved = false;
+            for (Flag otherFlag : event.getFlags()) {
+            	if (otherFlag.getId() != flag.getId()) {
+                	if (StringUtils.isEmpty(otherFlag.getDisposition())) {
+                		unresolved = true;
+                	} 
+            	} else {
+            		if (StringUtils.isEmpty(flag.getDisposition())) {
+            			unresolved = true;
+            		}
+            	}
+            }
+            event.setHasUnresolvedFlag(unresolved);
         	eventDao.save(event);
         }
+        
         //redirect back to the list
         return new ModelAndView(new RedirectView(request.getContextPath() + "/edit/eventdetails.htm?id=" + flag.getEvent().getId(), true));
     }

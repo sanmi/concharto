@@ -11,6 +11,9 @@ import com.vividsolutions.jts.geom.Point;
  * javascript functions
  */
 public class EventSearchForm implements PaginatingForm {
+	public final static String SHOW_NORMAL = "normal";
+	public final static String SHOW_HIDDEN = "hidden";
+	public final static String SHOW_FLAGGED = "flagged";
     private String what;
     private String where;
     private TimeRange when;
@@ -25,13 +28,13 @@ public class EventSearchForm implements PaginatingForm {
     private Integer eventId;
     private Integer currentRecord;
     private String pageCommand;
-    private Boolean showInvisible;
+    private String show;
     
-    public Boolean getShowInvisible() {
-		return showInvisible;
+    public String getShow() {
+		return show;
 	}
-	public void setShowInvisible(Boolean showInvisible) {
-		this.showInvisible = showInvisible;
+	public void setShow(String showInvisible) {
+		this.show = showInvisible;
 	}
 	public Integer getMapZoom() {
         return mapZoom;
