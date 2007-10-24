@@ -27,7 +27,7 @@ public class SettingsController extends SimpleFormController {
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
         SettingsForm settingsForm = new SettingsForm();
-        User user = userDao.find((String) WebUtils.getSessionAttribute(request, AuthConstants.AUTH_USERNAME));
+        User user = userDao.find((String) WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME));
         if (user != null) {
             //user can be null when navigating directly to this page without logging in.  
             //It shouldn't normally happen
@@ -42,7 +42,7 @@ public class SettingsController extends SimpleFormController {
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
         //get the user object so we can show it to them
         Map model = errors.getModel();
-        User user = userDao.find((String) WebUtils.getSessionAttribute(request, AuthConstants.AUTH_USERNAME));
+        User user = userDao.find((String) WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME));
         if (user != null) {
             //user can be null when navigating directly to this page without logging in.  
             //It shouldn't normally happen
@@ -58,7 +58,7 @@ public class SettingsController extends SimpleFormController {
         SettingsForm settingsForm = (SettingsForm) command;
         //TODO fix this we are getting the user three times from the database! 
         //Once in formBackingObject and once showForm and now here.
-        User user = userDao.find((String) WebUtils.getSessionAttribute(request, AuthConstants.AUTH_USERNAME));
+        User user = userDao.find((String) WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME));
         
         //verify the old password is correct
         if ((user != null) && 

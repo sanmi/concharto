@@ -32,6 +32,9 @@ public class EventSearchServiceHib implements EventSearchService {
         "     (t.end > :earliest AND t.end <= :latest) OR " +
         "     (t.begin < :earliest AND t.end > :latest)) ";
 
+    private static String SQL_VISIBLE_CLAUSE = " AND NOT(f.visible  <=> false) ";
+    private static String SQL_INVISIBLE_CLAUSE = " AND f.visible  <=> false ";
+    	
     private static String SQL_MBRWITHIN_CLAUSE = 
         "AND MBRIntersects(geometryCollection, Envelope(GeomFromText(:geom_text))) ";
 
@@ -62,26 +65,26 @@ public class EventSearchServiceHib implements EventSearchService {
         return sessionFactory;
     }
 
-    public Long getCount(String textFilter, TimeRange timeRange, Geometry boundingBox) {
+    /*
+     * @see com.tech4d.tsm.service.EventSearchService#getCount
+     */
+    @SuppressWarnings("unchecked")
+	public Long getCount(String textFilter, TimeRange timeRange, Geometry boundingBox, boolean showVisible) {
         LapTimer timer = new LapTimer(this.logger);
-        SQLQuery sqlQuery = createQuery(SQL_PREFIX_GET_COUNT, textFilter, timeRange, boundingBox);
+        SQLQuery sqlQuery = createQuery(SQL_PREFIX_GET_COUNT, textFilter, timeRange, boundingBox, showVisible);
         List result = sqlQuery.addScalar("count(*)", Hibernate.LONG).list();
         timer.timeIt("count").logDebugTime();
         return (Long) result.get(0);
     }
 
     /*
-     * (non-Javadoc)
-     * 
-     * @see com.tech4d.tsm.service.EventSearchService#search(java.lang.String,
-     *      com.tech4d.tsm.model.geometry.TimeRange,
-     *      com.vividsolutions.jts.geom.Geometry)
+     * @see com.tech4d.tsm.service.EventSearchService#search
      */
     @SuppressWarnings("unchecked")
     public List<Event> search(int maxResults, int firstResult, String textFilter, TimeRange timeRange,
-            Geometry boundingBox) {
+            Geometry boundingBox, boolean showVisible) {
         LapTimer timer = new LapTimer(this.logger);
-        SQLQuery sqlQuery = createQuery(SQL_PREFIX_SEARCH, textFilter, timeRange, boundingBox);
+        SQLQuery sqlQuery = createQuery(SQL_PREFIX_SEARCH, textFilter, timeRange, boundingBox, showVisible);
                
         List<Event> events = sqlQuery
             .addEntity(Event.class)
@@ -92,10 +95,16 @@ public class EventSearchServiceHib implements EventSearchService {
         return events;
     }
 
-    private SQLQuery createQuery(String prefix, String textFilter, TimeRange timeRange, Geometry boundingBox) {
+    private SQLQuery createQuery(String prefix, String textFilter, TimeRange timeRange, 
+    		Geometry boundingBox, boolean showVisible) {
         StringBuffer query = new StringBuffer(prefix).append(SQL_SELECT_STUB);
+        if (showVisible) {
+            query.append(SQL_VISIBLE_CLAUSE);
+        } else {
+        	query.append(SQL_INVISIBLE_CLAUSE);
+        }
         if (!StringUtils.isEmpty(textFilter)) {
-            query.append(SQL_MATCH_CLAUSE);
+        	query.append(SQL_MATCH_CLAUSE);
         }
         if (boundingBox != null) {
             query.append(SQL_MBRWITHIN_CLAUSE);

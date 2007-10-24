@@ -143,7 +143,7 @@ public class IntegrationTestEventSearchService {
         for (int i=0; i<searchStrings.length; i++) {
             String searchString = searchStrings[i];
             List<Event> events = eventSearchService.search(MAX_RESULTS, 0, searchString,
-                    searchTimeRange, searchBox);
+                    searchTimeRange, searchBox, true);
             for (Event event : events) {
                 System.out.println(event.getDescription());
             }
@@ -183,53 +183,53 @@ public class IntegrationTestEventSearchService {
         EventUtil.printTimeRange(timeRange);
         EventUtil.printTimeRange(TimeRangeFormat.parse("Jan 1, 1007"));
         List<Event> events = eventSearchService.search(MAX_RESULTS, 0, null,
-                timeRange, null);
+                timeRange, null, true);
         assertEquals(1, events.size());
     }
     
     @Test public void noneInBox() {
         // now search in a bounding box that is out
         assertEquals("none should match", 0, eventSearchService.search(MAX_RESULTS, 0, 
-                searchStrings[0], searchTimeRange, failBox).size());
+                searchStrings[0], searchTimeRange, failBox, true).size());
     }
 
     @Test public void noTextMach() {
         // now search strings that are don't count words
         for (String failString : failStrings) {
             assertEquals("none should match", 0, eventSearchService.search(MAX_RESULTS, 0, failString,
-                    searchTimeRange, searchBox).size());
+                    searchTimeRange, searchBox, true).size());
         }
     }
     
     @Test public void noTimeRangeMatch() {
         // now search timeframes that are out
         assertEquals("none should match", 0, eventSearchService.search(MAX_RESULTS, 0, 
-                searchStrings[0], failTimeRange, searchBox).size());
+                searchStrings[0], failTimeRange, searchBox, true).size());
     }
     
     @Test public void checkMaxReturn() {
         // now set the max return threshold to below the number of possible results
         assertEquals("only one should match", 1, eventSearchService.search(1, 0, 
-                searchStrings[0], searchTimeRange, searchBox).size());
+                searchStrings[0], searchTimeRange, searchBox, true).size());
     }
     
     @Test public void checkNullSearchText() {
         assertEquals("three should match", 3, eventSearchService.search(MAX_RESULTS, 0, 
-                null, searchTimeRange, searchBox).size());
+                null, searchTimeRange, searchBox, true).size());
     }
 
     @Test public void checkCount() {
         assertEquals(3, eventSearchService.search(MAX_RESULTS, 0, 
-                searchStrings[0], searchTimeRange, searchBox).size());
+                searchStrings[0], searchTimeRange, searchBox, true).size());
         assertEquals(3L, (long) eventSearchService.getCount(
-                searchStrings[0], searchTimeRange, searchBox));
+                searchStrings[0], searchTimeRange, searchBox, true));
     }
 
     @Test public void checkCountPartial() {
         assertEquals(5, eventSearchService.search(10, 0, 
-                searchStrings[0], null, null).size());
+                searchStrings[0], null, null, true).size());
         assertEquals(5L, (long) eventSearchService.getCount(
-                searchStrings[0], null, null));
+                searchStrings[0], null, null, true));
     }
 
     private static Polygon makeBoundingRectangle(int x, int y) {

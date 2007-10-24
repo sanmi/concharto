@@ -26,8 +26,6 @@ public class LoginFilter implements Filter{
     private static final String REDIRECT_NOTAUTHORIZED = "/notauthorized.htm";
     private static final String REDIRECT_LOGIN = "/login.htm";
     //TODO search requires authentication only during the private pilot
-    private static final String[] PATTERN_REQUIRES_AUTHENTICATION = {"search","edit","admin","member"};
-    private static final String[] PATTERN_REQUIRES_AUTHORIZATION = {"edit","admin"};
     private static final Log log = LogFactory.getLog(LoginFilter.class);
     
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -52,8 +50,8 @@ public class LoginFilter implements Filter{
         //the session (e.g. audit interceptor)
         HttpSession session = httpRequest.getSession();
         UserContext userContext = new UserContext();
-        userContext.setUsername((String) session.getAttribute(AuthConstants.AUTH_USERNAME));
-        userContext.setRoles((String) session.getAttribute(AuthConstants.AUTH_ROLES));
+        userContext.setUsername((String) session.getAttribute(AuthConstants.SESSION_AUTH_USERNAME));
+        userContext.setRoles((String) session.getAttribute(AuthConstants.SESSION_AUTH_ROLES));
         ThreadLocalUserContext.setUserContext(userContext);
         chain.doFilter(request, response);
     }
@@ -75,23 +73,25 @@ public class LoginFilter implements Filter{
         if (!requiresAuthorization(httpRequest)) {
             return true;
         }
-        if (null != session.getAttribute(AuthConstants.AUTH_ROLES)) {
-            String roles = (String) session.getAttribute(AuthConstants.AUTH_ROLES);
+        if (null != session.getAttribute(AuthConstants.SESSION_AUTH_ROLES)) {
+            String roles = (String) session.getAttribute(AuthConstants.SESSION_AUTH_ROLES);
             String uri = httpRequest.getRequestURI();
             //should like like '/admin/canDelete' or '/admin/findUsers'
             String path = StringUtils.substringBetween(uri, httpRequest.getContextPath(),".htm");
             String[] parts = StringUtils.split(path, '/');
-            if (parts.length == 2) {
-                //one level only e.g. URL was admin/findUsers.htm
-                if (StringUtils.contains(roles, parts[0])) {
-                    //e.g. "admin canDelete canMove" contains "admin"
-                    return true;
-                }
-            } else if (parts.length == 3) {
-                //two levels e.g. URL was admin/canDelete/deleteUsers.htm
-                if (StringUtils.contains(roles, parts[0]) && StringUtils.contains(roles, parts[1])) {
-                    //e.g. "admin canDelete canMove" contains "admin" and "canDelete"
-                    return true;
+            if (parts != null) {
+                if (parts.length == 2) {
+                    //one level only e.g. URL was admin/findUsers.htm
+                    if (StringUtils.contains(roles, parts[0])) {
+                        //e.g. "admin canDelete canMove" contains "admin"
+                        return true;
+                    }
+                } else if (parts.length == 3) {
+                    //two levels e.g. URL was admin/canDelete/deleteUsers.htm
+                    if (StringUtils.contains(roles, parts[0]) && StringUtils.contains(roles, parts[1])) {
+                        //e.g. "admin canDelete canMove" contains "admin" and "canDelete"
+                        return true;
+                    }
                 }
             }
         }
@@ -104,13 +104,13 @@ public class LoginFilter implements Filter{
             log.debug("auth login filter");
         }
         //TODO reliance on session may be a problem for scalability
-        if (null == session.getAttribute(AuthConstants.AUTH_USERNAME)) {
+        if (null == session.getAttribute(AuthConstants.SESSION_AUTH_USERNAME)) {
             //save the target so we can get there after authentication
             StringBuffer redirect = new StringBuffer(httpRequest.getRequestURI());
             if (!StringUtils.isEmpty(httpRequest.getQueryString())) {
                 redirect.append('?').append(httpRequest.getQueryString());
             }
-            session.setAttribute(AuthConstants.AUTH_TARGET_URI, redirect.toString() );
+            session.setAttribute(AuthConstants.SESSION_AUTH_TARGET_URI, redirect.toString() );
             return false;
         } else {
             return true;
@@ -122,7 +122,7 @@ public class LoginFilter implements Filter{
         if (httpRequest.getServerName().equals("www.map-4d.com")) {
             return false;
         } 
-        for (String pattern : PATTERN_REQUIRES_AUTHENTICATION) {
+        for (String pattern : AuthConstants.PATTERN_REQUIRES_AUTHENTICATION) {
             if (StringUtils.contains(httpRequest.getRequestURI(), pattern)) {
                 return true;
             }
@@ -130,7 +130,7 @@ public class LoginFilter implements Filter{
         return false;
     }
     private boolean requiresAuthorization(HttpServletRequest httpRequest) {
-        for (String pattern : PATTERN_REQUIRES_AUTHORIZATION) {
+        for (String pattern : AuthConstants.PATTERN_REQUIRES_AUTHORIZATION) {
             if (StringUtils.contains(httpRequest.getRequestURI(), pattern)) {
                 return true;
             }

@@ -52,12 +52,12 @@ public class LoginController extends SimpleFormController {
             //matched username and password, ok to proceed
             log.debug("user " + loginForm.getUsername() + " signed in");
             //first save the username and roles in the session            
-            WebUtils.setSessionAttribute(request, AuthConstants.AUTH_USERNAME, loginForm.getUsername());
-            WebUtils.setSessionAttribute(request, AuthConstants.AUTH_ROLES, makeRoles(user.getRoles()));
+            WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME, loginForm.getUsername());
+            WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_ROLES, makeRoles(user.getRoles()));
             //now go where we were originally heading
-            String view = (String) WebUtils.getSessionAttribute(request, AuthConstants.AUTH_TARGET_URI);
+            String view = (String) WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_TARGET_URI);
             //now erase the target so we don't use it another time
-            WebUtils.setSessionAttribute(request, AuthConstants.AUTH_TARGET_URI, null);
+            WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_TARGET_URI, null);
             if (view != null) {
                 return new ModelAndView(new RedirectView(view));
             } else {

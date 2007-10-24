@@ -5,11 +5,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-<%
-String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-request.setAttribute("basePath", basePath);
-%>
 
 <tsm:page title="Event">
 	<jsp:attribute name="head">
@@ -122,9 +117,16 @@ request.setAttribute("basePath", basePath);
 
 	<%-- create html for info bubbles --%>	
 	function makeOverlayHtml(event) {
-		return createInfoWindowHtml(event) +  
+		var html = createInfoWindowHtml(event) +  
 			'<br/><a href="#" onclick="editEvent(' + event.id + ')">edit</a>' +  
-			' &nbsp; <a href="/edit/flagevent.htm?id=' + event.id + '">flag</a><br/></div>';
+			' &nbsp; <a href="/edit/flagevent.htm?id=' + event.id + '">flag</a> &nbsp;';
+		if (event.hasUnresolvedFlags == 'true') {
+			html += '<span class="errorLabel"><em>This event has been <a class="errorlinks" href="${basePath}edit/eventdetails.htm?id=' + event.id + '">flagged!</a></em></span>';
+		} else {
+			html += '<a class="links" href="${basePath}edit/eventdetails.htm?id=' + event.id + '">details</a>';
+		}
+		html += '<br/></div>';
+		return html;
 	}
 
   <%-- END PRE FUNCTIONS (initialization) ============================= --%>
@@ -271,8 +273,14 @@ request.setAttribute("basePath", basePath);
 	            </td>
 	          </tr>
 	        </table>
-	        <input type="submit" name="Search" value="Search" />
-	        &nbsp;&nbsp;&nbsp;<input type="button" name="add" value="Add to the Map!" onclick="editEvent('')"/>
+	        <span class="action"><input type="submit" name="Search" value="Search" /></span>
+	        <span class="action"><input type="button" name="add" value="Add to the Map!" onclick="editEvent('')"/></span>
+	        <c:if test="${fn:contains(roles, 'admin')}">
+        		<span class="action, adminField">
+        			<form:checkbox path="showInvisible"/>
+        			Show removed Events?
+        		</span>
+	        </c:if>
 	      </span>
 		  </div>
 		  
@@ -325,9 +333,15 @@ request.setAttribute("basePath", basePath);
 								<br/>	
 			          <a  class="links" href="#" onclick="editEvent(<c:out value='${event.id}'/>)">edit</a>
 			          &nbsp; <a class="links" href="${basePath}edit/flagevent.htm?id=${event.id}" >flag</a>
-			          <c:if test="${event.hasUnresolvedFlags}">
-			          	<span class="errorLabel"><em>This event has been <a class="errorlinks" href="${basePath}edit/listflags.htm?id=${event.id}">flagged!</a></em></span>
-			          </c:if>
+			          &nbsp; 
+			          <c:choose>
+			          	<c:when test="${event.hasUnresolvedFlags}">
+				          	<span class="errorLabel"><em>This event has been <a class="errorlinks" href="${basePath}edit/eventdetails.htm?id=${event.id}">flagged!</a></em></span>
+			          	</c:when>
+			          	<c:otherwise>
+				          	<a class="links" href="${basePath}edit/eventdetails.htm?id=${event.id}">details</a>
+			          	</c:otherwise>
+			          </c:choose>
 			          <br/>
 			          
 							</div>

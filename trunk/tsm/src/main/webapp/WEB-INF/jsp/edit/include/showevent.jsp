@@ -1,5 +1,6 @@
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<div class="infoBox">
+			<div class="infoBox">
 	  		<table><tr>
 	  			<td>
 						<h2>Event Information</h2>
@@ -26,6 +27,9 @@
 								<span class="errorLabel">This event has unresolved flags</span>
 							</div>
 						</c:if>
+						<div class="formRow">
+							<a class="links" href="${basePath}edit/event.htm?listid=${event.id}">Edit this event</a>
+						</div>
 					</td>
 					<td>
 						<iframe src="${basePath}search/mapthumbnail.htm?id=${event.id}"

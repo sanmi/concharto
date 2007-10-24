@@ -60,6 +60,10 @@ body {
     margin:-1px;
 }
 
+.adminField {
+	font-style: italic;
+	color: blue;
+}
 .mapedit table {
     width:100%;
 }
@@ -223,6 +227,10 @@ a.nexPrev:link, a.nextPrev:visited {
     width:auto;
 }
 
+.mapedit .action{
+    padding-right:1em;
+}
+
 .loginForm, .settingsForm {
     margin:40px 0 60px 60px;
 }
@@ -291,6 +299,8 @@ a.nexPrev:link, a.nextPrev:visited {
 
 .simpleForm .action {
 	padding-right:1em;
+	margin-top: .2em;
+	margin-bottom: .2em;
 }
 
 #modal_container {
@@ -304,6 +314,23 @@ a.nexPrev:link, a.nextPrev:visited {
 
 #modal_overlay {
 	background-color:#000;
+}
+
+.simpleTable table {
+	border: 1px solid #e0e0e0;
+	padding:.1em;
+	margin:.1em;
+	text-align: left;	
+}
+
+.simpleTable tr, .simpleTable td, .simpleTable th {
+	border: 1px solid #e0e0e0;
+	padding: .2em;
+	margin: 0;
+}
+
+.simpleTable th{
+	background-color:#EFEFEF;
 }
 
 
