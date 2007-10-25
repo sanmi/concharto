@@ -34,69 +34,48 @@ request.setAttribute("geometryField", geometryField);
 				<a class="links" href="#" onclick="alert('Not Implemented')">${auditEntry.user}</a> 
 	 		<fmt:formatDate value="${auditEntry.dateCreated}" pattern="MMM dd, yyyy hh:mm a"/>
 	 		
- 			<c:if test="${fn:length(auditEntry.auditEntryFieldChange) > 0}">
- 				<div class="simpleTable">
-					<display:table name="${auditEntry.auditEntryFieldChange}" id="dt">
-						<display:column title="Field">
-							<spring:message code="audit.event.field.${dt.propertyName}"/>
-						</display:column>
-						<display:column title="Old Value">
-							<c:choose>
-			   				<c:when test="${dt.propertyName == geometryField}">
-									<iframe src="${basePath}search/auditmapthumbnail.htm?id=${dt.id}&change=oldValue"
-					  						height="150" width="350" frameborder="0" scrolling="no">
-									   This browser doesn't support embedding a map.
-					 				</iframe>
-			   				</c:when>
-			   				<c:otherwise>
-			     				<c:out value="${dt.oldValue}"/>" 
-			   				</c:otherwise>
-			   			</c:choose>
-						</display:column>
-						<display:column title="New Value">
-							<c:choose>
-			   				<c:when test="${dt.propertyName == geometryField}">
-									<iframe src="${basePath}search/auditmapthumbnail.htm?id=${dt.id}&change=newValue"
-					  						height="150" width="350" frameborder="0" scrolling="no">
-									   This browser doesn't support embedding a map.
-					 				</iframe>
-			   				</c:when>
-			   				<c:otherwise>
-			     				<c:out value="${dt.newValue}"/>" 
-			   				</c:otherwise>
-			   			</c:choose>
-						</display:column>
-					</display:table> 
-				</div>
-			</c:if>
-			<!-- 	 		
-	 		<ul>
-	   		<c:forEach items="${auditEntry.auditEntryFieldChange}" var="changes">
-	   			<c:choose>
-	   				<c:when test="${changes.propertyName == geometryField}">
-	   					<li>
-								<iframe src="${basePath}search/auditmapthumbnail.htm?id=${changes.id}&change=oldValue"
-				  						height="150" width="350" frameborder="0" scrolling="no">
-								   This browser doesn't support embedding a map.
-				 				</iframe>
-								<iframe src="${basePath}search/auditmapthumbnail.htm?id=${changes.id}&change=newValue"
-				  						height="150" width="350" frameborder="0" scrolling="no">
-								   This browser doesn't support embedding a map.
-				 				</iframe>
-	   					</li>
-	   				</c:when>
-	   				<c:otherwise>
-	     			<li>
-	     				<b><spring:message code="audit.event.field.${changes.propertyName}"/> was changed from </b> 
-	     				<em>"<c:out value="${changes.oldValue}"/>"</em> <b> to</b>
-	     				<em>"<c:out value="${changes.newValue}"/>"</em>
-	     			</li>
-	   				</c:otherwise>
-	   			</c:choose>
-	   		</c:forEach>
-	   	</ul>
-	   	 -->
-			<a href="#">revert</a>
+	 		<c:choose>
+		 		<c:when test="${fn:length(auditEntry.auditEntryFieldChange) > 0}">
+			 		<div class="simpleTable">
+						<display:table name="${auditEntry.auditEntryFieldChange}" id="dt">
+							<display:column style="width:12em" title="Field">
+								<spring:message code="audit.event.field.${dt.propertyName}"/>
+							</display:column>
+							<display:column style="width:355px" title="Old Value">
+								<c:choose>
+				   				<c:when test="${dt.propertyName == geometryField}">
+										<iframe src="${basePath}search/auditmapthumbnail.htm?id=${dt.id}&change=oldValue"
+						  						height="150" width="350" frameborder="0" scrolling="no">
+										   This browser doesn't support embedding a map.
+						 				</iframe>
+				   				</c:when>
+				   				<c:otherwise>
+				     				<c:out value="${dt.oldValue}"/>
+				   				</c:otherwise>
+				   			</c:choose>
+							</display:column>
+							<display:column title="New Value">
+								<c:choose>
+				   				<c:when test="${dt.propertyName == geometryField}">
+										<iframe src="${basePath}search/auditmapthumbnail.htm?id=${dt.id}&change=newValue"
+						  						height="150" width="350" frameborder="0" scrolling="no">
+										   This browser doesn't support embedding a map.
+						 				</iframe>
+				   				</c:when>
+				   				<c:otherwise>
+				     				<c:out value="${dt.newValue}"/>
+				   				</c:otherwise>
+				   			</c:choose>
+							</display:column>
+						</display:table> 
+					</div>
+					<a href="#">revert</a>
+		 		</c:when>
+		 		<c:otherwise>
+		 			<div><em>There were no changes</em></div>
+		 		</c:otherwise>
+	 		</c:choose>
+
 	  </div>
 	</c:forEach>
     

@@ -54,7 +54,7 @@ var iframeids=["changes"]
 						<display:column sortable="true" title="User" >
 						 	<a class="links" href="#" onclick="alert('Not Implemented')">${dt.user.username}</a>
 						</display:column>
-						<display:column property="comment" title="Comment" />
+						<display:column title="Comment">${dt.comment}&nbsp;</display:column>
 						<display:column title="Reason" >
 							<spring:message code="flag.reason.${dt.reason}"/>
 						</display:column>

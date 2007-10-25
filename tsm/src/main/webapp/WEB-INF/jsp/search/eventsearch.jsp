@@ -4,7 +4,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
 <tsm:page title="Event">
 	<jsp:attribute name="head">
