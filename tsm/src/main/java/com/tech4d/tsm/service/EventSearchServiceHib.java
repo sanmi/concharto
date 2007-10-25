@@ -29,7 +29,7 @@ public class EventSearchServiceHib implements EventSearchService {
      
     private static final String SQL_GEO_JOIN ="INNER JOIN TsGeometry AS g ON ev.tsgeometry_id = g.id ";
     private static final String SQL_SEARCH_JOIN ="INNER JOIN EventSearchText AS es ON ev.eventsearchtext_id = es.id ";
-    private static final String SQL_TIME_JOIN="INNER JOIN TIMEPRIMITIVE AS T ON EV.WHEN_ID = T.ID ";
+    private static final String SQL_TIME_JOIN="INNER JOIN TimePrimitive AS t ON ev.when_id = t.id ";
     private static final String SQL_WHERE = " WHERE ";
     private static final String SQL_AND = " AND ";
     
