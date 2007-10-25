@@ -84,7 +84,7 @@ public class IntegrationTestAuditEntry {
         event.setDescription("sdfsdf");
         Thread.sleep(1000);
         eventDao.saveOrUpdate(event);
-        //save, but don't make any changes.  Ensure no superfluous audit records
+        //save, but don't make any changes.  
         eventDao.saveOrUpdate(event);
         eventDao.saveOrUpdate(event);
         Event returned2 = eventDao.findById((Long) id);
@@ -95,9 +95,9 @@ public class IntegrationTestAuditEntry {
         //create another so that there are more than 2 total audit records
         eventDao.save(eventUtil.createEvent(begin, end));
         
-        //now ensure two audit entries were created for this event
+        //now ensure correct number audit entries were created for this event
         List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(event, 0, MAX_RESULTS);
-        assertEquals(2, auditEntries.size());
+        assertEquals(4, auditEntries.size());
         //go down the list (entries are ordered by newest first)
         //verify username is in the field
         int version = auditEntries.size() - 1;
@@ -110,11 +110,11 @@ public class IntegrationTestAuditEntry {
         Event empty = new Event();
         empty.setId(event.getId());
         auditEntries = auditEntryDao.getAuditEntries(empty, 0, MAX_RESULTS);
-        assertEquals(2, auditEntries.size());
+        assertEquals(4, auditEntries.size());
         
         //now test getting the count
         Long count = auditEntryDao.getAuditEntriesCount(empty);
-        assertEquals(2L, (long) count);
+        assertEquals(4L, (long) count);
         
         //now test getting one of the entries
         Session session = eventTesterDao.getSessionFactory().openSession();
