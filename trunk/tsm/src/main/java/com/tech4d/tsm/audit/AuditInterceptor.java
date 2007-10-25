@@ -54,7 +54,6 @@ public class AuditInterceptor extends EmptyInterceptor {
         this.auditLogWriter = auditLogWriter;
     }
 
-
     public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState,
                                 String[] propertyNames, Type[] types) throws CallbackException {
         boolean updated = false;
@@ -135,7 +134,8 @@ public class AuditInterceptor extends EmptyInterceptor {
         }
     }
 
-    public void postFlush(Iterator iterator) throws CallbackException {
+    @SuppressWarnings("unchecked")
+	public void postFlush(Iterator iterator) throws CallbackException {
         
         try {
             Collection<AuditEntry> auditEntries = new HashSet<AuditEntry>();
@@ -153,11 +153,14 @@ public class AuditInterceptor extends EmptyInterceptor {
             for (UpdateState state : stateSets.getUpdates()) {
                 if (null != (formatter = getFormatter(state.currentState))) {
                     AuditEntry auditEntry = formatter.createUpdateAuditItems(state.currentState, state.previousState);
+                    /* TODO maybe we should consider leaving this here
                     //Only make an audit entry if there are changes
                     if (auditEntry.getAuditEntryFieldChange().size() > 0) {
                         updateAuditEntry(auditEntry, dateCreated, user);
                         auditEntries.add(auditEntry);
-                    }
+                    } */
+                    updateAuditEntry(auditEntry, dateCreated, user);
+                    auditEntries.add(auditEntry);
                 }
             }
             for (Object o1 : stateSets.getDeletes()) {
@@ -168,6 +171,7 @@ public class AuditInterceptor extends EmptyInterceptor {
                     auditEntries.add(auditEntry);
                 }
             }
+            //If this is an update, then only write the audit entry 
             auditLogWriter.save(auditEntries);
         } catch (HibernateException e) {
             clearStateSets();
@@ -216,7 +220,8 @@ public class AuditInterceptor extends EmptyInterceptor {
     /**
      * thread-local class to manage 3 sets (for inserts, updates, and deletes)
      */
-    private static class ThreadLocalSets extends ThreadLocal {
+    @SuppressWarnings("unchecked")
+	private static class ThreadLocalSets extends ThreadLocal {
         static int INSERT = 0;
         static int UPDATE = 1;
         static int DELETE = 2;
