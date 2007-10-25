@@ -89,6 +89,21 @@ public class IntegrationTestSearchBoundaries {
         
     }
     
+    @Test public void testFlagged() throws java.text.ParseException {
+    	//first one is unflagged
+        Event event = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522-1527"), "Stuff", null);
+        eventDao.saveOrUpdate(event);
+        //second one is flagged
+        event = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522-1527"), "Stuff", null);
+        event.setHasUnresolvedFlag(true);
+        eventDao.saveOrUpdate(event);
+        //should see both
+        assertEquals(2, eventSearchService.search(MAX_RESULTS, 0, null, null, null, Visibility.NORMAL).size());        
+        
+        //now test showing only invisible
+        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, null, null, Visibility.FLAGGED).size());        
+    	
+    }
     
     private static Event makeSearchEvent(Geometry geometry, TimeRange timeRange, String summary, String description) {
         Event event = eventUtil.createEvent(geometry, timeRange, summary, description);
