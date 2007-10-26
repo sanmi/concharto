@@ -13,9 +13,51 @@
 	<!-- Change this to a poolable connection or possibly use C3PO -->
 	<bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 	  <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-	  <property name="url" value="jdbc:mysql://localhost:3306/tsm_test?autoReconnect=true"/>
+	  <property name="url" value="jdbc:mysql://localhost:3306/tsm_test"/>
 	  <property name="username" value="tsm_test_user"/>
 	  <property name="password" value="tsm_test_user"/>
+
+	  <property name="maxActive" value="10"/>
+
+    <!-- You don't want too many idle connections hanging around
+         if you can avoid it, only enough to soak up a spike in
+         the load -->
+	  <property name="maxIdle" value="5"/>
+
+    <!-- Don't use autoReconnect=true, it's going away eventually
+         and it's a crutch for older connection pools that couldn't
+         test connections. You need to decide whether your application
+         is supposed to deal with SQLExceptions (hint, it should), and
+         how much of a performance penalty you're willing to pay
+         to ensure 'freshness' of the connection -->
+	  <property name="validationQuery" value="SELECT 1"/>
+
+   <!-- The most conservative approach is to test connections
+        before they're given to your application. For most applications
+        this is okay, the query used above is very small and takes
+        no real server resources to process, other than the time used
+        to traverse the network.
+
+        If you have a high-load application you'll need to rely on
+        something else. -->
+	  <property name="testOnBorrow" value="true"/>
+
+   <!-- Otherwise, or in addition to testOnBorrow, you can test
+        while connections are sitting idle -->
+	  <property name="testWhileIdle" value="true"/>
+
+    <!-- You have to set this value, otherwise even though
+         you've asked connections to be tested while idle,
+         the idle evicter thread will never run -->
+	  <property name="timeBetweenEvictionRunsMillis" value="10000"/>
+
+    <!-- Don't allow connections to hang out idle too long,
+         never longer than what wait_timeout is set to on the
+         server...A few minutes or even fraction of a minute
+         is sometimes okay here, it depends on your application
+         and how much spikey load it will see -->
+	  <property name="minEvictableIdleTimeMillis" value="60000"/>
+
 	</bean>
 
 	<bean id="mySessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">

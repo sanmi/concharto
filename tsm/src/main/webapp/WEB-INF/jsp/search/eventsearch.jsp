@@ -276,18 +276,21 @@
 	        <span class="action"><input type="submit" name="Search" value="Search" /></span>
 	        <span class="action"><input type="button" name="add" value="Add to the Map!" onclick="editEvent('')"/></span>
 	        <c:if test="${fn:contains(roles, 'admin')}">
-        		<span class="adminAction">
-        			<form:radiobutton value="normal" path="show"/>
-        			Normal
-        		</span>
-        		<span class="adminAction">
-        			<form:radiobutton value="hidden" path="show"/>
-        			Removed
-        		</span>
-        		<span class="adminAction">
-        			<form:radiobutton value="flagged" path="show"/>
-        			Flagged
-        		</span>
+		        <span class="adminBox">
+		        	ADMIN:
+	        		<span class="adminField">
+	        			<form:radiobutton value="normal" path="show"/>
+	        			Normal
+	        		</span>
+	        		<span class="adminAction">
+	        			<form:radiobutton value="hidden" path="show"/>
+	        			Removed
+	        		</span>
+	        		<span class="adminAction">
+	        			<form:radiobutton value="flagged" path="show"/>
+	        			Flagged
+	        		</span>
+        		</div>
 	        </c:if>
 	      </span>
 		  </div>

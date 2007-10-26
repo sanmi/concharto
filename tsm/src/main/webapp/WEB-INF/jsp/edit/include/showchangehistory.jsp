@@ -3,11 +3,12 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page import="com.tech4d.tsm.audit.EventFieldChangeFormatter" %>
+<%@ page import="com.tech4d.tsm.audit.EventFieldChangeFormatter, com.tech4d.tsm.model.audit.AuditEntry" %>
 <%@ taglib prefix="display" uri="http://displaytag.sf.net" %>
 <%
 int geometryField = EventFieldChangeFormatter.TSGEOMETRY;
 request.setAttribute("geometryField", geometryField);
+request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 %>
 	<div class="changeEntry">
     	<span>
@@ -72,7 +73,9 @@ request.setAttribute("geometryField", geometryField);
 					<a href="#">revert</a>
 		 		</c:when>
 		 		<c:otherwise>
-		 			<div><em>There were no changes</em></div>
+		 			<c:if test="${auditEntry.action != ACTION_INSERT}">
+			 			<div><em>There were no changes</em></div>
+		 			</c:if>
 		 		</c:otherwise>
 	 		</c:choose>
 
