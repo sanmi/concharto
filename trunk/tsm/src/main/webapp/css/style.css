@@ -66,14 +66,15 @@ body {
 	color: blue;
 }
 .adminAction{
-    border-left:1px solid #e0e0e0;
+	border-left:1px solid #e0e0e0;
 }
 .adminBox{
-    padding:.5em .2em .2em .2em;
-    border:1px solid #e0e0e0;
-    color:grey;
-    font-weight: bold;
-    font-size: x-small;
+	padding:.2em .2em .2em .2em;
+	border:1px solid #e0e0e0;
+	color:gray;
+	font-weight: bold;
+	font-size: x-small;
+	background: #FFFFCC;
 }
 
 
