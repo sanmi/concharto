@@ -64,18 +64,22 @@ var iframeids=["changes"]
 									${dt.disposition} 
 									<%-- Only admins can resolve flags --%>
 									<c:if test="${fn:contains(roles, 'admin')}">
-										(<a class="links" href="${basePath}admin/flagdisposition.htm?id=${dt.id}"
+										<span class="adminBox">ADMIN
+										(<a class="adminLinks" href="${basePath}admin/flagdisposition.htm?id=${dt.id}"
 										>Reopen</a>) 
+										</span>
 									</c:if>
 								</c:when>
 								<c:otherwise>
 									<%-- Only admins can resolve flags --%>
 									<c:if test="${fn:contains(roles, 'admin')}">
-										<c:forEach items="${dispositions}" var="dispositionCode">										
-											<a class="errorlinks" href="#" onclick="confirmAndSubmit(${dt.id}, '${dispositionCode}')">
-												<spring:message code="flag.disposition.${dispositionCode}"/>
-											</a><br/>
-										</c:forEach>
+										<div class="adminBox">ADMIN<br/>
+											<c:forEach items="${dispositions}" var="dispositionCode">										
+												<a class="errorlinks" href="#" onclick="confirmAndSubmit(${dt.id}, '${dispositionCode}')">
+													<spring:message code="flag.disposition.${dispositionCode}"/>
+												</a><br/>
+											</c:forEach>
+										</div>
 									</c:if>
 								</c:otherwise> 
 							</c:choose>

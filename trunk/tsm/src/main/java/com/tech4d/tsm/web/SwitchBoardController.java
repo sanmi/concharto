@@ -125,7 +125,7 @@ public class SwitchBoardController extends MultiActionController {
             return searchModelAndView(request);
     	}
     	//Regular users don't get to see it if it has been removed by an admin
-    	else if (!AuthHelper.isUserAnAdmin() && !event.isVisible()) {
+    	else if (!AuthHelper.isUserAnAdmin() && !(event.isVisible() == null) && !event.isVisible()) {
     		return searchModelAndView(request);
     	}
 		model.put(MODEL_EVENT, event);
