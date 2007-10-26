@@ -64,7 +64,7 @@ var iframeids=["changes"]
 									${dt.disposition} 
 									<%-- Only admins can resolve flags --%>
 									<c:if test="${fn:contains(roles, 'admin')}">
-										<span class="adminBox">ADMIN
+										<span style="align:right" class="adminBox">ADMIN
 										(<a class="adminLinks" href="${basePath}admin/flagdisposition.htm?id=${dt.id}"
 										>Reopen</a>) 
 										</span>

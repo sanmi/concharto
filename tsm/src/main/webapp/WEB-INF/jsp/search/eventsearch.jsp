@@ -276,7 +276,7 @@
 	        <span class="action"><input type="submit" name="Search" value="Search" /></span>
 	        <span class="action"><input type="button" name="add" value="Add to the Map!" onclick="editEvent('')"/></span>
 	        <c:if test="${fn:contains(roles, 'admin')}">
-		        <span class="adminBox">
+		        <span style="padding-top:.5em" class="adminBox">
 		        	ADMIN:
 	        		<span class="adminField">
 	        			<form:radiobutton value="normal" path="show"/>
@@ -290,7 +290,7 @@
 	        			<form:radiobutton value="flagged" path="show"/>
 	        			Flagged
 	        		</span>
-        		</div>
+        		</span>
 	        </c:if>
 	      </span>
 		  </div>
