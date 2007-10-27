@@ -44,7 +44,7 @@ public class SwitchBoardController extends MultiActionController {
 	private static final Log log = LogFactory.getLog(SwitchBoardController.class);
 
     private static final int MAX_RESULTS = 200;
-	private static final String PARAM_REVISION = "revision";
+	private static final String PARAM_TO_REVISION = "toRev";
     private EventDao eventDao;
     private FlagDao flagDao;
     private AuditEntryDao auditEntryDao;
@@ -196,14 +196,16 @@ public class SwitchBoardController extends MultiActionController {
         return new ModelAndView(new RedirectView(request.getContextPath() + "/edit/eventdetails.htm?id=" + flag.getEvent().getId(), true));
     }
     
-    public ModelAndView revertEvent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView undoevent(HttpServletRequest request, HttpServletResponse response) throws Exception {
     	//TODO move this into another controller
     	Long id = ServletRequestUtils.getLongParameter(request, PARAM_ID);
-    	Integer revision = ServletRequestUtils.getIntParameter(request, PARAM_REVISION);
-    
-    	revertEventService.revertToRevision(revision, id);
+    	Integer revision = ServletRequestUtils.getIntParameter(request, PARAM_TO_REVISION);
+
+    	if ((id != null) && (revision != null)) {
+    		revertEventService.revertToRevision(revision, id);
+    	}
         //redirect back to the list
-        return new ModelAndView(new RedirectView(request.getContextPath() + "/edit/eventdetails.htm?id=" + id, true));
+        return new ModelAndView(new RedirectView(request.getContextPath() + "/edit/changehistoryframe.htm?id=" + id, true));
     }
     	
  }

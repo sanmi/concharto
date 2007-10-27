@@ -38,7 +38,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 	 		<c:choose>
 		 		<c:when test="${fn:length(auditEntry.auditEntryFieldChange) > 0}">
 			 		<div class="simpleTable">
-						<display:table name="${auditEntry.auditEntryFieldChange}" id="dt">
+						<display:table name="${auditEntry.auditEntryFieldChange}" id="dt" >
 							<display:column style="width:12em" title="Field">
 								<spring:message code="audit.event.field.${dt.propertyName}"/>
 							</display:column>
@@ -70,7 +70,11 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 							</display:column>
 						</display:table> 
 					</div>
-					<a href="#">revert</a>
+					<c:if test="${dt.id > 0}">
+						<a class="links" href="${basePath}edit/undoevent.htm?id=${auditEntry.entityId}&toRev=${auditEntry.version-1}">
+							Undo this revision
+						</a>
+					</c:if>
 		 		</c:when>
 		 		<c:otherwise>
 		 			<c:if test="${auditEntry.action != ACTION_INSERT}">
