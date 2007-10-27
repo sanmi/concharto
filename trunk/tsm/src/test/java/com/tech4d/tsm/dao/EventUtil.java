@@ -8,15 +8,13 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
 
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.User;
 import com.tech4d.tsm.model.UserTag;
-import com.tech4d.tsm.model.kml.Style;
 import com.tech4d.tsm.model.geometry.TsGeometry;
+import com.tech4d.tsm.model.kml.Style;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
@@ -107,10 +105,9 @@ public class EventUtil {
     }
     
     public void assertEquivalent(Event expected, Event actual) {
-        SessionFactory sessionFactory = this.sessionFactory;
-        Session session = SessionFactoryUtils.getSession(sessionFactory, true);
-        session.refresh(actual);
 
+        assertEquals(expected.getDescription(), actual.getDescription());
+        assertEquals(expected.getSummary(), actual.getSummary());
         assertEquals(expected.getWhen().getBegin(), actual.getWhen().getBegin());
         com.tech4d.tsm.model.kml.Style expectedStyle = (Style) expected.getStyleSelector();
         com.tech4d.tsm.model.kml.Style actualStyle = (Style) actual.getStyleSelector();
@@ -123,7 +120,6 @@ public class EventUtil {
             assertEquals(expected.getFlags().size(), actual.getFlags().size());
         }
 
-        session.close();
     }
     
     public static Date filterMilliseconds(Date date) {

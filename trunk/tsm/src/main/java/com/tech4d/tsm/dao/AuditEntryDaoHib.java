@@ -73,4 +73,8 @@ public class AuditEntryDaoHib implements AuditEntryDao {
 	public AuditFieldChange getAuditFieldChange(Long id) {		
 		return (AuditFieldChange) this.sessionFactory.getCurrentSession().get(AuditFieldChange.class, id);
 	}
+
+	public void update(AuditEntry auditEntry) {
+		this.sessionFactory.getCurrentSession().update(auditEntry);
+	}
 }

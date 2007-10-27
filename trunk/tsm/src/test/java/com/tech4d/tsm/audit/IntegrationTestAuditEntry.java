@@ -10,36 +10,38 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.hibernate.Session;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.tech4d.tsm.OpenSessionInViewIntegrationTest;
 import com.tech4d.tsm.auth.ThreadLocalUserContext;
 import com.tech4d.tsm.auth.UserContext;
 import com.tech4d.tsm.dao.AuditEntryDao;
-import com.tech4d.tsm.dao.StyleUtil;
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.dao.EventTesterDao;
 import com.tech4d.tsm.dao.EventUtil;
+import com.tech4d.tsm.dao.StyleUtil;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.audit.AuditEntry;
 import com.tech4d.tsm.model.audit.AuditFieldChange;
+import com.tech4d.tsm.model.geometry.TsGeometry;
+import com.tech4d.tsm.service.RevertEventService;
 import com.tech4d.tsm.util.ContextUtil;
 import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 
-@Transactional
-public class IntegrationTestAuditEntry {
+public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest {
 
     private static final String USERNAME = "bob";
     private static final int MAX_RESULTS = 100;
     private static EventDao eventDao;
     private static AuditEntryDao auditEntryDao;
     private static EventTesterDao eventTesterDao;
-
+    private static RevertEventService revertEventService;
     private static EventUtil eventUtil;
+   
 
     private Date begin;
     private Date end;
@@ -51,6 +53,7 @@ public class IntegrationTestAuditEntry {
         begin = cal.getTime();
         cal.set(Calendar.SECOND, 35);
         end = cal.getTime();
+        
     }
 
     @BeforeClass
@@ -59,6 +62,7 @@ public class IntegrationTestAuditEntry {
         eventDao = (EventDao) appCtx.getBean("eventDao");
         eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
         auditEntryDao = (AuditEntryDao) appCtx.getBean("auditEntryDao");
+        revertEventService =  (RevertEventService) appCtx.getBean("revertEventService");
         eventUtil = new EventUtil(eventTesterDao.getSessionFactory());
         eventTesterDao.deleteAll();
         StyleUtil.setupStyle();
@@ -68,7 +72,10 @@ public class IntegrationTestAuditEntry {
         UserContext userContext = new UserContext();
         userContext.setUsername(USERNAME);
         ThreadLocalUserContext.setUserContext(userContext);
+        eventTesterDao.deleteAll();
     }
+    
+
     
     /**
      * 
@@ -80,14 +87,20 @@ public class IntegrationTestAuditEntry {
         Event event = eventUtil.createEvent(begin, end);
         event.setDescription("This is some description.");
         Serializable id = eventDao.save(event);
-        Event returned = eventDao.findById((Long) id);
-        event.setDescription("sdfsdf");
+        getSessionFactory().getCurrentSession().evict(event); //guarantees the object gets written to the DB 
+        
         Thread.sleep(1000);
-        eventDao.saveOrUpdate(event);
+        Event returned = eventDao.findById((Long) id);
+        returned.setDescription("sdfsdf");
+        eventDao.saveOrUpdate(returned);
+        getSessionFactory().getCurrentSession().evict(returned);
         //save, but don't make any changes.  
-        eventDao.saveOrUpdate(event);
-        eventDao.saveOrUpdate(event);
+        eventDao.saveOrUpdate(returned);
+        getSessionFactory().getCurrentSession().evict(returned);
+        eventDao.saveOrUpdate(returned);
+        getSessionFactory().getCurrentSession().evict(returned);
         Event returned2 = eventDao.findById((Long) id);
+        
         assertEquals(EventUtil.filterMilliseconds(event.getCreated()), returned.getCreated());
         //make sure the last modified dates are different for the two instances we edited
         assertTrue(returned.getLastModified().compareTo(returned2.getLastModified()) != 0);
@@ -117,14 +130,14 @@ public class IntegrationTestAuditEntry {
         assertEquals(4L, (long) count);
         
         //now test getting one of the entries
-        Session session = eventTesterDao.getSessionFactory().openSession();
-        session.refresh(auditEntries.get(0));
+        //Session session = eventTesterDao.getSessionFactory().openSession();
+        //session.refresh(auditEntries.get(0));
         Collection<AuditFieldChange> changes = auditEntries.get(0).getAuditEntryFieldChange();
         for (AuditFieldChange auditFieldChange : changes) {
             AuditFieldChange newChange = auditEntryDao.getAuditFieldChange(auditFieldChange.getId());
             assertEquals(newChange.getNewValue(), auditFieldChange.getNewValue());
 		}
-        session.close();
+        //session.close();
 
         //now test a bad ID
         empty.setId(4344L);
@@ -134,9 +147,76 @@ public class IntegrationTestAuditEntry {
         //now test getting the count
         count = auditEntryDao.getAuditEntriesCount(empty);
         assertEquals(0L, (long) count);
-        
     }
   
+    @Test public void testRevert() throws ParseException {
+    	//create an event with five changes and revert each one
+        Event rev0 = eventUtil.createEvent(begin, end);
+        rev0.setDescription("r0 description");
+        rev0.setSummary("r0 summary");
+        rev0.setSource(null);
+        rev0.setUserTagsAsString("r0 tag a, tag b");
+        Serializable id = eventDao.save(rev0);
+        freeFromSession(rev0);
+        
+        Event rev1 = eventDao.findById((Long) id);
+        rev1.setSummary("r1 summary");
+        rev1.setSource("r1 source");
+        eventDao.saveOrUpdate(rev1);
+        freeFromSession(rev1);
+        
+        Event rev2 = eventDao.findById((Long) id);
+        rev2.setDescription("r2 description");
+        rev2.setSummary("r2 summary");
+        rev2.setTsGeometry(new TsGeometry(new WKTReader().read("POINT (3300 3530)")));
+        eventDao.saveOrUpdate(rev2);
+        freeFromSession(rev2);
+
+        Event rev3 = eventDao.findById((Long) id);
+        rev3.setDescription("r3 description");
+        rev3.setSummary("r3 summary");
+        rev3.setTsGeometry(new TsGeometry(new WKTReader().read("POINT (530 530)")));
+        eventDao.saveOrUpdate(rev3);
+        rev3.getFlags().size();
+        freeFromSession(rev3);
+
+        Event rev4 = eventDao.findById((Long) id);
+        rev4.setUserTagsAsString("r4tags, tag b");
+        rev4.setDescription("r4 description");
+        eventDao.saveOrUpdate(rev4);
+        freeFromSession(rev4);
+        
+        revertAndAssert(rev4, 4);
+        getSessionFactory().getCurrentSession().flush();
+        revertAndAssert(rev3, 3);
+        revertAndAssert(rev2, 2);
+        revertAndAssert(rev1, 1);
+        revertAndAssert(rev0, 0);
+    }
+    
+    private void revertAndAssert(Event expected, int rev) {
+        //List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(expected, 0, MAX_RESULTS);
+        Event reverted = revertEventService.revertToRevision(rev, expected.getId());
+        eventUtil.assertEquivalent(expected, reverted);
+        reverted = eventDao.findById(expected.getId());
+        eventUtil.assertEquivalent(expected, reverted);
+    }
+
+    /**
+     * This is to handle a problem that only occurs during integration testing, where
+     * we need to evict the object so that we can have multiple different copies of it that reflect
+     * it's previous states!  When we do that, the collections won't get loaded in (lazy loading)
+     * so we do it by hand by accessing one of the objects.
+     * 
+     * @param event
+     */
+    private void freeFromSession(Event event) {
+        if (event.getFlags() != null) {
+        	event.getFlags().size();
+        }
+        event.getUserTags().size();
+        getSessionFactory().getCurrentSession().evict(event);
+    }
     
 
 }

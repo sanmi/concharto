@@ -24,6 +24,7 @@ import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.Flag;
 import com.tech4d.tsm.model.audit.AuditFieldChange;
 import com.tech4d.tsm.model.geometry.TsGeometry;
+import com.tech4d.tsm.service.RevertEventService;
 import com.tech4d.tsm.util.JSONFormat;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
@@ -43,9 +44,11 @@ public class SwitchBoardController extends MultiActionController {
 	private static final Log log = LogFactory.getLog(SwitchBoardController.class);
 
     private static final int MAX_RESULTS = 200;
+	private static final String PARAM_REVISION = "revision";
     private EventDao eventDao;
     private FlagDao flagDao;
     private AuditEntryDao auditEntryDao;
+    private RevertEventService revertEventService;
 
     public void setEventDao(EventDao eventDao) {
         this.eventDao = eventDao;
@@ -57,6 +60,10 @@ public class SwitchBoardController extends MultiActionController {
 
 	public void setAuditEntryDao(AuditEntryDao auditEntryDao) {
 		this.auditEntryDao = auditEntryDao;
+	}
+
+	public void setRevertEventService(RevertEventService revertEventService) {
+		this.revertEventService = revertEventService;
 	}
 
 	public ModelAndView listEvents(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -187,6 +194,16 @@ public class SwitchBoardController extends MultiActionController {
         
         //redirect back to the list
         return new ModelAndView(new RedirectView(request.getContextPath() + "/edit/eventdetails.htm?id=" + flag.getEvent().getId(), true));
+    }
+    
+    public ModelAndView revertEvent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	//TODO move this into another controller
+    	Long id = ServletRequestUtils.getLongParameter(request, PARAM_ID);
+    	Integer revision = ServletRequestUtils.getIntParameter(request, PARAM_REVISION);
+    
+    	revertEventService.revertToRevision(revision, id);
+        //redirect back to the list
+        return new ModelAndView(new RedirectView(request.getContextPath() + "/edit/eventdetails.htm?id=" + id, true));
     }
     	
  }
