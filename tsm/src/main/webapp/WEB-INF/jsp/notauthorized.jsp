@@ -11,7 +11,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<jsp:body>
 	  	<div class="loginForm">
 				<h2>Sorry, you are not authorized to use this page</h2>
-				<a href="${pageContext.request.contextPath}">Return</a>
+				<a href="${pageContext.request.contextPath}/">Return</a>
 			</div>	  
 	</jsp:body>
 </tsm:page>

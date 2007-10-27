@@ -67,6 +67,13 @@
   		</set>
   	</property>
   </bean>
+  <bean id="revertEventService" class="com.tech4d.tsm.service.RevertEventServiceHib">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+<!-- -->
+  	<property name="eventDao" ref="eventDao"/>
+  	<property name="auditEntryDao" ref="auditEntryDao"/>
+  	 
+  </bean>
 	<!-- End Transaction config -->
 	
 </beans>

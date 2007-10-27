@@ -10,12 +10,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 
+import com.tech4d.tsm.OpenSessionInViewIntegrationTest;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.Flag;
 import com.tech4d.tsm.util.ContextUtil;
 import com.vividsolutions.jts.io.ParseException;
 
-public class IntegrationTestFlagDao {
+public class IntegrationTestFlagDao extends OpenSessionInViewIntegrationTest {
 
     private static EventDao eventDao;
     private static FlagDao flagDao;
@@ -55,6 +56,7 @@ public class IntegrationTestFlagDao {
         event.getFlags().add(flag);
         returned = eventDao.findById((Long)id);
         eventUtil.assertEquivalent(event, returned);
+        getSessionFactory().getCurrentSession().evict(event);
         
         //now delete one
         flagDao.deleteFlag(returned.getFlags().get(0).getId());

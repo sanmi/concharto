@@ -22,4 +22,6 @@ public interface AuditEntryDao {
 
 	public AuditFieldChange getAuditFieldChange(Long id);
 
+	public void update(AuditEntry auditEntry);
+
 }

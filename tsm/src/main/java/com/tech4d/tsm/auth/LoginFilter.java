@@ -34,6 +34,7 @@ public class LoginFilter implements Filter{
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+        String url = httpRequest.getRequestURL().toString();
         
         //Does this page require authentication
         if (requiresAuthentication(httpRequest)) {

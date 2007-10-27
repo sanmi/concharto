@@ -19,13 +19,14 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tech4d.tsm.OpenSessionInViewIntegrationTest;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.util.ContextUtil;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 
 @Transactional
-public class IntegrationTestEventDao {
+public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
     private static final int MAX_RESULTS = 200;
 
     private static EventDao eventDao;
@@ -91,10 +92,14 @@ public class IntegrationTestEventDao {
     public void testSaveAndResave() throws ParseException, InterruptedException {
         Event event = eventUtil.createEvent(begin, end);
         Serializable id = eventDao.save(event);
+        getSessionFactory().getCurrentSession().evict(event);  //only for unit testing since we are using OpenSessionInView paradigm
+
         Event returned = eventDao.findById((Long) id);
-        event.setDescription("sdfsdf");
+        returned.setDescription("sdfsdf");
         Thread.sleep(1000);
-        eventDao.saveOrUpdate(event);
+        eventDao.saveOrUpdate(returned);
+        getSessionFactory().getCurrentSession().evict(returned);
+        
         Event returned2 = eventDao.findById((Long) id);
         assertEquals(EventUtil.filterMilliseconds(event.getCreated()), returned.getCreated());
         //make sure the last modified dates are different for the two instances we edited
@@ -128,9 +133,12 @@ public class IntegrationTestEventDao {
 
     @Test
     public void testDeleteById() throws ParseException {
-        Serializable id = eventDao.save(eventUtil.createEvent());
+    	Event event = eventUtil.createEvent();
+        Serializable id = eventDao.save(event);
+        getSessionFactory().getCurrentSession().evict(event);
+
         eventDao.delete((Long) id);
-        Event event = eventDao.findById((Long) id);
+        event = eventDao.findById((Long) id);
         assertNull(event);
     }
     
