@@ -51,6 +51,7 @@ public class ChangeHistoryController extends AbstractFormController {
     protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         ChangeHistoryForm changeHistoryForm = (ChangeHistoryForm) command;
         Map model = errors.getModel();
+        
         if (errors.hasErrors()) {
             //not sure how this could happen
             if (logger.isDebugEnabled()) {
