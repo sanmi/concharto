@@ -56,7 +56,13 @@
 				event.where + '</em><br/>' +
 				event.description + '<br/>' +
 				'<br/><b>Tags: </b>' + event.tags + '<br/>' + 
-				'<b>Source: </b>' + event.source;
+				'<b>Source: </b>';
+				if (event.source.substring(0,7) == 'http://') {
+					html += '<a href=' + event.source + '>' + event.source + '</a>';
+				} else {
+					html += event.source;
+				}
+				
 	   return html;
 	}
 	

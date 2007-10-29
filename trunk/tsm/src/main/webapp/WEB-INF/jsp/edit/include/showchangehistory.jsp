@@ -21,16 +21,17 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 						size="${totalResults}"						
 						>
 		<display:setProperty name="basic.msg.empty_list">There have been no changes</display:setProperty>
-		<display:setProperty name="paging.banner.item_name">Entry</display:setProperty>
-		<display:setProperty name="paging.banner.items_name">Entries</display:setProperty>
+		<display:setProperty name="paging.banner.placement">both</display:setProperty>
+		<display:setProperty name="paging.banner.item_name">Change</display:setProperty>
+		<display:setProperty name="paging.banner.items_name">Changes</display:setProperty>
 		<display:setProperty name="paging.banner.onepage">&nbsp;</display:setProperty>
 		<display:setProperty name="paging.banner.no_items_found">&nbsp;</display:setProperty>
 		<display:setProperty name="paging.banner.one_item_found">&nbsp;</display:setProperty>
 		<display:setProperty name="paging.banner.all_items_found">
-			<span class="pagebanner">Change History <b>{0}</b> {1} found, displaying all {2}.</span>
+			<span class="pagebanner"><b>{0}</b> {1} found.</span>
 		</display:setProperty>
 		<display:setProperty name="paging.banner.some_items_found">
-			<span class="pagebanner">Change History <b>{0}</b> {1} found, displaying <b>{2}</b> to <b>{3}</b>.</span>
+			<span class="pagebanner"><b>{0}</b> {1} found.</span>
 		</display:setProperty>
 		<display:column>
 		
