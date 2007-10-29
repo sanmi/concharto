@@ -4,10 +4,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="display" uri="http://displaytag.sf.net" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
-<%@ page import="com.tech4d.tsm.auth.AuthConstants" %>
 
 <tsm:page title="Flags">
-	<jsp:attribute name="script">resizeframe.js</jsp:attribute>
 	<jsp:attribute name="head">
 		<script type="text/javascript">
 		//<![CDATA[
@@ -23,7 +21,6 @@
 			document.location = '${basePath}admin/flagdisposition.htm?id=' + id + '&disposition=' + disposition;
 		}
 	}
-var iframeids=["changes"]
 		//]]>
 		</script>
 				
@@ -91,10 +88,7 @@ var iframeids=["changes"]
 		
 		<div class="infoBox">
 			<h2>Change History</h2>
-			<iframe id="changes" src="${basePath}edit/changehistoryframe.htm?id=${event.id}"
-					 width="100%" height="700px" frameborder="0" >
-		   This browser doesn't support showing change history
-			</iframe>
+			<jsp:include page="include/showchangehistory.jsp"/>
 		</div>
 
 		<input class="action" type="submit" value="Return to Search" onclick="document.location='${basePath}search/eventsearch.htm'"/>

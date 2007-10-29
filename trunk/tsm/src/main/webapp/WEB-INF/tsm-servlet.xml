@@ -14,22 +14,26 @@
 		<property name="mappings">
 			<props>
           <prop key="login.htm">loginController</prop>
-          <prop key="logout.htm">switchBoardController</prop>
-          <prop key="notauthorized.htm">switchBoardController</prop>
           <prop key="search/eventsearch.htm">eventSearchController</prop>
           <prop key="edit/event.htm">eventController</prop>
           <prop key="edit/changehistory.htm">changeHistoryController</prop>
           <prop key="edit/changehistoryframe.htm">changeHistoryFrameController</prop>
+
           <prop key="edit/flagevent.htm">flagEventController</prop>
           <prop key="edit/flageventsuccess.htm">flagEventController</prop>
-          <prop key="edit/eventdetails.htm">switchBoardController</prop>
-          <prop key="admin/flagdisposition.htm">switchBoardController</prop>
+
+          <prop key="logout.htm">switchBoardController</prop>
+          <prop key="notauthorized.htm">switchBoardController</prop>
           <prop key="admin/listEvents.htm">switchBoardController</prop>
-          <prop key="admin/signup.htm">signupController</prop>
-          <prop key="member/settings.htm">settingsController</prop>
           <prop key="search/mapthumbnail.htm">switchBoardController</prop>
           <prop key="search/auditmapthumbnail.htm">switchBoardController</prop>
-          <prop key="edit/undoevent.htm">switchBoardController</prop>
+
+          <prop key="admin/signup.htm">signupController</prop>
+          <prop key="member/settings.htm">settingsController</prop>
+
+          <prop key="admin/flagdisposition.htm">eventDetailsController</prop>
+          <prop key="edit/eventdetails.htm">eventDetailsController</prop>
+          <prop key="edit/undoevent.htm">eventDetailsController</prop>
       </props>
 		</property>		
 	</bean>
@@ -49,6 +53,11 @@
 
 	<!-- Controller names are not important when using the above HandlerMapping implementation -->
 	<bean id="switchBoardController" class="com.tech4d.tsm.web.SwitchBoardController" parent="baseEventController" >
+		<property name="eventDao" ref="eventDao" />
+		<property name="auditEntryDao" ref="auditEntryDao" />
+	</bean>
+
+	<bean id="eventDetailsController" class="com.tech4d.tsm.web.eventdetails.EventDetailsController" parent="baseEventController" >
 		<property name="eventDao" ref="eventDao" />
 		<property name="flagDao" ref="flagDao" />
 		<property name="auditEntryDao" ref="auditEntryDao" />
@@ -89,17 +98,11 @@
 	</bean>
 
 	<bean id="changeHistoryController" class="com.tech4d.tsm.web.changehistory.ChangeHistoryController" parent="baseEventController">
-		<property name="commandName" value="changeHistory"/>
-		<property name="commandClass" value="com.tech4d.tsm.web.changehistory.ChangeHistoryForm"/>
 		<property name="formView" value="edit/changehistory" />
-		<property name="successView" value="edit/changehistory" />
 		<property name="auditEntryDao" ref="auditEntryDao" />
 	</bean>
 	<bean id="changeHistoryFrameController" class="com.tech4d.tsm.web.changehistory.ChangeHistoryController" parent="baseEventController">
-		<property name="commandName" value="changeHistory"/>
-		<property name="commandClass" value="com.tech4d.tsm.web.changehistory.ChangeHistoryForm"/>
 		<property name="formView" value="edit/changehistoryframe" />
-		<property name="successView" value="edit/changehistoryframe" />
 		<property name="auditEntryDao" ref="auditEntryDao" />
 	</bean>
 

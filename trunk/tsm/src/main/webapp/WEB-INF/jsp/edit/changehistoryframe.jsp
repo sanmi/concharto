@@ -22,13 +22,10 @@
 	<jsp:attribute name="stripped">true</jsp:attribute>
 
 <jsp:body>
-	<form:form name="change" id="changeHistoryForm" commandName="changeHistory" >
-		<form:hidden path="currentRecord"/>
-		<form:hidden path="pageCommand"/>
+	>
 		<table><tr><td>			
 				<jsp:include page="include/showchangehistory.jsp"/>				
 	 	</td></tr></table>
-	</form:form>
 </jsp:body>
 </tsm:page>
 
