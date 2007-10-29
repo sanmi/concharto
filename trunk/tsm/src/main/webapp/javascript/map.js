@@ -1,3 +1,4 @@
+	
 	//some of the globals
 	var map;
 	var geocoder = null;
@@ -52,17 +53,16 @@
 	
 	function createInfoWindowHtml(event) {
 	   var html = '<div class="result" style="width:450px;margin-bottom:10px">' + 
-	   		event.when + '<br/><b>' + event.summary+'</b><br/><em>' + 
-				event.where + '</em><br/>' +
-				event.description + '<br/>' +
-				'<br/><b>Tags: </b>' + event.tags + '<br/>' + 
+	   		event.when + '<br/><b>' + event.summary.escapeHTML() +'</b><br/><em>' + 
+				event.where.escapeHTML() + '</em><br/>' +
+				event.description.escapeHTML() + '<br/>' +
+				'<br/><b>Tags: </b>' + event.tags.escapeHTML() + '<br/>' + 
 				'<b>Source: </b>';
 				if (event.source.substring(0,7) == 'http://') {
-					html += '<a href=' + event.source + '>' + event.source + '</a>';
+					html += '<a href=' + event.source.escapeHTML() + '>' + event.source.escapeHTML() + '</a>';
 				} else {
-					html += event.source;
+					html += event.source.escapeHTML();
 				}
-				
 	   return html;
 	}
 	
