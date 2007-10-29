@@ -4,11 +4,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
-<%
-String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-request.setAttribute("basePath", basePath);
-%>
+
 
 <tsm:page title="Event">
 	<jsp:attribute name="head">

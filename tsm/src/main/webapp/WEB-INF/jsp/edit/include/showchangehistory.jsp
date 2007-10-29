@@ -10,35 +10,40 @@ int geometryField = EventFieldChangeFormatter.TSGEOMETRY;
 request.setAttribute("geometryField", geometryField);
 request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 %>
-	<div class="changeEntry">
-    	<span>
-    		Change History, items <b>${changeHistory.currentRecord} - ${changeHistory.currentRecord + fn:length(auditEntries)}</b>
-    		of <b>${totalResults}</b>
-    	</span>
-	</div>
-	<c:if test="${(changeHistory.currentRecord > 0) || (totalResults > changeHistory.currentRecord + fn:length(auditEntries))}"> 
-		<div class="changeEntry">
-	    <c:if test="${changeHistory.currentRecord > 0}"> 
-		    	<a class="nextPrev" href="#" onclick="nextPage('previous')">Previous</a>
-	    </c:if>
-		  <c:if test="${totalResults > changeHistory.currentRecord + fn:length(auditEntries)}"> 
-		  	<a class="nextPrev" href="#" onclick="nextPage('next')">Next</a>
-		  </c:if>
-		</div>
-	</c:if>
 	
-		      
-	<c:forEach items="${auditEntries}" var="auditEntry">
-	  <div class="changeEntry" >
-				Revision <c:out value="${auditEntry.version}"/>, 
-				<c:out value="${actionLabels[auditEntry.action]}"/> <%-- TODO switch to messages here --%>
-				<a class="links" href="#" onclick="alert('Not Implemented')">${auditEntry.user}</a> 
-	 		<fmt:formatDate value="${auditEntry.dateCreated}" pattern="MMM dd, yyyy hh:mm a"/>
+ 	
+	<display:table id="auditEntryTable" 
+						name="auditEntries" 
+						sort="list" 
+						requestURI="${requestURI}"
+						pagesize="${pagesize}"
+						partialList="true" 
+						size="${totalResults}"						
+						>
+		<display:setProperty name="basic.msg.empty_list">There have been no changes</display:setProperty>
+		<display:setProperty name="paging.banner.item_name">Entry</display:setProperty>
+		<display:setProperty name="paging.banner.items_name">Entries</display:setProperty>
+		<display:setProperty name="paging.banner.onepage">&nbsp;</display:setProperty>
+		<display:setProperty name="paging.banner.no_items_found">&nbsp;</display:setProperty>
+		<display:setProperty name="paging.banner.one_item_found">&nbsp;</display:setProperty>
+		<display:setProperty name="paging.banner.all_items_found">
+			<span class="pagebanner">Change History <b>{0}</b> {1} found, displaying all {2}.</span>
+		</display:setProperty>
+		<display:setProperty name="paging.banner.some_items_found">
+			<span class="pagebanner">Change History <b>{0}</b> {1} found, displaying <b>{2}</b> to <b>{3}</b>.</span>
+		</display:setProperty>
+		<display:column>
+		
+		<div class="changeEntry">
+				Revision <c:out value="${auditEntryTable.version}"/>, 
+				<c:out value="${actionLabels[auditEntryTable.action]}"/> <%-- TODO switch to messages here --%>
+				<a class="links" href="#" onclick="alert('Not Implemented')">${auditEntryTable.user}</a> 
+	 		<fmt:formatDate value="${auditEntryTable.dateCreated}" pattern="MMM dd, yyyy hh:mm a"/>
 	 		
 	 		<c:choose>
-		 		<c:when test="${fn:length(auditEntry.auditEntryFieldChange) > 0}">
+		 		<c:when test="${fn:length(auditEntryTable.auditEntryFieldChange) > 0}">
 			 		<div class="simpleTable">
-						<display:table name="${auditEntry.auditEntryFieldChange}" id="dt" >
+						<display:table name="${auditEntryTable.auditEntryFieldChange}" id="dt" >
 							<display:column style="width:12em" title="Field">
 								<spring:message code="audit.event.field.${dt.propertyName}"/>
 							</display:column>
@@ -71,28 +76,19 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 						</display:table> 
 					</div>
 					<c:if test="${dt.id > 0}">
-						<a class="links" href="${basePath}edit/undoevent.htm?id=${auditEntry.entityId}&toRev=${auditEntry.version-1}">
+						<a class="links" href="${basePath}edit/undoevent.htm?id=${auditEntryTable.entityId}&toRev=${auditEntryTable.version-1}">
 							Undo this revision
 						</a>
 					</c:if>
 		 		</c:when>
 		 		<c:otherwise>
-		 			<c:if test="${auditEntry.action != ACTION_INSERT}">
+		 			<c:if test="${auditEntryTable.action != ACTION_INSERT}">
 			 			<div><em>There were no changes</em></div>
 		 			</c:if>
 		 		</c:otherwise>
 	 		</c:choose>
 
 	  </div>
-	</c:forEach>
-    
-	<c:if test="${(changeHistory.currentRecord > 0) || (totalResults > changeHistory.currentRecord + fn:length(auditEntries))}"> 
-     <div class="changeEntry">
-	    <c:if test="${changeHistory.currentRecord > 0}"> 
-		    	<a class="nextPrev" href="#" onclick="nextPage('previous')">Previous</a>
-	    </c:if>
-		  <c:if test="${totalResults > changeHistory.currentRecord + fn:length(auditEntries)}"> 
-		  	<a class="nextPrev" href="#" onclick="nextPage('next')">Next</a>
-		  </c:if>
-		</div>			
-	</c:if>
+		</display:column>
+ 	</display:table>
+	

@@ -9,7 +9,7 @@
 <%@tag import="com.tech4d.tsm.auth.AuthConstants" %>
 <%
 String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+String basePath = request.getScheme()+"://"+request.getServerName()+path+"/";
 request.setAttribute("basePath", basePath);
 request.setAttribute("roles", (String)request.getSession().getAttribute(AuthConstants.SESSION_AUTH_ROLES));
 request.setAttribute("username", (String)request.getSession().getAttribute(AuthConstants.SESSION_AUTH_USERNAME));

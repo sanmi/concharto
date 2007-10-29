@@ -26,9 +26,6 @@
 	<jsp:attribute name="bodyattr">class="mapedit"</jsp:attribute>
 
 <jsp:body>
-	<form:form name="change" id="changeHistoryForm" commandName="changeHistory" >
-		<form:hidden path="currentRecord"/>
-		<form:hidden path="pageCommand"/>
 		<table><tr><td>			
 			<div class="changes">
 				<div class="miniTabBar">
@@ -40,7 +37,6 @@
 	  	<input type="button" value="Back to Edit" onclick="edit(); return false;"/>
 	  	
 	 	</td></tr></table>
-	</form:form>
 </jsp:body>
 </tsm:page>
 
