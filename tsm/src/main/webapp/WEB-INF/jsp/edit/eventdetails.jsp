@@ -45,6 +45,18 @@
 						pagesize="5"
 						defaultsort="1"
 						>
+						<display:setProperty name="paging.banner.item_name">Flag</display:setProperty>
+						<display:setProperty name="paging.banner.items_name">Flags</display:setProperty>
+						<display:setProperty name="paging.banner.onepage">&nbsp;</display:setProperty>
+						<display:setProperty name="paging.banner.no_items_found">&nbsp;</display:setProperty>
+						<display:setProperty name="paging.banner.one_item_found">&nbsp;</display:setProperty>
+						<display:setProperty name="paging.banner.all_items_found">
+							<span class="pagebanner"><b>{0}</b> {1} found.</span>
+						</display:setProperty>
+						<display:setProperty name="paging.banner.some_items_found">
+							<span class="pagebanner"><b>{0}</b> {1} found.</span>
+						</display:setProperty>
+										
 						<display:column defaultorder="descending" sortable="true" sortName="created" style="width:12em" title="Date" >
 						 	<fmt:formatDate value="${dt.created}" pattern="MMM dd, yyyy hh:mm a"/>
 						</display:column>

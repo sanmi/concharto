@@ -21,7 +21,7 @@ public class ChangeHistoryControllerHelper {
     private static final String MODEL_DISPLAYTAG_PAGESIZE = "pagesize";
     private static final String MODEL_DISPLAYTAG_REQUEST_URI = "requestURI";
     private static final String DISPLAYTAG_TABLE_ID = "auditEntryTable";
-    private static final int DISPLAYTAG_PAGESIZE = 5;
+    private static final int DISPLAYTAG_PAGESIZE = 10;
     AuditEntryDao auditEntryDao;
     
     public void setAuditEntryDao(AuditEntryDao auditEntryDao) {
