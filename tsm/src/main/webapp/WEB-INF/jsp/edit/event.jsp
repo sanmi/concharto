@@ -387,7 +387,7 @@
 		//]]>
 		</script>
 	</jsp:attribute>
-	<jsp:attribute name="script">map.js,json.js</jsp:attribute>
+	<jsp:attribute name="script">prototype-1.7.0.js,map.js,json.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="setMapExtent();"</jsp:attribute>
 
 	<jsp:body>

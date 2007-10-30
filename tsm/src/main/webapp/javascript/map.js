@@ -131,7 +131,7 @@
 	function fitToPoly(poly) {
 		var bounds = poly.getBounds();
 		var zoom = map.getBoundsZoomLevel(bounds);
-		if (zoom <= map.getZoom()) {
+		if (zoom > map.getZoom()) {
 			map.setZoom(zoom);
 		}
 	}
