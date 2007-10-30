@@ -51,7 +51,7 @@
 		if (poly) {
 			map.addOverlay(poly);
 		}
-		fitToOverlay(poly);
+		fitToPoly(poly);
 		map.setCenter(poly.getBounds().getCenter());
 	}
 		//]]>

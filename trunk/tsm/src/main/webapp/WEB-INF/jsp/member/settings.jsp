@@ -83,7 +83,7 @@
 		  		</tr>
 		  	</table>
 			  <input type="submit" value="Save Changes"/>
-			  <input type="button" value="Done" onclick="document.location='${pageContext.request.contextPath}'"/>
+			  <input type="button" value="Done" onclick="document.location='${pageContext.request.contextPath}/'"/>
 		  </div>
 	  </form:form>
 	  

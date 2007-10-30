@@ -181,7 +181,7 @@
 		if (poly) {
 			map.setCenter(poly.getBounds().getCenter(), getZoom());
 			<%-- if the map is too zoomed in, we should zoom out to fit the line --%>
-			fitToOverlay(poly);
+			fitToPoly(poly);
 		}
 	}
 	
