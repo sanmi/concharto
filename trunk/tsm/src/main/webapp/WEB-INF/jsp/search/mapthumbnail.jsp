@@ -36,6 +36,7 @@
 		var marker = new GMarker(point);
 		map.addOverlay(marker);
 		map.setCenter(point);
+		map.setZoom(11);
 	}
 	
 	<%-- called by createOverlay --%>
