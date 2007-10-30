@@ -1,5 +1,6 @@
 <%@tag description="page layout" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@attribute name="head" fragment="true"%>
 <%@attribute name="title" required="true" type="java.lang.String"%>
 <%@attribute name="script" required="false" type="java.lang.String"%>
@@ -7,6 +8,7 @@
 <%@attribute name="bodyattr" required="false" type="java.lang.String"%>
 <%@attribute name="stripped" required="false" type="java.lang.String"%>
 <%@tag import="com.tech4d.tsm.auth.AuthConstants" %>
+
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+path+"/";
@@ -49,7 +51,11 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 	<c:if test="${stripped != 'true'}">
 	  <div id="footer">
 		  <div id="clearFloat"/>  
-			Time Space Map
+			&copy 2007, Time Space Map  
+			<a class="linkleft" href="#" onclick="alert('Not Yet Implemented');">Legal</a>
+			<a class="linkleft" class="linkleft" href="#" onclick="alert('Not Yet Implemented');">About</a>
+			<a class="linkleft" href="#" onclick="alert('Not Yet Implemented');">Feedback</a>
+	  	<span class="linkleftright">Version <spring:message code="version"/></span>
 	  </div>
   </c:if>
   </body>
