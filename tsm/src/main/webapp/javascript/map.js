@@ -21,10 +21,21 @@
 			GEvent.addDomListener(map.getContainer(), "DOMMouseScroll", wheelevent);
 			map.getContainer().onmousewheel = wheelevent; 
 			
-			map.setCenter(new GLatLng(40.879721,-76.998322),10);  //la la land, PA 
+			//map.setCenter(new GLatLng(40.879721,-76.998322),10);  //la la land, PA
 			setMapExtent();
 			map.checkResize(); //tell the map that we have resized it
+			showUsa(); 
 		}
+	}
+	
+	function showUsa() {
+		var diagonal = new GPolyline([
+  		new GLatLng(23.3220,-127.1777),
+  		new GLatLng(51.3992,-64.8632)
+		]);
+		var bounds = diagonal.getBounds();
+		map.setCenter(bounds.getCenter());  //la la land, PA
+		map.setZoom(map.getBoundsZoomLevel(bounds));
 	}
 
 	function setMapExtent() {
@@ -117,9 +128,8 @@
 		} 
 	}
 	
-	function fitToOverlay(overlay) {
-		var bounds = overlay.getBounds();
-		var vertex = overlay.getVertex(0);
+	function fitToPoly(poly) {
+		var bounds = poly.getBounds();
 		var zoom = map.getBoundsZoomLevel(bounds);
 		if (zoom <= map.getZoom()) {
 			map.setZoom(zoom);
