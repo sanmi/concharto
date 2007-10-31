@@ -16,6 +16,9 @@
           <prop key="login.htm">loginController</prop>
           <prop key="search/eventsearch.htm">eventSearchController</prop>
           <prop key="edit/event.htm">eventController</prop>
+          <prop key="admin/signup.htm">signupController</prop>
+          <prop key="member/settings.htm">settingsController</prop>
+          
           <prop key="edit/changehistory.htm">changeHistoryController</prop>
           <prop key="edit/changehistoryframe.htm">changeHistoryFrameController</prop>
 
@@ -27,9 +30,6 @@
           <prop key="admin/listEvents.htm">switchBoardController</prop>
           <prop key="search/mapthumbnail.htm">switchBoardController</prop>
           <prop key="search/auditmapthumbnail.htm">switchBoardController</prop>
-
-          <prop key="admin/signup.htm">signupController</prop>
-          <prop key="member/settings.htm">settingsController</prop>
 
           <prop key="admin/flagdisposition.htm">eventDetailsController</prop>
           <prop key="edit/eventdetails.htm">eventDetailsController</prop>
