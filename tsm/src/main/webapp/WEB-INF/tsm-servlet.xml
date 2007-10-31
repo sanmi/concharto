@@ -34,6 +34,8 @@
           <prop key="admin/flagdisposition.htm">eventDetailsController</prop>
           <prop key="edit/eventdetails.htm">eventDetailsController</prop>
           <prop key="edit/undoevent.htm">eventDetailsController</prop>
+          
+          <prop key="info/legal.htm">urlFilenameViewController</prop>
       </props>
 		</property>		
 	</bean>
@@ -52,6 +54,7 @@
 	<bean id="baseEventController" abstract="true"></bean>
 
 	<!-- Controller names are not important when using the above HandlerMapping implementation -->
+	<bean id="urlFilenameViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController"/>
 	<bean id="switchBoardController" class="com.tech4d.tsm.web.SwitchBoardController" parent="baseEventController" >
 		<property name="eventDao" ref="eventDao" />
 		<property name="auditEntryDao" ref="auditEntryDao" />
