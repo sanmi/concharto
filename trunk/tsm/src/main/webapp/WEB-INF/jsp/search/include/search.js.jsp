@@ -1,9 +1,4 @@
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<script
-	src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=<spring:message code='map.key'/>"
-	type="text/javascript">
-</script>		
 <script type="text/javascript">
 //<![CDATA[
 		
