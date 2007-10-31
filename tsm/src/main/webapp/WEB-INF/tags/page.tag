@@ -63,5 +63,13 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 	  	<span class="linkleftright">Version <spring:message code="version"/></span>
 	  </div>
   </c:if>
+
+	<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+	</script>
+	<script type="text/javascript">
+		_uacct = "UA-1809442-6";
+		urchinTracker();
+	</script>
+
   </body>
 </html>
