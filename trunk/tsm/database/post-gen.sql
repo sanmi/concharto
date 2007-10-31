@@ -22,7 +22,7 @@ INSERT INTO Role (id,created,lastModified,version,name) VALUES
 
 -- Admin user pw='cat'
 INSERT INTO User (id,created,lastModified,version,email,username,password) 
-VALUES(1,CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0,'frank@fsanmiguel.com','sanmi','/aPky1NqzLtdu/+W+x/Mr9gQTiUO0SeT');
+VALUES(1,CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0,'frank@fsanmiguel.com','frank','/aPky1NqzLtdu/+W+x/Mr9gQTiUO0SeT');
 
 --give him all the admin roles
 INSERT INTO User_Role (user_id, roles_id) VALUES
