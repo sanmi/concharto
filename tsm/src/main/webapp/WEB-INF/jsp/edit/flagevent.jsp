@@ -9,10 +9,7 @@
 
 <tsm:page title="Flag Event">
 	<jsp:attribute name="head">
-		<script
-			src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=<spring:message code='map.key'/>"
-			type="text/javascript">
-		</script>		
+		<jsp:include page="../include/mapkey.js.jsp"/>
 		<script type="text/javascript">
 			function closeIt() {
 				parent.window.Control.Modal.close();

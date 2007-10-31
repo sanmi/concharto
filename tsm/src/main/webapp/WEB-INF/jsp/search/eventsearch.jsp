@@ -8,6 +8,7 @@
 <tsm:page title="Event">
 	<jsp:attribute name="head">
 		<%-- we use includes so we can comment the javascript --%>
+		<jsp:include page="../include/mapkey.js.jsp"/>
 		<jsp:include page="include/search.js.jsp"/>
 	</jsp:attribute>
 	<jsp:attribute name="script">prototype-1.7.0.js,control.modal.2.2.3.js,map.js,json.js</jsp:attribute>
