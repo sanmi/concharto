@@ -363,63 +363,41 @@ a.nexPrev:link, a.nextPrev:visited {
 	background-color:#EFEFEF;
 }
 
-.home table {
+.textcontent table {
   width:100%;
 }
-.home td, .home tr {
+.textcontent td, .textcontent tr {
 	padding:0;
 	margin:0;
 	vertical-align: top;
 }
-.home .searchbar{
+.textcontent .searchbar{
   width:auto;
 }
-.home small {
+.textcontent small {
 	font-size:x-small;
 	color: gray;
 }
-.home #results {
-	padding-bottom:1em;
-	margin-left:1em;
-	margin-right:1em;
-}
-.home .infoBox {
+.textcontent .infoBox {
 	padding: 0 1em 1em 1em;
 	border: 1px solid #e0e0e0;
+	margin:.2em;
+}
+.textcontent h1, .textcontent h2 {
 	margin-bottom:.2em;
 }
-.home .spotlightBox {
-	padding: 0 1em 1em 1em;
-	border: 1px solid #e0e0e0;
-	margin-bottom:.2em;
-	margin-left:-1px;
-	margin-right:-1px;
-}
-.home h1, .home h2 {
-	margin-bottom:.2em;
-}
-.home .subtag {
+.textcontent .subtag {
   font-weight: bold;
 }
-.home p {
+.textcontent p {
 	margin-top:.2em;
 	margin-bottom:.5em;
   font-size: medium;
 }
-.home ul {
+.textcontent ul {
 	font-size: medium;	
 }
-.home #sidebar {
-	width: 60%;
-	padding: 5px 0;
-	border:1px solid #999999;
-}
-.home #results {
-    overflow-x:hidden; 
-    overflow-y:scroll;
-    overflow:-moz-scrollbars-vertical!important;
-}
-.home A:hover {
+.textcontent A:hover {
 	text-decoration:underline overline;
 }
 

@@ -1,4 +1,4 @@
-<div class="home">
+<div class="textcontent">
 	<div class="infoBox">
 	<span class="resultcount"></span>
 		<table><tr>

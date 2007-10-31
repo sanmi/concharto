@@ -57,10 +57,10 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 	  <div id="footer">
 		  <div id="clearFloat"/>  
 			&copy 2007, Time Space Map  
-			<a class="linkleft" href="#" onclick="alert('Not Yet Implemented');">Legal</a>
-			<a class="linkleft" class="linkleft" href="#" onclick="alert('Not Yet Implemented');">About</a>
-			<a class="linkleft" href="#" onclick="alert('Not Yet Implemented');">Feedback</a>
-	  	<span class="linkleftright">Version <spring:message code="version"/></span>
+			<a class="linkleft links" href="${basePath}info/legal.htm" >Legal</a>
+			<a class="linkleft links" class="linkleft" href="#" onclick="alert('Not Yet Implemented');">About</a>
+			<a class="links linkleft" href="#" onclick="alert('Not Yet Implemented');">Feedback</a>
+	  	<span class="links linkleftright">Version <spring:message code="version"/></span>
 	  </div>
   </c:if>
 
