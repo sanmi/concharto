@@ -27,12 +27,14 @@
 		  				<form:password path="password"/>
 		  			</td>
 		  		</tr>
+		  		<%--  
 		  		<tr>
 		  			<td colspan="2">
 		  				<form:checkbox path="rememberMe"/>
   						Remember me next time
 		  			</td>
 		  		</tr>
+		  		--%>
 		  	</table>
 			  <input type="submit" value="Login"/>
 		  </div>
