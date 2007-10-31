@@ -2,7 +2,7 @@
   <div id="head">
 		<table style="width:100%">
     	<tr>
-      	<td >
+      	<td style="width:238px">
 			    <img src="${basePath}/images/tsm-globe.png" alt="" /><img src="${basePath}/images/tsm-text.png" alt="" />
         </td>
         <td>
