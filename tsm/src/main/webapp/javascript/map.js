@@ -40,7 +40,7 @@
 
 	function setMapExtent() {
     	var top = document.getElementById("map").offsetTop;
-    	var height = getHeight() - top - 20;
+    	var height = getHeight() - top - 32;
     	document.getElementById("map").style.height=height+"px";
 	}
 	
@@ -60,6 +60,21 @@
         myHeight = document.body.clientHeight;
       }
       return myHeight;
+    }
+    
+	function getWidth() {
+      var myWidth = 0;
+      if( typeof( window.innerWidth ) == 'number' ) {
+        //Non-IE
+        myWidth = window.innerWidth;
+      } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
+        //IE 6+ in 'standards compliant mode'
+        myWidth = document.documentElement.clientWidth;
+      } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
+        //IE 4 compatible
+        myWidth = document.body.clientWidth;
+      }
+      return myWidth;
     }
 	
 	function createInfoWindowHtml(event) {

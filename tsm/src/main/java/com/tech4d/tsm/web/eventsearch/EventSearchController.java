@@ -34,6 +34,7 @@ import com.vividsolutions.jts.util.GeometricShapeFactory;
 
 public class EventSearchController extends AbstractFormController {
     public static final String SESSION_EVENT_SEARCH_FORM = "eventSearchForm";
+    public static final String SESSION_FIRST_VIEW = "firstView";
     public static final String MODEL_EVENTS = "events";
     public static final String MODEL_TOTAL_RESULTS = "totalResults";
     public static final String MODEL_CURRENT_RECORD = "currRecord";
@@ -79,7 +80,7 @@ public class EventSearchController extends AbstractFormController {
     }
 
     private EventSearchForm getEventSearchForm(HttpServletRequest request) {
-        return (EventSearchForm) WebUtils.getSessionAttribute(request, EventSearchController.SESSION_EVENT_SEARCH_FORM);
+        return (EventSearchForm) WebUtils.getSessionAttribute(request, SESSION_EVENT_SEARCH_FORM);
     }
 
     @Override
@@ -242,6 +243,11 @@ public class EventSearchController extends AbstractFormController {
             Map model = doSearch(errors, eventSearchForm);
             return new ModelAndView(getFormView(), model);
         } else {
+            if (eventSearchForm == null) {
+            	Map model = errors.getModel();
+            	model.put("isFirstView", true);  //TODO DEBUG REMOVE            	
+            	return new ModelAndView(getFormView(), model);
+            } 
             return showForm(request, errors, getFormView());
         }
     }

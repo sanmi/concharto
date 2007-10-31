@@ -1,5 +1,6 @@
 package com.tech4d.tsm.web;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +14,6 @@ import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
-import com.tech4d.tsm.auth.AuthConstants;
 import com.tech4d.tsm.dao.AuditEntryDao;
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.model.Event;
@@ -60,10 +60,14 @@ public class SwitchBoardController extends MultiActionController {
         return new ModelAndView(new RedirectView("/switchboard/listEvents.htm", true));
     }
 
-    public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        //remove the token from the session
-        WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME, null);
-        WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_ROLES, null);
+    @SuppressWarnings("unchecked")
+	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	//clear out the session
+        Enumeration attrNames = request.getSession().getAttributeNames();
+        while (attrNames.hasMoreElements()) {
+        	String name = (String) attrNames.nextElement();
+        	WebUtils.setSessionAttribute(request, name, null);
+        }
         return new ModelAndView("redirect:/");
     }
     

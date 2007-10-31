@@ -5,10 +5,10 @@ body {
 }
 
 .nav {
-    border-bottom: 1px solid #D7E5F2;
-    text-align:right;
-    padding: 0 0 .4em 0;
-	margin: 0 0 0 0;
+  border-bottom: 1px solid #D7E5F2;
+  text-align:right;
+  padding: 0 0 .4em 0;
+	margin: 0 0 0 0;	
 }
 
 .nav_left {
@@ -34,6 +34,7 @@ body {
     padding:0 5px 0 5px;
     text-align:center;
     width: 9em;
+		font-size: small;
 }
 
 .nav .name {
@@ -132,7 +133,7 @@ body {
 	vertical-align:top;
 }
 .mapedit small {
-	font-size:xx-small;
+	font-size:x-small;
 	color: gray;
 }
 #footer {
@@ -362,4 +363,75 @@ a.nexPrev:link, a.nextPrev:visited {
 	background-color:#EFEFEF;
 }
 
+.home table {
+  width:100%;
+}
+.home td, .home tr {
+	padding:0;
+	margin:0;
+	vertical-align: top;
+}
+.home .searchbar{
+  width:auto;
+}
+.home small {
+	font-size:x-small;
+	color: gray;
+}
+.home #results {
+	padding-bottom:1em;
+	margin-left:1em;
+	margin-right:1em;
+}
+.home .infoBox {
+	padding: 0 1em 1em 1em;
+	border: 1px solid #e0e0e0;
+	margin-bottom:.2em;
+}
+.home .spotlightBox {
+	padding: 0 1em 1em 1em;
+	border: 1px solid #e0e0e0;
+	margin-bottom:.2em;
+	margin-left:-1px;
+	margin-right:-1px;
+}
+.home h1, .home h2 {
+	margin-bottom:.2em;
+}
+.home .subtag {
+  font-weight: bold;
+}
+.home p {
+	margin-top:.2em;
+	margin-bottom:.5em;
+  font-size: medium;
+}
+.home ul {
+	font-size: medium;	
+}
+.home #sidebar {
+	width: 60%;
+	padding: 5px 0;
+	border:1px solid #999999;
+}
+.home #results {
+    overflow-x:hidden; 
+    overflow-y:scroll;
+    overflow:-moz-scrollbars-vertical!important;
+}
+.home A:hover {
+	text-decoration:underline overline;
+}
 
+.timefont {
+  font-size: larger;
+	color:#426293;
+}
+.spacefont {
+  font-size: larger;
+	color:#8EC341;
+}
+.mapfont {
+  font-size: larger;
+	color:black;
+}
