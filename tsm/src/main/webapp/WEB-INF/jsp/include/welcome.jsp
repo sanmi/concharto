@@ -15,10 +15,7 @@
 		 is an online atlas of history and happenings that anyone can edit.
 		</span>
 		  It is both a searchable map, and a collaborative database of
-		events. It gives you simple and elegant answers to hard questions like <em>"What
-		interesting things happened near where I am driving? What happened near our
-		hotel in Paris? What is happening near my town and surrounding areas? What
-		was New York City like from 1858 to 1869?"</em>
+		events. It makes the world a smarter place. 
 		</p>
 	</div>
 

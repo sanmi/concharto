@@ -38,7 +38,7 @@
 		  		<tr>
 		  			<td colspan="2">
 		  				<form:checkbox path="agreeToTermsOfService"/>
-  						I agree with the Time Space Map <a href="#">Terms of Service</a>
+  						I agree with the Time Space Map <a href="${basePath}info/legal.htm">Terms of Service</a>
 		  			</td>
 		  		</tr>
 		  		<tr>

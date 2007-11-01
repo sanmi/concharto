@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.AbstractFormController;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
+import com.tech4d.tsm.auth.AuthConstants;
 import com.tech4d.tsm.auth.AuthHelper;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.time.TimeRange;
@@ -33,7 +34,8 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
 
 public class EventSearchController extends AbstractFormController {
-    public static final String SESSION_EVENT_SEARCH_FORM = "eventSearchForm";
+    private static final String MODEL_IS_FIRST_VIEW = "isFirstView";
+	public static final String SESSION_EVENT_SEARCH_FORM = "eventSearchForm";
     public static final String SESSION_FIRST_VIEW = "firstView";
     public static final String MODEL_EVENTS = "events";
     public static final String MODEL_TOTAL_RESULTS = "totalResults";
@@ -243,9 +245,16 @@ public class EventSearchController extends AbstractFormController {
             Map model = doSearch(errors, eventSearchForm);
             return new ModelAndView(getFormView(), model);
         } else {
-            if (eventSearchForm == null) {
+        	//we got through these IS_FIRST_VIEW hoops because we only want to show the "welcome" 
+        	//message once per login, but this bit of code may get executed once before the 
+        	//screen is actually shown if they are going to the search URL and then the user 
+        	//is redirected because they need to log in.
+        	String username = (String) WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME);
+        	Object isFirstView = WebUtils.getSessionAttribute(request, SESSION_FIRST_VIEW);
+            if ((username != null) && (isFirstView == null)) {
+            	WebUtils.setSessionAttribute(request, SESSION_FIRST_VIEW, true);
             	Map model = errors.getModel();
-            	model.put("isFirstView", true);  //TODO DEBUG REMOVE            	
+            	model.put(MODEL_IS_FIRST_VIEW, true);             	
             	return new ModelAndView(getFormView(), model);
             } 
             return showForm(request, errors, getFormView());
