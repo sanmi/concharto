@@ -137,6 +137,7 @@
 		<property name="successView" value="edit/flageventsuccess" />
 		<property name="validator" ref="flagEventFormValidator"/>
 		<property name="userDao" ref="userDao"/>
+		<property name="auditEntryDao" ref="auditEntryDao" />
 		<property name="eventDao" ref="eventDao" />
 		<property name="flagDao" ref="flagDao" />
 	</bean>
