@@ -88,8 +88,10 @@
 			<table><tbody><tr>			
 				<td id="sidebar">
 		  		<span class="resultcount">		  			
-		  			<%-- this is a hidden link --%>
-	  				<a href="#modal_contents" id="modal_link"></a>
+				  	<c:if test="${isFirstView != null}">
+			  			<%-- this is a hidden link --%>
+		  				<a href="#modal_contents" id="modal_link"></a>
+		  			</c:if>
 		  			<c:choose>
 		  				<c:when test="${fn:length(events) > 0}">
 				  			Displaying <b>${eventSearch.currentRecord} - ${eventSearch.currentRecord + fn:length(events)}</b> Events 
@@ -171,14 +173,17 @@
 			</tr></tbody></table>
 		</form:form>	
 
-		<div id="modal_contents">
-			<div class="nav">
-				<ul><li><a href="#" onclick="Control.Modal.close(); return false;"><b>X</b> CLOSE</a></li></ul>
-			</div> 
-			<jsp:include page="../include/welcome.jsp"/>
-			
-			  
-		</div>	  
+		<c:if test="${isFirstView != null}">
+			<div id="modal_contents">
+				<div class="nav">
+					<ul><li><a href="#" onclick="Control.Modal.close(); return false;"><b>X</b> CLOSE</a></li></ul>
+				</div> 
+				<jsp:include page="../include/welcome.jsp"/>
+				<p>
+					<input type="button" value="Go!" onclick="Control.Modal.close(); return false;"/>
+				</p>
+			</div>
+		</c:if>	  
 	</jsp:body>
 </tsm:page>
 
