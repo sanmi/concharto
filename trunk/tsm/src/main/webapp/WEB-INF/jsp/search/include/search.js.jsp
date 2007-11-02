@@ -1,7 +1,6 @@
 
 <script type="text/javascript">
 //<![CDATA[
-		
 
 	<%-- global array and index for dealing with overlays --%>
 	var _overlays = [];
@@ -52,8 +51,8 @@
 
 		adjustSidebarIE();
 		
-		createModalWelcome();
 		if (document.getElementById("eventSearchForm").isFirstView != null) {
+			createModalWelcome();
 			showWelcome();
 		}		
 	}
