@@ -16,6 +16,7 @@
 			}		
 		</script>
 	</jsp:attribute>
+	<jsp:attribute name="bodyattr">class="mapedit"</jsp:attribute>
 
 	<jsp:body>
 		
@@ -28,10 +29,11 @@
 					</form:errors>
 				<div class="infoBox">
 					<h2>Should this Event be Deleted or Moved?</h2>
-					<div>Before flagging a item, please check the <a href="#changeHistory">change history</a> 
-			  			to be sure you can't simple revert a recent change.  Also, please review the 
-			  			<a href="#" onclick="alert('Not Implemented')">deletion policy</a>.  For instance, if
-			  			an event violates the <a href="#" onclick="alert('Not Implemented')">Neutral Point of View Policy</a>, it may be better to fix it than delete it.
+					<div>Before flagging a item, please check the <a class="links" href="#flagHistory">flag history</a> 
+						and the <a class="links" href="#changeHistory">change history</a> 
+		  			to be sure you can't simple revert a recent change.  Also, please review the 
+		  			<a href="#" onclick="alert('Not Implemented')">deletion policy</a>.  For instance, if
+		  			an event violates the <a href="#" onclick="alert('Not Implemented')">Neutral Point of View Policy</a>, it may be better to fix it than delete it.
 			  	</div>
 			  </div>
 				<div class="infoBox">
@@ -53,12 +55,16 @@
 					</div>
 				</div>
 		  	<jsp:include page="include/showevent.jsp"/>
+		  	<a name="flagHistory"/>
+		  	<div class="infoBox">
+					<h2>Flags on this Event</h2>
+					<jsp:include page="include/showflaghistory.jsp"/>
+				</div>
+			  	
 		  	<a name="changeHistory"/>
 				<div class="infoBox">
-					<iframe src="${basePath}edit/changehistoryframe.htm?id=${event.id}"
-	   					 width="100%" height="700px" frameborder="0" >
-						   This browser doesn't support showing change history
-	  				</iframe>
+					<h2>Change History</h2>
+					<jsp:include page="include/showchangehistory.jsp"/>
 				</div>
 			</form:form>
 		</div>

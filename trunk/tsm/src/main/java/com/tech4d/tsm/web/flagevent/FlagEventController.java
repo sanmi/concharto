@@ -11,12 +11,14 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.auth.AuthConstants;
+import com.tech4d.tsm.dao.AuditEntryDao;
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.dao.FlagDao;
 import com.tech4d.tsm.dao.UserDao;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.Flag;
 import com.tech4d.tsm.model.User;
+import com.tech4d.tsm.web.changehistory.ChangeHistoryControllerHelper;
 
 /**
  * Allows the user to flag an event to be deleted or moved
@@ -26,9 +28,12 @@ public class FlagEventController extends SimpleFormController {
 	private static final String MODEL_REASONS = "reasons";
 	private static final String REQUEST_ID = "id";
 	private static final String MODEL_EVENT = "event";
-	FlagDao flagDao; 
-	EventDao eventDao; 
-	UserDao userDao;
+	//TODO refactor this it is also in EventDetailsController
+	private static final String MODEL_DISPOSITIONS = "dispositions";  
+    private ChangeHistoryControllerHelper changeHistoryControllerHelper = new ChangeHistoryControllerHelper();
+	private FlagDao flagDao; 
+	private EventDao eventDao; 
+	private UserDao userDao;
 	
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
@@ -39,6 +44,9 @@ public class FlagEventController extends SimpleFormController {
 	public void setFlagDao(FlagDao flagDao) {
 		this.flagDao = flagDao;
 	}
+    public void setAuditEntryDao(AuditEntryDao auditEntryDao) {
+        changeHistoryControllerHelper.setAuditEntryDao(auditEntryDao);
+    }
 
 
 	@Override
@@ -71,9 +79,10 @@ public class FlagEventController extends SimpleFormController {
 		
 		Event event = eventDao.findById(eventId);
 		model.put(MODEL_EVENT, event);
-
+    	model.put(MODEL_DISPOSITIONS, Flag.DISPOSITION_CODES);
 		model.put(MODEL_REASONS, Flag.REASON_CODES);
-		return new ModelAndView(getFormView(), model);
+    	changeHistoryControllerHelper.doProcess("edit/flagevent.htm", request, model);
+        return new ModelAndView().addAllObjects(model);
 	}
 
 }
