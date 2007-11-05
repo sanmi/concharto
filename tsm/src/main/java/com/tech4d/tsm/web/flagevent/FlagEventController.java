@@ -63,10 +63,12 @@ public class FlagEventController extends SimpleFormController {
 
 	private void saveFlag(FlagEventForm flagEventForm, Long eventId, String username) {
 		Event event = eventDao.findById(eventId);
+		event.setHasUnresolvedFlag(true);
 		User user = userDao.find(username);
 		Flag flag = new Flag(flagEventForm.getComment(), flagEventForm.getReason(),
 				user, event);
 		flagDao.save(flag);
+		eventDao.saveOrUpdate(event);
 	}
 
 	@SuppressWarnings("unchecked")
