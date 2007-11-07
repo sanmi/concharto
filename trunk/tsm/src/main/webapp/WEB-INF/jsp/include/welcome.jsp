@@ -15,7 +15,7 @@
 		 is an online atlas of history and happenings that anyone can edit.
 		</span>
 		  It is both a searchable map, and a collaborative database of
-		events. It makes the world a smarter place. 
+		events.  
 		</p>
 	</div>
 
@@ -28,7 +28,7 @@
 			unique combination of wiki and mapping capabilities.  Please <a class="links" href="mailto:betatest@timespacemap.com">let us know</a> what you think.  
 		</p>
 		<p>
-			There are now ${totalEvents} events in the database. You can help to create a better 
+			There are now <b>${totalEvents}</b> events in the database. You can help to create a better 
 			<span class="timefont">time</span><span class="spacefont">space</span><span class="mapfont">map</span> by:
 		</p>
 		<ul>

@@ -340,6 +340,7 @@
 		saveGeometry();
 		document.getElementById("eventForm").zoomLevel.value = map.getZoom();
 		document.getElementById("eventForm").mapType.value = getMapTypeIndex();
+		document.getElementById("eventForm").mapCenter.value = gLatLngToJSON(map.getCenter());
 		document.event.submit();
 	}			
 

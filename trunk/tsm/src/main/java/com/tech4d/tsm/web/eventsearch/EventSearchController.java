@@ -1,7 +1,8 @@
 package com.tech4d.tsm.web.eventsearch;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,16 +26,18 @@ import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.service.EventSearchService;
 import com.tech4d.tsm.service.Visibility;
 import com.tech4d.tsm.util.JSONFormat;
+import com.tech4d.tsm.util.ProximityHelper;
+import com.tech4d.tsm.web.edit.EventController;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
 import com.tech4d.tsm.web.util.PaginatingFormHelper;
 import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.util.GeometricShapeFactory;
 
 public class EventSearchController extends AbstractFormController {
-    private static final String MODEL_IS_FIRST_VIEW = "isFirstView";
+    private static final double SEARCH_BOX_DIMENTSION = 40D; //approximate bounding box = miles * 1.4
+	private static final int ZOOM_BOX_THRESHOLD = 10;
+	private static final String MODEL_TOTAL_EVENTS = "totalEvents";
+	private static final String MODEL_IS_FIRST_VIEW = "isFirstView";
 	public static final String SESSION_EVENT_SEARCH_FORM = "eventSearchForm";
     public static final String SESSION_FIRST_VIEW = "firstView";
     public static final String MODEL_EVENTS = "events";
@@ -42,8 +45,7 @@ public class EventSearchController extends AbstractFormController {
     public static final String MODEL_CURRENT_RECORD = "currRecord";
     public static final String MODEL_PAGESIZE = "pageSize";
     
-    public static final int MAX_RECORDS = 26;
-    private static final double LONGITUDE_180 = 180d;
+    public static final int MAX_RECORDS = 25;
     private EventSearchService eventSearchService;
     private String formView;
     private String successView;
@@ -98,49 +100,6 @@ public class EventSearchController extends AbstractFormController {
         }
     }
     
-    /**
-     * Calculate the bounding box, given the north east and south west coordinates of 
-     * a box.  Take into account boxes that span the dateline where longitude changes
-     * from 180 to -180
-     * 
-     * TODO put the longitude logic in a utility class
-     * @return Set<Geometry> a POLYGON object representing the bounding box
-     * @param se EventSearchForm
-     */
-    private Set<Geometry> getBoundingBox(EventSearchForm se) {
-        //longitudes have to contend with the international date line where it switches from -180 to +180
-        //so we mod 180.  We assume the bounding box is less than 360 degrees.  If you want to figure
-        //this out, you might want to draw it on paper
-        Set<Geometry> polygons = new HashSet<Geometry>();
-        Point base = se.getBoundingBoxSW();
-        Double height = se.getBoundingBoxNE().getY() - se.getBoundingBoxSW().getY();
-        Double east = se.getBoundingBoxNE().getX();
-        Double west = se.getBoundingBoxSW().getX();
-        if (east < west) {
-            //ok this box spans the date line.  We need two bounding boxes.
-            Double westWidth = LONGITUDE_180 + east;
-            Double eastWidth = LONGITUDE_180 - west;
-            
-            Geometry westmost = makeRectangle(height, westWidth,  -LONGITUDE_180, base.getY()); 
-            Geometry eastmost = makeRectangle(height, eastWidth,  west, base.getY()); 
-
-            polygons.add(westmost);
-            polygons.add(eastmost);
-        } else {
-            polygons.add(makeRectangle(height, east-west,  base.getX(), base.getY()));
-        }
-        return polygons;
-    }
-
-    private Geometry makeRectangle(Double height, Double width, Double eastMost, Double southMost) {
-        GeometricShapeFactory gsf = new GeometricShapeFactory();
-        gsf.setNumPoints(4);
-        gsf.setBase(new Coordinate(eastMost, southMost));
-        gsf.setHeight(height);
-        gsf.setWidth(width);
-        return gsf.createRectangle();
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
@@ -156,7 +115,7 @@ public class EventSearchController extends AbstractFormController {
         }
         else {
             logger.debug("No errors -> processing submit");
-            Map model = doSearch(errors, eventSearchForm);
+            Map model = doSearch(request, errors, eventSearchForm);
             //put the data into the session in case we are leaving to edit, and then want to come back
             WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
             if (eventSearchForm.getIsEditEvent()) {
@@ -173,7 +132,7 @@ public class EventSearchController extends AbstractFormController {
     }
 
     @SuppressWarnings("unchecked")
-    private Map doSearch( BindException errors, EventSearchForm eventSearchForm) {
+    private Map doSearch( HttpServletRequest request, BindException errors, EventSearchForm eventSearchForm) {
         /*
          * 1. Geocode "where" and get the lat-long bounding box of whatever zoom
          * level we are at. 2. Parse the time field to extract a time range 3.
@@ -186,7 +145,12 @@ public class EventSearchController extends AbstractFormController {
             int firstRecord = PaginatingFormHelper.calculateFirstRecord(eventSearchForm, MAX_RECORDS);
             eventSearchForm.setCurrentRecord(firstRecord);
             List<Event> events = new ArrayList<Event>();
-            Set<Geometry> boxes = getBoundingBox(eventSearchForm);  //there may be two
+            Set<Geometry> boxes;
+            if (eventSearchForm.getMapZoom() >= ZOOM_BOX_THRESHOLD) {
+            	boxes = ProximityHelper.getBoundingBox(SEARCH_BOX_DIMENTSION, eventSearchForm.getMapCenter());  //there may be two
+            } else {
+            	boxes = ProximityHelper.getBoundingBox(eventSearchForm);  //there may be two
+            }
             Long totalResults = 0L;
             //There are 1 or 2 bounding boxes (see comment above)
             for (Geometry geometry : boxes) {
@@ -194,6 +158,9 @@ public class EventSearchController extends AbstractFormController {
                 List results = eventSearchService.search(MAX_RECORDS, firstRecord, 
                 		eventSearchForm.getWhat(), eventSearchForm.getWhen(), geometry, getVisibility(eventSearchForm));
                 events.addAll(results);
+                //--------TODO DEBUG for testing remove this !!!
+                //addDebugBoundingBox(events, geometry);
+                //--------
                 //if there are MAX_RECORDS, then there are probably more records, so get the count
                 if (results.size() >= MAX_RECORDS) {
                     totalResults += eventSearchService.getCount(eventSearchForm.getWhat(), 
@@ -201,6 +168,33 @@ public class EventSearchController extends AbstractFormController {
                 } else {
                     totalResults += results.size();
                 }
+            }
+
+            //if there were two boxes, one on either side of the international date line, we
+            //may have twice as many records as we need so we have to sort and then strip off
+            //the excess
+            sortByDate(events);
+            removeExcess(events, MAX_RECORDS);
+
+            //if we just added a new event, it can be very confusing for the user to have the icon
+            //dissappear because it isn't high in the search results.  This is a kludge to help them
+            //but it is only partially successful because if the hit search, their icon may disappear.  
+            //I guess they will just have to get used to it?
+            //So we will add the new event to the search results this one time
+            //TODO - this may still be confusing to the user
+            Event event = (Event) WebUtils.getSessionAttribute(request, EventController.SESSION_EVENT);
+            if (event != null) {
+            	//erase it for next time
+            	WebUtils.setSessionAttribute(request, EventController.SESSION_EVENT, null);
+            	boolean alreadyInList = false;
+            	for (Event listEvent : events) {
+            		if (event.getId().equals(listEvent.getId())) {
+            			alreadyInList = true;
+            		}
+            	}
+            	if (!alreadyInList) {
+                	events.add(event);           		
+            	}
             }
             model.put(MODEL_TOTAL_RESULTS, totalResults);
             model.put(MODEL_EVENTS, events);
@@ -211,6 +205,46 @@ public class EventSearchController extends AbstractFormController {
         return model;
     }
 
+	private void removeExcess(List<Event> events, int maxRecords) {
+		int originalSize = events.size();
+		for (int i=0; i<originalSize; i++) {
+			if (i >= maxRecords) {
+				events.remove(events.size()-1);
+			}
+		}
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	private void sortByDate(List<Event> events) {
+		Collections.sort(events, new Comparator() {
+			public int compare(Object arg0, Object arg1) {
+				Event event0 = (Event) arg0;
+				Event event1 = (Event) arg1;
+				return(event0.getWhen().getBegin().compareTo(event1.getWhen().getBegin()));
+			}
+		      });
+		
+	}
+
+	/* useful for debugging */
+/*    private void addDebugBoundingBox(List<Event> events, Geometry geometry) { 
+    	Event event = new Event();
+    	event.setSummary("box");
+    	event.setTsGeometry(new TsGeometry(geometry));
+    	try {
+			event.setWhen(TimeRangeFormat.parse("2000"));
+		} catch (ParseException e) {
+		}
+		event.setId(2L);
+		event.setHasUnresolvedFlag(false);
+		event.setWhere("");
+		event.setDescription("");
+		event.setUserTagsAsString("");
+		event.setSource("");
+		events.add(event);
+    }
+*/    
     /** 
      * Only administrators are allowed to see removed events.  We need to check for proper authorization
      * because the user could have hacked the HTML to add the showInvisible parameter
@@ -242,10 +276,10 @@ public class EventSearchController extends AbstractFormController {
         //don't search if there are errors
         EventSearchForm eventSearchForm = getEventSearchForm(request);
         if ((eventSearchForm != null) && (!errors.hasErrors())){
-            Map model = doSearch(errors, eventSearchForm);
+            Map model = doSearch(request, errors, eventSearchForm);
             return new ModelAndView(getFormView(), model);
         } else {
-        	//we got through these IS_FIRST_VIEW hoops because we only want to show the "welcome" 
+        	//we go through these IS_FIRST_VIEW hoops because we only want to show the "welcome" 
         	//message once per login, but this bit of code may get executed once before the 
         	//screen is actually shown if they are going to the search URL and then the user 
         	//is redirected because they need to log in.
@@ -254,7 +288,8 @@ public class EventSearchController extends AbstractFormController {
             if ((username != null) && (isFirstView == null)) {
             	WebUtils.setSessionAttribute(request, SESSION_FIRST_VIEW, true);
             	Map model = errors.getModel();
-            	model.put(MODEL_IS_FIRST_VIEW, true);             	
+            	model.put(MODEL_IS_FIRST_VIEW, true);
+            	model.put(MODEL_TOTAL_EVENTS, eventSearchService.getTotalCount());
             	return new ModelAndView(getFormView(), model);
             } 
             return showForm(request, errors, getFormView());

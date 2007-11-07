@@ -139,7 +139,7 @@
 			          &nbsp; <a class="links" href="${basePath}edit/flagevent.htm?id=${event.id}" >flag</a>
 			          &nbsp; 
 			          <c:choose>
-			          	<c:when test="${event.hasUnresolvedFlags}">
+			          	<c:when test="${event.hasUnresolvedFlag}">
 				          	<span class="errorLabel"><em>This event has been <a class="errorlinks" href="${basePath}edit/eventdetails.htm?id=${event.id}">flagged!</a></em></span>
 			          	</c:when>
 			          	<c:otherwise>

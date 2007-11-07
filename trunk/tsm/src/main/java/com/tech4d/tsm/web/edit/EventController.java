@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class EventController extends SimpleFormController {
-    private static final String SESSION_EVENT = "EVENT";
+    public static final String SESSION_EVENT = "EVENT";
     EventDao eventDao;
 
     public void setEventDao(EventDao eventDao) {
@@ -73,6 +73,13 @@ public class EventController extends SimpleFormController {
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         EventForm eventForm = (EventForm)command;
+
+        //change the map center of the search form to wherever we are now!    	
+        EventSearchForm eventSearchForm = getEventSearchForm(request);
+        eventSearchForm.setMapCenter(eventForm.getMapCenter());
+        eventSearchForm.setMapZoom(eventForm.getZoomLevel());
+        WebUtils.setSessionAttribute(request, EventSearchController.SESSION_EVENT_SEARCH_FORM, eventSearchForm);
+        //now create or update the event
         Event event;
         if (eventForm.getId() != null) {
             //get the event from the session
@@ -82,6 +89,7 @@ public class EventController extends SimpleFormController {
             event = com.tech4d.tsm.web.edit.EventFormFactory.createEvent(eventForm);
         }
         this.eventDao.saveOrUpdate(event);
+        WebUtils.setSessionAttribute(request, SESSION_EVENT, event);
         return new ModelAndView(getSuccessView());
     }
 

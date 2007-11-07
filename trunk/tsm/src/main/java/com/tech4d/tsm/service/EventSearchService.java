@@ -37,4 +37,13 @@ public interface EventSearchService {
      * @return count of records matching the search criteria
      */
     public Long getCount(String textFilter, TimeRange timeRange, Geometry boundingBox, Visibility showVisible);
+    
+    /**
+     * Get total count of all events in the DB.  TODO later we want to make
+     * this a periodic query that caches the results so it is only run once 
+     * every hour or so.
+     * @return
+     */
+    public Integer getTotalCount();
+
 }
