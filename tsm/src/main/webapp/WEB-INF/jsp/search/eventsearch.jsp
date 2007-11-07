@@ -87,23 +87,36 @@
 		
 			<table><tbody><tr>			
 				<td id="sidebar">
-		  		<span class="resultcount">		  			
+		  		<div class="resultcount">		  			
 				  	<c:if test="${isFirstView != null}">
 			  			<%-- this is a hidden link --%>
 		  				<a href="#modal_contents" id="modal_link"></a>
 		  			</c:if>
 		  			<c:choose>
 		  				<c:when test="${fn:length(events) > 0}">
-				  			Displaying <b>${eventSearch.currentRecord} - ${eventSearch.currentRecord + fn:length(events)}</b> Events 
-				  			<c:if test="${totalResults > fn:length(events)}"> 
-				  				of <b><c:out value="${totalResults}"/></b>
+				  			Displaying events <b>${eventSearch.currentRecord + 1}  - ${eventSearch.currentRecord + fn:length(events) }</b>  
+				  			of <b><c:out value="${totalResults}"/></b>
+				  			<c:set var="where" value="${(eventSearchForm.where != '')}"/>
+				  			<c:set var="when" value="${(eventSearchForm.when != null)}"/>
+				  			<c:set var="what" value="${(eventSearchForm.what != '')}"/>
+				  			<c:if test="${where || when || what}">for</c:if>
+				  			<c:if test="${where}">
+					  			<b>${eventSearchForm.where}</b> 
+				  			</c:if>
+				  			<c:if test="${((where && when) || (where && what)) && when}">,</c:if>
+				  			<c:if test="${when}">
+					  			<b>${eventSearchForm.when.asText}</b> 
+				  			</c:if>
+				  			<c:if test="${(when || where) && what }">,</c:if>
+				  			<c:if test="${what}">
+					  			<b>${eventSearchForm.what}</b> 
 				  			</c:if>
 			 				</c:when>
 		  				<c:otherwise>
 			  				No Events found
 		  				</c:otherwise>
 		  			</c:choose>
-		  		</span>
+		  		</div>
 		    	<div id="results" >
 		    		
 		    		<form:errors path="where" cssClass="errorLabel" element="div"/>
@@ -128,7 +141,7 @@
 	            	<span class="letter">(<c:out value="${fn:substring(test,status.count-1,status.count)}"/>)</span>
 			          <span class="when"><c:out value="${event.when.asText}"/></span>, 
 			          <a class="summary" href="#" onclick="openMarker(<c:out value='${status.count-1}'/>)"><c:out value="${event.summary}"/></a><br/>
-			          <span class="where"><c:out value="${event.where}"/></span>, <br/>
+			          <span class="where"><c:out value="${event.where}"/></span> <br/>
 			          
 			          <c:out value="${fn:substring(event.description,0,300)}"/> 
 			          <c:if test="${fn:length(event.description) > 300}">
