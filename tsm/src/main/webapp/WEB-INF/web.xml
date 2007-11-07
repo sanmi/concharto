@@ -16,7 +16,10 @@
 			<param-name>log4jConfigLocation</param-name>
 			<param-value>/WEB-INF/log4j.properties</param-value>
 		</context-param>
-
+		<session-config>
+			<!-- four hours  -->
+      <session-timeout>240</session-timeout> 
+    </session-config>
     <filter>
         <filter-name>authorizationFilter</filter-name>
         <filter-class>com.tech4d.tsm.auth.LoginFilter</filter-class>
