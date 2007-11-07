@@ -91,7 +91,7 @@ public class EventDetailsController extends MultiActionController{
         Long id = ServletRequestUtils.getLongParameter(request, PARAM_ID);
         String disposition = ServletRequestUtils.getStringParameter(request, PARAM_DISPOSITION);
         if (id != null) {
-        	log.debug("user " + WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME) + 
+        	log.info("user " + WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME) + 
         			" disposition of flag " + id + " is " + disposition);
         }
         Flag flag = flagDao.setFlagDisposition(id, disposition);

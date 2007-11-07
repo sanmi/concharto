@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.CustomBooleanEditor;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -27,6 +29,7 @@ import com.tech4d.tsm.service.EventSearchService;
 import com.tech4d.tsm.service.Visibility;
 import com.tech4d.tsm.util.JSONFormat;
 import com.tech4d.tsm.util.ProximityHelper;
+import com.tech4d.tsm.web.SwitchBoardController;
 import com.tech4d.tsm.web.edit.EventController;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
 import com.tech4d.tsm.web.util.PaginatingFormHelper;
@@ -34,6 +37,7 @@ import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
 import com.vividsolutions.jts.geom.Geometry;
 
 public class EventSearchController extends AbstractFormController {
+	private static final Log log = LogFactory.getLog(EventSearchController.class);
     private static final double SEARCH_BOX_DIMENTSION = 40D; //approximate bounding box = miles * 1.4
 	private static final int ZOOM_BOX_THRESHOLD = 10;
 	private static final String MODEL_TOTAL_EVENTS = "totalEvents";
@@ -44,7 +48,7 @@ public class EventSearchController extends AbstractFormController {
     public static final String MODEL_TOTAL_RESULTS = "totalResults";
     public static final String MODEL_CURRENT_RECORD = "currRecord";
     public static final String MODEL_PAGESIZE = "pageSize";
-    
+
     public static final int MAX_RECORDS = 25;
     private EventSearchService eventSearchService;
     private String formView;
@@ -104,7 +108,13 @@ public class EventSearchController extends AbstractFormController {
     @Override
     protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         EventSearchForm eventSearchForm = (EventSearchForm) command;
-        
+        if (log.isInfoEnabled()) {
+        	StringBuffer msg = new StringBuffer("search,");
+        	msg.append("where,\"").append(eventSearchForm.getWhere()).append("\",");
+        	msg.append("when,").append(eventSearchForm.getWhen().getAsText()).append(",");
+        	msg.append("what,\"").append(eventSearchForm.getWhat()).append("\"");
+        	log.info(msg);
+        }
         if (errors.hasErrors()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Data binding errors: " + errors.getErrorCount());
