@@ -50,7 +50,7 @@ public class LoginController extends SimpleFormController {
         if ((user != null) && 
             (PasswordUtil.isPasswordValid(loginForm.getPassword(), user.getPassword()))) {
             //matched username and password, ok to proceed
-            log.debug("user " + loginForm.getUsername() + " signed in");
+            log.info("user " + loginForm.getUsername() + " signed in");
             //first save the username and roles in the session            
             WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME, loginForm.getUsername());
             WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_ROLES, makeRoles(user.getRoles()));
