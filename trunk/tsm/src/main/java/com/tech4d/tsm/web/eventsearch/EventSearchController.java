@@ -29,7 +29,6 @@ import com.tech4d.tsm.service.EventSearchService;
 import com.tech4d.tsm.service.Visibility;
 import com.tech4d.tsm.util.JSONFormat;
 import com.tech4d.tsm.util.ProximityHelper;
-import com.tech4d.tsm.web.SwitchBoardController;
 import com.tech4d.tsm.web.edit.EventController;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
 import com.tech4d.tsm.web.util.PaginatingFormHelper;
