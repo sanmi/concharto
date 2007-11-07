@@ -109,9 +109,12 @@ public class EventSearchController extends AbstractFormController {
         EventSearchForm eventSearchForm = (EventSearchForm) command;
         if (log.isInfoEnabled()) {
         	StringBuffer msg = new StringBuffer("search,");
-        	msg.append("where,\"").append(eventSearchForm.getWhere()).append("\",");
-        	msg.append("when,").append(eventSearchForm.getWhen().getAsText()).append(",");
-        	msg.append("what,\"").append(eventSearchForm.getWhat()).append("\"");
+        	msg.append("where,\"").append(eventSearchForm.getWhere());
+        	msg.append(",when,");
+        	if (eventSearchForm.getWhen() != null) {
+        		msg.append(eventSearchForm.getWhen().getAsText());
+        	}
+        	msg.append(",what,\"").append(eventSearchForm.getWhat()).append("\"");
         	log.info(msg);
         }
         if (errors.hasErrors()) {
