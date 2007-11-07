@@ -69,6 +69,17 @@ public class EventSearchServiceHib implements EventSearchService {
         return sessionFactory;
     }
 
+    @SuppressWarnings("unchecked")
+	public Integer getTotalCount() {
+    	List results = this.sessionFactory.getCurrentSession()
+    	.createQuery("select count(event) from Event event")
+    	.list();
+    	Long count = (Long) results.get(0);
+    	//cast to Integer.  It aint never going to be bigger!
+    	return Math.round(count);
+    }
+
+
     /*
      * @see com.tech4d.tsm.service.EventSearchService#getCount
      */

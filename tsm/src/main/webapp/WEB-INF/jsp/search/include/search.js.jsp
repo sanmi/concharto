@@ -214,7 +214,7 @@
 		} else {
 			map.setCenter(latLng);
 			var where = document.getElementById("eventSearchForm").where.value;
-			if ((where != '') && (map.getZoom() <= 4)) {
+			if (where != '') {
 				map.setZoom(10); <%-- TODO infer this from the geocode results!! --%>
 			}
 			document.getElementById("eventSearchForm").mapCenter.value = gLatLngToJSON(latLng);
@@ -227,7 +227,7 @@
 			gLatLngToJSON(boundingBox.getNorthEast());
 		<%-- if the geocode failed, we will get a null.  Pass this back to the controller to indicate
 		     that the geocode failed --%>
-	
+
 		document.getElementById("eventSearchForm").mapZoom.value = map.getZoom();
 		document.getElementById("eventSearchForm").currentRecord.value = 0;
 		document.getElementById("eventSearchForm").pageCommand.value = '';

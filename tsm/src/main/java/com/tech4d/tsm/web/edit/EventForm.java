@@ -138,7 +138,7 @@ public class EventForm {
      * Search results in JSON format need to be passed as a hidden value
      * in the form so that the google maps API javascript functions can retrieve them
      * TODO refactor because this is also on the EventSearchForm 
-     * @return resutls JSON formatted array of Event objects
+     * @return JSON formatted array of Event objects
      */
     public String getSearchResults() {
         return searchResults;

@@ -110,6 +110,18 @@ public class IntegrationTestSearchBoundaries {
         eventDao.save(event);
         return event;
     }
+
     
+    @Test
+    public void testGetCount() throws ParseException, java.text.ParseException {
+        makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522-1527"), "Stuff", null);
+        makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522-1527"), "Stuff", null);
+        assertEquals(2, eventSearchService.getTotalCount());
+        makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522-1527"), "Stuff", null);
+        assertEquals(3, eventSearchService.getTotalCount());
+    	
+    }
+    
+
 
 }
