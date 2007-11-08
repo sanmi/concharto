@@ -16,7 +16,8 @@ import com.tech4d.tsm.model.time.TimeRange;
 
 /**
  * Converts string to TimeRange and vica versa. Supports many human readable
- * formats.
+ * formats.  The best way to try to understand this code is to look at the 
+ * unit tests.
  * 
  * Some examples:
  * <pre>
@@ -56,51 +57,66 @@ public class TimeRangeFormat  {
     private static final String FMT_TO_HOUR_ERA = "MMMM dd, yyyy G, hha";
     private static final String FMT_TO_MINUTE_ERA = "MMMM dd, yyyy G, hh:mma";
     private static final String FMT_TO_SECOND_ERA = "MMMM dd, yyyy G, hh:mm:ssa";
-
-  
+ 
     private final static String[] yearPatterns = {
         "yyyy", 
         "yyyyG",
         "yyyy G"
     };
 
-    private final static String[] dayPatterns = {
-        "MM/dd/yy", 
-        "yyyy/MM/dd", 
-        "MMM dd, yy", 
-        "MMM dd, yyyy", 
-        "yyyy, dd MMM", 
+    private final static String[] monthPatterns = {
         "MMM yy", 
         "MMM, yy", 
         "yyyy, MMM", 
-
-        "MM/dd/yyyy G", 
-        "yyyy G/MM/dd", 
-        "MMM dd, yyyy G", 
         "MMM, yyyy G", 
-        "yyyy G, dd MMM", 
         "yyyy G, MMM", 
     };
-    private final static String[] timePatterns = {
+    
+    private final static String[] dayPatterns = {
+    	"MM/dd/yy", 
+    	"yyyy/MM/dd", 
+    	"MMM dd, yy", 
+    	"MMM dd, yyyy", 
+    	"yyyy, dd MMM", 
+    	
+    	"MM/dd/yyyy G", 
+    	"yyyy G/MM/dd", 
+    	"MMM dd, yyyy G", 
+    	"yyyy G, dd MMM", 
+    };
+    private final static String[] hourPatterns = {
         " hha", 
-        " hh:mma", 
-        " hh:mm:ssa", 
         " HH", 
-        " HH:mm", 
-        " HH:mm:ss", 
+    };
+    private final static String[] minutePatterns = {
+    	" hh:mma", 
+    	" HH:mm", 
+    };
+    private final static String[] secondPatterns = {
+    	" hh:mm:ssa", 
+    	" HH:mm:ss", 
     };
         
     private static String[] patterns;
     private static List<CalendarPrecision> calendarPrecisions = new ArrayList<CalendarPrecision>();
     static {
+        List<String> dayMonthPatterns = new ArrayList<String>();
+        addPatterns(dayPatterns, dayMonthPatterns);
+        addPatterns(monthPatterns, dayMonthPatterns);
+
+        List<String> timePatterns = new ArrayList<String>();
+        addPatterns(hourPatterns, timePatterns);
+        addPatterns(minutePatterns, timePatterns);
+        addPatterns(secondPatterns, timePatterns);
+        
+        //All patterns.  Order is important here
         List<String> tmpPatterns = new ArrayList<String>();
-        //the solo year patterns
-        addPatterns(dayPatterns, tmpPatterns);
+        addPatterns(dayMonthPatterns, tmpPatterns);
         addPatterns(timePatterns, tmpPatterns);
         addPatterns(yearPatterns, tmpPatterns);
 
         //combined format patterns
-        for (String dayPattern : dayPatterns) {
+        for (String dayPattern : dayMonthPatterns) {
             for (String timePattern : timePatterns) {
                 tmpPatterns.add(dayPattern + timePattern);
                 tmpPatterns.add(new StringBuffer(dayPattern).append(',').append(timePattern).toString());
@@ -109,19 +125,45 @@ public class TimeRangeFormat  {
         patterns = tmpPatterns.toArray(new String[tmpPatterns.size()]);
         
         //for calculating the date precision 
-        calendarPrecisions.add(new CalendarPrecision(PRECISION_SECOND, Calendar.SECOND, 0, FMT_TO_SECOND, FMT_TO_SECOND_ERA));
-        calendarPrecisions.add(new CalendarPrecision(PRECISION_MINUTE, Calendar.MINUTE, 0, FMT_TO_MINUTE, FMT_TO_MINUTE_ERA));
-        calendarPrecisions.add(new CalendarPrecision(PRECISION_HOUR, Calendar.HOUR, 0, FMT_TO_HOUR, FMT_TO_HOUR_ERA));
-        calendarPrecisions.add(new CalendarPrecision(PRECISION_DAY, Calendar.DAY_OF_MONTH, 1, FMT_TO_DAY, FMT_TO_DAY_ERA));
-        calendarPrecisions.add(new CalendarPrecision(PRECISION_MONTH, Calendar.MONTH, Calendar.JANUARY, FMT_TO_MONTH, FMT_TO_MONTH_ERA));
-        calendarPrecisions.add(new CalendarPrecision(PRECISION_YEAR, Calendar.YEAR, -1, FMT_TO_YEAR, FMT_TO_YEAR_ERA));  //no empty value
+        calendarPrecisions.add(new CalendarPrecision
+        		(PRECISION_SECOND, Calendar.SECOND, 0, FMT_TO_SECOND, FMT_TO_SECOND_ERA, combineTimePatterns(dayMonthPatterns, secondPatterns)));
+        calendarPrecisions.add(new CalendarPrecision
+        		(PRECISION_MINUTE, Calendar.MINUTE, 0, FMT_TO_MINUTE, FMT_TO_MINUTE_ERA, combineTimePatterns(dayMonthPatterns, minutePatterns)));        
+        calendarPrecisions.add(new CalendarPrecision
+        		(PRECISION_HOUR, Calendar.HOUR, 0, FMT_TO_HOUR, FMT_TO_HOUR_ERA, combineTimePatterns(dayMonthPatterns, hourPatterns)));
+        calendarPrecisions.add(new CalendarPrecision
+        		(PRECISION_DAY, Calendar.DAY_OF_MONTH, 1, FMT_TO_DAY, FMT_TO_DAY_ERA, dayPatterns));
+        calendarPrecisions.add(new CalendarPrecision
+        		(PRECISION_MONTH, Calendar.MONTH, Calendar.JANUARY, FMT_TO_MONTH, FMT_TO_MONTH_ERA, monthPatterns));
+        calendarPrecisions.add(new CalendarPrecision
+        		(PRECISION_YEAR, Calendar.YEAR, -1, FMT_TO_YEAR, FMT_TO_YEAR_ERA, yearPatterns));  //no empty value
+
     }
     
-    private static void addPatterns(String[] patterns, List<String> list) {
+    private static List<String> addPatterns(String[] patterns, List<String> list) {
         for (String pattern : patterns) {
             list.add(pattern);
         }        
+        return list;
     }
+    
+	private static void addPatterns(List<String> patterns, List<String> list) {
+    	for (String pattern : patterns) {
+    		list.add(pattern);
+    	}        
+    }
+
+    private static String[] combineTimePatterns(List<String> dayMonthPatterns, String[] timePatterns) {
+        List<String> results = new ArrayList<String>();
+        for (String dayMonthPattern : dayMonthPatterns) {
+            for (String timePattern : timePatterns) {
+                results.add(dayMonthPattern + timePattern);
+                results.add(new StringBuffer(dayMonthPattern).append(',').append(timePattern).toString());
+            }
+        }
+ 		return results.toArray(new String[results.size()]);
+	}
+
 
     /**
      * Parse a time range from a wide variety of formats.  Some examples:
@@ -304,7 +346,8 @@ public class TimeRangeFormat  {
             
         Date begin = parseDate(text);
         
-        CalendarPrecision cp = getPrecision(begin);
+        CalendarPrecision cp = getPrecision(text);
+//DEBUG        CalendarPrecision cp = getPrecision(begin);
         //add 1 to the end at the given precision (e.g. when someone says 
         //December 1 to December 2 they mean 12/1 00:00:00 to 12/3 00:00:00) 
         Calendar cal = getCalendar(begin);
@@ -349,17 +392,28 @@ public class TimeRangeFormat  {
      * @throws ParseException if there is a parsing problem
      */
     private static Date parseDate(String text) throws ParseException {
+        text = normalizeDateText(text);
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.setLenient(false);
+        return DateUtils.parseDate(sdf, text, patterns);
+    }
+    
+    /**
+     * Removes double and triple spaces, normalizes commas and  
+     * cleans up era designators
+     * @param text to normalize
+     * @return normalize date string
+     */
+    private static String normalizeDateText(String text) {
         // first clean the spaces from front and back
         text = StringUtils.trimToEmpty(text);
-        // convert double and tripple space to single space
+        // convert double and triple space to single space
         text = StringUtils.replace(text, "    ", " ");
         text = StringUtils.replace(text, "   ", " ");
         text = StringUtils.replace(text, "  ", " ");
         text = normalizeCommas(text);
         text = adjustADBC(text);
-        SimpleDateFormat sdf = new SimpleDateFormat();
-        sdf.setLenient(false);
-        return DateUtils.parseDate(sdf, text, patterns);
+        return text;
     }
 
     /**
@@ -444,6 +498,48 @@ public class TimeRangeFormat  {
         return precision;
     }
 
+    /**
+	 * Calculate the precision for this date by looking at 
+     * what the user entered.  E.g. 2007 has a year precision, Jan 2007 has a 
+     * month precision, Jan 1, 2007 has a day precision, etc.  NOTE: We need two ways of 
+     * checking precision - one for parsing user input (this one) and one for for formatting
+     * time ranges for users.
+     * 
+     * @param text
+     * @return CalendarPrecision precision
+     */
+    private static CalendarPrecision getPrecision(String text) {
+    	text = normalizeDateText(text);
+    	int rank = PRECISION_YEAR;
+    	for (CalendarPrecision cp : calendarPrecisions)
+            if (isParsable(text, cp.getPrecisionTestFormat())) {
+            	if (cp.getRank()<rank) {
+            		rank = cp.getRank();
+            }
+    	}
+    	return calendarPrecisions.get(rank);
+    }
+    
+    /**
+     * Utility for checking precision of user entered dates 
+     * @param text
+     * @param patterns
+     * @return
+     */
+    private static boolean isParsable(String text, String[] patterns) {
+    	SimpleDateFormat sdf = new SimpleDateFormat();
+    	sdf.setLenient(false);
+    	for (String pattern : patterns) {
+            try {
+            	sdf.applyPattern(pattern);
+                sdf.parse(text);
+                return true;
+            } catch (ParseException e) {
+            }
+    	}
+    	return false;
+    }
+    
     /**
      * Get the least precicse precision of begin and end for this time range
      * @param timeRange TimeRange to check

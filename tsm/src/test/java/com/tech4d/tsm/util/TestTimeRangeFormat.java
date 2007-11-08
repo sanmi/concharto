@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -17,6 +18,32 @@ public class TestTimeRangeFormat {
     //private TimeRangePropertyEditor timeRangePropertyEditor = new TimeRangePropertyEditor();   
     
     @Test public void debug () throws ParseException {
+    	SimpleDateFormat sdf = new SimpleDateFormat();
+    	sdf.setLenient(false);
+    	sdf.applyPattern("MMM dd, yyyy, hha");
+    	try {
+    		System.out.println("+++ " + sdf.parse("Jan 1, 1941, 10am"));
+    	} catch (ParseException e) {
+    		System.out.println("--------------" + e.getMessage());
+    	}
+    }
+
+    @Test public void firstUnit() throws ParseException {
+        assertEquals("March 01, 1941", formatTimeRange(3,1,1941,3,2,1941));
+        LapTimer timer = new LapTimer(this);
+        assertEquivalent(makeDayRange(1,1,1941, 1,1,1942), parseTimeRange("1941"));
+        assertEquivalent(makeDayRange(1,1,1941, 2,1,1941), parseTimeRange("Jan, 1941"));
+        assertEquivalent(makeDayRange(1,1,1941, 1,2,1941), parseTimeRange("Jan 1, 1941"));
+        assertEquivalent(makeDayRange(3,2,1941, 3,3,1941), parseTimeRange("March 2, 1941"));
+        assertEquivalent(makeDayRange(3,1,1941, 3,2,1941), parseTimeRange("March 1, 1941"));
+        assertEquivalent(makeDayRange(3,1,1941, 3,2,1941), parseTimeRange("Mar 1,1941"));
+        assertEquivalent(makeDayRange(3,1,1941,10,0,0, 3,1,1941,11,0,0), parseTimeRange("March 1,1941,10AM"));
+        assertEquivalent(makeDayRange(3,1,1941,17,0,0, 3,1,1941,18,0,0), parseTimeRange("March 1,1941,17"));
+        assertEquivalent(makeDayRange(3,1,1941,10,0,0, 3,1,1941,10,1,0), parseTimeRange("March 1,1941,10:00AM"));
+        assertEquivalent(makeDayRange(3,1,1941,10,0,0, 3,1,1941,10,0,1), parseTimeRange("March 1,1941,10:00:00AM"));
+        timer.timeIt("parse");
+        System.out.println(timer);
+    	
     }
 
     @Test public void parse() throws ParseException {
@@ -45,8 +72,8 @@ public class TestTimeRangeFormat {
         assertEquivalent(makeDayRange(12,7,1941, 12,8,1941), parseTimeRange("Dec 7, 1941"));
         assertEquivalent(makeDayRange(12,31,1941, 1,1,1942), parseTimeRange("Dec 31, 1941"));
 
-        assertEquivalent(makeDayRange(12,7,1941,10,0,0, 12,7,1941,11,0,0), parseTimeRange("Dec 7,1941,10:00AM"));
-        assertEquivalent(makeDayRange(12,7,1941,10,0,0, 12,7,1941,11,0,0), parseTimeRange("Dec 7, 1941 10:00AM"));
+        assertEquivalent(makeDayRange(12,7,1941,10,0,0, 12,7,1941,10,1,0), parseTimeRange("Dec 7,1941,10:00AM"));
+        assertEquivalent(makeDayRange(12,7,1941,10,0,0, 12,7,1941,10,1,0), parseTimeRange("Dec 7, 1941 10:00AM"));
         assertEquivalent(makeDayRange(12,7,1941,10,0,0, 12,7,1941,11,0,0), parseTimeRange("Dec 7, 1941, 10AM"));
         assertEquivalent(makeDayRange(12,7,1941,10,1,0, 12,7,1941,10,2,0), parseTimeRange("Dec 7, 1941, 10:01AM"));
         assertEquivalent(makeDayRange(12,7,1941,10,1,1, 12,7,1941,10,1,2), parseTimeRange("Dec 7, 1941, 10:01:01AM"));
