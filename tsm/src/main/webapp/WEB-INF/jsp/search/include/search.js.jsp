@@ -157,7 +157,11 @@
 	
 	function zoomTo(lat, lng) {
 		map.setCenter(new GLatLng(lat,lng));
-		map.setZoom(10); <%-- TODO infer this from something else, not sure what --%>
+		if (map.getZoom() < 15) {
+			map.setZoom(map.getZoom() +4); <%-- TODO infer this from something else, not sure what --%>
+		} else {
+			map.zoomIn();
+		}
 	}
 	
 	function findClosestVertex(point, overlay) {
