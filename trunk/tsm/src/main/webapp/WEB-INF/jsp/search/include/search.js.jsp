@@ -125,7 +125,8 @@
 	function makeOverlayHtml(event) {
 		var html = createInfoWindowHtml(event) +  
 			'<br/><a class="links" href="#" onclick="editEvent(' + event.id + ')">edit</a> &nbsp;' +  
-			'<a class="links" href="/edit/flagevent.htm?id=' + event.id + '">flag</a> &nbsp;';
+			'<a class="links" href="/edit/flagevent.htm?id=' + event.id + '">flag</a> &nbsp;' +
+			'<a class="links" href="#" onclick="zoomTo(' + event.geom.lat +',' + event.geom.lng + ')">zoom in</a> &nbsp;';
 		if (event.hasUnresolvedFlags == 'true') {
 			html += '<span class="errorLabel"><em>This event has been <a class="errorlinks" href="${basePath}edit/eventdetails.htm?id=' + event.id + '">flagged!</a></em></span>';
 		} else {
@@ -134,10 +135,11 @@
 		html += '<br/></div>';
 		return html;
 	}
-			function simpleModal() {
+	
+	function simpleModal() {
 			//Control.Modal.open('contents of modal');
 			modal2.open();
- 		}
+ 	}
 	
 
   <%-- END PRE FUNCTIONS (initialization) ============================= --%>
@@ -151,6 +153,11 @@
 			var point = findClosestVertex(map.getCenter(), overlay);
 			map.openInfoWindow(point, _overlays[index].html);
 		}
+	}
+	
+	function zoomTo(lat, lng) {
+		map.setCenter(new GLatLng(lat,lng));
+		map.setZoom(10); <%-- TODO infer this from something else, not sure what --%>
 	}
 	
 	function findClosestVertex(point, overlay) {
