@@ -203,28 +203,26 @@ public class TimeRangeFormat  {
             return null;
         }
         
-        //1) if 12/7/1941 00:00 - 12/8/1941 00:00 = December 7, 1941
-        //2) if 12/7/1941 00:00 - 12/7/1942 00:00 = December 7, 1941, December 7, 1941 (don't subtract)
-        //3) if 12/7/1941 00:00 - 12/9/1941 00:00 = December 7, 1941, December 8, 1941 (subtract)
-        //4) if 12/7/1941 10:00 - 2/1/1942 00:00 = December 7, 1941 10AM, January, 1942 (don't subtract)
+        //1) if 12/7/1941 10:00 - 2/1/1942 00:00 = December 7, 1941 10AM, January, 1942 (don't subtract)
+        //2) if 12/7/1941 00:00 - 12/8/1941 00:00 = December 7, 1941
+        //3) if 12/7/1941 00:00 - 12/7/1942 00:00 = December 7, 1941, December 7, 1941 (don't subtract)
+        //4) if 12/7/1941 00:00 - 12/9/1941 00:00 = December 7, 1941, December 8, 1941 (subtract)
         CalendarPrecision beginCp = getPrecision(timeRange.getBegin());
         CalendarPrecision endCp = getPrecision(timeRange.getEnd());
         CalendarPrecision cp = getLeastPrecision(beginCp, endCp);
-        if (isOneApart(cp.getCalendarField(), timeRange)) { //case 1
-            return dateFormat(timeRange.getBegin().getDate(), cp); 
-        } else if (isEqual(cp.getCalendarField(), timeRange)){ //case 2
-            return rangeFormat(timeRange, cp);
-        } else { //case 3, 4        	
+        //case 1
+        if ((beginCp.getRank() != endCp.getRank()) 
+        		&& timeRange.getBegin().getPrecision() != null 
+        		&& timeRange.getEnd().getPrecision() != null) { 
             SimpleTimeRange adjusted = subtractOneFromEnd(cp, timeRange);
-            //Case 4.  But only if precision has been specified, otherwise we have to guess.
-            //This guessing is implemented for backward compatibility
-            if ((beginCp.getRank() != endCp.getRank()) 
-            		&& timeRange.getBegin().getPrecision() != null 
-            		&& timeRange.getEnd().getPrecision() != null) { 
-            	return rangeFormat(adjusted.getBegin().getDate(), beginCp, adjusted.getEnd().getDate(), endCp);
-            } else { //case 3
-                return rangeFormat(adjusted, cp); 
-            }
+        	return rangeFormat(adjusted.getBegin().getDate(), beginCp, adjusted.getEnd().getDate(), endCp);
+        } else if (isOneApart(cp.getCalendarField(), timeRange)) { //case 2
+            return dateFormat(timeRange.getBegin().getDate(), cp); 
+        } else if (isEqual(cp.getCalendarField(), timeRange)){ //case 3
+            return rangeFormat(timeRange, cp);
+        } else { //case 4
+            SimpleTimeRange adjusted = subtractOneFromEnd(cp, timeRange);
+            return rangeFormat(adjusted, cp); 
         }
     }
 

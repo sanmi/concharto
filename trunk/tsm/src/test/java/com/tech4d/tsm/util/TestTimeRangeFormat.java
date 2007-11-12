@@ -15,10 +15,14 @@ import com.tech4d.tsm.model.time.TimeRange;
 
 public class TestTimeRangeFormat {
     //private TimeRangePropertyEditor timeRangePropertyEditor = new TimeRangePropertyEditor();   
-    
-    @Test public void differentPrecisions() throws ParseException {
 
-        String dateStr = "January, 1941";
+    //TSM-60
+    @Test public void differentPrecisions() throws ParseException {
+    	String dateStr = "July 01, 1863 - August, 1863";  //NOTE the difference between the last one is very slight  
+        assertEquivalent(makeDayRange(7,1,1863,0,0,0, 9,1,1863,0,0,0), parseTimeRange(dateStr));
+        assertEquals(dateStr, TimeRangeFormat.format(TimeRangeFormat.parse(dateStr)));
+        
+        dateStr = "January, 1941";
         assertEquivalent(makeDayRange(1,1,1941,0,0,0, 2,1,1941,0,0,0), parseTimeRange(dateStr));
         assertEquals(dateStr, TimeRangeFormat.format(TimeRangeFormat.parse(dateStr)));
 
@@ -37,6 +41,7 @@ public class TestTimeRangeFormat {
         dateStr = "November 07, 1940, 10:00:02AM - January 22, 1941";  //NOTE the difference between the last one is very slight  
         assertEquivalent(makeDayRange(11,7,1940,10,0,2, 1,23,1941,0,0,0), parseTimeRange(dateStr));
         assertEquals(dateStr, TimeRangeFormat.format(TimeRangeFormat.parse(dateStr)));
+        
     }
     
 
@@ -224,6 +229,7 @@ public class TestTimeRangeFormat {
             TimeRangeFormat.parse(text);           
             fail("should have thrown an exception");
         } catch (ParseException e) {
+            //expected
         } 
     }
 
@@ -249,15 +255,8 @@ public class TestTimeRangeFormat {
         assertEquals(expected.getEnd().getDate(), actual.getEnd().getDate());
     }
     
-    /**
+    /*
      * Set the calendar (correct the month so it reads like 5/22/2007 = may/22/2007
-     * @param month
-     * @param day
-     * @param year
-     * @param hour
-     * @param minute
-     * @param second
-     * @return
      */
     private Date makeDate(int month, int day, int year, int hour, int minute, int second) {
         Calendar cal = new GregorianCalendar();
