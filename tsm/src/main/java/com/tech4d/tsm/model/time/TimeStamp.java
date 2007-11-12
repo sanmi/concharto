@@ -4,8 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.Type;
 
 @Entity
 public class TimeStamp extends TimePrimitive {
@@ -20,7 +20,7 @@ public class TimeStamp extends TimePrimitive {
     }
 
     @Column (name="time")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Type(type = "com.tech4d.tsm.model.time.UtcDateTimeType")
     public Date getWhen() {
         return when;
     }

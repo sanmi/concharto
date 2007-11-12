@@ -233,7 +233,7 @@ public class EventSearchController extends AbstractFormController {
 			public int compare(Object arg0, Object arg1) {
 				Event event0 = (Event) arg0;
 				Event event1 = (Event) arg1;
-				return(event0.getWhen().getBegin().compareTo(event1.getWhen().getBegin()));
+				return(event0.getWhen().getBegin().getDate().compareTo(event1.getWhen().getBegin().getDate()));
 			}
 		      });
 		

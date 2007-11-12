@@ -257,13 +257,13 @@ public class IntegrationTestEventSearchService {
      */
     private void assertWithin(TimeRange searchTr, TimeRange evTr) {
         boolean fail = true;
-        if ((evTr.getEnd().compareTo(searchTr.getBegin()) >= 0) && (evTr.getEnd().compareTo(searchTr.getEnd()) <= 0)) {  
+        if ((evTr.getEnd().getDate().compareTo(searchTr.getBegin().getDate()) >= 0) && (evTr.getEnd().getDate().compareTo(searchTr.getEnd().getDate()) <= 0)) {  
            fail = false; 
         }
-        if ((evTr.getBegin().compareTo(searchTr.getBegin()) >= 0) && (evTr.getBegin().compareTo(searchTr.getEnd()) <= 0)) { 
+        if ((evTr.getBegin().getDate().compareTo(searchTr.getBegin().getDate()) >= 0) && (evTr.getBegin().getDate().compareTo(searchTr.getEnd().getDate()) <= 0)) { 
             fail = false; 
         }
-        if ((evTr.getBegin().compareTo(searchTr.getBegin()) <= 0) && (evTr.getEnd().compareTo(searchTr.getEnd()) >= 0)) { 
+        if ((evTr.getBegin().getDate().compareTo(searchTr.getBegin().getDate()) <= 0) && (evTr.getEnd().getDate().compareTo(searchTr.getEnd().getDate()) >= 0)) { 
             fail = false; 
         }
         if (fail) {

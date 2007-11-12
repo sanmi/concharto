@@ -108,7 +108,7 @@ public class EventUtil {
 
         assertEquals(expected.getDescription(), actual.getDescription());
         assertEquals(expected.getSummary(), actual.getSummary());
-        assertEquals(expected.getWhen().getBegin(), actual.getWhen().getBegin());
+        assertEquals(expected.getWhen().getBegin().getDate(), actual.getWhen().getBegin().getDate());
         com.tech4d.tsm.model.kml.Style expectedStyle = (Style) expected.getStyleSelector();
         com.tech4d.tsm.model.kml.Style actualStyle = (Style) actual.getStyleSelector();
         assertEquals(
@@ -133,8 +133,8 @@ public class EventUtil {
     }
 
     public static void printTimeRange(TimeRange tr) {
-        System.out.println("begin: " + tr.getBegin().getTime() 
-            + ", end: " + tr.getEnd().getTime());
+        System.out.println("begin: " + tr.getBegin().getDate().getTime() 
+            + ", end: " + tr.getEnd().getDate().getTime());
     }
 
 

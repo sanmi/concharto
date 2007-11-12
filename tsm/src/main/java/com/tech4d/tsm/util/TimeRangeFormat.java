@@ -13,6 +13,7 @@ import org.apache.commons.lang.time.DateFormatUtils;
 
 import com.tech4d.tsm.model.time.SimpleTimeRange;
 import com.tech4d.tsm.model.time.TimeRange;
+import com.tech4d.tsm.model.time.VariablePrecisionDate;
 
 /**
  * Converts string to TimeRange and vica versa. Supports many human readable
@@ -37,12 +38,6 @@ public class TimeRangeFormat  {
     private static final int MAX_YEAR_TO_DISLPAY_ERA = 1000;
     private static final String ERA_BC = "BC";
     private static final String ERA_AD = "AD";
-    public static final int PRECISION_SECOND = 0;
-    public static final int PRECISION_MINUTE = 1;
-    public static final int PRECISION_HOUR = 2;
-    public static final int PRECISION_DAY = 3;
-    public static final int PRECISION_MONTH = 4;
-    public static final int PRECISION_YEAR = 5;
     
     private static final String FMT_TO_YEAR = "yyyy";
     private static final String FMT_TO_MONTH = "MMMM, yyyy";
@@ -126,17 +121,17 @@ public class TimeRangeFormat  {
         
         //for calculating the date precision 
         calendarPrecisions.add(new CalendarPrecision
-        		(PRECISION_SECOND, Calendar.SECOND, 0, FMT_TO_SECOND, FMT_TO_SECOND_ERA, combineTimePatterns(dayMonthPatterns, secondPatterns)));
+        		(VariablePrecisionDate.PRECISION_SECOND, Calendar.SECOND, 0, FMT_TO_SECOND, FMT_TO_SECOND_ERA, combineTimePatterns(dayMonthPatterns, secondPatterns)));
         calendarPrecisions.add(new CalendarPrecision
-        		(PRECISION_MINUTE, Calendar.MINUTE, 0, FMT_TO_MINUTE, FMT_TO_MINUTE_ERA, combineTimePatterns(dayMonthPatterns, minutePatterns)));        
+        		(VariablePrecisionDate.PRECISION_MINUTE, Calendar.MINUTE, 0, FMT_TO_MINUTE, FMT_TO_MINUTE_ERA, combineTimePatterns(dayMonthPatterns, minutePatterns)));        
         calendarPrecisions.add(new CalendarPrecision
-        		(PRECISION_HOUR, Calendar.HOUR, 0, FMT_TO_HOUR, FMT_TO_HOUR_ERA, combineTimePatterns(dayMonthPatterns, hourPatterns)));
+        		(VariablePrecisionDate.PRECISION_HOUR, Calendar.HOUR, 0, FMT_TO_HOUR, FMT_TO_HOUR_ERA, combineTimePatterns(dayMonthPatterns, hourPatterns)));
         calendarPrecisions.add(new CalendarPrecision
-        		(PRECISION_DAY, Calendar.DAY_OF_MONTH, 1, FMT_TO_DAY, FMT_TO_DAY_ERA, dayPatterns));
+        		(VariablePrecisionDate.PRECISION_DAY, Calendar.DAY_OF_MONTH, 1, FMT_TO_DAY, FMT_TO_DAY_ERA, dayPatterns));
         calendarPrecisions.add(new CalendarPrecision
-        		(PRECISION_MONTH, Calendar.MONTH, Calendar.JANUARY, FMT_TO_MONTH, FMT_TO_MONTH_ERA, monthPatterns));
+        		(VariablePrecisionDate.PRECISION_MONTH, Calendar.MONTH, Calendar.JANUARY, FMT_TO_MONTH, FMT_TO_MONTH_ERA, monthPatterns));
         calendarPrecisions.add(new CalendarPrecision
-        		(PRECISION_YEAR, Calendar.YEAR, -1, FMT_TO_YEAR, FMT_TO_YEAR_ERA, yearPatterns));  //no empty value
+        		(VariablePrecisionDate.PRECISION_YEAR, Calendar.YEAR, -1, FMT_TO_YEAR, FMT_TO_YEAR_ERA, yearPatterns));  //no empty value
 
     }
     
@@ -209,24 +204,36 @@ public class TimeRangeFormat  {
         }
         
         //1) if 12/7/1941 00:00 - 12/8/1941 00:00 = December 7, 1941
-        //2) if 12/7/1941 00:00 - 12/9/1941 00:00 = December 7, 1941, December 8, 1941 (subtract)
-        //3) if 12/7/1941 00:00 - 12/7/1942 00:00 = December 7, 1941, December 7, 1941 (don't subtract)
-        CalendarPrecision cp = getPrecision(timeRange);
+        //2) if 12/7/1941 00:00 - 12/7/1942 00:00 = December 7, 1941, December 7, 1941 (don't subtract)
+        //3) if 12/7/1941 00:00 - 12/9/1941 00:00 = December 7, 1941, December 8, 1941 (subtract)
+        //4) if 12/7/1941 10:00 - 2/1/1942 00:00 = December 7, 1941 10AM, January, 1942 (don't subtract)
+        CalendarPrecision beginCp = getPrecision(timeRange.getBegin());
+        CalendarPrecision endCp = getPrecision(timeRange.getEnd());
+        CalendarPrecision cp = getLeastPrecision(beginCp, endCp);
         if (isOneApart(cp.getCalendarField(), timeRange)) { //case 1
-            return dateFormat(timeRange.getBegin(), cp); 
+            return dateFormat(timeRange.getBegin().getDate(), cp); 
         } else if (isEqual(cp.getCalendarField(), timeRange)){ //case 2
-            return rangeFormat(timeRange, cp); 
-        } else { //case 3
-            SimpleTimeRange adjusted = subtractOneFromEnd(cp.getCalendarField(), timeRange);
-            return rangeFormat(adjusted, cp); 
+            return rangeFormat(timeRange, cp);
+        } else { //case 3, 4        	
+            SimpleTimeRange adjusted = subtractOneFromEnd(cp, timeRange);
+            //Case 4.  But only if precision has been specified, otherwise we have to guess.
+            //This guessing is implemented for backward compatibility
+            if ((beginCp.getRank() != endCp.getRank()) 
+            		&& timeRange.getBegin().getPrecision() != null 
+            		&& timeRange.getEnd().getPrecision() != null) { 
+            	return rangeFormat(adjusted.getBegin().getDate(), beginCp, adjusted.getEnd().getDate(), endCp);
+            } else { //case 3
+                return rangeFormat(adjusted, cp); 
+            }
         }
     }
 
-    private static SimpleTimeRange subtractOneFromEnd(int calendarField, SimpleTimeRange timeRange) {
+	private static SimpleTimeRange subtractOneFromEnd(CalendarPrecision cp, SimpleTimeRange timeRange) {
         TimeRange adjusted = new TimeRange(timeRange.getBegin(), timeRange.getEnd());
-        Calendar end = getCalendar(timeRange.getEnd());
+        Calendar end = getCalendar(timeRange.getEnd().getDate());
+        int calendarField = cp.getCalendarField();
         end.add(calendarField, -1);
-        adjusted.setEnd(end.getTime());
+        adjusted.setEnd(new VariablePrecisionDate(end.getTime(), cp.getRank()));
         return adjusted;
     }
 
@@ -246,8 +253,8 @@ public class TimeRangeFormat  {
      * @return true if begin-end = separation for the given calendar field (e.g. Calendar.MONTH)
      */
     private static boolean isSeparatedBy(int calendarField, int separation, SimpleTimeRange tr) {
-        GregorianCalendar begin = getCalendar(tr.getBegin());
-        GregorianCalendar end = getCalendar(tr.getEnd());
+        GregorianCalendar begin = getCalendar(tr.getBegin().getDate());
+        GregorianCalendar end = getCalendar(tr.getEnd().getDate());
         //roll begin by the separation ammount (takes into account boundaries e.g. month 12 + 1 = month 1) 
         if (calendarField == Calendar.YEAR) {
             if (end.get(Calendar.ERA) == GregorianCalendar.BC) {
@@ -274,11 +281,15 @@ public class TimeRangeFormat  {
      *         (e.g. yyyy - yyyy or MMM yyyy - MMM yyyy)
      */
     private static String rangeFormat(SimpleTimeRange tr, CalendarPrecision cp ) {
-        StringBuffer range = new StringBuffer(dateFormat(tr.getBegin(), cp));
-        range.append(" - ");
-        range.append(dateFormat(tr.getEnd(), cp));
-        return range.toString();
+    	return rangeFormat(tr.getBegin().getDate(), cp, tr.getEnd().getDate(), cp);
     }
+
+    private static String rangeFormat(Date begin, CalendarPrecision beginCp, Date end, CalendarPrecision endCp) {
+        StringBuffer range = new StringBuffer(dateFormat(begin, beginCp));
+        range.append(" - ");
+        range.append(dateFormat(end, endCp));
+        return range.toString();
+	}
 
     /** 
      * format a date
@@ -347,14 +358,13 @@ public class TimeRangeFormat  {
         Date begin = parseDate(text);
         
         CalendarPrecision cp = getPrecision(text);
-//DEBUG        CalendarPrecision cp = getPrecision(begin);
         //add 1 to the end at the given precision (e.g. when someone says 
         //December 1 to December 2 they mean 12/1 00:00:00 to 12/3 00:00:00) 
         Calendar cal = getCalendar(begin);
         cal.add(cp.getCalendarField(), 1);
         Date end = cal.getTime();
         
-        return new TimeRange(begin, end);
+        return new TimeRange(begin, cp.getRank(), end, cp.getRank());
     }
 
     /**
@@ -375,14 +385,16 @@ public class TimeRangeFormat  {
                 throw new ParseException(sb.toString() ,0); 
                 // TODO add error string or localization code
             }
-            CalendarPrecision cp = getPrecision(end);
-            //add 1 to the end at the given precision (e.g. when someone says 
-            //December 1 to December 2 they mean 12/1 00:00:00 to 12/3 00:00:00) 
+            CalendarPrecision beginCp = getPrecision(split[0]);
+            CalendarPrecision endCp = getPrecision(split[1]);
+            //add 1 to the end at the given precision/  When someone says 
+            //December 1 to December 2 they mean 12/1 00:00:00 to 12/3 00:00:00)
+            //OR
+            //Dec 7, 1940 10am - Jan, 1941 they mean 12/7/40, 10:00:00 to 2/1/41, 00:00:00 
             Calendar cal = getCalendar(end);
-            cal.add(cp.getCalendarField(), 1);
+            cal.add(endCp.getCalendarField(), 1);
             end = cal.getTime();
-            
-            return new TimeRange(begin, end);
+            return new TimeRange(begin, beginCp.getRank(), end, endCp.getRank());
     }
 
     /**
@@ -484,9 +496,12 @@ public class TimeRangeFormat  {
      * @param date Date to check
      * @return CalendarPrecision precision
      */
-    private static CalendarPrecision getPrecision(Date date) {
+    private static CalendarPrecision getPrecision(VariablePrecisionDate date) {
+    	if (date.getPrecision() != null) {
+    		return getPrecision(date.getPrecision()); 
+    	}
         Calendar cal = new GregorianCalendar();
-        cal.setTime(date);
+        cal.setTime(date.getDate());
         CalendarPrecision precision = null;
         //start with second and check until we find a non-empty value
         for (CalendarPrecision cp : calendarPrecisions) {
@@ -499,20 +514,35 @@ public class TimeRangeFormat  {
     }
 
     /**
+     * Find the CalendarPrecision based on the given rank
+     * @see com.tech4d.tsm.model.time.VariablePrecisionDate
+     * @param precision  integer value (see VariablePrecisionDate)
+     * @return matching CalendarPrecision.  Null if none is found (which should never happen)
+     */
+    private static CalendarPrecision getPrecision(Integer precision) {
+		for (CalendarPrecision cp : calendarPrecisions) {
+			if (cp.getRank() == precision) {
+				return cp;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Calculate the precision for this date by looking at 
      * what the user entered.  E.g. 2007 has a year precision, Jan 2007 has a 
      * month precision, Jan 1, 2007 has a day precision, etc.  NOTE: We need two ways of 
      * checking precision - one for parsing user input (this one) and one for for formatting
      * time ranges for users.
      * 
-     * @param text
+     * @param text date string
      * @return CalendarPrecision precision
      */
     private static CalendarPrecision getPrecision(String text) {
     	text = normalizeDateText(text);
-    	int rank = PRECISION_YEAR;
+    	int rank = VariablePrecisionDate.PRECISION_YEAR;
     	for (CalendarPrecision cp : calendarPrecisions)
-            if (isParsable(text, cp.getPrecisionTestFormat())) {
+            if (isParseable(text, cp.getPrecisionTestFormat())) {
             	if (cp.getRank()<rank) {
             		rank = cp.getRank();
             }
@@ -522,11 +552,11 @@ public class TimeRangeFormat  {
     
     /**
      * Utility for checking precision of user entered dates 
-     * @param text
-     * @param patterns
-     * @return
+     * @param text date string
+     * @param patterns array of patterns (see SimpleDateFormat)
+     * @return true if the date is parseable using the provided pattern
      */
-    private static boolean isParsable(String text, String[] patterns) {
+    private static boolean isParseable(String text, String[] patterns) {
     	SimpleDateFormat sdf = new SimpleDateFormat();
     	sdf.setLenient(false);
     	for (String pattern : patterns) {
@@ -535,19 +565,19 @@ public class TimeRangeFormat  {
                 sdf.parse(text);
                 return true;
             } catch (ParseException e) {
+                //no action
             }
     	}
     	return false;
     }
     
     /**
-     * Get the least precicse precision of begin and end for this time range
-     * @param timeRange TimeRange to check
+     * Get the least precise precision of begin and end for this time range
+     * @param beginCp first CalendarPrecision to compare
+     * @param endCp   second CalendarPrecision to compare
      * @return CalendarPrecision precision
      */
-    private static CalendarPrecision getPrecision(SimpleTimeRange timeRange) {
-        CalendarPrecision beginCp = getPrecision(timeRange.getBegin());
-        CalendarPrecision endCp = getPrecision(timeRange.getEnd());
+    private static CalendarPrecision getLeastPrecision(CalendarPrecision beginCp, CalendarPrecision endCp) {
         //order is specified by its position in the array
         if (beginCp.getRank() < endCp.getRank()) {
             return beginCp;
