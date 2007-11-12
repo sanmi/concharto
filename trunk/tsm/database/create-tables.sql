@@ -36,10 +36,10 @@
         positive integer,
         _where varchar(512),
         zoomLevel integer,
-        eventSearchText_id bigint,
-        styleSelector_id bigint,
         tsGeometry_id bigint,
+        styleSelector_id bigint,
         when_id bigint,
+        eventSearchText_id bigint,
         primary key (id)
     );
 
@@ -80,8 +80,8 @@
         dispositionComment varchar(512),
         reason varchar(32),
         state varchar(255),
-        user_id bigint,
         event_id bigint,
+        user_id bigint,
         primary key (id)
     );
 
@@ -128,9 +128,11 @@
     create table TimePrimitive (
         timePrimativeType integer not null,
         id bigint not null auto_increment,
-        time datetime,
+        time bigint,
         begin bigint,
+        beginPrecision integer,
         end bigint,
+        endPrecision integer,
         primary key (id)
     );
 
@@ -182,16 +184,16 @@
         references EventSearchText (id);
 
     alter table Event 
-        add index FK_EVENT_GEOM (tsGeometry_id), 
-        add constraint FK_EVENT_GEOM 
-        foreign key (tsGeometry_id) 
-        references TsGeometry (id);
-
-    alter table Event 
         add index FK_EVENT_STYLE (styleSelector_id), 
         add constraint FK_EVENT_STYLE 
         foreign key (styleSelector_id) 
         references StyleSelector (id);
+
+    alter table Event 
+        add index FK_EVENT_GEOM (tsGeometry_id), 
+        add constraint FK_EVENT_GEOM 
+        foreign key (tsGeometry_id) 
+        references TsGeometry (id);
 
     alter table Event 
         add index FK_EVENT_TIMEPR (when_id), 

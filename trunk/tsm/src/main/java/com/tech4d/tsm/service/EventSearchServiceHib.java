@@ -148,8 +148,8 @@ public class EventSearchServiceHib implements EventSearchService {
             sqlQuery.setString("search_text", textFilter);
         }
         if (timeRange != null) {
-            sqlQuery.setBigInteger("earliest", BigInteger.valueOf(timeRange.getBegin().getTime()));
-            sqlQuery.setBigInteger("latest", BigInteger.valueOf(timeRange.getEnd().getTime()));
+            sqlQuery.setBigInteger("earliest", BigInteger.valueOf(timeRange.getBegin().getDate().getTime()));
+            sqlQuery.setBigInteger("latest", BigInteger.valueOf(timeRange.getEnd().getDate().getTime()));
         }
         return sqlQuery;
     }

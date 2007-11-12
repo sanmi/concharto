@@ -120,7 +120,16 @@
 				dbpassword="${password}" scriptdir="${db.additional.ddl.dir}"
 				scriptname="post-gen.sql" outputdir="${target.db.ddl.dir}" 
 				dburl="${url}"/>
-		</sequential>
+
+			<copy todir="${db.additional.ddl.dir}"
+				preservelastmodified="true">
+				<fileset dir="${target.db.ddl.dir}">
+					<include name="create-tables.sql" />
+				</fileset>
+			</copy>
+</sequential>
+		
+
 	</macrodef>
 
 	<target name="create-db-test" depends="gen-schema">

@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -17,16 +16,29 @@ import com.tech4d.tsm.model.time.TimeRange;
 public class TestTimeRangeFormat {
     //private TimeRangePropertyEditor timeRangePropertyEditor = new TimeRangePropertyEditor();   
     
-    @Test public void debug () throws ParseException {
-    	SimpleDateFormat sdf = new SimpleDateFormat();
-    	sdf.setLenient(false);
-    	sdf.applyPattern("MMM dd, yyyy, hha");
-    	try {
-    		System.out.println("+++ " + sdf.parse("Jan 1, 1941, 10am"));
-    	} catch (ParseException e) {
-    		System.out.println("--------------" + e.getMessage());
-    	}
+    @Test public void differentPrecisions() throws ParseException {
+
+        String dateStr = "January, 1941";
+        assertEquivalent(makeDayRange(1,1,1941,0,0,0, 2,1,1941,0,0,0), parseTimeRange(dateStr));
+        assertEquals(dateStr, TimeRangeFormat.format(TimeRangeFormat.parse(dateStr)));
+
+        dateStr = "December 07, 1940, 10AM - January, 1941";
+        assertEquivalent(makeDayRange(12,7,1940,10,0,0, 2,1,1941,0,0,0), parseTimeRange(dateStr));
+        assertEquals(dateStr, TimeRangeFormat.format(TimeRangeFormat.parse(dateStr)));
+
+        dateStr = "November 07, 1940, 10AM - December 31, 1941";
+        assertEquivalent(makeDayRange(11,7,1940,10,0,0, 1,1,1942,0,0,0), parseTimeRange(dateStr));
+        assertEquals(dateStr, TimeRangeFormat.format(TimeRangeFormat.parse(dateStr)));
+
+        dateStr = "November 07, 1940, 10AM - 1941";  //NOTE the difference between the last one is very slight  
+        assertEquivalent(makeDayRange(11,7,1940,10,0,0, 1,1,1942,0,0,0), parseTimeRange(dateStr));
+        assertEquals(dateStr, TimeRangeFormat.format(TimeRangeFormat.parse(dateStr)));
+
+        dateStr = "November 07, 1940, 10:00:02AM - January 22, 1941";  //NOTE the difference between the last one is very slight  
+        assertEquivalent(makeDayRange(11,7,1940,10,0,2, 1,23,1941,0,0,0), parseTimeRange(dateStr));
+        assertEquals(dateStr, TimeRangeFormat.format(TimeRangeFormat.parse(dateStr)));
     }
+    
 
     @Test public void firstUnit() throws ParseException {
         assertEquals("March 01, 1941", formatTimeRange(3,1,1941,3,2,1941));
@@ -41,6 +53,7 @@ public class TestTimeRangeFormat {
         assertEquivalent(makeDayRange(3,1,1941,17,0,0, 3,1,1941,18,0,0), parseTimeRange("March 1,1941,17"));
         assertEquivalent(makeDayRange(3,1,1941,10,0,0, 3,1,1941,10,1,0), parseTimeRange("March 1,1941,10:00AM"));
         assertEquivalent(makeDayRange(3,1,1941,10,0,0, 3,1,1941,10,0,1), parseTimeRange("March 1,1941,10:00:00AM"));
+        
         timer.timeIt("parse");
         System.out.println(timer);
     	
@@ -219,7 +232,7 @@ public class TestTimeRangeFormat {
     }
 
     private Date getBegin(String text) throws ParseException {
-        return TimeRangeFormat.parse(text).getBegin();
+        return TimeRangeFormat.parse(text).getBegin().getDate();
     }
 
     private SimpleTimeRange makeDayRange(int m1, int d1, int y1, int m2, int d2, int y2) {
@@ -232,8 +245,8 @@ public class TestTimeRangeFormat {
     }
 
     private void assertEquivalent(SimpleTimeRange expected, com.tech4d.tsm.model.time.SimpleTimeRange actual) {
-        assertEquals(expected.getBegin(), actual.getBegin());
-        assertEquals(expected.getEnd(), actual.getEnd());
+        assertEquals(expected.getBegin().getDate(), actual.getBegin().getDate());
+        assertEquals(expected.getEnd().getDate(), actual.getEnd().getDate());
     }
     
     /**

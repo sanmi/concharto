@@ -1,20 +1,18 @@
 package com.tech4d.tsm.model.time;
 
-import java.util.Date;
-
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 public interface SimpleTimeRange {
 
     @Temporal(TemporalType.TIMESTAMP)
-    public Date getBegin();
+    public VariablePrecisionDate getBegin();
 
-    public void setBegin(Date begin);
+    public void setBegin(VariablePrecisionDate begin);
 
     @Temporal(TemporalType.TIMESTAMP)
-    public Date getEnd();
+    public VariablePrecisionDate getEnd();
 
-    public void setEnd(Date end);
+    public void setEnd(VariablePrecisionDate end);
 
 }

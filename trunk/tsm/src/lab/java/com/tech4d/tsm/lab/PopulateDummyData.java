@@ -26,6 +26,7 @@ import com.tech4d.tsm.dao.EventTesterDao;
 import com.tech4d.tsm.dao.EventUtil;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.time.TimeRange;
+import com.tech4d.tsm.model.time.VariablePrecisionDate;
 import com.tech4d.tsm.util.ContextUtil;
 import com.tech4d.tsm.util.LapTimer;
 import com.tech4d.tsm.util.TimeRangeFormat;
@@ -131,20 +132,21 @@ public class PopulateDummyData {
         //first decide which precision to use
         int precision = rand.nextInt(100);
         if (precision <35) {
-            return makeSingleTimeRange(TimeRangeFormat.PRECISION_YEAR);
+            return makeSingleTimeRange(VariablePrecisionDate.PRECISION_YEAR);
         } else if (precision <50){
             //two date/times within the same year betweeo 1000 and 2000
+            //noinspection UnnecessaryLocalVariable
             TimeRange timeRange = makeDayRange(
                     1,1,nextYear(),0,0,0, 
                     1,1,nextYear(),0,0,0 
                    );
             return timeRange;
         } else if (precision <65) { 
-            return makeSingleTimeRange(TimeRangeFormat.PRECISION_MONTH);
+            return makeSingleTimeRange(VariablePrecisionDate.PRECISION_MONTH);
         } else if (precision <75) { 
-            return makeSingleTimeRange(TimeRangeFormat.PRECISION_DAY);
+            return makeSingleTimeRange(VariablePrecisionDate.PRECISION_DAY);
         } else if (precision <85) { 
-            return makeSingleTimeRange(TimeRangeFormat.PRECISION_HOUR);
+            return makeSingleTimeRange(VariablePrecisionDate.PRECISION_HOUR);
         } else if (precision <95){
             //two date/times within the same year betweeo 1000 and 2000
             int year = rand.nextInt(YEAR) + YEAR;
@@ -192,16 +194,16 @@ public class PopulateDummyData {
     private static final int DAY = 27;
     private TimeRange makeSingleTimeRange(int precision) throws ParseException {
         int year = nextYear();
-        if (precision == TimeRangeFormat.PRECISION_YEAR) {
+        if (precision == VariablePrecisionDate.PRECISION_YEAR) {
             return TimeRangeFormat.parse(String.valueOf(year));
-        } else if (precision == TimeRangeFormat.PRECISION_MONTH) {
+        } else if (precision == VariablePrecisionDate.PRECISION_MONTH) {
             return makeSingleTimeRange( rand.nextInt(MONTH),1,year,0,0,0);
-        } else if (precision == TimeRangeFormat.PRECISION_DAY) {
+        } else if (precision == VariablePrecisionDate.PRECISION_DAY) {
             return makeSingleTimeRange( rand.nextInt(MONTH),rand.nextInt(DAY),year,0,0,0);
-        } else if (precision == TimeRangeFormat.PRECISION_HOUR) {
+        } else if (precision == VariablePrecisionDate.PRECISION_HOUR) {
             return makeSingleTimeRange( rand.nextInt(MONTH),rand.nextInt(DAY),year,
                     rand.nextInt(HOUR),0,0);
-        } else if (precision == TimeRangeFormat.PRECISION_MINUTE) {
+        } else if (precision == VariablePrecisionDate.PRECISION_MINUTE) {
             return makeSingleTimeRange( rand.nextInt(MONTH),rand.nextInt(DAY),year,
                     rand.nextInt(HOUR),rand.nextInt(MIN),0);
         } 
@@ -251,6 +253,7 @@ public class PopulateDummyData {
     public TimeRange makeSingleTimeRange(int m1, int d1, int y1, int hh1, int mm1, int ss1) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy hh:mm:ss");
         String dateStr = sdf.format(makeDate(m1, d1, y1, hh1, mm1, ss1));
+        //noinspection UnnecessaryLocalVariable
         TimeRange timeRange = TimeRangeFormat.parse(dateStr);
         //System.out.println(TimeRangeFormat.format(timeRange));
         return timeRange; 

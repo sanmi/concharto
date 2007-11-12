@@ -37,7 +37,7 @@ public class TestTimeRangePropertyEditor {
 
     private Date getBegin(String text) {
         timeRangePropertyEditor.setAsText(text);       
-        return ((com.tech4d.tsm.model.time.SimpleTimeRange)(timeRangePropertyEditor.getValue())).getBegin();
+        return ((com.tech4d.tsm.model.time.SimpleTimeRange)(timeRangePropertyEditor.getValue())).getBegin().getDate();
     }
 
 
