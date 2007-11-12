@@ -17,10 +17,11 @@
 	_baseIcon.infoShadowAnchor = new GPoint(18, 25);
 		
   <%-- BEGIN OBJECT DEFINITIONS ============================= --%>
-  function overlayItem(overlay, html, type) {
+  function overlayItem(overlay, html, type, id ) {
   	this.overlay = overlay;
   	this.html = html;
   	this.type = type;
+  	this.id = id
   }
   <%-- END OBJECT DEFINITIONS ============================= --%>
   <%-- BEGIN PRE FUNCTIONS (initialization) ============================= --%>
@@ -87,7 +88,7 @@
 		map.addOverlay(marker);
 		
 		<%-- record so the user can click on the sidebar and see a popup in the map --%>
-		recordOverlay( marker, html, "point")
+		recordOverlay( marker, html, "point", event.id)
 	}
 	
 	<%-- called by createOverlay --%>
@@ -109,14 +110,14 @@
 			map.addOverlay(poly);
 	
 			<%-- record so the user can click on the sidebar and see a popup in the map --%>
-			recordOverlay(poly, html, "line")
+			recordOverlay(poly, html, "line", event.id)
 		}
 	}
 	
 	<%-- record overlay and html so we can pop up a window when the user clicks
 	     on info in the sidebar s--%>
-	function recordOverlay( overlay, html, type) {
-		var item = new overlayItem(overlay, html, type);
+	function recordOverlay( overlay, html, type, id) {
+		var item = new overlayItem(overlay, html, type, id);
 		_overlays[_overlayIndex] = item;
 		_overlayIndex++;
 	}
@@ -126,7 +127,7 @@
 		var html = createInfoWindowHtml(event) +  
 			'<br/><a class="links" href="#" onclick="editEvent(' + event.id + ')">edit</a> &nbsp;' +  
 			'<a class="links" href="/edit/flagevent.htm?id=' + event.id + '">flag</a> &nbsp;' +
-			'<a class="links" href="#" onclick="zoomTo(' + event.geom.lat +',' + event.geom.lng + ')">zoom in</a> &nbsp;';
+			'<a class="links" href="#" onclick="zoomTo(' + event.id + ')">zoom in</a> &nbsp;';
 		if (event.hasUnresolvedFlags == 'true') {
 			html += '<span class="errorLabel"><em>This event has been <a class="errorlinks" href="${basePath}edit/eventdetails.htm?id=' + event.id + '">flagged!</a></em></span>';
 		} else {
@@ -155,8 +156,21 @@
 		}
 	}
 	
-	function zoomTo(lat, lng) {
-		map.setCenter(new GLatLng(lat,lng));
+	function zoomTo(id) {
+		var index;
+		for (var i=0; i<_overlays.length; i++) {
+			if (_overlays[i].id == id) {
+				index = i;
+			}
+		}
+		overlay = _overlays[index].overlay;
+		var point;
+		if (_overlays[index].type == "point")	{
+			point = overlay.getPoint();
+		} else {
+			point = overlay.getBounds().getCenter();
+		}
+		map.setCenter(point);
 		if (map.getZoom() < 15) {
 			map.setZoom(map.getZoom() +4); <%-- TODO infer this from something else, not sure what --%>
 		} else {
