@@ -30,8 +30,9 @@ public class EventSearchForm implements PaginatingForm {
     private String pageCommand;
     private String show;
     private Boolean isFirstView;
+    private Boolean isFitViewToResults;
     
-    public String getShow() {
+	public String getShow() {
 		return show;
 	}
 	public void setShow(String showInvisible) {
@@ -143,6 +144,12 @@ public class EventSearchForm implements PaginatingForm {
 	}
 	public void setIsFirstView(Boolean isFirstView) {
 		this.isFirstView = isFirstView;
+	}
+    public Boolean getIsFitViewToResults() {
+		return isFitViewToResults;
+	}
+	public void setIsFitViewToResults(Boolean isFitViewToResults) {
+		this.isFitViewToResults = isFitViewToResults;
 	}
     
 }

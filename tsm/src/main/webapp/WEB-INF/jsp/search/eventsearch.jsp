@@ -27,6 +27,7 @@
 			<form:hidden path="eventId"/>
 			<form:hidden path="currentRecord"/>
 			<form:hidden path="pageCommand"/>
+			<form:hidden path="isFitViewToResults"/>
 	  	<c:if test="${isFirstView != null}">
 				<input type="hidden" id="isFirstView" value="true"/>					
 	  	</c:if>
