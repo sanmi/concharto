@@ -2,6 +2,10 @@ package com.tech4d.tsm.geocode;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+
 /**
  *  Class to hold a geocode result
  *  TODO this is specific to the EN_US locale.    
@@ -16,8 +20,7 @@ public class GAddress {
   private String zipCode;
   private String country;
   private int accuracy;
-  private double lat;
-  private double lng;
+  private Point point;
 
   /* getters and setters */
 
@@ -85,23 +88,20 @@ public class GAddress {
         this.country = country;
     }
 
-    public double getLat() {
-        return lat;
-    }
+    public Point getPoint() {
+		return point;
+	}
 
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
+	public void setPoint(Point point) {
+		this.point = point;
+	}
 
-    public double getLng() {
-        return lng;
-    }
+	public void setPoint(Double lat, Double lng) {
+		GeometryFactory gf = new GeometryFactory();
+		this.point = gf.createPoint(new Coordinate(lng, lat));
+	}
 
-    public void setLng(double lng) {
-        this.lng = lng;
-    }
-
-    public int getAccuracy() {
+	public int getAccuracy() {
         return accuracy;
     }
 
@@ -120,8 +120,8 @@ public class GAddress {
         append("zipCode", zipCode).
         append("country",country).
         append("accuracy",accuracy).
-        append("lat",lat).
-        append("lng",lng).
+        append("lat",point.getY()).
+        append("lng",point.getX()).
         toString();
     }
 

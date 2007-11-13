@@ -34,7 +34,7 @@
   		new GLatLng(51.3992,-64.8632)
 		]);
 		var bounds = diagonal.getBounds();
-		map.setCenter(bounds.getCenter());  //la la land, PA
+		map.setCenter(bounds.getCenter());  
 		map.setZoom(map.getBoundsZoomLevel(bounds));
 	}
 

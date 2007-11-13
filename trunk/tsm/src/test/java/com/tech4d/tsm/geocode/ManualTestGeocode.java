@@ -16,18 +16,19 @@ public class ManualTestGeocode {
     
     @Test
     public void testGeocode() throws Exception {
+        assertPlace(GGcoder.geocode("94103"), "San Francisco"); 
         assertNotPlace(GGcoder.geocode("17 Joshs Way, Landenberg, PA"));
         assertPlace(GGcoder.geocode("London Tract Rd, Landenberg, PA"),"");
         assertPlace(GGcoder.geocode("626 Fairway Dr, Thibodaux, LA"), "Thibodaux");
         assertPlace(GGcoder.geocode("620000000006 Fairway Dr, Thibodaux, LA"), "Thibodaux");
-        assertNotPlace(GGcoder.geocode("Turnsers Creek, MD"));
+        assertPlace(GGcoder.geocode("Turnsers Creek, MD")); //they are kind of loose here
         assertPlace(GGcoder.geocode("Turners Creek, MD"), "");
-        assertPlace(GGcoder.geocode("94103"), "San Francisco");
+        GAddress addr = GGcoder.geocode("94103");
         //"la la land, MD" returns a US postal code location near Front Royal! :)
         assertPlace(GGcoder.geocode("la la land, MD"),"");
-        assertPlace(GGcoder.geocode("la la land, PA"),"Mifflinburg");
+        assertPlace(GGcoder.geocode("la la land, PA"),"Schnecksville");
         assertPlace(GGcoder.geocode("la land, PA"),"Schnecksville");
-        assertPlace(GGcoder.geocode("la la land, CA"),"Los Angeles");
+        assertPlace(GGcoder.geocode("la la land, CA"),"Land");  //Land, North Dakota
         assertPlace(GGcoder.geocode("la la land, NY"),"");
         assertPlace(GGcoder.geocode("Farm Land Rd Way, Mifflinburg, PA 17844, PA"),"Mifflinburg");
         assertPlace(GGcoder.geocode("trucios, spain"),"Trucios-Turtzioz");
@@ -37,6 +38,8 @@ public class ManualTestGeocode {
     private void assertPlace(GAddress place) {
         assertNotNull(place.getLat());
         assertTrue(place.getAccuracy() > 0);
+        assertNotNull(place.getLat());
+        assertNotNull(place.getLng());
         System.out.println(place);
     }
     
@@ -47,5 +50,5 @@ public class ManualTestGeocode {
 
     private void assertNotPlace(GAddress place) {
         assertEquals(0, place.getAccuracy());
-    }
+    }    
 }

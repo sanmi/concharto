@@ -317,6 +317,7 @@
         <root url="jar://$PROJECT_DIR$/lib/deploy/jasypt.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/deploy/commons-codec.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/deploy/displaytag.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/deploy/commons-io.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
