@@ -1,5 +1,6 @@
 package com.tech4d.tsm.web.eventsearch;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.CustomBooleanEditor;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
@@ -44,6 +46,12 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 public class EventSearchController extends AbstractFormController {
+	private static final String QUERY_ZOOM = "_zoom";
+	private static final String QUERY_WHAT = "_what";
+	private static final String QUERY_WHEN = "_when";
+	private static final String QUERY_WHERE = "_where";
+	private static final String QUERY_SOURCE = "_source";
+	private static final String QUERY_FIT = "_fit";
 	private static final Log log = LogFactory.getLog(EventSearchController.class);
 	private static final String MODEL_TOTAL_EVENTS = "totalEvents";
 	private static final String MODEL_IS_FIRST_VIEW = "isFirstView";
@@ -153,16 +161,7 @@ public class EventSearchController extends AbstractFormController {
 		}
 		
         EventSearchForm eventSearchForm = (EventSearchForm) command;
-        if (log.isInfoEnabled()) {
-        	StringBuffer msg = new StringBuffer("search,");
-        	msg.append("where,\"").append(eventSearchForm.getWhere());
-        	msg.append("\",when,");
-        	if (eventSearchForm.getWhen() != null) {
-        		msg.append(eventSearchForm.getWhen().getAsText());
-        	}
-        	msg.append("\",what,\"").append(eventSearchForm.getWhat()).append("\"");
-        	log.info(msg);
-        }
+        logSearchQuery(eventSearchForm);
         if (errors.hasErrors()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Data binding errors: " + errors.getErrorCount());
@@ -191,6 +190,19 @@ public class EventSearchController extends AbstractFormController {
             }
         }
     }
+
+	private void logSearchQuery(EventSearchForm eventSearchForm) {
+		if (log.isInfoEnabled()) {
+        	StringBuffer msg = new StringBuffer("search,");
+        	msg.append("where,\"").append(eventSearchForm.getWhere());
+        	msg.append("\",when,");
+        	if (eventSearchForm.getWhen() != null) {
+        		msg.append(eventSearchForm.getWhen().getAsText());
+        	}
+        	msg.append("\",what,\"").append(eventSearchForm.getWhat()).append("\"");
+        	log.info(msg);
+        }
+	}
 	
     /**
      * They have put query string data on the request, so we ignore all else
@@ -202,40 +214,74 @@ public class EventSearchController extends AbstractFormController {
     	//this request contains enough information to do a search right now
     	//use the same binder to get params of the query string as we were using for the POST
         EventSearchForm eventSearchForm = new EventSearchForm();
+        
+        //populate the form with parameters off the URL query string
+    	bindGetParameters(request, eventSearchForm);
+    	
+    	//geocode
+    	geocode(request, eventSearchForm);
+    	
+    	//save the form for redirect
+    	WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
+    	return new ModelAndView(new RedirectView(request.getContextPath() + "/search/eventsearch.htm"));
+    }
 
-    	eventSearchForm.setWhere(ServletRequestUtils.getStringParameter(request, "_where"));
-		String whenStr = ServletRequestUtils.getStringParameter(request, "_when");
+    /**
+     * Populate the form with params from the URL query string
+     * @param request servlet request
+     * @param eventSearchForm the form to populate
+     * @throws ServletRequestBindingException e
+     */
+	private void bindGetParameters(HttpServletRequest request, EventSearchForm eventSearchForm)
+			throws ServletRequestBindingException {
+		eventSearchForm.setWhere(ServletRequestUtils.getStringParameter(request, QUERY_WHERE));
+		String whenStr = ServletRequestUtils.getStringParameter(request, QUERY_WHEN);
     	try {
     		eventSearchForm.setWhen(TimeRangeFormat.parse(whenStr));
     	} catch (ParseException e) {
     		//no error handling for URL string searches  TODO add error handling
     	}
-    	eventSearchForm.setWhat(ServletRequestUtils.getStringParameter(request, "_what"));
-    	
-    	if (!StringUtils.isEmpty(eventSearchForm.getWhere())) {
+    	eventSearchForm.setWhat(ServletRequestUtils.getStringParameter(request, QUERY_WHAT));
+    	Integer zoom = ServletRequestUtils.getIntParameter(request, QUERY_ZOOM);
+    	//check for incorrect zoom
+    	if ((zoom != null) && (zoom >0) && (zoom < NUM_ZOOM_LEVELS)) {
+        	eventSearchForm.setMapZoom(zoom);
+    	}
+    	eventSearchForm.setIsFitViewToResults(ServletRequestUtils.getBooleanParameter(request, QUERY_FIT));
+	}
+
+    /**
+     * Geocode and update the eventSearchForm accordingly
+     * @param request servlet request
+     * @param eventSearchForm form to be updated
+     * @throws IOException e
+     */
+	private void geocode(HttpServletRequest request,
+			EventSearchForm eventSearchForm) throws IOException {
+		if (!StringUtils.isEmpty(eventSearchForm.getWhere())) {
         	String mapKey = getMessageSourceAccessor().getMessage(makeMapKeyCode(request));
         	GAddress address = GGcoder.geocode(eventSearchForm.getWhere(), mapKey);
         	Point point = address.getPoint();
-        	if (address.getAccuracy() < ACCURACY_TO_ZOOM.length) {
-        		eventSearchForm.setMapZoom(ACCURACY_TO_ZOOM[address.getAccuracy()]);
-        	} else {
-        		eventSearchForm.setMapZoom(ZOOM_WORLD);  
+        	if (null == eventSearchForm.getMapZoom()) {
+        		//if they didn't supply the zoom level, we will get it from the address accuracy
+            	if (address.getAccuracy() < ACCURACY_TO_ZOOM.length) {
+            		eventSearchForm.setMapZoom(ACCURACY_TO_ZOOM[address.getAccuracy()]);
+            	} else {
+            		eventSearchForm.setMapZoom(ZOOM_WORLD);  
+            	}
         	}
         	eventSearchForm.setMapCenter(point);
     	} else {
     		eventSearchForm.setMapZoom(ZOOM_WORLD);  
         	eventSearchForm.setMapCenter(USA);
     	}
-    	//save the form for redirect
-    	WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
-    	return new ModelAndView(new RedirectView(request.getContextPath() + "/search/eventsearch.htm"));
-    }
+	}
   
 
     @SuppressWarnings("unchecked")
     private Map doSearch( HttpServletRequest request, BindException errors, EventSearchForm eventSearchForm) {
         /*
-         * 1. Geocode "where" and get the lat-long bounding box of whatever zoom
+         * 1. Get the lat-long bounding box of whatever zoom
          * level we are at. 2. Parse the time field to extract a time range 3.
          * Do a search to find the count of all events within that text filter,
          * time range and bounding box

@@ -5,6 +5,8 @@
 	<%-- global array and index for dealing with overlays --%>
 	var _overlays = [];
 	var _overlayIndex = 0;
+	var _fitToPolygon = [];
+	var _fitToPolygonIndex = 0;
 	
 	<%-- Create a base icon for all of our markers that specifies the
 	     shadow, icon dimensions, etc. --%>
@@ -52,6 +54,13 @@
 
 		adjustSidebarIE();
 		
+		if (isFitViewToResults() == 'true') {
+			<%-- fit map to the results --%>
+			setIsFitViewToResults('false');
+			var boundsPoly = new GPolyline(_fitToPolygon);
+			map.setZoom(map.getBoundsZoomLevel(boundsPoly.getBounds()));
+		}
+
 		if (document.getElementById("eventSearchForm").isFirstView != null) {
 			createModalWelcome();
 			showWelcome();
@@ -75,6 +84,14 @@
 	
 	<%-- called by createOverlay --%>
 	function createMarker(event) { 
+		if (isFitViewToResults() == 'true') {
+			<%-- if we are trying to fit the map to the events, we will add 
+			     all events to a large poly.  We only do this for events because
+			     polygons and lines can span large areas (e.g. an ocean crossing that 
+			     ends at Baltimore ) --%>
+			_fitToPolygon[_fitToPolygonIndex] = new GLatLng(event.geom.lat, event.geom.lng);
+			_fitToPolygonIndex++;
+		}
 	  <%-- Create a lettered icon for this point using our icon class --%>
 	  var letter = String.fromCharCode("A".charCodeAt(0) + _overlayIndex);
 	  var letteredIcon = new GIcon(_baseIcon);
@@ -210,6 +227,14 @@
 		
 		<%-- don't geocode, but do everything else.  --%>
 		saveAndSubmit(map.getCenter());		
+	}
+	
+	function isFitViewToResults() {
+		return document.getElementById("eventSearchForm").isFitViewToResults.value; 
+	}
+	
+	function setIsFitViewToResults(value) {
+		document.getElementById("eventSearchForm").isFitViewToResults.value = value;
 	}
 
 	<%-- user has clicked on 'search' --%>
