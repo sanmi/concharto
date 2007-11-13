@@ -1,6 +1,7 @@
 package com.tech4d.tsm.geocode;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -10,10 +11,11 @@ import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
- * Geocoder class for google maps.  
- * TODO consider using a DynaBean instead of GAddress object.  Move strings to another global config object
+ * Geocoder class for google maps.  Based on some code I found on the web - can't you tell?
+ * TODO build this up so that it can use geonames and MS virtual earth as a fallback   
  *
  */
 public class GGcoder {
@@ -28,8 +30,8 @@ public class GGcoder {
     public static final int ACCURACY_INTERSECTION = 7;
     public static final int ACCURACY_ADDRESS = 8;
 
-
-    public static GAddress geocode(String address, String key) throws Exception {
+    public static GAddress geocode(String address, String key) throws IOException  {
+        //TODO fix the throws exception
         URL url = new URL(URLstr + "&q=" + URLEncoder.encode(address, "UTF-8")
                 + "&key=" + key);
         URLConnection conn = url.openConnection();
@@ -46,50 +48,43 @@ public class GGcoder {
         if (HttpURLConnection.HTTP_OK == returnCode) {
 
             JSONObject placemark = (JSONObject) query(json, "Placemark[0]");
+            System.out.println(placemark.toString(3));
 
-            final String commonId = "AddressDetails.Country.AdministrativeArea";
+            final StringBuffer commonId = new StringBuffer("AddressDetails.Country.AdministrativeArea");
 
+            StringBuffer addressId = commonId;
+            //Sometimes google doesn't return SubAdministrativeArea (e.g. in the case of geocoding a zipcode, as of 11-12-07)
+            if (!StringUtils.isEmpty(query(placemark, commonId + ".SubAdministrativeArea").toString())) {
+            	addressId.append(".SubAdministrativeArea");
+            } 
+            addressId.append(".Locality");
+            
             gaddr.setFullAddress(query(placemark, "address").toString());
-            gaddr
-                    .setZipCode(query(
-                            placemark,
-                            commonId
-                                    + ".SubAdministrativeArea.Locality.PostalCode.PostalCodeNumber")
-                            .toString());
-            gaddr
-                    .setAddress(query(
-                            placemark,
-                            commonId
-                                    + ".SubAdministrativeArea.Locality.Thoroughfare.ThoroughfareName")
-                            .toString());
-            gaddr
-            .setCity(query(
+            gaddr.setZipCode(query(
                     placemark,
-                    commonId
-                            + ".SubAdministrativeArea.Locality.LocalityName")
+                    addressId + ".PostalCode.PostalCodeNumber")
                     .toString());
-            gaddr
-                    .setCounty(query(
-                            placemark,
-                            commonId
-                                    + ".SubAdministrativeArea.SubAdministrativeAreaName")
-                            .toString());
-            gaddr.setState(query(placemark,
-                    commonId + ".AdministrativeAreaName").toString());
-            gaddr.setCountry(query(placemark,
-                    "AddressDetails.Country.CountryNameCode").toString());
-            gaddr.setAccuracy(Integer.valueOf(query(placemark,
-                    "AddressDetails.Accuracy").toString()));
-            gaddr.setLat(Double.parseDouble(query(placemark,
-                    "Point.coordinates[1]").toString()));
-            gaddr.setLng(Double.parseDouble(query(placemark,
-                    "Point.coordinates[0]").toString()));
+            gaddr.setAddress(query(
+                    placemark,
+                    addressId + ".Thoroughfare.ThoroughfareName")
+                    .toString());
+            gaddr.setCity(query(
+                    placemark,
+                    addressId + ".LocalityName")
+                    .toString());
+            gaddr.setCounty(query(
+                    placemark,
+                    commonId+ ".SubAdministrativeArea.SubAdministrativeAreaName")
+                    .toString());
+            gaddr.setState(query(placemark, commonId + ".AdministrativeAreaName").toString());
+            gaddr.setCountry(query(placemark,"AddressDetails.Country.CountryNameCode").toString());
+            gaddr.setAccuracy(Integer.valueOf(query(placemark, "AddressDetails.Accuracy").toString()));
+            gaddr.setPoint(
+            		Double.parseDouble(query(placemark, "Point.coordinates[1]").toString()), 
+            		Double.parseDouble(query(placemark, "Point.coordinates[0]").toString())
+            		);
         }
         return gaddr;
-    }
-
-    public static GAddress geocode(String address) throws Exception {
-        return geocode(address, "enter key here");
     }
 
     /* allow query for json nested objects, ie. Placemark[0].address */
