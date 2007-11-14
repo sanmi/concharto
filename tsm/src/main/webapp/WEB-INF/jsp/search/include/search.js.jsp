@@ -27,8 +27,9 @@
   }
   <%-- END OBJECT DEFINITIONS ============================= --%>
   <%-- BEGIN PRE FUNCTIONS (initialization) ============================= --%>
-	function initialize() {
-		initializeMap();
+	function initialize(mapControl) {
+		
+		initializeMap(mapControl);
 		<%-- map center and map zoom --%>
 		var mapCenterJSON = document.getElementById("eventSearchForm").mapCenter.value;
 		

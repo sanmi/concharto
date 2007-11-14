@@ -14,7 +14,6 @@
 		<property name="mappings">
 			<props>
           <prop key="login.htm">loginController</prop>
-          <prop key="search/eventsearch.htm">eventSearchController</prop>
           <prop key="edit/event.htm">eventController</prop>
           <prop key="admin/signup.htm">signupController</prop>
           <prop key="member/settings.htm">settingsController</prop>
@@ -24,6 +23,9 @@
 
           <prop key="edit/flagevent.htm">flagEventController</prop>
           <prop key="edit/flageventsuccess.htm">flagEventController</prop>
+
+          <prop key="search/eventsearch.htm">eventSearchController</prop>
+          <prop key="search/embeddedsearch.htm">embeddedSearchController</prop>
 
           <prop key="logout.htm">switchBoardController</prop>
           <prop key="notauthorized.htm">switchBoardController</prop>
@@ -115,6 +117,14 @@
 		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
 		<property name="formView" value="search/eventsearch" />
 		<property name="successView" value="search/eventsearch" />
+		<property name="eventSearchService" ref="eventSearchService" />
+		<property name="validator" ref="eventSearchFormValidator"/>
+	</bean>
+	<bean id="embeddedSearchController" class="com.tech4d.tsm.web.eventsearch.EventSearchController" parent="baseEventController">
+		<property name="commandName" value="eventSearch" />
+		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
+		<property name="formView" value="search/embeddedsearch" />
+		<property name="successView" value="search/embeddedsearch" />
 		<property name="eventSearchService" ref="eventSearchService" />
 		<property name="validator" ref="eventSearchFormValidator"/>
 	</bean>
