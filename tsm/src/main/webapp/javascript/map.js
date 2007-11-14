@@ -85,7 +85,7 @@
 				'<br/><b>Tags: </b>' + event.tags.escapeHTML() + '<br/>' + 
 				'<b>Source: </b>';
 				if (event.source.substring(0,7) == 'http://') {
-					html += '<a href=' + event.source.escapeHTML() + '>' + event.source.escapeHTML() + '</a>';
+					html += '<a href=' + event.source.escapeHTML() + ' target="_top">' + event.source.escapeHTML() + '</a>';
 				} else {
 					html += event.source.escapeHTML();
 				}

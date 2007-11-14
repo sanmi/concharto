@@ -1,0 +1,53 @@
+.simpleForm {
+    margin:40px 0 60px 60px;
+    padding-right: 20px;
+}
+
+.simpleForm .formLabel {
+	font-weight: bold;
+}
+.simpleForm .formRow {
+	margin-top: .5em;
+	margin-bottom: .2em;
+}
+
+.simpleForm .errorLabel{
+  padding-left: 0;
+	color:red;
+}
+
+.simpleForm .infoBox {
+	padding: 1em;
+	border: 1px solid #e0e0e0;
+	margin-bottom: .2em;
+}
+
+.simpleForm li, ul {
+	padding: 0 0 0 1em ;
+	margin-bottom: .2em;
+}
+
+.simpleForm h2{
+    margin-bottom: .2em;
+    margin-top: .2em;
+}
+
+.simpleForm h3 {
+    margin-top: .5em;
+    margin-bottom: .2em;
+}
+
+.simpleForm table, tr, iframe {
+	padding:0;
+	margin:0;
+}
+
+.simpleForm td {
+	padding-right:1em;
+}
+
+.simpleForm .action {
+	padding-right:1em;
+	margin-top: .2em;
+	margin-bottom: .2em;
+}
