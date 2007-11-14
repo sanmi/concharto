@@ -13,33 +13,32 @@ import org.junit.Test;
  *
  */
 public class ManualTestGeocode {
-    
+    private String key = "ABQIAAAA1DZDDhaKApTfIDHGfvo13hSQekddw1ZVY1OywWYSY7GTmNOxgRQ1UKcA9cKipDAZNLJ5R_X-JJcYhw";
     @Test
     public void testGeocode() throws Exception {
-        assertPlace(GGcoder.geocode("94103"), "San Francisco"); 
-        assertNotPlace(GGcoder.geocode("17 Joshs Way, Landenberg, PA"));
-        assertPlace(GGcoder.geocode("London Tract Rd, Landenberg, PA"),"");
-        assertPlace(GGcoder.geocode("626 Fairway Dr, Thibodaux, LA"), "Thibodaux");
-        assertPlace(GGcoder.geocode("620000000006 Fairway Dr, Thibodaux, LA"), "Thibodaux");
-        assertPlace(GGcoder.geocode("Turnsers Creek, MD")); //they are kind of loose here
-        assertPlace(GGcoder.geocode("Turners Creek, MD"), "");
-        GAddress addr = GGcoder.geocode("94103");
+        assertPlace(GGcoder.geocode("94103", key), "San Francisco"); 
+        assertNotPlace(GGcoder.geocode("17 Joshs Way, Landenberg, PA", key));
+        assertPlace(GGcoder.geocode("London Tract Rd, Landenberg, PA", key),"");
+        assertPlace(GGcoder.geocode("626 Fairway Dr, Thibodaux, LA", key), "Thibodaux");
+        assertPlace(GGcoder.geocode("620000000006 Fairway Dr, Thibodaux, LA", key), "Thibodaux");
+        assertPlace(GGcoder.geocode("Turnsers Creek, MD", key)); //they are kind of loose here
+        assertPlace(GGcoder.geocode("Turners Creek, MD", key), "");
         //"la la land, MD" returns a US postal code location near Front Royal! :)
-        assertPlace(GGcoder.geocode("la la land, MD"),"");
-        assertPlace(GGcoder.geocode("la la land, PA"),"Schnecksville");
-        assertPlace(GGcoder.geocode("la land, PA"),"Schnecksville");
-        assertPlace(GGcoder.geocode("la la land, CA"),"Land");  //Land, North Dakota
-        assertPlace(GGcoder.geocode("la la land, NY"),"");
-        assertPlace(GGcoder.geocode("Farm Land Rd Way, Mifflinburg, PA 17844, PA"),"Mifflinburg");
-        assertPlace(GGcoder.geocode("trucios, spain"),"Trucios-Turtzioz");
-        assertPlace(GGcoder.geocode("4, Rue Princesse 75006, paris, france"),"Paris");
+        assertPlace(GGcoder.geocode("la la land, MD", key),"");
+        assertPlace(GGcoder.geocode("la la land, PA", key),"Schnecksville");
+        assertPlace(GGcoder.geocode("la land, PA", key),"Schnecksville");
+        assertPlace(GGcoder.geocode("la la land, CA", key),"Land");  //Land, North Dakota
+        assertPlace(GGcoder.geocode("la la land, NY", key),"");
+        assertPlace(GGcoder.geocode("Farm Land Rd Way, Mifflinburg, PA 17844, PA", key),"Mifflinburg");
+        assertPlace(GGcoder.geocode("trucios, spain", key),"Trucios-Turtzioz");
+        assertPlace(GGcoder.geocode("4, Rue Princesse 75006, paris, france", key),"Paris");
     }
 
     private void assertPlace(GAddress place) {
-        assertNotNull(place.getLat());
+        assertNotNull(place.getPoint());
         assertTrue(place.getAccuracy() > 0);
-        assertNotNull(place.getLat());
-        assertNotNull(place.getLng());
+        assertNotNull(place.getPoint().getX());
+        assertNotNull(place.getPoint().getY());
         System.out.println(place);
     }
     

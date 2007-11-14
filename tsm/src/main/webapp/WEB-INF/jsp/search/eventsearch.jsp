@@ -56,7 +56,7 @@
 	              <small>
 	                e.g. "Battle" 
 	              </small><br/>
-	                <form:input path="what" size="22"/>
+	                <form:input path="what" size="22" htmlEscape="true"/>
 	            </td>
 	          </tr>
 	        </table>

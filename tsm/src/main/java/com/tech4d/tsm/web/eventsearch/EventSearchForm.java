@@ -18,8 +18,8 @@ public class EventSearchForm implements PaginatingForm {
     private String where;
     private TimeRange when;
     private Point mapCenter;
-    private Point BoundingBoxSW;
-    private Point BoundingBoxNE;
+    private Point boundingBoxSW;
+    private Point boundingBoxNE;
     private Integer mapZoom;
     private Integer mapType;
     private Boolean isGeocodeSuccess;
@@ -45,16 +45,16 @@ public class EventSearchForm implements PaginatingForm {
         this.mapZoom = mapZoom;
     }
     public Point getBoundingBoxNE() {
-        return BoundingBoxNE;
+        return boundingBoxNE;
     }
     public void setBoundingBoxNE(Point boundingBoxNE) {
-        BoundingBoxNE = boundingBoxNE;
+    	this.boundingBoxNE = boundingBoxNE;
     }
     public Point getBoundingBoxSW() {
-        return BoundingBoxSW;
+        return boundingBoxSW;
     }
     public void setBoundingBoxSW(Point boundingBoxSW) {
-        BoundingBoxSW = boundingBoxSW;
+        this.boundingBoxSW = boundingBoxSW;
     }
     public Point getMapCenter() {
         return mapCenter;

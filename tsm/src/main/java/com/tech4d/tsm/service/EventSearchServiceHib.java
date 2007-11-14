@@ -1,7 +1,11 @@
 package com.tech4d.tsm.service;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -14,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.LapTimer;
+import com.tech4d.tsm.util.LatLngBounds;
+import com.tech4d.tsm.util.ProximityHelper;
 import com.vividsolutions.jts.geom.Geometry;
 
 @Transactional
@@ -46,7 +52,7 @@ public class EventSearchServiceHib implements EventSearchService {
         " MBRIntersects(geometryCollection, Envelope(GeomFromText(:geom_text))) ";
 
     private static final String SQL_MATCH_CLAUSE = 
-        " MATCH (es.summary, es._where, es.usertags, es.description, es.source) AGAINST (:search_text) ";
+        " MATCH (es.summary, es._where, es.usertags, es.description, es.source) AGAINST (:search_text IN BOOLEAN MODE) ";
 
     
     private static final String SQL_ORDER_CLAUSE = " order by t.begin asc";
@@ -79,12 +85,29 @@ public class EventSearchServiceHib implements EventSearchService {
     	return Math.round(count);
     }
 
+    /*
+     * @see com.tech4d.tsm.service.EventSearchService#getCount
+     */
+	public Long getCount(String textFilter, TimeRange timeRange, 
+			LatLngBounds bounds, Visibility visibility) {
+        Long totalResults = 0L;
+		if (bounds != null) {
+	    	Set<Geometry> boxes =ProximityHelper.getBoundingBoxes(bounds.getSouthWest(), bounds.getNorthEast());
+	        //There are 1 or 2 bounding boxes (see comment above)
+	        for (Geometry boundingBox : boxes) {
+	        	totalResults += getCountInternal(textFilter, timeRange, boundingBox, visibility);
+	        }
+		} else {
+			totalResults = getCountInternal(textFilter, timeRange, null, visibility);
+		}
+		return totalResults;
+	}
 
     /*
      * @see com.tech4d.tsm.service.EventSearchService#getCount
      */
     @SuppressWarnings("unchecked")
-	public Long getCount(String textFilter, TimeRange timeRange, Geometry boundingBox, Visibility visibility) {
+	private Long getCountInternal(String textFilter, TimeRange timeRange, Geometry boundingBox, Visibility visibility) {
         LapTimer timer = new LapTimer(this.logger);
         SQLQuery sqlQuery = createQuery(SQL_PREFIX_GET_COUNT, textFilter, timeRange, boundingBox, visibility);
         List result = sqlQuery.addScalar("count(*)", Hibernate.LONG).list();
@@ -95,8 +118,59 @@ public class EventSearchServiceHib implements EventSearchService {
     /*
      * @see com.tech4d.tsm.service.EventSearchService#search
      */
-    @SuppressWarnings("unchecked")
     public List<Event> search(int maxResults, int firstResult, String textFilter, TimeRange timeRange,
+            LatLngBounds bounds, Visibility visibility) {
+        List<Event> events = new ArrayList<Event>();
+    	if (bounds != null) {
+        	Set<Geometry> boxes = ProximityHelper.getBoundingBoxes(bounds.getSouthWest(), bounds.getNorthEast());
+            //There are 1 or 2 bounding boxes (see comment above)
+            for (Geometry boundingBox : boxes) {
+            	if (logger.isDebugEnabled()) {
+            		logger.debug(boundingBox.toText());
+            	}
+                List<Event> results = searchInternal(maxResults, firstResult, 
+                		textFilter, timeRange, boundingBox, visibility);
+                events.addAll(results);
+            }
+
+            //if there were two boxes, one on either side of the international date line, we
+            //may have twice as many records as we need so we have to sort and then strip off
+            //the excess
+            if (boxes.size() > 1) {
+                sortByDate(events);
+                removeExcess(events, maxResults);
+            }
+    		
+    	} else {
+    		events = searchInternal(maxResults, firstResult, textFilter, timeRange, null, visibility);
+    	}
+        return events;
+    }
+
+	@SuppressWarnings("unchecked")
+	private void sortByDate(List<Event> events) {
+		Collections.sort(events, new Comparator() {
+			public int compare(Object arg0, Object arg1) {
+				Event event0 = (Event) arg0;
+				Event event1 = (Event) arg1;
+				return(event0.getWhen().getBegin().getDate().compareTo(event1.getWhen().getBegin().getDate()));
+			}
+		  });
+	}
+
+	private void removeExcess(List<Event> events, int maxRecords) {
+		int originalSize = events.size();
+		for (int i=0; i<originalSize; i++) {
+			if (i >= maxRecords) {
+				events.remove(events.size()-1);
+			}
+		}
+		
+	}
+
+
+    @SuppressWarnings("unchecked")
+    private List<Event> searchInternal(int maxResults, int firstResult, String textFilter, TimeRange timeRange,
             Geometry boundingBox, Visibility visibility) {
         LapTimer timer = new LapTimer(this.logger);
         SQLQuery sqlQuery = createQuery(SQL_PREFIX_SEARCH, textFilter, timeRange, boundingBox, visibility);

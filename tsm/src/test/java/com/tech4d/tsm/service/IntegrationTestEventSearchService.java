@@ -11,31 +11,33 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 
-import com.tech4d.tsm.dao.StyleUtil;
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.dao.EventTesterDao;
 import com.tech4d.tsm.dao.EventUtil;
+import com.tech4d.tsm.dao.StyleUtil;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.ContextUtil;
+import com.tech4d.tsm.util.LatLngBounds;
 import com.tech4d.tsm.util.TimeRangeFormat;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
-import com.vividsolutions.jts.util.GeometricShapeFactory;
 
 public class IntegrationTestEventSearchService {
-    private static EventSearchService eventSearchService;
+    private static final int BOUNDS_SIZE = 100;
+
+	private static EventSearchService eventSearchService;
 
     private static EventDao eventDao;
 
     private static EventUtil eventUtil;
-    private static Polygon searchBox = makeBoundingRectangle(300, 300);
+    private static LatLngBounds searchBox = makeBoundingRectangle(300, 300);
     //Feb 22, 2005 - Feb 22, 2007
     private static TimeRange searchTimeRange = new TimeRange(makeDate(2005, 2, 22), makeDate(2007, 2, 22));
-    private static Polygon failBox = makeBoundingRectangle(3000, 3000);
+    private static LatLngBounds failBox = makeBoundingRectangle(3000, 3000);
     //Feb 22, 1005 - Feb 22, 1007
     private static TimeRange failTimeRange = new TimeRange(makeDate(1005, 2, 22), makeDate(1007, 2, 22));
     private static String[] failStrings = { "the a is", "is", "sdfgsdfg" };
@@ -232,12 +234,12 @@ public class IntegrationTestEventSearchService {
                 searchStrings[0], null, null, Visibility.NORMAL));
     }
 
-    private static Polygon makeBoundingRectangle(int x, int y) {
-        GeometricShapeFactory gsf = new GeometricShapeFactory();
-        gsf.setSize(100);
-        gsf.setNumPoints(4);
-        gsf.setBase(new Coordinate(x, y)); // pretend these are lat/longs
-        return gsf.createRectangle();
+    private static LatLngBounds makeBoundingRectangle(int x, int y) {
+        GeometryFactory gf = new GeometryFactory();
+        LatLngBounds bounds = new LatLngBounds();
+        bounds.setSouthWest(gf.createPoint(new Coordinate(x,y)));
+        bounds.setNorthEast(gf.createPoint(new Coordinate(x+BOUNDS_SIZE,y+BOUNDS_SIZE)));
+        return bounds;
     }
 
     private static Event makeSearchEvent(Geometry geometry, TimeRange timeRange, String summary, String description) {

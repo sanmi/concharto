@@ -2,12 +2,8 @@ package com.tech4d.tsm.web.eventsearch;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +30,7 @@ import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.service.EventSearchService;
 import com.tech4d.tsm.service.Visibility;
 import com.tech4d.tsm.util.JSONFormat;
+import com.tech4d.tsm.util.LatLngBounds;
 import com.tech4d.tsm.util.ProximityHelper;
 import com.tech4d.tsm.util.TimeRangeFormat;
 import com.tech4d.tsm.web.edit.EventController;
@@ -50,7 +47,6 @@ public class EventSearchController extends AbstractFormController {
 	private static final String QUERY_WHAT = "_what";
 	private static final String QUERY_WHEN = "_when";
 	private static final String QUERY_WHERE = "_where";
-	private static final String QUERY_SOURCE = "_source";
 	private static final String QUERY_FIT = "_fit";
 	private static final Log log = LogFactory.getLog(EventSearchController.class);
 	private static final String MODEL_TOTAL_EVENTS = "totalEvents";
@@ -291,45 +287,28 @@ public class EventSearchController extends AbstractFormController {
         if (eventSearchForm.getMapCenter() != null) {
             int firstRecord = PaginatingFormHelper.calculateFirstRecord(eventSearchForm, MAX_RECORDS);
             eventSearchForm.setCurrentRecord(firstRecord);
-            List<Event> events = new ArrayList<Event>();
-            Set<Geometry> boxes;
-        	//there may be two bounding boxes if we cross the international date line
-            if ((eventSearchForm.getMapZoom() >= ZOOM_BOX_THRESHOLD) ||
-            	((null == eventSearchForm.getBoundingBoxNE()) && (null == eventSearchForm.getBoundingBoxSW()))) {
-            	boxes = ProximityHelper.getBoundingBox(
-            			SEARCH_BOX_DIMENTSIONS[eventSearchForm.getMapZoom()], 
-            			eventSearchForm.getMapCenter());  
-            } else {
-            	boxes = ProximityHelper.getBoundingBox(eventSearchForm);  //there may be two
-            }
-            Long totalResults = 0L;
-            //There are 1 or 2 bounding boxes (see comment above)
-            //TODO push this logic lower in the code so the view doesn't know about international date line
-            for (Geometry geometry : boxes) {
-            	if (logger.isDebugEnabled()) {
-            		logger.debug(geometry.toText());
+            //if we are below a certain zoom level, we will still search a wider area
+            LatLngBounds bounds = null;
+            if (eventSearchForm.getMapZoom() >= ZOOM_BOX_THRESHOLD) {
+            	if (null != eventSearchForm.getMapCenter()) {
+                	bounds = ProximityHelper.getBounds(
+                			SEARCH_BOX_DIMENTSIONS[eventSearchForm.getMapZoom()], 
+                			eventSearchForm.getMapCenter());  
             	}
-                List results = eventSearchService.search(MAX_RECORDS, firstRecord, 
-                		eventSearchForm.getWhat(), eventSearchForm.getWhen(), geometry, getVisibility(eventSearchForm));
-                events.addAll(results);
-                //--------TODO DEBUG for testing remove this !!!
-                //addDebugBoundingBox(events, geometry);
-                //--------
-                //if there are MAX_RECORDS, then there are probably more records, so get the count
-                if (results.size() >= MAX_RECORDS) {
-                    totalResults += eventSearchService.getCount(eventSearchForm.getWhat(), 
-                    		eventSearchForm.getWhen(), geometry, getVisibility(eventSearchForm));
-                } else {
-                    totalResults += results.size();
-                }
+            } else {
+            	if ((null != eventSearchForm.getBoundingBoxSW()) && (null != eventSearchForm.getBoundingBoxSW())) {
+                	bounds = new LatLngBounds(eventSearchForm.getBoundingBoxSW(), 
+                			eventSearchForm.getBoundingBoxNE());
+            	}
             }
+            List<Event> events = eventSearchService.search(MAX_RECORDS, firstRecord, 
+            		eventSearchForm.getWhat(), eventSearchForm.getWhen(), bounds, getVisibility(eventSearchForm));
+            Long totalResults = eventSearchService.getCount(
+            		eventSearchForm.getWhat(), eventSearchForm.getWhen(), bounds, getVisibility(eventSearchForm));
 
-            //if there were two boxes, one on either side of the international date line, we
-            //may have twice as many records as we need so we have to sort and then strip off
-            //the excess
-            sortByDate(events);
-            removeExcess(events, MAX_RECORDS);
-
+            //for debugging
+            //addDebugBoundingBox(events, bounds);
+            
             //if we just added a new event, it can be very confusing for the user to have the icon
             //disappear because it isn't high in the search results.  This is a kludge to help them
             //but it is only partially successful because the next time they hit 'search', their icon may disappear.  
@@ -359,46 +338,27 @@ public class EventSearchController extends AbstractFormController {
         return model;
     }
 
-	private void removeExcess(List<Event> events, int maxRecords) {
-		int originalSize = events.size();
-		for (int i=0; i<originalSize; i++) {
-			if (i >= maxRecords) {
-				events.remove(events.size()-1);
-			}
-		}
-		
-	}
-
-	@SuppressWarnings("unchecked")
-	private void sortByDate(List<Event> events) {
-		Collections.sort(events, new Comparator() {
-			public int compare(Object arg0, Object arg1) {
-				Event event0 = (Event) arg0;
-				Event event1 = (Event) arg1;
-				return(event0.getWhen().getBegin().getDate().compareTo(event1.getWhen().getBegin().getDate()));
-			}
-		      });
-		
-	}
-
 	/* useful for debugging */
-/*    private void addDebugBoundingBox(List<Event> events, Geometry geometry) { 
-    	Event event = new Event();
-    	event.setSummary("box");
-    	event.setTsGeometry(new TsGeometry(geometry));
-    	try {
-			event.setWhen(TimeRangeFormat.parse("2000"));
-		} catch (ParseException e) {
-		}
-		event.setId(2L);
-		event.setHasUnresolvedFlag(false);
-		event.setWhere("");
-		event.setDescription("");
-		event.setUserTagsAsString("");
-		event.setSource("");
-		events.add(event);
+/*    private void addDebugBoundingBox(List<Event> events, LatLngBounds bounds) {
+    	Set<Geometry> boxes = ProximityHelper.getBoundingBoxes(bounds.getSouthWest(), bounds.getNorthEast());
+    	for (Geometry box : boxes) {
+        	Event event = new Event();
+        	event.setSummary("box");
+        	event.setTsGeometry(new TsGeometry(box));
+        	try {
+    			event.setWhen(TimeRangeFormat.parse("2000"));
+    		} catch (ParseException e) {
+    		}
+    		event.setId(2L);
+    		event.setHasUnresolvedFlag(false);
+    		event.setWhere("");
+    		event.setDescription("");
+    		event.setUserTagsAsString("");
+    		event.setSource("");
+    		events.add(event);
+    	}
     }
-*/    
+*/
     /** 
      * Only administrators are allowed to see removed events.  We need to check for proper authorization
      * because the user could have hacked the HTML to add the showInvisible parameter
