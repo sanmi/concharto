@@ -158,33 +158,36 @@ public class EventSearchController extends AbstractFormController {
 		
         EventSearchForm eventSearchForm = (EventSearchForm) command;
         logSearchQuery(eventSearchForm);
+        ModelAndView returnModelAndView;
         if (errors.hasErrors()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Data binding errors: " + errors.getErrorCount());
             }
             //clear out the search results
             eventSearchForm.setSearchResults(null);
-            return showForm(request, response, errors);
+            returnModelAndView = showForm(request, response, errors);
         } else if (!StringUtils.isEmpty(request.getQueryString())) {
         	//if this is a form submission via query params, we will have to geocode first 
         	//then do a redirect
-        	return handleGet(request);
+        	returnModelAndView = handleGet(request);
         } else {
             logger.debug("No errors -> processing submit");
             Map model = doSearch(request, errors, eventSearchForm);
-            //put the data into the session in case we are leaving to edit, and then want to come back
-            WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
             if (eventSearchForm.getIsEditEvent()) {
+            	eventSearchForm.setIsEditEvent(false); //turn this flag back off
                 if (eventSearchForm.getEventId() != null) {
-                    return new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm?listid=" + eventSearchForm.getEventId()));
+                	returnModelAndView = new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm?listid=" + eventSearchForm.getEventId()));
                 } else {
                     //we are creating a new event
-                    return new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm"));
+                	returnModelAndView = new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm"));
                 }
             } else {
-                return new ModelAndView(getSuccessView(), model);
+            	returnModelAndView = new ModelAndView(getSuccessView(), model);
             }
         }
+        //put the data into the session in case we are leaving to edit, and then want to come back
+        WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
+        return returnModelAndView;
     }
 
 	private void logSearchQuery(EventSearchForm eventSearchForm) {
