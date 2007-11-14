@@ -217,7 +217,7 @@
 		<%-- adjust the map --%>
 		setMapExtent();
     	var top = document.getElementById("map").offsetTop;
-    	var height = getHeight() - top - 40;
+    	var height = getHeight() - top - 44;
     	document.getElementById("results").style.height=height+"px";
 	}
   <%-- END WHILEFUNCTIONS  ============================= --%>

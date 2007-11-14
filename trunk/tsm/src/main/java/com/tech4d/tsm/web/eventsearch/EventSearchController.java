@@ -169,11 +169,12 @@ public class EventSearchController extends AbstractFormController {
         } else if (!StringUtils.isEmpty(request.getQueryString())) {
         	//if this is a form submission via query params, we will have to geocode first 
         	//then do a redirect
-        	returnModelAndView = handleGet(request);
+            eventSearchForm = new EventSearchForm();
+        	returnModelAndView = handleGet(request, eventSearchForm);
         } else {
             logger.debug("No errors -> processing submit");
             Map model = doSearch(request, errors, eventSearchForm);
-            if (eventSearchForm.getIsEditEvent()) {
+            if ((null != eventSearchForm.getIsEditEvent()) && eventSearchForm.getIsEditEvent()) {
             	eventSearchForm.setIsEditEvent(false); //turn this flag back off
                 if (eventSearchForm.getEventId() != null) {
                 	returnModelAndView = new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm?listid=" + eventSearchForm.getEventId()));
@@ -209,11 +210,9 @@ public class EventSearchController extends AbstractFormController {
      * @return ModelAndView a new ModelAndView
      * @throws Exception exception
      */
-    private ModelAndView handleGet(HttpServletRequest request) throws Exception {
+    private ModelAndView handleGet(HttpServletRequest request, EventSearchForm eventSearchForm) throws Exception {
     	//this request contains enough information to do a search right now
     	//use the same binder to get params of the query string as we were using for the POST
-        EventSearchForm eventSearchForm = new EventSearchForm();
-        
         //populate the form with parameters off the URL query string
     	bindGetParameters(request, eventSearchForm);
     	
