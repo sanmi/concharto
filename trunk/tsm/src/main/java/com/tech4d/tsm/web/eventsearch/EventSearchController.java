@@ -221,7 +221,7 @@ public class EventSearchController extends AbstractFormController {
     	
     	//save the form for redirect
     	WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
-    	return new ModelAndView(new RedirectView(request.getContextPath() + "/search/eventsearch.htm"));
+    	return new ModelAndView(new RedirectView(request.getContextPath() + "/" + getSuccessView() + ".htm"));
     }
 
     /**
