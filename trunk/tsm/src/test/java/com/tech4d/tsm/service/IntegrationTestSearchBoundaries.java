@@ -16,8 +16,10 @@ import com.tech4d.tsm.dao.StyleUtil;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.ContextUtil;
+import com.tech4d.tsm.util.LatLngBounds;
 import com.tech4d.tsm.util.TimeRangeFormat;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
@@ -57,8 +59,23 @@ public class IntegrationTestSearchBoundaries {
                 TimeRangeFormat.parse(dateText), null, Visibility.NORMAL);
         assertEquals(matchesExpected, events.size());        
     }
+
+    @Test public void testInternationalDateLine() throws ParseException, java.text.ParseException {
+    	Geometry pearlHarbor = new WKTReader().read("POINT (-157.95 21.366667)");
+    	Geometry taipei = new WKTReader().read("POINT (121.5028 25.0419)");
+    	Geometry newYorkCity= new WKTReader().read("POINT ( -74 40.71)"); //way out the box
+    	Geometry sanDiego= new WKTReader().read("POINT (  -117.15 32.78)");  //same lat as the box
+    	makeSearchEvent(pearlHarbor, TimeRangeFormat.parse("1941"),"summary","description" );
+    	makeSearchEvent(taipei, TimeRangeFormat.parse("1941"),"summary","description" );
+    	makeSearchEvent(newYorkCity, TimeRangeFormat.parse("1941"),"summary","description" );
+    	makeSearchEvent(sanDiego, TimeRangeFormat.parse("1941"),"summary","description" );
+    	Point boundingBoxSW =  (Point) new WKTReader().read("POINT (120 20)");
+    	Point boundingBoxNE =  (Point) new WKTReader().read("POINT (-156 34)");
+    	LatLngBounds bounds = new LatLngBounds(boundingBoxSW, boundingBoxNE);
+    	assertEquals(2, eventSearchService.search(10, 0, null, null, bounds, null).size());
+    }
     
-    @Test public void testBoundaries() throws java.text.ParseException {
+    @Test public void testTimeBoundaries() throws java.text.ParseException {
         makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522-1527"), "Stuff", null);
         assertSearchMatch(0, "1528");
         assertSearchMatch(0, "1521");

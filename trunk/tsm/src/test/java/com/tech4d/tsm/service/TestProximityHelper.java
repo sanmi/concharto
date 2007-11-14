@@ -1,14 +1,14 @@
 package com.tech4d.tsm.service;
 
-import com.tech4d.tsm.util.ProximityHelper;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
-import java.util.Set;
+import com.tech4d.tsm.util.LatLngBounds;
+import com.tech4d.tsm.util.ProximityHelper;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 
 //center is 38.371528, -75.58672
 //bounding box is 
@@ -18,14 +18,11 @@ import java.util.Set;
 public class TestProximityHelper {
 
 	@Test public void testGetBoundingBox() {
-		Set<Geometry> boxes = ProximityHelper.getBoundingBox(34.02/2, makePoint( -75.58672, 38.371528));
-		for (Geometry box : boxes) {
-			assertEquals(-75.9D, box.getCoordinate().x, .1);
-		}
-		boxes = ProximityHelper.getBoundingBox(22.29/2, makePoint( -75.58672, 38.371528));
-        for (Geometry box : boxes) {
-            assertEquals(38.3D, box.getCoordinate().y, .1);
-        }
+		LatLngBounds bounds = ProximityHelper.getBounds(34.02/2, makePoint( -75.58672, 38.371528));
+		assertEquals(-75.9D, bounds.getSouthWest().getX(), .1);
+		
+		bounds = ProximityHelper.getBounds(22.29/2, makePoint( -75.58672, 38.371528));
+        assertEquals(38.5D, bounds.getNorthEast().getY(), .1);
 	}
 	
 

@@ -58,7 +58,12 @@
 			<%-- fit map to the results --%>
 			setIsFitViewToResults('false');
 			var boundsPoly = new GPolyline(_fitToPolygon);
-			map.setZoom(map.getBoundsZoomLevel(boundsPoly.getBounds()));
+			var zoom = map.getBoundsZoomLevel(boundsPoly.getBounds());
+			if (zoom > 13) {
+				zoom = 13;
+			}
+			map.setZoom(zoom);
+			map.setCenter(boundsPoly.getBounds().getCenter());
 		}
 
 		if (document.getElementById("eventSearchForm").isFirstView != null) {

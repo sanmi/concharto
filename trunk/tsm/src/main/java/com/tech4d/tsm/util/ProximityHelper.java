@@ -3,9 +3,9 @@ package com.tech4d.tsm.util;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.tech4d.tsm.web.eventsearch.EventSearchForm;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
 /**
@@ -30,19 +30,18 @@ public class ProximityHelper {
      * a box.  Take into account boxes that span the dateline where longitude changes
      * from 180 to -180
      * 
-     * TODO put the longitude logic in a utility class
      * @return Set<Geometry> one or two POLYGON objects representing the bounding box
-     * @param se EventSearchForm
+     * @param boundingBoxSW south west corner
+     * @param boundingBoxNE north east corner
      */
-    public static Set<Geometry> getBoundingBox(EventSearchForm se) {
-        //longitudes have to contend with the international date line where it switches from -180 to +180
-        //so we mod 180.  We assume the bounding box is less than 360 degrees.  If you want to figure
-        //this out, you might want to draw it on paper
-        Point base = se.getBoundingBoxSW();
-        Double height = se.getBoundingBoxNE().getY() - se.getBoundingBoxSW().getY();
-        Double east = se.getBoundingBoxNE().getX();
-        Double west = se.getBoundingBoxSW().getX();
-        return handleDateLine(base.getY(), east, west, height);
+    public static Set<Geometry> getBoundingBoxes(Point boundingBoxSW, Point boundingBoxNE) {
+    	//longitudes have to contend with the international date line where it switches from -180 to +180
+    	//so we mod 180.  We assume the bounding box is less than 360 degrees.  If you want to figure
+    	//this out, you might want to draw it on paper
+        Double height = boundingBoxNE.getY() - boundingBoxSW.getY();
+    	Double east = boundingBoxNE.getX();
+    	Double west = boundingBoxSW.getX();
+    	return handleDateLine(boundingBoxSW.getY(), east, west, height);
     }
 
     private static Set<Geometry> handleDateLine(Double south, Double east, Double west, Double height) {
@@ -82,7 +81,7 @@ public class ProximityHelper {
 	 * @param radius search radius
 	 * @param point center point
 	 */
-	public static Set<Geometry> getBoundingBox(Double radius, Point point) {
+	public static LatLngBounds getBounds(Double radius, Point point) {
 		Double lat1 = Math.toRadians(point.getY());
 		Double lng1 = Math.toRadians(point.getX());
 		Double R = EARTHS_RADIUS;
@@ -92,14 +91,21 @@ public class ProximityHelper {
                 Math.cos(radius/R)-Math.sin(lat1)*Math.sin(south));
 		Double east = lng1 + Math.atan2(Math.sin(90)*Math.sin(radius/R)*Math.cos(lat1), 
 				Math.cos(radius/R)-Math.sin(lat1)*Math.sin(south));
-		Double height = (lat1- south)*2;
+		Double height = (lat1- south)*2.3;  //kludge! this should be '2' but for some reason the height is squashed
 		//make it work like google maps' bounding box
 		west = Math.toDegrees(west);
 		if (west < -LONGITUDE_180) {
 			west = LONGITUDE_180*2 + west;
 		}
-		return handleDateLine(Math.toDegrees(south), Math.toDegrees(east), 
-				west, Math.toDegrees(height));
+		south = Math.toDegrees(south);
+		Double north = south + Math.toDegrees(height);
+		east = Math.toDegrees(east);
+		
+		LatLngBounds bounds = new LatLngBounds();
+		GeometryFactory gf = new GeometryFactory();
+		bounds.setSouthWest(gf.createPoint(new Coordinate(west, south)));
+		bounds.setNorthEast(gf.createPoint(new Coordinate(east, north)));
+		return bounds;
 	}
 
 	/**
