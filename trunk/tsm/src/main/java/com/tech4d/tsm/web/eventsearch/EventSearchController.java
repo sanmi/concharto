@@ -146,6 +146,37 @@ public class EventSearchController extends AbstractFormController {
         return !StringUtils.isEmpty(request.getQueryString()) || super.isFormSubmission(request);
     }
 
+    @SuppressWarnings("unchecked")
+	@Override
+    protected ModelAndView showForm(
+            HttpServletRequest request, HttpServletResponse response, BindException errors)
+            throws Exception {
+
+        //if there is a form, we should redo the search, just in case things have been
+        //added since we left (for instance the user just added a point to the map)
+        //don't search if there are errors
+        EventSearchForm eventSearchForm = getEventSearchForm(request);
+        if ((eventSearchForm != null) && (!errors.hasErrors())){
+            Map model = doSearch(request, errors, eventSearchForm);
+            return new ModelAndView(getFormView(), model);
+        } else {
+        	//we go through these IS_FIRST_VIEW hoops because we only want to show the "welcome" 
+        	//message once per login, but this bit of code may get executed once before the 
+        	//screen is actually shown if they are going to the search URL and then the user 
+        	//is redirected because they need to log in.
+        	String username = (String) WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME);
+        	Object isFirstView = WebUtils.getSessionAttribute(request, SESSION_FIRST_VIEW);
+            if ((username != null) && (isFirstView == null)) {
+            	WebUtils.setSessionAttribute(request, SESSION_FIRST_VIEW, true);
+            	Map model = errors.getModel();
+            	model.put(MODEL_IS_FIRST_VIEW, true);
+            	model.put(MODEL_TOTAL_EVENTS, eventSearchService.getTotalCount());
+            	return new ModelAndView(getFormView(), model);
+            }
+            return showForm(request, errors, getFormView());
+        }
+    }
+
 	@SuppressWarnings("unchecked")
     @Override
     protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
@@ -381,37 +412,6 @@ public class EventSearchController extends AbstractFormController {
     	return Visibility.NORMAL;
     }
     
-    @SuppressWarnings("unchecked")
-	@Override
-    protected ModelAndView showForm(
-            HttpServletRequest request, HttpServletResponse response, BindException errors)
-            throws Exception {
-
-        //if there is a form, we should redo the search, just in case things have been
-        //added since we left (for instance the user just added a point to the map)
-        //don't search if there are errors
-        EventSearchForm eventSearchForm = getEventSearchForm(request);
-        if ((eventSearchForm != null) && (!errors.hasErrors())){
-            Map model = doSearch(request, errors, eventSearchForm);
-            return new ModelAndView(getFormView(), model);
-        } else {
-        	//we go through these IS_FIRST_VIEW hoops because we only want to show the "welcome" 
-        	//message once per login, but this bit of code may get executed once before the 
-        	//screen is actually shown if they are going to the search URL and then the user 
-        	//is redirected because they need to log in.
-        	String username = (String) WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME);
-        	Object isFirstView = WebUtils.getSessionAttribute(request, SESSION_FIRST_VIEW);
-            if ((username != null) && (isFirstView == null)) {
-            	WebUtils.setSessionAttribute(request, SESSION_FIRST_VIEW, true);
-            	Map model = errors.getModel();
-            	model.put(MODEL_IS_FIRST_VIEW, true);
-            	model.put(MODEL_TOTAL_EVENTS, eventSearchService.getTotalCount());
-            	return new ModelAndView(getFormView(), model);
-            }
-            return showForm(request, errors, getFormView());
-        }
-    }
-
 	private String makeMapKeyCode(HttpServletRequest request) {
 		//map.${pageContext.request.serverName}.${pageContext.request.serverPort}.key
 		return new StringBuffer("map.")

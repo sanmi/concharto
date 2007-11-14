@@ -14,12 +14,12 @@
 		<property name="mappings">
 			<props>
           <prop key="login.htm">loginController</prop>
+          <prop key="home.htm">homeController</prop>
           <prop key="edit/event.htm">eventController</prop>
           <prop key="admin/signup.htm">signupController</prop>
           <prop key="member/settings.htm">settingsController</prop>
           
           <prop key="edit/changehistory.htm">changeHistoryController</prop>
-          <prop key="edit/changehistoryframe.htm">changeHistoryFrameController</prop>
 
           <prop key="edit/flagevent.htm">flagEventController</prop>
           <prop key="edit/flageventsuccess.htm">flagEventController</prop>
@@ -55,7 +55,13 @@
 
 	<bean id="baseEventController" abstract="true"></bean>
 
-	<!-- Controller names are not important when using the above HandlerMapping implementation -->
+	<!-- Controller  -->
+	<bean id="homeController" class="com.tech4d.tsm.web.home.HomeController">
+		<property name="commandName" value="eventSearch" />
+		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
+		<property name="formView" value="home" />
+	</bean>
+
 	<bean id="urlFilenameViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController"/>
 	<bean id="switchBoardController" class="com.tech4d.tsm.web.SwitchBoardController" parent="baseEventController" >
 		<property name="eventDao" ref="eventDao" />
@@ -104,10 +110,6 @@
 
 	<bean id="changeHistoryController" class="com.tech4d.tsm.web.changehistory.ChangeHistoryController" parent="baseEventController">
 		<property name="formView" value="edit/changehistory" />
-		<property name="auditEntryDao" ref="auditEntryDao" />
-	</bean>
-	<bean id="changeHistoryFrameController" class="com.tech4d.tsm.web.changehistory.ChangeHistoryController" parent="baseEventController">
-		<property name="formView" value="edit/changehistoryframe" />
 		<property name="auditEntryDao" ref="auditEntryDao" />
 	</bean>
 

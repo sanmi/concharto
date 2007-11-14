@@ -11,6 +11,7 @@
 		<jsp:include page="../include/mapkey.js.jsp"/>
 		<jsp:include page="include/search.js.jsp"/>
 	</jsp:attribute>
+	<jsp:attribute name="stylesheet">textcontent.css,map.css</jsp:attribute>
 	<jsp:attribute name="script">prototype-1.7.0.js,control.modal.2.2.3.js,map.js,json.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 
@@ -31,57 +32,7 @@
 	  	<c:if test="${isFirstView != null}">
 				<input type="hidden" id="isFirstView" value="true"/>					
 	  	</c:if>
-	  	<div>
-	     	<span style="position:absolute; left:250px; top:30px;" >
-	        <table class="searchbar">
-	          <tr>
-	            <td class="labelcell">
-				    		<form:errors path="where"><span class="errorLabel"></form:errors>
-		  	          Where 
-				    		<form:errors path="where"></span></form:errors>
-                <small>e.g., "Gettysburg, PA" </small><br/>
-                <form:input path="where" size="22"/>
-	            </td>
-	            <td class="labelcell">
-	              <form:errors path="when"><span class="errorLabel"></form:errors>
-	              	When
-	              <form:errors path="when"></span></form:errors>
-	              <small>
-	                e.g. "1962", "Oct 14, 1066", "1880-1886" 
-	              </small><br/>
-	              <form:input path="when" size="35"/>
-	            </td>
-	            <td class="labelcell">
-	            	What
-	              <small>
-	                e.g. "Battle" 
-	              </small><br/>
-	                <form:input path="what" size="22" htmlEscape="true"/>
-	            </td>
-	          </tr>
-	        </table>
-	        
-	        <span class="action"><input type="submit" name="Search" value="Search" /></span>
-	        <span class="action"><input type="button" name="add" value="Add to the Map!" onclick="editEvent('')"/></span>
-	        <c:if test="${fn:contains(roles, 'admin')}">
-		        <span style="padding-top:.5em" class="adminBox">
-		        	ADMIN:
-	        		<span class="adminField">
-	        			<form:radiobutton value="normal" path="show"/>
-	        			Normal
-	        		</span>
-	        		<span class="adminAction">
-	        			<form:radiobutton value="hidden" path="show"/>
-	        			Removed
-	        		</span>
-	        		<span class="adminAction">
-	        			<form:radiobutton value="flagged" path="show"/>
-	        			Flagged
-	        		</span>
-        		</span>
-	        </c:if>
-	      </span>
-		  </div>
+	  	<jsp:include page="include/searchbar.jsp"/>
 	  
 		  
 			<%-- Pull the center from the form object so we can center using javascript (see above) --%>

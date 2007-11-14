@@ -5,24 +5,30 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 
-<tsm:page title="Event">
-	<jsp:attribute name="head">
-		<%-- we use includes so we can comment the javascript --%>
-		<jsp:include page="../include/mapkey.js.jsp"/>
-		<jsp:include page="include/search.js.jsp"/>
-		<script type="text/javascript">
-//<![CDATA[
-	<%-- the main initialize function --%>
-	function initialize_embedded() {
-		initialize(new GSmallMapControl());
-	}		
-
-	<%-- override this function to do nothing --%>
-	function adjustSidebarIE() {
-	}
-//]]>
-</script>
+<tsm:page title="embedded search">
+		<jsp:attribute name="head">
+			<%-- we use includes so we can comment the javascript --%>
+			<jsp:include page="../include/mapkey.js.jsp"/>
+			<jsp:include page="include/search.js.jsp"/>
+			<script type="text/javascript">
+	//<![CDATA[
+		<%-- the main initialize function --%>
+		function initialize_embedded() {
+			initialize(new GSmallMapControl());
+		}		
+	
+		<%-- override create html for info bubbles --%>	
+		function makeOverlayHtml(event) {
+			return createInfoWindowHtml(event);
+		}
+	
+		<%-- override this function to do nothing --%>
+		function adjustSidebarIE() {
+		}
+	//]]>
+	</script>
 	</jsp:attribute>
+	<jsp:attribute name="stylesheet">map.css</jsp:attribute>
 	<jsp:attribute name="script">prototype-1.7.0.js,map.js,json.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize_embedded()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 	<jsp:attribute name="stripped">true</jsp:attribute>
@@ -41,6 +47,9 @@
 			<form:hidden path="currentRecord"/>
 			<form:hidden path="pageCommand"/>
 			<form:hidden path="isFitViewToResults"/>
+			<form:hidden path="where"/>
+			<form:hidden path="when"/>
+			<form:hidden path="what"/>
 	  	<c:if test="${isFirstView != null}">
 				<input type="hidden" id="isFirstView" value="true"/>					
 	  	</c:if>

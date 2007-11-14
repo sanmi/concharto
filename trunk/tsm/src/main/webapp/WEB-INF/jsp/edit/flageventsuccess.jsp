@@ -17,6 +17,7 @@
 		</script>
 	</jsp:attribute>
 	<jsp:attribute name="stripped">false</jsp:attribute>
+	<jsp:attribute name="stylesheet">simpleform.css</jsp:attribute>
 
 	<jsp:body>
 		

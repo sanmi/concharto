@@ -23,7 +23,9 @@
 		//]]>
 		</script>
 	</jsp:attribute>
+	<jsp:attribute name="stylesheet">map.css</jsp:attribute>
 	<jsp:attribute name="bodyattr">class="mapedit"</jsp:attribute>
+	
 
 <jsp:body>
 		<table><tr><td>			
