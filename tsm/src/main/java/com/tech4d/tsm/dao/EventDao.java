@@ -15,8 +15,9 @@ public interface EventDao {
 
     public abstract void delete(Long id);
 
-    public abstract List<Event> findAll(int maxResults);
+    public abstract List<Event> findRecent(int maxResults);
 
     public abstract Event findById(Long id);
     
+    public Integer getTotalCount();
 }

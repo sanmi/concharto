@@ -9,7 +9,8 @@
 	<jsp:attribute name="head">
 		<%-- we use includes so we can comment the javascript --%>
 		<jsp:include page="../include/mapkey.js.jsp"/>
-		<jsp:include page="include/search.js.jsp"/>
+		<jsp:include page="include/searchcommon.js.jsp"/>
+		<jsp:include page="include/eventsearch.js.jsp"/>
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">textcontent.css,map.css</jsp:attribute>
 	<jsp:attribute name="script">prototype-1.7.0.js,control.modal.2.2.3.js,map.js,json.js</jsp:attribute>
@@ -68,26 +69,26 @@
 			  				<c:when test="${fn:length(events) > 0}">
 					  			Displaying events <b>${eventSearch.currentRecord + 1}  - ${eventSearch.currentRecord + fn:length(events) }</b>  
 					  			of <b><c:out value="${totalResults}"/></b>
-					  			<c:set var="where" value="${(eventSearchForm.where != '')}"/>
-					  			<c:set var="when" value="${(eventSearchForm.when != null)}"/>
-					  			<c:set var="what" value="${(eventSearchForm.what != '')}"/>
-					  			<c:if test="${where || when || what}">for</c:if>
-					  			<c:if test="${where}">
-						  			<b>${eventSearchForm.where}</b> 
-					  			</c:if>
-					  			<c:if test="${((where && when) || (where && what)) && when}">,</c:if>
-					  			<c:if test="${when}">
-						  			<b>${eventSearchForm.when.asText}</b> 
-					  			</c:if>
-					  			<c:if test="${(when || where) && what }">,</c:if>
-					  			<c:if test="${what}">
-						  			<b>${eventSearchForm.what}</b> 
-					  			</c:if>
 				 				</c:when>
 			  				<c:otherwise>
 				  				No Events found
 			  				</c:otherwise>
-			  			</c:choose>							
+			  			</c:choose>
+				  			<c:set var="where" value="${(eventSearchForm.where != '')}"/>
+				  			<c:set var="when" value="${(eventSearchForm.when != null)}"/>
+				  			<c:set var="what" value="${(eventSearchForm.what != '')}"/>
+			  			<c:if test="${where || when || what}">for</c:if>
+			  			<c:if test="${where}">
+				  			<b>${eventSearchForm.where}</b> 
+			  			</c:if>
+			  			<c:if test="${((where && when) || (where && what)) && when}">,</c:if>
+			  			<c:if test="${when}">
+				  			<b>${eventSearchForm.when.asText}</b> 
+			  			</c:if>
+			  			<c:if test="${(when || where) && what }">,</c:if>
+			  			<c:if test="${what}">
+				  			<b>${eventSearchForm.what}</b> 
+			  			</c:if>							
 						</div>
 			    	<c:set var="test" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ"/>
 				    <c:forEach items="${events}" var="event" varStatus="status">

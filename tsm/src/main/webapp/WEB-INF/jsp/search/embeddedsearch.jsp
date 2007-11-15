@@ -6,32 +6,38 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 
 <tsm:page title="embedded search">
-		<jsp:attribute name="head">
-			<%-- we use includes so we can comment the javascript --%>
-			<jsp:include page="../include/mapkey.js.jsp"/>
-			<jsp:include page="include/search.js.jsp"/>
-			<script type="text/javascript">
-	//<![CDATA[
+	<jsp:attribute name="stylesheet">map.css</jsp:attribute>
+	<jsp:attribute name="script">prototype-1.7.0.js,map.js,json.js</jsp:attribute>
+	<jsp:attribute name="bodyattr">onload="initialize_embedded()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
+	<jsp:attribute name="stripped">true</jsp:attribute>
+	<jsp:attribute name="head">
+		<%-- we use includes so we can comment the javascript --%>
+		<jsp:include page="../include/mapkey.js.jsp"/>
+		<script type="text/javascript">
+		//<![CDATA[
 		<%-- the main initialize function --%>
 		function initialize_embedded() {
 			initialize(new GSmallMapControl());
-		}		
+		}
 	
 		<%-- override create html for info bubbles --%>	
 		function makeOverlayHtml(event) {
-			return createInfoWindowHtml(event);
+			return createInfoWindowHtml(event, 350, 150);
 		}
 	
 		<%-- override this function to do nothing --%>
 		function adjustSidebarIE() {
 		}
-	//]]>
-	</script>
+		
+		function createModalWelcome() {
+		}
+	
+		function showWelcome() {
+		}
+		//]]>
+		</script>
+		<jsp:include page="include/searchcommon.js.jsp"/>
 	</jsp:attribute>
-	<jsp:attribute name="stylesheet">map.css</jsp:attribute>
-	<jsp:attribute name="script">prototype-1.7.0.js,map.js,json.js</jsp:attribute>
-	<jsp:attribute name="bodyattr">onload="initialize_embedded()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
-	<jsp:attribute name="stripped">true</jsp:attribute>
 
 	<jsp:body>
 		<form:form name="event" id="eventSearchForm" commandName="eventSearch" onsubmit="search(); return false">

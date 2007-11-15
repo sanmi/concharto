@@ -3,6 +3,10 @@ body {
 	padding:0;
 	font: small Arial, Helvetica, sans-serif;
 }
+h1, h2 {
+	color: #426293;
+	margin-bottom:.2em;
+}
 
 .nav {
   border-bottom: 1px solid #D7E5F2;
@@ -163,6 +167,5 @@ a.nexPrev:link, a.nextPrev:visited {
 	color:#8EC341;
 }
 .mapfont {
-  font-size: larger;
 	color:black;
 }
