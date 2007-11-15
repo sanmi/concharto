@@ -38,6 +38,7 @@
           <prop key="edit/undoevent.htm">eventDetailsController</prop>
           
           <prop key="info/legal.htm">urlFilenameViewController</prop>
+          <prop key="info/tour.htm">urlFilenameViewController</prop>
       </props>
 		</property>		
 	</bean>
@@ -60,6 +61,7 @@
 		<property name="commandName" value="eventSearch" />
 		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
 		<property name="formView" value="home" />
+		<property name="eventDao" ref="eventDao" />
 	</bean>
 
 	<bean id="urlFilenameViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController"/>

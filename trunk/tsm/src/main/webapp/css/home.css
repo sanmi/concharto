@@ -1,26 +1,18 @@
 #home_page {
 }
 
-#home_page .infoBox {
-	padding: 0 1em 1em 1em;
+#home_page .borderBox,#home_page .infoBox {
+	padding: 4px;
 	border: 1px solid #e0e0e0;
 	margin:.2em;
 }
 
-#home_page  h1, #home_page h2 {
-	color: #426293;
-	margin-bottom:.2em;
+#home_page .infoBox {
+	padding: 0 1em 1em 1em;
 }
 
 #home_page table {
-  width:1050px;
-}
-
-#home_page leftbar {
-	width: 500px;
-}
-#home_page rightbar {
-	width: 520px;
+  width:1000px;
 }
 
 #home_page td, .textcontent tr {
@@ -28,13 +20,22 @@
 	margin:0;
 	vertical-align: top;
 }
+#home_page #leftbar {
+	width:500px;
+}
+#home_page #rightbar {
+	left:560px;
+}
+
 #home_page p {
 	margin-top:.2em;
 	margin-bottom:.5em;
-  font-size: medium;
 }
 #home_page ul {
-	font-size: medium;	
+	margin: .5em;	
+}
+#home_page li {
+	margin: .2em 0em .2em 1em ;	
 }
 #home_page A:hover {
 	text-decoration:underline overline;

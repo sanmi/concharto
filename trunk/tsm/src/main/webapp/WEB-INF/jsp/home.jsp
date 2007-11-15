@@ -14,7 +14,6 @@
 			var when = document.getElementById("eventSearchForm").when.value;
 			var where = document.getElementById("eventSearchForm").where.value;
 			document.location='/search/eventsearch.htm?_where='+where+'&_when='+when+'&_what='+what+'&_fit=true';
-			
 	}
 	//]]>
 	</script>
@@ -42,45 +41,55 @@
 	  </form:form>
 	  	
 	  	<div id="home_page" >
-	  		<table><tr>
-	  			<td class="leftBar">
+	  		<table>
+ 				<col id="leftbar"/>
+ 				<col id="rightbar"/>
+	  		<tr>
+	  			<td id="leftbar" >
 	  				<div class="infoBox">
 						<span class="resultcount"></span>
+							<p>
+								There are <b>${totalEvents}</b> events total. 
+							</p>
 							<h1>What Happened Everywhere</h1>
 							<p>
 								<span class="subtag">								
-								 An online atlas of history and happenings that anyone can edit. A geographic wiki - you can <b>add, edit, flag, revert</b>
+								 An encyclopedic, online atlas of history and happenings that anyone can edit. 
+								 A geographic wiki - you can 
+								 <a class="links" href="info/tour.htm#search">search</a>, 
+								 <a class="links" href="info/tour.htm#add">add or edit</a>,
+								 <a class="links" href="info/tour.htm#changes">view or undo changes</a>,
+								 <a class="links" href="info/tour.htm#discuss">discuss</a>,
+								 <a class="links" href="info/tour.htm#flag">flag for removal</a>
 								</span>
 							</p>
 							<ul>
-								<li><a href="#">Take a tour</a></li>
-								<li><a href="#">Policies and guidelines</a></li>
-								<li><a href="#">Why are we doing this?</a></li>
+								<li><a class="links" href="info/tour.htm">Take a tour</a></li>
+								<li><a class="links" href="#" onclick="alert('Not Implemented')">Policies and guidelines</a></li>
+								<li><a class="links" href="#" onclick="alert('Not Implemented')">Why are we doing this?</a></li>
 							</ul>
 						</div>
 						<div class="infoBox">
 		  				<h2>Recently Added</h2>
-				  		asdfasdf asdf asdf <br/> 
-				  		asdfasdf asdf asdf <br/> 
-				  		asdfasdf asdf asdf <br/> 
-				  		asdfasdf asdf asdf <br/> 
-				  		asdfasdf asdf asdf <br/> 
-				  		asdfasdf asdf asdf <br/> 
-				  		asdfasdf asdf asdf <br/> 
-				  		asdfasdf asdf asdf <br/> 
-				  		asdfasdf asdf asdf <br/> 
-				  		asdfasdf asdf asdf <br/> 
+		  				<c:forEach items="${recentEvents}" var="event" varStatus="status">
+		  					<div class="event">
+		  						<a class='links' href='${basePath}search/eventsearch.htm?_what="${event.summary}"&_fit=true'>
+		  							${event.summary}, ${event.when.asText}
+		  							<c:if test="${event.where != null && event.where != ''}">, ${event.where}</c:if> 
+		  						</a>
+		  					</div>
+		  				</c:forEach>
 	  				</div>
 						
 	  			</td>
 	  			
-	  			<td style="width:520px">
-	  				<div class="infoBox">
+	  			<td>
+	  				<div class="infoBox" >
 							<h2>Destination Spotlight</h2>
-							Events in the life of <a href='${basePath}search/eventsearch.htm?_what="test add create"&_fit=true'>Franklin Delano Roosevelt</a>
+							Events about <a class="links" href='${basePath}search/eventsearch.htm?_what="new york draft riots"&_fit=true'>Civil War, 1863 New York Draft Riots</a>
 						</div>
-						<div class="infoBox">
-							<iframe src='${basePath}search/embeddedsearch.htm?_what="test add create"&_fit=true'
+						<div class="borderBox">
+							<iframe src='${basePath}search/embeddedsearch.htm?_what="new york draft riots"&_fit=true'
 										height="350" width="500" frameborder="0" scrolling="no">
 						   This browser doesn't support embedding a map.
 							</iframe>

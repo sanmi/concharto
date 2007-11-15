@@ -9,10 +9,11 @@
 			map = new GMap2(document.getElementById("map"));
 			//map.enableContinuousZoom();
 			map.addControl(new GMapTypeControl(1));
-			if (control == null) {
+			if ((control == null) || (control == 'null')) {
 				control = new GLargeMapControl();
 			}
 			map.addControl(control);
+			
 			map.enableDoubleClickZoom();
 			map.enableScrollWheelZoom();
 			geocoder = new GClientGeocoder();
@@ -77,8 +78,18 @@
       return myWidth;
     }
 	
-	function createInfoWindowHtml(event) {
-	   var html = '<div class="result" style="width:450px;margin-bottom:10px">' + 
+	function createInfoWindowHtml(event, width /* optional */, height /* optional */) {
+		var divclass;
+		if (width==null || width=='null' || width=='') { width = 450};
+		if (height==null || height=='null' || height=='') {
+			height = '';
+			divclass='result';
+		} else {
+			height = 'height:' + height + 'px;'
+			divclass='inforesult';
+		}
+		 
+	  var html = '<div class="'+divclass+'" style="width:' + width +'px;'+ height +'margin-bottom:10px">' + 
 	   		event.when + '<br/><b>' + event.summary.escapeHTML() +'</b><br/><em>' + 
 				event.where.escapeHTML() + '</em><br/>' +
 				event.description.escapeHTML() + '<br/>' +
@@ -90,7 +101,7 @@
 					html += event.source.escapeHTML();
 				}
 	   return html;
-	}
+	}	
 	
 	function getMapTypeIndex() {
 		var mapTypeIndex = 0;
@@ -133,7 +144,7 @@
 	function createOverlays(events, excludeEventId) {
 		for (var i =0; i<events.length; i++) {
 			var event = events[i];
-			if ((excludeEventId == null) || (event.id != excludeEventId)) {
+			if ((excludeEventId === null) || (event.id != excludeEventId)) {
 				if (event.gtype == 'point') {
 				  createMarker(event);
 				} else if ((event.gtype == 'line') || (event.gtype == 'polygon')) {
@@ -162,8 +173,3 @@
 		return null;
 	}
 	
-
-	
-
-
-				

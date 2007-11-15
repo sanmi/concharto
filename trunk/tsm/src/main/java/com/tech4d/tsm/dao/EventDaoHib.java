@@ -12,6 +12,7 @@ import com.tech4d.tsm.model.EventSearchText;
 @Transactional
 public class EventDaoHib implements EventDao {
     private SessionFactory sessionFactory;
+    private static final String HQL_VISIBLE_CLAUSE = " where (event.visible = null) or (event.visible = true) ";
 
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -68,9 +69,9 @@ public class EventDaoHib implements EventDao {
      * @see com.tech4d.tsm.lab.EventDao#findAll()
      */
     @SuppressWarnings("unchecked")
-    public List<Event> findAll(int maxResults) {
+    public List<Event> findRecent(int maxResults) {
         return this.sessionFactory.getCurrentSession().createQuery(
-                "select event from Event event").setMaxResults(maxResults).list();
+                "select event from Event event " + HQL_VISIBLE_CLAUSE + "order by created desc").setMaxResults(maxResults).list();
     }
 
     public Event findById(Long id) {
@@ -78,5 +79,14 @@ public class EventDaoHib implements EventDao {
                 Event.class, id);
     }
     
+    @SuppressWarnings("unchecked")
+	public Integer getTotalCount() {
+    	List results = this.sessionFactory.getCurrentSession()
+    	.createQuery("select count(event) from Event event " + HQL_VISIBLE_CLAUSE)
+    	.list();
+    	Long count = (Long) results.get(0);
+    	//cast to Integer.  It aint never going to be bigger!
+    	return Math.round(count);
+    }
 
 }

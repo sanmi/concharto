@@ -44,6 +44,7 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
         begin = cal.getTime();
         cal.set(Calendar.SECOND, 35);
         end = cal.getTime();
+        eventTesterDao.deleteAll();
     }
 
     @BeforeClass
@@ -56,13 +57,16 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
         StyleUtil.setupStyle();
     }
 
+    public void testFindRecent() {
+    	
+    }
     /**
      * Runs the first time
      */
     @Test
     public void testInitFindAll() {
         eventTesterDao.deleteAll();
-        Collection<Event> events = eventDao.findAll(MAX_RESULTS);
+        Collection<Event> events = eventDao.findRecent(MAX_RESULTS);
         assertEquals(0, events.size());
     }
 
@@ -106,10 +110,28 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
         assertTrue(returned.getLastModified().compareTo(returned2.getLastModified()) != 0);
     }
   
-    public void findAll() throws ParseException {
+    @Test
+    public void findAll() throws ParseException, InterruptedException {
+    	//create 3, one is invisible, so it shouldn't count in the resutls
+    	//pause in between so the created dates are different
+        Event event = eventUtil.createEvent();
+        event.setVisible(false);
+        eventDao.save(event);
         eventDao.save(eventUtil.createEvent());
-        List<Event> events = eventDao.findAll(MAX_RESULTS);
-        assertTrue(events.size() >= 1);
+        Thread.sleep(1000);
+        eventDao.save(eventUtil.createEvent());
+        List<Event> events = eventDao.findRecent(MAX_RESULTS);
+        assertEquals(2, events.size());
+        //ensure they are sorted in date order, newest first
+        Event earlier = events.get(0);
+        for (int i=1; i<events.size(); i++) {
+        	event = events.get(i);
+        	assertTrue(earlier.getCreated() + "is not later than " + event.getCreated(), 
+        			earlier.getCreated().after(event.getCreated()));
+        	earlier = event;
+        }        
+        assertEquals(2, eventDao.getTotalCount());
+
     }
 
     @Test

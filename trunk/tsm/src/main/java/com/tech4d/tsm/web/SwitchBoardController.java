@@ -47,7 +47,7 @@ public class SwitchBoardController extends MultiActionController {
 	}
 
 	public ModelAndView listEvents(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return new ModelAndView().addObject(this.eventDao.findAll(MAX_RESULTS));
+        return new ModelAndView().addObject(this.eventDao.findRecent(MAX_RESULTS));
     }
     
     public ModelAndView deleteEvent(HttpServletRequest request, HttpServletResponse response) throws Exception {

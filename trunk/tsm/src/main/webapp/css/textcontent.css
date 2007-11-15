@@ -39,3 +39,14 @@
 .textcontent A:hover {
 	text-decoration:underline overline;
 }
+
+#tourpage {
+	padding: 0 4em 0 4em;
+	width: 650px;
+}
+
+#tourpage h1, #tourpage h2 {
+	margin-top:2em;
+	margin-bottom:.5em;
+}
+
