@@ -77,7 +77,7 @@
 		  				<h2>Recently Added</h2>
 		  				<c:forEach items="${recentEvents}" var="event" varStatus="status">
 		  					<div class="event">
-		  						<a class='links' href='${basePath}search/eventsearch.htm?_what="${event.summary}"&_when=${event.when}&_where=${event.where}&_fit=true'>
+		  						<a class='links' href='${basePath}search/eventsearch.htm?_what="${event.summary}"&_when=${event.when}&_fit=true'>
 		  							${event.summary}, ${event.when.asText}
 		  							<c:if test="${event.where != null && event.where != ''}">, ${event.where}</c:if> 
 		  						</a>
