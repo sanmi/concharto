@@ -130,6 +130,7 @@
 		<property name="formView" value="search/embeddedsearch" />
 		<property name="successView" value="search/embeddedsearch" />
 		<property name="eventSearchService" ref="eventSearchService" />
+		<property name="searchInSessionAttribute" value="embeddedEventSearchForm" />
 		<property name="validator" ref="eventSearchFormValidator"/>
 	</bean>
 

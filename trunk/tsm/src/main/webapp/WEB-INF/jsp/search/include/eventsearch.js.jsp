@@ -3,21 +3,6 @@
 //<![CDATA[
 
   <%-- BEGIN PRE FUNCTIONS (initialization) ============================= --%>
-	function createModalWelcome() {
-		var screenWidth = parseInt(getWidth() * .8);		
-		var screenHeight = parseInt(getHeight() * .8);
-    modal2 = new Control.Modal('modal_link',{
-        opacity: 0.08,
-        width: screenWidth,
-        height: screenHeight
-    });
-	}
-	
-	<%-- Welcome message on the first view--%>
-	function showWelcome() {
-		modal2.open();
-	}
-	
 
 	<%-- create html for info bubbles --%>	
 	function makeOverlayHtml(event) {

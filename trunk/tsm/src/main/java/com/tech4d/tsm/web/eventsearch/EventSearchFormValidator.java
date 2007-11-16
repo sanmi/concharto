@@ -6,8 +6,8 @@ import org.springframework.validation.Validator;
 
 public class EventSearchFormValidator implements Validator{
 
-    public boolean supports(Class clazz) {
-        
+    @SuppressWarnings("unchecked")
+	public boolean supports(Class clazz) {
         return EventSearchForm.class.equals(clazz);
     }
 

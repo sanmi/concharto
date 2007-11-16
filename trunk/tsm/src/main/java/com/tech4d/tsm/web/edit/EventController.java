@@ -4,6 +4,7 @@ import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.GeometryType;
+import com.tech4d.tsm.util.SensibleMapDefaults;
 import com.tech4d.tsm.web.eventsearch.EventSearchController;
 import com.tech4d.tsm.web.eventsearch.EventSearchForm;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
@@ -65,7 +66,12 @@ public class EventController extends SimpleFormController {
                 //default geometry type is point
                 eventForm.setGeometryType(GeometryType.POINT);
                 eventForm.setMapCenter(eventSearchForm.getMapCenter());
-            } 
+            } else {
+                eventForm.setZoomLevel(SensibleMapDefaults.ZOOM_USA);
+                //default geometry type is point
+                eventForm.setGeometryType(GeometryType.POINT);
+                eventForm.setMapCenter(SensibleMapDefaults.USA);
+            }
         }
         return eventForm;
     }

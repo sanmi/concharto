@@ -13,7 +13,11 @@
 			var what = document.getElementById("eventSearchForm").what.value;
 			var when = document.getElementById("eventSearchForm").when.value;
 			var where = document.getElementById("eventSearchForm").where.value;
-			document.location='/search/eventsearch.htm?_where='+where+'&_when='+when+'&_what='+what+'&_fit=true';
+			document.location='${basePath}search/eventsearch.htm?_where='+where+'&_when='+when+'&_what='+what+'&_fit=true';
+	}
+	
+	function editEvent() {
+		document.location='${basePath}edit/event.htm';
 	}
 	//]]>
 	</script>
@@ -73,7 +77,7 @@
 		  				<h2>Recently Added</h2>
 		  				<c:forEach items="${recentEvents}" var="event" varStatus="status">
 		  					<div class="event">
-		  						<a class='links' href='${basePath}search/eventsearch.htm?_what="${event.summary}"&_fit=true'>
+		  						<a class='links' href='${basePath}search/eventsearch.htm?_what="${event.summary}"&_when=${event.when}&_where=${event.where}&_fit=true'>
 		  							${event.summary}, ${event.when.asText}
 		  							<c:if test="${event.where != null && event.where != ''}">, ${event.where}</c:if> 
 		  						</a>

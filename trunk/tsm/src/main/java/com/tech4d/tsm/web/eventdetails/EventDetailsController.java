@@ -69,7 +69,7 @@ public class EventDetailsController extends MultiActionController{
 		model.put(MODEL_EVENT, event);
     	model.put(MODEL_DISPOSITIONS, Flag.DISPOSITION_CODES);
     	//TODO fix this to get it from the app context 
-    	changeHistoryControllerHelper.doProcess("edit/eventdetails.htm", request, model);
+    	changeHistoryControllerHelper.doProcess("edit/eventdetails", request, model);
         return new ModelAndView().addAllObjects(model);
     }
     
