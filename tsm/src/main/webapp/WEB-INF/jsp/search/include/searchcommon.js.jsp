@@ -68,11 +68,6 @@
 			map.setZoom(zoom);
 			map.setCenter(boundsPoly.getBounds().getCenter());
 		}
-
-		if (!(document.getElementById("eventSearchForm").isFirstView === null)) {
-			createModalWelcome();
-			showWelcome();
-		}		
 	}
 
 	<%-- called by createOverlay --%>
@@ -235,7 +230,8 @@
 		} else {
 			map.setCenter(latLng);
 			var where = document.getElementById("eventSearchForm").where.value;
-			if (where != '') {
+			var isEdit = document.getElementById("eventSearchForm").isEditEvent.value;
+			if ((where != '') && (isEdit != "true")) {
 				map.setZoom(10); <%-- TODO infer this from the geocode results!! --%>
 			}
 			document.getElementById("eventSearchForm").mapCenter.value = gLatLngToJSON(latLng);

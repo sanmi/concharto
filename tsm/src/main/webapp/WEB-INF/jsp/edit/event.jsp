@@ -52,11 +52,12 @@
 				map.setMapType(G_DEFAULT_MAP_TYPES[mapType]);
 			}
 		} 
-		
 		var eventsJSON = document.getElementById("eventForm").searchResults.value;
-		var events = eventsJSON.parseJSON();
+		if (eventsJSON != '') {
+			var events = eventsJSON.parseJSON();
+			createOverlays(events, excludeEventId);
+		}
 		var excludeEventId = document.getElementById("eventForm").id.value;
-		createOverlays(events, excludeEventId);
 		createEditableOverlay();
 	}
 	

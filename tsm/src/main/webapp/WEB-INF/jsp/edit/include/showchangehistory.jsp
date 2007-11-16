@@ -11,11 +11,10 @@ request.setAttribute("geometryField", geometryField);
 request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 %>
 	
- 	
 	<display:table id="auditEntryTable" 
 						name="auditEntries" 
 						sort="list" 
-						requestURI="${basePath}${requestURI}"
+						requestURI="${basePath}${requestURI}.htm"
 						pagesize="${pagesize}"
 						partialList="true" 
 						size="${totalResults}"						

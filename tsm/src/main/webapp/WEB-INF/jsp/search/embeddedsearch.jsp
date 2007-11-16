@@ -29,11 +29,6 @@
 		function adjustSidebarIE() {
 		}
 		
-		function createModalWelcome() {
-		}
-	
-		function showWelcome() {
-		}
 		//]]>
 		</script>
 		<jsp:include page="include/searchcommon.js.jsp"/>
@@ -56,9 +51,6 @@
 			<form:hidden path="where"/>
 			<form:hidden path="when"/>
 			<form:hidden path="what"/>
-	  	<c:if test="${isFirstView != null}">
-				<input type="hidden" id="isFirstView" value="true"/>					
-	  	</c:if>
 	  
 					<div id="map">
 					  <br/><br/>Map coming...

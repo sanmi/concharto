@@ -13,7 +13,7 @@
 		<jsp:include page="include/eventsearch.js.jsp"/>
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">textcontent.css,map.css</jsp:attribute>
-	<jsp:attribute name="script">prototype-1.7.0.js,control.modal.2.2.3.js,map.js,json.js</jsp:attribute>
+	<jsp:attribute name="script">prototype-1.7.0.js,map.js,json.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 
 	<jsp:body>
@@ -30,9 +30,6 @@
 			<form:hidden path="currentRecord"/>
 			<form:hidden path="pageCommand"/>
 			<form:hidden path="isFitViewToResults"/>
-	  	<c:if test="${isFirstView != null}">
-				<input type="hidden" id="isFirstView" value="true"/>					
-	  	</c:if>
 	  	<jsp:include page="include/searchbar.jsp"/>
 	  
 		  
@@ -40,13 +37,6 @@
 		
 			<table><tbody><tr>			
 				<td id="sidebar">
-		  		<div class="resultcount">		  			
-				  	<c:if test="${isFirstView != null}">
-			  			<%-- this is a hidden link --%>
-		  				<a href="#modal_contents" id="modal_link"></a>
-		  			</c:if>
-		  			
-		  		</div>
 		    	<div id="results" >
 		    		
 		    		<form:errors path="where" cssClass="errorLabel" element="div"/>
@@ -141,17 +131,6 @@
 			</tr></tbody></table>
 		</form:form>	
 
-		<c:if test="${isFirstView != null}">
-			<div id="modal_contents">
-				<div class="nav">
-					<ul><li><a href="#" onclick="Control.Modal.close(); return false;"><b>X</b> CLOSE</a></li></ul>
-				</div> 
-				<jsp:include page="../include/welcome.jsp"/>
-				<p>
-					<input type="button" value="Go!" onclick="Control.Modal.close(); return false;"/>
-				</p>
-			</div>
-		</c:if>	  
 	</jsp:body>
 </tsm:page>
 

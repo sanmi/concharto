@@ -32,14 +32,13 @@ import com.tech4d.tsm.service.Visibility;
 import com.tech4d.tsm.util.JSONFormat;
 import com.tech4d.tsm.util.LatLngBounds;
 import com.tech4d.tsm.util.ProximityHelper;
+import com.tech4d.tsm.util.SensibleMapDefaults;
 import com.tech4d.tsm.util.TimeRangeFormat;
 import com.tech4d.tsm.web.edit.EventController;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
 import com.tech4d.tsm.web.util.PaginatingFormHelper;
 import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 public class EventSearchController extends AbstractFormController {
@@ -49,8 +48,6 @@ public class EventSearchController extends AbstractFormController {
 	private static final String QUERY_WHERE = "_where";
 	private static final String QUERY_FIT = "_fit";
 	private static final Log log = LogFactory.getLog(EventSearchController.class);
-	private static final String MODEL_TOTAL_EVENTS = "totalEvents";
-	private static final String MODEL_IS_FIRST_VIEW = "isFirstView";
 	public static final String SESSION_EVENT_SEARCH_FORM = "eventSearchForm";
     public static final String SESSION_FIRST_VIEW = "firstView";
     public static final String MODEL_EVENTS = "events";
@@ -62,31 +59,7 @@ public class EventSearchController extends AbstractFormController {
     private EventSearchService eventSearchService;
     private String formView;
     private String successView;
-    
-    //TODO move these into another class
-    private static int ACCURACY_TO_ZOOM[] = {4, 5, 7, 9, 10, 12, 13, 14, 15};
-    private static final double SEARCH_BOX_MIN = 40D; //approximate bounding box = miles * 1.4
-    private static final double SEARCH_BOX_MAX = 2000D; //approximate bounding box = miles * 1.4
-	private static final int ZOOM_BOX_THRESHOLD = 10;
-	private static final int ZOOM_WORLD = 4;
-    private static int NUM_ZOOM_LEVELS = 19;
-    private static double[] SEARCH_BOX_DIMENTSIONS = new double[NUM_ZOOM_LEVELS];
-    private static Point USA;
-    
-    static {
-    	//the low zoom levels have variable search boxes
-    	int i=0;
-    	for ( ; i<ZOOM_BOX_THRESHOLD; i++) { 
-    		SEARCH_BOX_DIMENTSIONS[i] = SEARCH_BOX_MAX - i*(SEARCH_BOX_MAX/ZOOM_BOX_THRESHOLD) + SEARCH_BOX_MIN;
-    	}
-    	//anything over threshold has the same search box 
-    	for ( ; i<NUM_ZOOM_LEVELS; i++) {
-    		SEARCH_BOX_DIMENTSIONS[i] = SEARCH_BOX_MIN;
-    	}
-    	GeometryFactory gf = new GeometryFactory();
-    	USA = gf.createPoint(new Coordinate(-96.667916, 37.013086));
-    }
-    	
+    private String searchInSessionAttribute;
     
     public String getFormView() {
         return formView;
@@ -111,7 +84,17 @@ public class EventSearchController extends AbstractFormController {
     public void setEventSearchService(EventSearchService eventSearchService) {
         this.eventSearchService = eventSearchService;
     }
+    
+	public void setSearchInSessionAttribute(String searchInSessionLabel) {
+		this.searchInSessionAttribute = searchInSessionLabel;
+	}
 
+	public EventSearchController() {
+		//this is the default for this controller, but it can be overridden
+		//for instance by the embeddedsearch instance, which will want to use
+		//a different session variable so it doesn't intervere with the default
+		searchInSessionAttribute = SESSION_EVENT_SEARCH_FORM;
+	}
 	@Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder)
             throws Exception {
@@ -122,7 +105,7 @@ public class EventSearchController extends AbstractFormController {
     }
 
     private EventSearchForm getEventSearchForm(HttpServletRequest request) {
-        return (EventSearchForm) WebUtils.getSessionAttribute(request, SESSION_EVENT_SEARCH_FORM);
+        return (EventSearchForm) WebUtils.getSessionAttribute(request, searchInSessionAttribute);
     }
 
     @Override
@@ -160,19 +143,6 @@ public class EventSearchController extends AbstractFormController {
             Map model = doSearch(request, errors, eventSearchForm);
             return new ModelAndView(getFormView(), model);
         } else {
-        	//we go through these IS_FIRST_VIEW hoops because we only want to show the "welcome" 
-        	//message once per login, but this bit of code may get executed once before the 
-        	//screen is actually shown if they are going to the search URL and then the user 
-        	//is redirected because they need to log in.
-        	String username = (String) WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME);
-        	Object isFirstView = WebUtils.getSessionAttribute(request, SESSION_FIRST_VIEW);
-            if ((username != null) && (isFirstView == null)) {
-            	WebUtils.setSessionAttribute(request, SESSION_FIRST_VIEW, true);
-            	Map model = errors.getModel();
-            	model.put(MODEL_IS_FIRST_VIEW, true);
-            	model.put(MODEL_TOTAL_EVENTS, eventSearchService.getTotalCount());
-            	return new ModelAndView(getFormView(), model);
-            }
             return showForm(request, errors, getFormView());
         }
     }
@@ -218,7 +188,8 @@ public class EventSearchController extends AbstractFormController {
             }
         }
         //put the data into the session in case we are leaving to edit, and then want to come back
-        WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
+        WebUtils.setSessionAttribute(request, searchInSessionAttribute, eventSearchForm);
+         
         return returnModelAndView;
     }
 
@@ -251,7 +222,8 @@ public class EventSearchController extends AbstractFormController {
     	geocode(request, eventSearchForm);
     	
     	//save the form for redirect
-    	WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
+    	//WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
+    	
     	return new ModelAndView(new RedirectView(request.getContextPath() + "/" + getSuccessView() + ".htm"));
     }
 
@@ -273,7 +245,7 @@ public class EventSearchController extends AbstractFormController {
     	eventSearchForm.setWhat(ServletRequestUtils.getStringParameter(request, QUERY_WHAT));
     	Integer zoom = ServletRequestUtils.getIntParameter(request, QUERY_ZOOM);
     	//check for incorrect zoom
-    	if ((zoom != null) && (zoom >0) && (zoom < NUM_ZOOM_LEVELS)) {
+    	if ((zoom != null) && (zoom >0) && (zoom < SensibleMapDefaults.NUM_ZOOM_LEVELS)) {
         	eventSearchForm.setMapZoom(zoom);
     	}
     	eventSearchForm.setIsFitViewToResults(ServletRequestUtils.getBooleanParameter(request, QUERY_FIT));
@@ -293,16 +265,16 @@ public class EventSearchController extends AbstractFormController {
         	Point point = address.getPoint();
         	if (null == eventSearchForm.getMapZoom()) {
         		//if they didn't supply the zoom level, we will get it from the address accuracy
-            	if (address.getAccuracy() < ACCURACY_TO_ZOOM.length) {
-            		eventSearchForm.setMapZoom(ACCURACY_TO_ZOOM[address.getAccuracy()]);
+            	if (address.getAccuracy() < SensibleMapDefaults.ACCURACY_TO_ZOOM.length) {
+            		eventSearchForm.setMapZoom(SensibleMapDefaults.ACCURACY_TO_ZOOM[address.getAccuracy()]);
             	} else {
-            		eventSearchForm.setMapZoom(ZOOM_WORLD);  
+            		eventSearchForm.setMapZoom(SensibleMapDefaults.ZOOM_COUNTRY);  
             	}
         	}
         	eventSearchForm.setMapCenter(point);
     	} else {
-    		eventSearchForm.setMapZoom(ZOOM_WORLD);  
-        	eventSearchForm.setMapCenter(USA);
+    		eventSearchForm.setMapZoom(SensibleMapDefaults.ZOOM_COUNTRY);  
+        	eventSearchForm.setMapCenter(SensibleMapDefaults.USA);
     	}
 	}
   
@@ -322,10 +294,10 @@ public class EventSearchController extends AbstractFormController {
             eventSearchForm.setCurrentRecord(firstRecord);
             //if we are below a certain zoom level, we will still search a wider area
             LatLngBounds bounds = null;
-            if (eventSearchForm.getMapZoom() >= ZOOM_BOX_THRESHOLD) {
+            if (eventSearchForm.getMapZoom() >= SensibleMapDefaults.ZOOM_BOX_THRESHOLD) {
             	if (null != eventSearchForm.getMapCenter()) {
                 	bounds = ProximityHelper.getBounds(
-                			SEARCH_BOX_DIMENTSIONS[eventSearchForm.getMapZoom()], 
+                			SensibleMapDefaults.SEARCH_BOX_DIMENTSIONS[eventSearchForm.getMapZoom()], 
                 			eventSearchForm.getMapCenter());  
             	}
             } else {
