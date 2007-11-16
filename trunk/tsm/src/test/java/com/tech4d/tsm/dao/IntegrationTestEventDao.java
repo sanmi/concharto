@@ -130,7 +130,7 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
         			earlier.getCreated().after(event.getCreated()));
         	earlier = event;
         }        
-        assertEquals(2, eventDao.getTotalCount());
+        assertEquals(2, (int)eventDao.getTotalCount());
 
     }
 
