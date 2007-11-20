@@ -95,11 +95,9 @@
 				event.description.escapeHTML() + '<br/>' +
 				'<br/><b>Tags: </b>' + event.tags.escapeHTML() + '<br/>' + 
 				'<b>Source: </b>';
-				if (event.source.substring(0,7) == 'http://') {
-					html += '<a href=' + event.source.escapeHTML() + ' target="_top">' + event.source.escapeHTML() + '</a>';
-				} else {
-					html += event.source.escapeHTML();
-				}
+				html += event.source.escapeHTML()
+				html = autolink(html);
+				html = return2br(html);
 	   return html;
 	}	
 	
@@ -173,3 +171,10 @@
 		return null;
 	}
 	
+	function return2br(dataStr) {
+		return dataStr.replace(/(\r\n|[\r\n])/g, "<br/>");
+  }
+  
+  function autolink(dataStr) {
+  	return dataStr.gsub('((ftp|https?)://[^ ,;\t\n<]*)','<a href="#{1}">#{1}</a>');
+  }
