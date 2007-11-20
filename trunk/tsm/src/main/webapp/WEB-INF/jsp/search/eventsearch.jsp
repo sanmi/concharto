@@ -3,7 +3,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="rx" uri="http://jakarta.apache.org/taglibs/regexp-1.0" %>
+<%@ taglib prefix="display" uri="http://displaytag.sf.net" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
+<% pageContext.setAttribute("linefeed", "\n"); %>
 
 <tsm:page title="Event">
 	<jsp:attribute name="head">
@@ -81,13 +84,58 @@
 			  			</c:if>							
 						</div>
 			    	<c:set var="test" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ"/>
+						<!--  start -->
+							<display:table id="event" 
+												name="events" 
+												requestURI="${basePath}${requestURI}.htm"
+												>
+								<display:setProperty name="basic.msg.empty_list"> </display:setProperty>
+								<display:setProperty name="paging.banner.placement"> </display:setProperty>
+								<display:setProperty name="paging.banner.item_name"> </display:setProperty>
+								<display:setProperty name="paging.banner.items_name"> </display:setProperty>
+								<display:setProperty name="paging.banner.onepage"> </display:setProperty>
+								<display:setProperty name="paging.banner.no_items_found"> </display:setProperty>
+								<display:setProperty name="paging.banner.one_item_found"> </display:setProperty>
+								<display:setProperty name="paging.banner.all_items_found"> </display:setProperty>
+								<display:setProperty name="paging.banner.some_items_found"> </display:setProperty>
+								<display:column autolink="true">
+									<div class="result">
+			            	<span class="letter">(<c:out value="${fn:substring(test,event_rowNum-1,event_rowNum)}"/>)</span>
+					          <span class="when"><c:out value="${event.when.asText}"/></span>, 
+					          <a class="summary" href="#" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"><c:out value="${event.summary}"/></a><br/>
+					          <span class="where"><c:out value="${event.where}"/></span> <br/>
+					           <%-- We want to keep any line breaks but escape all other html --%>
+					          <c:set var="description" value="${fn:escapeXml(fn:substring(event.description,0,300))}"/>
+					          <c:out value="${fn:replace(description, linefeed, '<br/>')}" escapeXml="false"/> 
+					          <c:if test="${fn:length(event.description) > 300}">
+					          	<a class="more" href="#" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"> ... more</a>
+					          </c:if> 
+										<br/>	
+					          <a  class="links" href="#" onclick="editEvent(<c:out value='${event.id}'/>)">edit</a>
+					          &nbsp; <a class="links" href="${basePath}edit/flagevent.htm?id=${event.id}" >flag</a>
+					          &nbsp; 
+					          <c:choose>
+					          	<c:when test="${event.hasUnresolvedFlag}">
+						          	<span class="errorLabel"><em>This event has been <a class="errorlinks" href="${basePath}edit/eventdetails.htm?id=${event.id}">flagged!</a></em></span>
+					          	</c:when>
+					          	<c:otherwise>
+						          	<a class="links" href="${basePath}edit/eventdetails.htm?id=${event.id}">details</a>
+					          	</c:otherwise>
+					          </c:choose>
+					          <br/>
+									</div>
+								</display:column>
+							</display:table>
+											
+						<!-- end -->
+						<%-- 
 				    <c:forEach items="${events}" var="event" varStatus="status">
 				    	<div class="result">
 	            	<span class="letter">(<c:out value="${fn:substring(test,status.count-1,status.count)}"/>)</span>
 			          <span class="when"><c:out value="${event.when.asText}"/></span>, 
 			          <a class="summary" href="#" onclick="openMarker(<c:out value='${status.count-1}'/>)"><c:out value="${event.summary}"/></a><br/>
 			          <span class="where"><c:out value="${event.where}"/></span> <br/>
-			          
+
 			          <c:out value="${fn:substring(event.description,0,300)}"/> 
 			          <c:if test="${fn:length(event.description) > 300}">
 			          	<a class="more" href="#" onclick="openMarker(<c:out value='${status.count-1}'/>)"> ... more</a>
@@ -108,6 +156,7 @@
 			          
 							</div>
 				    </c:forEach>
+				    --%>
 				    <div class="nextPrev">
 					    <c:if test="${eventSearch.currentRecord > 0}"> 
 						    	<a class="nextPrev" href="#" onclick="nextPage('previous')">Previous</a>
