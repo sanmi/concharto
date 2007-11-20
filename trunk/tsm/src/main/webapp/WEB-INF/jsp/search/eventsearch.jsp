@@ -64,7 +64,7 @@
 				  				No Events found
 			  				</c:otherwise>
 			  			</c:choose>
-				  			<c:set var="where" value="${(eventSearchForm.where != '')}"/>
+				  			<c:set var="where" value="${(eventSearchForm.where != '') && (eventSearchForm.where != null)}"/>
 				  			<c:set var="when" value="${(eventSearchForm.when != null)}"/>
 				  			<c:set var="what" value="${(eventSearchForm.what != '')}"/>
 			  			<c:if test="${where || when || what}">for</c:if>
