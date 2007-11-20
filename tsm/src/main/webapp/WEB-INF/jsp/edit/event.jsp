@@ -54,10 +54,10 @@
 		} 
 		var eventsJSON = document.getElementById("eventForm").searchResults.value;
 		if (eventsJSON != '') {
+			var excludeEventId = document.getElementById("eventForm").id.value;
 			var events = eventsJSON.parseJSON();
 			createOverlays(events, excludeEventId);
 		}
-		var excludeEventId = document.getElementById("eventForm").id.value;
 		createEditableOverlay();
 	}
 	
