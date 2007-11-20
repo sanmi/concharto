@@ -88,16 +88,17 @@
 			height = 'height:' + height + 'px;'
 			divclass='inforesult';
 		}
-		 
+		var descrWithBR = event.description.gsub('(\r\n|[\r\n])', '{BR}');		//IE6 issue with escapeHTML		 
 	  var html = '<div class="'+divclass+'" style="width:' + width +'px;'+ height +'margin-bottom:10px">' + 
 	   		event.when + '<br/><b>' + event.summary.escapeHTML() +'</b><br/><em>' + 
 				event.where.escapeHTML() + '</em><br/>' +
-				event.description.escapeHTML() + '<br/>' +
+				descrWithBR.escapeHTML() + '<br/>' +
 				'<br/><b>Tags: </b>' + event.tags.escapeHTML() + '<br/>' + 
 				'<b>Source: </b>';
 				html += event.source.escapeHTML()
-				html = autolink(html);
 				html = return2br(html);
+				html = html.gsub('{BR}','<br/>');
+				html = autolink(html);
 	   return html;
 	}	
 	
@@ -172,7 +173,7 @@
 	}
 	
 	function return2br(dataStr) {
-		return dataStr.replace(/(\r\n|[\r\n])/g, "<br/>");
+		return dataStr.gsub('(\r\n|[\r\n])', '<br/>');
   }
   
   function autolink(dataStr) {
