@@ -46,6 +46,7 @@ public class SearchHelper {
 	public static final String QUERY_WHAT = "_what";
 	public static final String QUERY_WHEN = "_when";
 	public static final String QUERY_WHERE = "_where";
+	public static final String QUERY_ID = "_id";
 	public static final String QUERY_FIT = "_fit";
 	public static final String SESSION_EVENT_SEARCH_FORM = "eventSearchForm";
     public static final int MAX_RECORDS = 25;
@@ -88,6 +89,7 @@ public class SearchHelper {
         	eventSearchForm.setMapZoom(zoom);
     	}
     	eventSearchForm.setIsFitViewToResults(ServletRequestUtils.getBooleanParameter(request, QUERY_FIT));
+    	eventSearchForm.setEventId(ServletRequestUtils.getIntParameter(request, QUERY_ID));
 	}
 
     /**
@@ -137,26 +139,40 @@ public class SearchHelper {
          * time range and bounding box
          * TODO cache the total results if nothing has changed (e.g. pagination)
          */
-        if (eventSearchForm.getMapCenter() != null) {
+		List<Event> events; 
+		Long totalResults;
+    	if (eventSearchForm.getEventId() != null) {
+    		Event event = eventSearchService.findById((long) eventSearchForm.getEventId());
+    		events = new ArrayList<Event>();
+    		events.add(event);
+    		eventSearchForm.setMapCenter(event.getTsGeometry().getGeometry().getCentroid());
+    		eventSearchForm.setMapZoom(event.getZoomLevel());
+    		eventSearchForm.setMapType(event.getMapType());
+    		totalResults = 1L;
+    		//now remove the id from the form - we don't want to get stuck forever showing this event
+    		eventSearchForm.setEventId(null);
+    		
+    	} else if (eventSearchForm.getMapCenter() != null) {
             int firstRecord = PaginatingFormHelper.calculateFirstRecord(eventSearchForm, MAX_RECORDS);
             eventSearchForm.setCurrentRecord(firstRecord);
             LatLngBounds bounds = getBounds(eventSearchForm);
-            List<Event> events = eventSearchService.search(MAX_RECORDS, firstRecord, 
+            events = eventSearchService.search(MAX_RECORDS, firstRecord, 
             		eventSearchForm.getWhat(), eventSearchForm.getWhen(), bounds, getVisibility(eventSearchForm));
-            Long totalResults = eventSearchService.getCount(
+            totalResults = eventSearchService.getCount(
             		eventSearchForm.getWhat(), eventSearchForm.getWhen(), bounds, getVisibility(eventSearchForm));
-
-            //for debugging
-            //addDebugBoundingBox(events, bounds);
-            
-            model.put(MODEL_TOTAL_RESULTS, totalResults);
-            model.put(MODEL_EVENTS, events);
-            //NOTE: we are putting the events into the command so that the page javascript
-            //functions can properly display them using google's mapping API
-            eventSearchForm.setSearchResults(JSONFormat.toJSON(events));
-            return events;
-        }
-        return new ArrayList<Event>();
+    	} else {
+    		events = new ArrayList<Event>();
+    		totalResults = 0L;
+    	}
+        //for debugging
+        //addDebugBoundingBox(events, bounds);
+        
+        model.put(MODEL_TOTAL_RESULTS, totalResults);
+        model.put(MODEL_EVENTS, events);
+        //NOTE: we are putting the events into the command so that the page javascript
+        //functions can properly display them using google's mapping API
+        eventSearchForm.setSearchResults(JSONFormat.toJSON(events));
+        return events;
     }
 
     /**

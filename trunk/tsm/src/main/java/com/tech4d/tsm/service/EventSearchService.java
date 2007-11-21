@@ -50,4 +50,10 @@ public interface EventSearchService {
      */
     public Integer getTotalCount();
 
+    /**
+     * Find an event based on its Id
+     * @param id the id
+     * @return Event an event
+     */
+    public Event findById(Long id);
 }

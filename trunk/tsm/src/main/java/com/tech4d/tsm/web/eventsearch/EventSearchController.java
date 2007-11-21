@@ -131,7 +131,6 @@ public class EventSearchController extends AbstractFormController {
         	returnModelAndView = handleGet(request, eventSearchForm);
         } else {
             logger.debug("No errors -> processing submit");
-            Map model = doSearch(request, errors, eventSearchForm);
             if ((null != eventSearchForm.getIsEditEvent()) && eventSearchForm.getIsEditEvent()) {
             	eventSearchForm.setIsEditEvent(false); //turn this flag back off
                 if (eventSearchForm.getEventId() != null) {
@@ -141,6 +140,7 @@ public class EventSearchController extends AbstractFormController {
                 	returnModelAndView = new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm"));
                 }
             } else {
+                Map model = doSearch(request, errors, eventSearchForm);
             	returnModelAndView = new ModelAndView(getSuccessView(), model);
             }
         }

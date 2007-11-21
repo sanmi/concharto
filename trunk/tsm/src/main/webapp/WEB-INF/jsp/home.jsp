@@ -75,13 +75,14 @@
 						</div>
 						<div class="infoBox">
 		  				<h2>Recently Added</h2>
+		  				<ul>
 		  				<c:forEach items="${recentEvents}" var="event" varStatus="status">
-		  					<div class="event">
-		  						<a class='links' href='${basePath}search/eventsearch.htm?_what="${event.summary}"&_when=${event.when}&_fit=true'>
+		  					<li class="event">
+		  						<a class='links' href='${basePath}search/eventsearch.htm?_id=${event.id}'>
 		  							${event.summary}, ${event.when.asText}
 		  							<c:if test="${event.where != null && event.where != ''}">, ${event.where}</c:if> 
 		  						</a>
-		  					</div>
+		  					</li>
 		  				</c:forEach>
 	  				</div>
 						

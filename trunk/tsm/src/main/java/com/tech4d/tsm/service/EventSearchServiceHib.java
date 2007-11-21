@@ -75,6 +75,11 @@ public class EventSearchServiceHib implements EventSearchService {
         return sessionFactory;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.tech4d.tsm.service.EventSearchService#getTotalCount()
+     */
     @SuppressWarnings("unchecked")
 	public Integer getTotalCount() {
     	List results = this.sessionFactory.getCurrentSession()
@@ -83,6 +88,17 @@ public class EventSearchServiceHib implements EventSearchService {
     	Long count = (Long) results.get(0);
     	//cast to Integer.  It aint never going to be bigger!
     	return Math.round(count);
+    }
+
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.tech4d.tsm.service.EventSearchService#findById()
+     */
+    public Event findById(Long id) {
+        return (Event) this.sessionFactory.getCurrentSession().get(
+                Event.class, id);
     }
 
     /*
