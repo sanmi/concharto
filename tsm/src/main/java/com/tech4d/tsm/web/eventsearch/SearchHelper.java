@@ -183,17 +183,16 @@ public class SearchHelper {
 	private LatLngBounds getBounds(EventSearchForm eventSearchForm) {
 		//if we are below a certain zoom level, we will still search a wider area
 		LatLngBounds bounds = null;
-		if (eventSearchForm.getMapZoom() >= SensibleMapDefaults.ZOOM_BOX_THRESHOLD) {
+		if ((eventSearchForm.getMapZoom() >= SensibleMapDefaults.ZOOM_BOX_THRESHOLD) ||
+				((null == eventSearchForm.getBoundingBoxSW()) && (null == eventSearchForm.getBoundingBoxSW())))	{
 			if (null != eventSearchForm.getMapCenter()) {
 		    	bounds = ProximityHelper.getBounds(
 		    			SensibleMapDefaults.SEARCH_BOX_DIMENTSIONS[eventSearchForm.getMapZoom()], 
 		    			eventSearchForm.getMapCenter());  
 			}
 		} else {
-			if ((null != eventSearchForm.getBoundingBoxSW()) && (null != eventSearchForm.getBoundingBoxSW())) {
 		    	bounds = new LatLngBounds(eventSearchForm.getBoundingBoxSW(), 
 		    			eventSearchForm.getBoundingBoxNE());
-			}
 		}
 		return bounds;
 	}
