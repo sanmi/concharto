@@ -124,14 +124,13 @@
 		<property name="eventSearchService" ref="eventSearchService" />
 		<property name="validator" ref="eventSearchFormValidator"/>
 	</bean>
-	<bean id="embeddedSearchController" class="com.tech4d.tsm.web.eventsearch.EventSearchController" parent="baseEventController">
+	
+	<bean id="embeddedSearchController" class="com.tech4d.tsm.web.eventsearch.EmbeddedSearchController" parent="baseEventController">
 		<property name="commandName" value="eventSearch" />
 		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
 		<property name="formView" value="search/embeddedsearch" />
 		<property name="successView" value="search/embeddedsearch" />
 		<property name="eventSearchService" ref="eventSearchService" />
-		<property name="searchInSessionAttribute" value="embeddedEventSearchForm" />
-		<property name="validator" ref="eventSearchFormValidator"/>
 	</bean>
 
 	<bean id="settingsFormValidator" class="com.tech4d.tsm.web.member.SettingsFormValidator"/>

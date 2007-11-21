@@ -43,7 +43,6 @@
 		if (mapType != '') {
 			map.setMapType(G_DEFAULT_MAP_TYPES[mapType]);
 		}
-
 		if (mapCenterJSON != "") {
 			var mapCenter = mapCenterJSON.parseJSON();
 			<%-- recenter the map --%>
