@@ -55,8 +55,8 @@
 			}
 		}
 		adjustSidebarIE();
-		
-		if (isFitViewToResults() == 'true') {
+		var where = document.getElementById("eventSearchForm").where.value
+		if ((isFitViewToResults() == 'true') && (where == '')) {
 			<%-- fit map to the results --%>
 			setIsFitViewToResults('false');
 			var boundsPoly = new GPolyline(_fitToPolygon);

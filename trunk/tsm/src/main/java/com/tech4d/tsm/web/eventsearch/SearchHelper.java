@@ -48,7 +48,6 @@ public class SearchHelper {
 	public static final String QUERY_WHERE = "_where";
 	public static final String QUERY_ID = "_id";
 	public static final String QUERY_FIT = "_fit";
-	public static final String SESSION_EVENT_SEARCH_FORM = "eventSearchForm";
     public static final int MAX_RECORDS = 25;
     public static final String MODEL_EVENTS = "events";
     public static final String MODEL_TOTAL_RESULTS = "totalResults";
@@ -183,6 +182,11 @@ public class SearchHelper {
 	private LatLngBounds getBounds(EventSearchForm eventSearchForm) {
 		//if we are below a certain zoom level, we will still search a wider area
 		LatLngBounds bounds = null;
+		if ((StringUtils.isEmpty(eventSearchForm.getWhere())) && (eventSearchForm.getIsFitViewToResults())) {
+			//when they specify fit view to all results, we don't want a bounding box, unless
+			//they also specify a place, in which case the geocode takes precedence
+			return null;
+		}
 		if ((eventSearchForm.getMapZoom() >= SensibleMapDefaults.ZOOM_BOX_THRESHOLD) ||
 				((null == eventSearchForm.getBoundingBoxSW()) && (null == eventSearchForm.getBoundingBoxSW())))	{
 			if (null != eventSearchForm.getMapCenter()) {
@@ -191,8 +195,7 @@ public class SearchHelper {
 		    			eventSearchForm.getMapCenter());  
 			}
 		} else {
-		    	bounds = new LatLngBounds(eventSearchForm.getBoundingBoxSW(), 
-		    			eventSearchForm.getBoundingBoxNE());
+		    bounds = new LatLngBounds(eventSearchForm.getBoundingBoxSW(), eventSearchForm.getBoundingBoxNE());
 		}
 		return bounds;
 	}
