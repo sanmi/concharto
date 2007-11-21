@@ -182,7 +182,8 @@ public class SearchHelper {
 	private LatLngBounds getBounds(EventSearchForm eventSearchForm) {
 		//if we are below a certain zoom level, we will still search a wider area
 		LatLngBounds bounds = null;
-		if ((StringUtils.isEmpty(eventSearchForm.getWhere())) && (eventSearchForm.getIsFitViewToResults())) {
+		if ((StringUtils.isEmpty(eventSearchForm.getWhere())) && 
+				((eventSearchForm.getIsFitViewToResults() != null) && (eventSearchForm.getIsFitViewToResults()))) {
 			//when they specify fit view to all results, we don't want a bounding box, unless
 			//they also specify a place, in which case the geocode takes precedence
 			return null;
