@@ -1,7 +1,5 @@
 package com.tech4d.tsm.web.eventsearch;
 
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -11,55 +9,30 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.propertyeditors.CustomBooleanEditor;
 import org.springframework.validation.BindException;
-import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractFormController;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.auth.AuthConstants;
-import com.tech4d.tsm.auth.AuthHelper;
-import com.tech4d.tsm.geocode.GAddress;
-import com.tech4d.tsm.geocode.GGcoder;
 import com.tech4d.tsm.model.Event;
-import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.service.EventSearchService;
-import com.tech4d.tsm.service.Visibility;
 import com.tech4d.tsm.util.JSONFormat;
-import com.tech4d.tsm.util.LatLngBounds;
-import com.tech4d.tsm.util.ProximityHelper;
-import com.tech4d.tsm.util.SensibleMapDefaults;
-import com.tech4d.tsm.util.TimeRangeFormat;
-import com.tech4d.tsm.web.edit.EventController;
-import com.tech4d.tsm.web.util.GeometryPropertyEditor;
-import com.tech4d.tsm.web.util.PaginatingFormHelper;
-import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
 
 public class EventSearchController extends AbstractFormController {
-	private static final String QUERY_ZOOM = "_zoom";
-	private static final String QUERY_WHAT = "_what";
-	private static final String QUERY_WHEN = "_when";
-	private static final String QUERY_WHERE = "_where";
-	private static final String QUERY_FIT = "_fit";
 	private static final Log log = LogFactory.getLog(EventSearchController.class);
 	public static final String SESSION_EVENT_SEARCH_FORM = "eventSearchForm";
-    public static final String SESSION_FIRST_VIEW = "firstView";
     public static final String MODEL_EVENTS = "events";
     public static final String MODEL_TOTAL_RESULTS = "totalResults";
     public static final String MODEL_CURRENT_RECORD = "currRecord";
     public static final String MODEL_PAGESIZE = "pageSize";
 
     public static final int MAX_RECORDS = 25;
-    private EventSearchService eventSearchService;
     private String formView;
     private String successView;
-    private String searchInSessionAttribute;
+    private SearchHelper searchHelper;
     
     public String getFormView() {
         return formView;
@@ -77,35 +50,19 @@ public class EventSearchController extends AbstractFormController {
         this.successView = successView;
     }
 
-    public EventSearchService getEventSearchService() {
-        return eventSearchService;
-    }
-
     public void setEventSearchService(EventSearchService eventSearchService) {
-        this.eventSearchService = eventSearchService;
+        this.searchHelper = new SearchHelper(eventSearchService);
     }
     
-	public void setSearchInSessionAttribute(String searchInSessionLabel) {
-		this.searchInSessionAttribute = searchInSessionLabel;
-	}
-
-	public EventSearchController() {
-		//this is the default for this controller, but it can be overridden
-		//for instance by the embeddedsearch instance, which will want to use
-		//a different session variable so it doesn't intervere with the default
-		searchInSessionAttribute = SESSION_EVENT_SEARCH_FORM;
-	}
 	@Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder)
             throws Exception {
-        binder.registerCustomEditor(TimeRange.class, new TimeRangePropertyEditor());
-        binder.registerCustomEditor(Geometry.class, new GeometryPropertyEditor());
-        binder.registerCustomEditor(Boolean.class, new CustomBooleanEditor("true", "false", true));
+		searchHelper.initBinder(request, binder);
         super.initBinder(request, binder);
     }
 
     private EventSearchForm getEventSearchForm(HttpServletRequest request) {
-        return (EventSearchForm) WebUtils.getSessionAttribute(request, searchInSessionAttribute);
+        return (EventSearchForm) WebUtils.getSessionAttribute(request, SESSION_EVENT_SEARCH_FORM);
     }
 
     @Override
@@ -188,7 +145,7 @@ public class EventSearchController extends AbstractFormController {
             }
         }
         //put the data into the session in case we are leaving to edit, and then want to come back
-        WebUtils.setSessionAttribute(request, searchInSessionAttribute, eventSearchForm);
+        WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
          
         return returnModelAndView;
     }
@@ -209,6 +166,7 @@ public class EventSearchController extends AbstractFormController {
     /**
      * They have put query string data on the request, so we ignore all else
      * @param request servlet request
+     * @param eventSearchForm form object
      * @return ModelAndView a new ModelAndView
      * @throws Exception exception
      */
@@ -216,182 +174,27 @@ public class EventSearchController extends AbstractFormController {
     	//this request contains enough information to do a search right now
     	//use the same binder to get params of the query string as we were using for the POST
         //populate the form with parameters off the URL query string
-    	bindGetParameters(request, eventSearchForm);
+    	searchHelper.bindGetParameters(request, eventSearchForm);
     	
     	//geocode
-    	geocode(request, eventSearchForm);
+		String mapKey = getMessageSourceAccessor().getMessage(searchHelper.makeMapKeyCode(request));
+    	searchHelper.geocode(mapKey, request, eventSearchForm);
     	
     	//save the form for redirect
     	//WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
     	
     	return new ModelAndView(new RedirectView(request.getContextPath() + "/" + getSuccessView() + ".htm"));
     }
-
-    /**
-     * Populate the form with params from the URL query string
-     * @param request servlet request
-     * @param eventSearchForm the form to populate
-     * @throws ServletRequestBindingException e
-     */
-	private void bindGetParameters(HttpServletRequest request, EventSearchForm eventSearchForm)
-			throws ServletRequestBindingException {
-		eventSearchForm.setWhere(ServletRequestUtils.getStringParameter(request, QUERY_WHERE));
-		String whenStr = ServletRequestUtils.getStringParameter(request, QUERY_WHEN);
-    	try {
-    		eventSearchForm.setWhen(TimeRangeFormat.parse(whenStr));
-    	} catch (ParseException e) {
-    		//no error handling for URL string searches  TODO add error handling
-    	}
-    	eventSearchForm.setWhat(ServletRequestUtils.getStringParameter(request, QUERY_WHAT));
-    	Integer zoom = ServletRequestUtils.getIntParameter(request, QUERY_ZOOM);
-    	//check for incorrect zoom
-    	if ((zoom != null) && (zoom >0) && (zoom < SensibleMapDefaults.NUM_ZOOM_LEVELS)) {
-        	eventSearchForm.setMapZoom(zoom);
-    	}
-    	eventSearchForm.setIsFitViewToResults(ServletRequestUtils.getBooleanParameter(request, QUERY_FIT));
-	}
-
-    /**
-     * Geocode and update the eventSearchForm accordingly
-     * @param request servlet request
-     * @param eventSearchForm form to be updated
-     * @throws IOException e
-     */
-	private void geocode(HttpServletRequest request,
-			EventSearchForm eventSearchForm) throws IOException {
-		if (!StringUtils.isEmpty(eventSearchForm.getWhere())) {
-        	String mapKey = getMessageSourceAccessor().getMessage(makeMapKeyCode(request));
-        	GAddress address = GGcoder.geocode(eventSearchForm.getWhere(), mapKey);
-        	Point point = address.getPoint();
-        	if (null == eventSearchForm.getMapZoom()) {
-        		//if they didn't supply the zoom level, we will get it from the address accuracy
-            	if (address.getAccuracy() < SensibleMapDefaults.ACCURACY_TO_ZOOM.length) {
-            		eventSearchForm.setMapZoom(SensibleMapDefaults.ACCURACY_TO_ZOOM[address.getAccuracy()]);
-            	} else {
-            		eventSearchForm.setMapZoom(SensibleMapDefaults.ZOOM_COUNTRY);  
-            	}
-        	}
-        	eventSearchForm.setMapCenter(point);
-    	} else {
-    		eventSearchForm.setMapZoom(SensibleMapDefaults.ZOOM_COUNTRY);  
-        	eventSearchForm.setMapCenter(SensibleMapDefaults.USA);
-    	}
-	}
-  
-
+    
     @SuppressWarnings("unchecked")
-    private Map doSearch( HttpServletRequest request, BindException errors, EventSearchForm eventSearchForm) {
-        /*
-         * 1. Get the lat-long bounding box of whatever zoom
-         * level we are at. 2. Parse the time field to extract a time range 3.
-         * Do a search to find the count of all events within that text filter,
-         * time range and bounding box
-         * TODO cache the total results if nothing has changed (e.g. pagination)
-         */
-        Map model = errors.getModel();
-        if (eventSearchForm.getMapCenter() != null) {
-            int firstRecord = PaginatingFormHelper.calculateFirstRecord(eventSearchForm, MAX_RECORDS);
-            eventSearchForm.setCurrentRecord(firstRecord);
-            //if we are below a certain zoom level, we will still search a wider area
-            LatLngBounds bounds = null;
-            if (eventSearchForm.getMapZoom() >= SensibleMapDefaults.ZOOM_BOX_THRESHOLD) {
-            	if (null != eventSearchForm.getMapCenter()) {
-                	bounds = ProximityHelper.getBounds(
-                			SensibleMapDefaults.SEARCH_BOX_DIMENTSIONS[eventSearchForm.getMapZoom()], 
-                			eventSearchForm.getMapCenter());  
-            	}
-            } else {
-            	if ((null != eventSearchForm.getBoundingBoxSW()) && (null != eventSearchForm.getBoundingBoxSW())) {
-                	bounds = new LatLngBounds(eventSearchForm.getBoundingBoxSW(), 
-                			eventSearchForm.getBoundingBoxNE());
-            	}
-            }
-            List<Event> events = eventSearchService.search(MAX_RECORDS, firstRecord, 
-            		eventSearchForm.getWhat(), eventSearchForm.getWhen(), bounds, getVisibility(eventSearchForm));
-            Long totalResults = eventSearchService.getCount(
-            		eventSearchForm.getWhat(), eventSearchForm.getWhen(), bounds, getVisibility(eventSearchForm));
-
-            //for debugging
-            //addDebugBoundingBox(events, bounds);
-            
-            //if we just added a new event, it can be very confusing for the user to have the icon
-            //disappear because it isn't high in the search results.  This is a kludge to help them
-            //but it is only partially successful because the next time they hit 'search', their icon may disappear.  
-            //I guess they will just have to get used to it?
-            //So we will add the new event to the search results this one time
-            //TODO - this may still be confusing to the user
-            Event event = (Event) WebUtils.getSessionAttribute(request, EventController.SESSION_EVENT);
-            if (event != null) {
-            	//erase it for next time
-            	WebUtils.setSessionAttribute(request, EventController.SESSION_EVENT, null);
-            	boolean alreadyInList = false;
-            	for (Event listEvent : events) {
-            		if (event.getId().equals(listEvent.getId())) {
-            			alreadyInList = true;
-            		}
-            	}
-            	if (!alreadyInList) {
-                	events.add(event);           		
-            	}
-            }
-            model.put(MODEL_TOTAL_RESULTS, totalResults);
-            model.put(MODEL_EVENTS, events);
-            //NOTE: we are putting the events into the command so that the page javascript
-            //functions can properly display them using google's mapping API
-            eventSearchForm.setSearchResults(JSONFormat.toJSON(events));
-        }
-        return model;
+	private Map doSearch( HttpServletRequest request, BindException errors, EventSearchForm eventSearchForm) {
+    	Map model = errors.getModel();
+    	List<Event> events = searchHelper.doSearch(request, model, eventSearchForm);
+    	//if they were editing, we need to add the most recently edited point, regardless of whether
+    	//it matches the search criteria, otherwise the user will be confused. TODO UI issue here
+    	searchHelper.addNewlyCreatedEvent(request, events);
+    	eventSearchForm.setSearchResults(JSONFormat.toJSON(events));
+    	return model;
     }
 
-	/* useful for debugging */
-/*    private void addDebugBoundingBox(List<Event> events, LatLngBounds bounds) {
-    	Set<Geometry> boxes = ProximityHelper.getBoundingBoxes(bounds.getSouthWest(), bounds.getNorthEast());
-    	for (Geometry box : boxes) {
-        	Event event = new Event();
-        	event.setSummary("box");
-        	event.setTsGeometry(new TsGeometry(box));
-        	try {
-    			event.setWhen(TimeRangeFormat.parse("2000"));
-    		} catch (ParseException e) {
-    		}
-    		event.setId(2L);
-    		event.setHasUnresolvedFlag(false);
-    		event.setWhere("");
-    		event.setDescription("");
-    		event.setUserTagsAsString("");
-    		event.setSource("");
-    		events.add(event);
-    	}
-    }
-*/
-    /** 
-     * Only administrators are allowed to see removed events.  We need to check for proper authorization
-     * because the user could have hacked the HTML to add the showInvisible parameter
-     * @param eventSearchForm  EventSearchForm
-     * @return true if we are supposed to show visible events.  false if we are supposed to show invisible events.
-     */
-    private Visibility getVisibility(EventSearchForm eventSearchForm) {
-    	if (AuthHelper.isUserAnAdmin()) {
-    		//TODO probably a better way than this
-    		if (StringUtils.equals(EventSearchForm.SHOW_HIDDEN,eventSearchForm.getShow())) {
-    			return Visibility.HIDDEN;
-    		} else if (StringUtils.equals(EventSearchForm.SHOW_NORMAL,eventSearchForm.getShow())) {
-    			return Visibility.NORMAL;
-    		} else if (StringUtils.equals(EventSearchForm.SHOW_FLAGGED,eventSearchForm.getShow())) {
-    			return Visibility.FLAGGED;
-    		} 
-    	}
-    	return Visibility.NORMAL;
-    }
-    
-	private String makeMapKeyCode(HttpServletRequest request) {
-		//map.${pageContext.request.serverName}.${pageContext.request.serverPort}.key
-		return new StringBuffer("map.")
-		.append(request.getServerName())
-		.append('.')
-		.append(request.getServerPort())
-		.append('.')
-		.append("key").toString();
-	}
-    
 }
