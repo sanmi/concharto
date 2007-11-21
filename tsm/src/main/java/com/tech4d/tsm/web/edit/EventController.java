@@ -82,6 +82,9 @@ public class EventController extends SimpleFormController {
 
         //change the map center of the search form to wherever we are now!    	
         EventSearchForm eventSearchForm = getEventSearchForm(request);
+        if (eventSearchForm == null) {
+        	eventSearchForm = new EventSearchForm();
+        }
         eventSearchForm.setMapCenter(eventForm.getMapCenter());
         eventSearchForm.setMapZoom(eventForm.getZoomLevel());
         WebUtils.setSessionAttribute(request, EventSearchController.SESSION_EVENT_SEARCH_FORM, eventSearchForm);

@@ -20,11 +20,13 @@ public class EventSearchFormValidator implements Validator{
                     new Object[]{eventSearchForm.getWhere()}, null);
         }
         //begin can't be after end 
-        if (eventSearchForm.getWhen().getBegin().getDate().after(
-        		eventSearchForm.getWhen().getEnd().getDate())) {
-            errors.rejectValue("when", 
-                    "beginAfterEnd.when", 
-                    new Object[]{eventSearchForm.getWhen()}, null);
+        if (eventSearchForm.getWhen() != null) {
+            if (eventSearchForm.getWhen().getBegin().getDate().after(
+            		eventSearchForm.getWhen().getEnd().getDate())) {
+                errors.rejectValue("when", 
+                        "beginAfterEnd.when", 
+                        new Object[]{eventSearchForm.getWhen()}, null);
+            }
         }
     }
 
