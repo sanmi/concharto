@@ -41,9 +41,12 @@
 			<table><tbody><tr>			
 				<td id="sidebar">
 		    	<div id="results" >
-		    		
-		    		<form:errors path="where" cssClass="errorLabel" element="div"/>
-						<form:errors path="when" cssClass="errorLabel" element="div"/>
+		    		<form:errors path="where" cssClass="errorLabel" element="div">
+		    			<c:set var="hasErrors" value="true"/>
+		    		</form:errors>
+						<form:errors path="when" cssClass="errorLabel" element="div">
+		    			<c:set var="hasErrors" value="true"/>
+		    		</form:errors>
 						<form:errors path="when">
 							<div class="errorHint">
 								Examples of valid time ranges are:
@@ -56,33 +59,36 @@
 								<li>Oct 12, 1992, 12:23:05 am</li>
 								</ul>
 							</div>
-						</form:errors>
-						<div class="resultcount">
-							<c:choose>
-			  				<c:when test="${fn:length(events) > 0}">
-					  			Displaying events <b>${eventSearch.currentRecord + 1}  - ${eventSearch.currentRecord + fn:length(events) }</b>  
-					  			of <b><c:out value="${totalResults}"/></b>
-				 				</c:when>
-			  				<c:otherwise>
-				  				No Events found
-			  				</c:otherwise>
-			  			</c:choose>
+		    			<c:set var="hasErrors" value="true"/>
+		    		</form:errors>
+						<c:if test="${hasErrors != 'true'}">
+							<div class="resultcount">
+								<c:choose>
+				  				<c:when test="${fn:length(events) > 0}">
+						  			Displaying events <b>${eventSearch.currentRecord + 1}  - ${eventSearch.currentRecord + fn:length(events) }</b>  
+						  			of <b><c:out value="${totalResults}"/></b>
+					 				</c:when>
+				  				<c:otherwise>
+					  				No Events found
+				  				</c:otherwise>
+				  			</c:choose>
 				  			<c:set var="where" value="${(eventSearchForm.where != '') && (eventSearchForm.where != null)}"/>
 				  			<c:set var="when" value="${(eventSearchForm.when != null)}"/>
 				  			<c:set var="what" value="${(eventSearchForm.what != '')}"/>
-			  			<c:if test="${where || when || what}">for</c:if>
-			  			<c:if test="${where}">
-				  			<b>${eventSearchForm.where}</b> 
-			  			</c:if>
-			  			<c:if test="${((where && when) || (where && what)) && when}">,</c:if>
-			  			<c:if test="${when}">
-				  			<b>${eventSearchForm.when.asText}</b> 
-			  			</c:if>
-			  			<c:if test="${(when || where) && what }">,</c:if>
-			  			<c:if test="${what}">
-				  			<b>${eventSearchForm.what}</b> 
-			  			</c:if>							
-						</div>
+				  			<c:if test="${where || when || what}">for</c:if>
+				  			<c:if test="${where}">
+					  			<b>${eventSearchForm.where}</b> 
+				  			</c:if>
+				  			<c:if test="${((where && when) || (where && what)) && when}">,</c:if>
+				  			<c:if test="${when}">
+					  			<b>${eventSearchForm.when.asText}</b> 
+				  			</c:if>
+				  			<c:if test="${(when || where) && what }">,</c:if>
+				  			<c:if test="${what}">
+					  			<b>${eventSearchForm.what}</b> 
+				  			</c:if>							
+							</div>
+						</c:if>
 			    	<c:set var="test" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ"/>
 						<!--  start -->
 							<display:table id="event" 

@@ -376,13 +376,7 @@ public class TimeRangeFormat  {
 
             Date begin = parseDate(split[0]);
             Date end = parseDate(split[1]);
-            // make sure begin is before end
-            if (begin.compareTo(end) > 0) {
-                StringBuffer sb = new StringBuffer(split[0])
-                .append(" ").append(split[1]);
-                throw new ParseException(sb.toString() ,0); 
-                // TODO add error string or localization code
-            }
+            
             CalendarPrecision beginCp = getPrecision(split[0]);
             CalendarPrecision endCp = getPrecision(split[1]);
             //add 1 to the end at the given precision/  When someone says 

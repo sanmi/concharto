@@ -96,10 +96,6 @@ public class TestTimeRangeFormat {
         assertEquivalent(makeDayRange(12,7,1941,10,1,0, 12,7,1941,10,2,0), parseTimeRange("Dec 7, 1941, 10:01AM"));
         assertEquivalent(makeDayRange(12,7,1941,10,1,1, 12,7,1941,10,1,2), parseTimeRange("Dec 7, 1941, 10:01:01AM"));
         
-        //TODO should we allow negative ranges? Isn't that really a data validation issue?
-        assertException("1948 - 1947");
-        assertException("Dec 7, 1942 - 12/7/1941");
-
         //Ranges
         assertEquivalent(makeDayRange(1,1,1941, 1,1,1943), parseTimeRange("1941 - 1942"));
         assertEquivalent(makeDayRange(12,7,1941, 12,11,1941), parseTimeRange("Dec 7, 1941 - Dec 10, 1941"));
@@ -143,9 +139,6 @@ public class TestTimeRangeFormat {
         assertEquivalent(makeDayRange(1,1,-1941, 1,1,-1939), parseTimeRange("1941 BC - 1940 BC"));
         assertEquivalent(makeDayRange(12,7,-1941, 12,8,-1940), parseTimeRange("Dec 7, 1941 BC - 12/7/1940 BC"));
 
-        //TODO should we allow negative ranges? Isn't that really a data validation issue?
-        assertException("1948 BC - 1949 BC");
-        assertException("Dec 7, 1942 BC - 12/7/1945 BC");
     }
 
     @Test public void format() {
