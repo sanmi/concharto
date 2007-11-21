@@ -19,6 +19,13 @@ public class EventSearchFormValidator implements Validator{
                     "failedGeocode.eventSearch.where", 
                     new Object[]{eventSearchForm.getWhere()}, null);
         }
+        //begin can't be after end 
+        if (eventSearchForm.getWhen().getBegin().getDate().after(
+        		eventSearchForm.getWhen().getEnd().getDate())) {
+            errors.rejectValue("when", 
+                    "beginAfterEnd.when", 
+                    new Object[]{eventSearchForm.getWhen()}, null);
+        }
     }
 
 }
