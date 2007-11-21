@@ -177,5 +177,5 @@
   }
   
   function autolink(dataStr) {
-  	return dataStr.gsub('((ftp|https?)://[^ ,;\t\n<]*)','<a href="#{1}">#{1}</a>');
+  	return dataStr.gsub('((ftp|https?)://[^ ,;\t\n<]*)','<a href="#{1}" target="_top">#{1}</a>');
   }
