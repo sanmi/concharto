@@ -10,6 +10,7 @@
 	var _overlayIndex = 0;
 	var _fitToPolygon = [];
 	var _fitToPolygonIndex = 0;
+	var _accuracy_to_zoom = [4, 5, 7, 10, 11, 12, 13, 14, 15];
 	
 	<%-- Create a base icon for all of our markers that specifies the
 	     shadow, icon dimensions, etc. --%>
@@ -214,28 +215,31 @@
 		<%-- geocoder uses a callback mechanism don't submit until we get the results --%>
  		document.getElementById("eventSearchForm").isGeocodeSuccess.value = "true"; 
 		if (address) {
-    	geocoder.getLatLng(address, saveAndSubmit);
+    	geocoder.getLocations(address, saveAndSubmit);
     } else {
     	saveAndSubmit(map.getCenter());
     }
 	}
-
+	
 	<%-- callback user to submit form as soon as the geocode is complete --%>
-	function saveAndSubmit (latLng) {
-		<%-- set the center so we can calulate the map bounds to be passed to the geographic search --%>
-		if (!latLng) {
+	function saveAndSubmit(response) {
+	  if (!response || response.Status.code != 200) {
 	 		document.getElementById("eventSearchForm").isGeocodeSuccess.value = "false"; 
 	 		document.getElementById("eventSearchForm").mapCenter.value = gLatLngToJSON(map.getCenter());
-		} else {
+	  } else {
+	    place = response.Placemark[0];
+	    latLng = new GLatLng(place.Point.coordinates[1],
+	                        place.Point.coordinates[0]);
+			accuracy = place.AddressDetails.Accuracy; 	                        
+			<%-- set the center so we can calulate the map bounds to be passed to the geographic search --%>
 			map.setCenter(latLng);
 			var where = document.getElementById("eventSearchForm").where.value;
 			var isEdit = document.getElementById("eventSearchForm").isEditEvent.value;
 			if ((where != '') && (isEdit != "true")) {
-				map.setZoom(10); <%-- TODO infer this from the geocode results!! --%>
+				map.setZoom(_accuracy_to_zoom[accuracy]); <%-- TODO infer this from the geocode results!! --%>
 			}
 			document.getElementById("eventSearchForm").mapCenter.value = gLatLngToJSON(latLng);
 		}
-		
 		var boundingBox = map.getBounds();
 		document.getElementById("eventSearchForm").boundingBoxSW.value = 
 			gLatLngToJSON(boundingBox.getSouthWest());
@@ -248,8 +252,9 @@
 		document.getElementById("eventSearchForm").currentRecord.value = 0;
 		document.getElementById("eventSearchForm").pageCommand.value = '';
 		document.event.submit();
+	  
 	}
-	
+
 	<%-- user has clicked on next, prev or a page number --%>
 	function nextPage(pageCommand) {
 		document.getElementById("eventSearchForm").pageCommand.value = pageCommand;

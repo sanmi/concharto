@@ -5,7 +5,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 public class SensibleMapDefaults {
-    public static int ACCURACY_TO_ZOOM[] = {4, 5, 7, 9, 10, 12, 13, 14, 15};
+    public static int ACCURACY_TO_ZOOM[] = {4, 5, 7, 10, 11, 12, 13, 14, 15};
     public static final double SEARCH_BOX_MIN = 40D; //approximate bounding box = miles * 1.4
     public static final double SEARCH_BOX_MAX = 2000D; //approximate bounding box = miles * 1.4
     public static final int ZOOM_BOX_THRESHOLD = 10;
