@@ -57,11 +57,19 @@
 		}
 		adjustSidebarIE();
 		var where = document.getElementById("eventSearchForm").where.value
-		if ((isFitViewToResults() == 'true') && (where == '')) {
+		if ((isFitViewToResults() == 'true') ) {
 			<%-- fit map to the results --%>
 			setIsFitViewToResults('false');
 			var boundsPoly = new GPolyline(_fitToPolygon);
 			var zoom = map.getBoundsZoomLevel(boundsPoly.getBounds());
+			<%-- if they specified a place name, then we only want to zoom out to fit,
+			     not zoom in (e.g. only one place matching the criteria in England, we still
+			     want to show England --%>
+			if ((where != '') && (zoom > map.getZoom())) {
+				zoom = map.getZoom();
+			}
+			
+			<%-- never zoom in more than 13 --%>
 			if (zoom > 13) {
 				zoom = 13;
 			}
@@ -187,12 +195,14 @@
 
 	<%-- user has clicked on 'add to map' --%>
 	function editEvent(eventId) {
-		document.getElementById("eventSearchForm").isEditEvent.value = "true"; 
-		document.getElementById("eventSearchForm").eventId.value = eventId; 
+		document.getElementById("eventSearchForm").editEventId.value = eventId; 
 		document.getElementById("eventSearchForm").mapType.value = getMapTypeIndex();
-		
+		if (eventId == '') {
+			document.getElementById("eventSearchForm").isAddEvent.value = 'true';
+		}		
 		<%-- don't geocode, but do everything else.  --%>
-		saveAndSubmit(map.getCenter());		
+		document.getElementById("eventSearchForm").mapCenter.value = gLatLngToJSON(map.getCenter());
+		saveAndSubmit();		
 	}
 	
 	function isFitViewToResults() {
@@ -205,7 +215,9 @@
 
 	<%-- user has clicked on 'search' --%>
 	function search() {
- 		document.getElementById("eventSearchForm").isEditEvent.value = "false"; 
+		<%-- set the map center, in case we aren't geocoding or the geocode 
+		     doesn't succeed --%>
+	 	document.getElementById("eventSearchForm").mapCenter.value = gLatLngToJSON(map.getCenter());
   	<%-- Geocode before submitting so that we can get the map extent first!	 --%>
 		geocode(document.getElementById("eventSearchForm").where.value);
 	}			
@@ -215,14 +227,13 @@
 		<%-- geocoder uses a callback mechanism don't submit until we get the results --%>
  		document.getElementById("eventSearchForm").isGeocodeSuccess.value = "true"; 
 		if (address) {
-    	geocoder.getLocations(address, saveAndSubmit);
+    	geocoder.getLocations(address, processGeocode);
     } else {
     	saveAndSubmit(map.getCenter());
     }
 	}
 	
-	<%-- callback user to submit form as soon as the geocode is complete --%>
-	function saveAndSubmit(response) {
+	function processGeocode(response) {
 	  if (!response || response.Status.code != 200) {
 	 		document.getElementById("eventSearchForm").isGeocodeSuccess.value = "false"; 
 	 		document.getElementById("eventSearchForm").mapCenter.value = gLatLngToJSON(map.getCenter());
@@ -234,13 +245,18 @@
 			<%-- set the center so we can calulate the map bounds to be passed to the geographic search --%>
 			map.setCenter(latLng);
 			var where = document.getElementById("eventSearchForm").where.value;
-			var isEdit = document.getElementById("eventSearchForm").isEditEvent.value;
+			var isEdit = (document.getElementById("eventSearchForm").editEventId.value != null);
 			if ((where != '') && (isEdit != "true")) {
 				map.setZoom(_accuracy_to_zoom[accuracy]); <%-- TODO infer this from the geocode results!! --%>
 			}
 			document.getElementById("eventSearchForm").mapCenter.value = gLatLngToJSON(latLng);
 		}
-		var boundingBox = map.getBounds();
+		saveAndSubmit();
+	}
+	
+	<%-- callback user to submit form as soon as the geocode is complete --%>
+	function saveAndSubmit() {
+			var boundingBox = map.getBounds();
 		document.getElementById("eventSearchForm").boundingBoxSW.value = 
 			gLatLngToJSON(boundingBox.getSouthWest());
 		document.getElementById("eventSearchForm").boundingBoxNE.value = 
@@ -248,6 +264,7 @@
 		<%-- if the geocode failed, we will get a null.  Pass this back to the controller to indicate
 		     that the geocode failed --%>
 
+		document.getElementById("eventSearchForm").mapType.value = getMapTypeIndex();
 		document.getElementById("eventSearchForm").mapZoom.value = map.getZoom();
 		document.getElementById("eventSearchForm").currentRecord.value = 0;
 		document.getElementById("eventSearchForm").pageCommand.value = '';

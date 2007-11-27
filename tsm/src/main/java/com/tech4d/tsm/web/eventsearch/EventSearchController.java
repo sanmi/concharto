@@ -23,13 +23,7 @@ import com.tech4d.tsm.util.JSONFormat;
 
 public class EventSearchController extends AbstractFormController {
 	private static final Log log = LogFactory.getLog(EventSearchController.class);
-	public static final String SESSION_EVENT_SEARCH_FORM = "eventSearchForm";
-    public static final String MODEL_EVENTS = "events";
-    public static final String MODEL_TOTAL_RESULTS = "totalResults";
-    public static final String MODEL_CURRENT_RECORD = "currRecord";
-    public static final String MODEL_PAGESIZE = "pageSize";
 
-    public static final int MAX_RECORDS = 25;
     private String formView;
     private String successView;
     private SearchHelper searchHelper;
@@ -62,7 +56,7 @@ public class EventSearchController extends AbstractFormController {
     }
 
     private EventSearchForm getEventSearchForm(HttpServletRequest request) {
-        return (EventSearchForm) WebUtils.getSessionAttribute(request, SESSION_EVENT_SEARCH_FORM);
+        return (EventSearchForm) WebUtils.getSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_FORM);
     }
 
     @Override
@@ -88,25 +82,40 @@ public class EventSearchController extends AbstractFormController {
 
     @SuppressWarnings("unchecked")
 	@Override
-    protected ModelAndView showForm(
-            HttpServletRequest request, HttpServletResponse response, BindException errors)
-            throws Exception {
+    protected ModelAndView showForm(HttpServletRequest request,
+			HttpServletResponse response, BindException errors)
+			throws Exception {
+		// if there is a form, we re-show the last search results
+		EventSearchForm eventSearchForm = getEventSearchForm(request);
+		if ((eventSearchForm != null) && (!errors.hasErrors())) {
 
-        //if there is a form, we should redo the search, just in case things have been
-        //added since we left (for instance the user just added a point to the map)
-        //don't search if there are errors
-        EventSearchForm eventSearchForm = getEventSearchForm(request);
-        if ((eventSearchForm != null) && (!errors.hasErrors())){
-            Map model = doSearch(request, errors, eventSearchForm);
-            return new ModelAndView(getFormView(), model);
-        } else {
-            return showForm(request, errors, getFormView());
-        }
-    }
+			Map model = errors.getModel();
+			// there are some times we don't want to search, for instance when the
+			// user clicks cancel from another screen. In that case, we just use the
+			// last search
+			Boolean doSearch = (Boolean) WebUtils.getSessionAttribute(request, SearchHelper.SESSION_DO_SEARCH_ON_SHOW);
+			if (doSearch != null) {
+                //we should do a search
+                WebUtils.setSessionAttribute(request, SearchHelper.SESSION_DO_SEARCH_ON_SHOW, null);
+				model = doSearch(request, errors, eventSearchForm);
+			} else {
+                //no search, just show what we did last time
+                List<Event> events = (List<Event>) WebUtils
+						.getSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_RESULTS);
+				if (events != null) {
+					searchHelper.prepareModel(model, events, (long) events.size());
+				}
+			}
+			return new ModelAndView(getFormView(), model);
+		} else {
+			return showForm(request, errors, getFormView());
+		}
+	}
 
 	@SuppressWarnings("unchecked")
     @Override
-    protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+    protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response,
+                                                 Object command, BindException errors) throws Exception {
 		//TODO DEBUG don't do anything if the user isn't logged in.  Remove this kludge after we go live.  It is because
 		//of redirects causing havoc with our LoginFilter - I can't figure out a better way at the moment
 		//fsm 11-13-07
@@ -131,22 +140,29 @@ public class EventSearchController extends AbstractFormController {
         	returnModelAndView = handleGet(request, eventSearchForm);
         } else {
             logger.debug("No errors -> processing submit");
-            if ((null != eventSearchForm.getIsEditEvent()) && eventSearchForm.getIsEditEvent()) {
-            	eventSearchForm.setIsEditEvent(false); //turn this flag back off
-                if (eventSearchForm.getEventId() != null) {
-                	returnModelAndView = new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm?listid=" + eventSearchForm.getEventId()));
-                } else {
-                    //we are creating a new event
-                	returnModelAndView = new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm"));
-                }
+            if ((eventSearchForm.getIsAddEvent() != null) && (eventSearchForm.getIsAddEvent() == true)) {
+                //we are creating a new event
+            	eventSearchForm.setIsAddEvent(false);
+                //todo may want to inject the view here
+                returnModelAndView = new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm"));
+            } else if ((null != eventSearchForm.getEditEventId())) {
+                //we are editing an event
+            	long id = eventSearchForm.getEditEventId(); 
+            	eventSearchForm.setEditEventId(null);
+                //todo may want to inject the view here
+                returnModelAndView = new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm?listid=" + id));
             } else {
+            	//we are doing a regular search
                 Map model = doSearch(request, errors, eventSearchForm);
+            	//fit the map to the search results if they specified a place name
+                if (!StringUtils.isEmpty(eventSearchForm.getWhere())) {
+                	eventSearchForm.setIsFitViewToResults(true);
+                }
             	returnModelAndView = new ModelAndView(getSuccessView(), model);
             }
         }
         //put the data into the session in case we are leaving to edit, and then want to come back
-        WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
-         
+        WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_FORM, eventSearchForm);
         return returnModelAndView;
     }
 
@@ -190,10 +206,9 @@ public class EventSearchController extends AbstractFormController {
 	private Map doSearch( HttpServletRequest request, BindException errors, EventSearchForm eventSearchForm) {
     	Map model = errors.getModel();
     	List<Event> events = searchHelper.doSearch(request, model, eventSearchForm);
-    	//if they were editing, we need to add the most recently edited point, regardless of whether
-    	//it matches the search criteria, otherwise the user will be confused. TODO UI issue here
-    	searchHelper.addNewlyCreatedEvent(request, events);
     	eventSearchForm.setSearchResults(JSONFormat.toJSON(events));
+    	//save the results for later "show forms", e.g. in the event we click edit but then hit 'cancel' 
+        WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_RESULTS, model.get(SearchHelper.MODEL_EVENTS));        	
     	return model;
     }
 
