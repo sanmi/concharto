@@ -28,8 +28,9 @@
 			<form:hidden path="mapZoom"/>
 			<form:hidden path="mapType"/>
 			<form:hidden path="isGeocodeSuccess"/>
-			<form:hidden path="isEditEvent"/>
-			<form:hidden path="eventId"/>
+			<form:hidden path="isAddEvent"/>
+			<form:hidden path="editEventId"/>
+			<form:hidden path="displayEventId"/>
 			<form:hidden path="currentRecord"/>
 			<form:hidden path="pageCommand"/>
 			<form:hidden path="isFitViewToResults"/>

@@ -24,8 +24,9 @@ public class EventSearchForm implements PaginatingForm {
     private Integer mapType;
     private Boolean isGeocodeSuccess;
     private String searchResults;
-    private Boolean isEditEvent;
-    private Integer eventId;
+    private Long editEventId;
+    private Long displayEventId;
+    private Boolean isAddEvent;
     private Integer currentRecord;
     private String pageCommand;
     private String show;
@@ -102,19 +103,25 @@ public class EventSearchForm implements PaginatingForm {
     public void setCurrentRecord(Integer currentRecord) {
         this.currentRecord = currentRecord;
     }
-    public Boolean getIsEditEvent() {
-        return isEditEvent;
+    public Boolean getIsAddEvent() {
+        return isAddEvent;
     }
-    public void setIsEditEvent(Boolean isEditEvent) {
-        this.isEditEvent = isEditEvent;
+    public void setIsAddEvent(Boolean isAddEvent) {
+        this.isAddEvent = isAddEvent;
     }
-    public Integer getEventId() {
-        return eventId;
+    public Long getEditEventId() {
+        return editEventId;
     }
-    public void setEventId(Integer eventId) {
-        this.eventId = eventId;
+    public void setEditEventId(Long eventId) {
+        this.editEventId = eventId;
     }
-    public Integer getMapType() {
+    public Long getDisplayEventId() {
+		return displayEventId;
+	}
+	public void setDisplayEventId(Long displayEventId) {
+		this.displayEventId = displayEventId;
+	}
+	public Integer getMapType() {
         return mapType;
     }
     public void setMapType(Integer mapType) {

@@ -29,7 +29,6 @@ import com.tech4d.tsm.util.LatLngBounds;
 import com.tech4d.tsm.util.ProximityHelper;
 import com.tech4d.tsm.util.SensibleMapDefaults;
 import com.tech4d.tsm.util.TimeRangeFormat;
-import com.tech4d.tsm.web.edit.EventController;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
 import com.tech4d.tsm.web.util.PaginatingFormHelper;
 import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
@@ -51,6 +50,9 @@ public class SearchHelper {
     public static final int MAX_RECORDS = 25;
     public static final String MODEL_EVENTS = "events";
     public static final String MODEL_TOTAL_RESULTS = "totalResults";
+    public static final String SESSION_DO_SEARCH_ON_SHOW = "doSearch";
+	public static final String SESSION_EVENT_SEARCH_FORM = "eventSearchForm";
+	public static final String SESSION_EVENT_SEARCH_RESULTS = "searchResults";
 
 	private EventSearchService eventSearchService;
 
@@ -88,7 +90,8 @@ public class SearchHelper {
         	eventSearchForm.setMapZoom(zoom);
     	}
     	eventSearchForm.setIsFitViewToResults(ServletRequestUtils.getBooleanParameter(request, QUERY_FIT));
-    	eventSearchForm.setEventId(ServletRequestUtils.getIntParameter(request, QUERY_ID));
+    	eventSearchForm.setDisplayEventId(ServletRequestUtils.getLongParameter(request, QUERY_ID));
+    	WebUtils.setSessionAttribute(request, SESSION_DO_SEARCH_ON_SHOW, true);
 	}
 
     /**
@@ -140,8 +143,8 @@ public class SearchHelper {
          */
 		List<Event> events; 
 		Long totalResults;
-    	if (eventSearchForm.getEventId() != null) {
-    		Event event = eventSearchService.findById((long) eventSearchForm.getEventId());
+    	if (eventSearchForm.getDisplayEventId() != null) {
+    		Event event = eventSearchService.findById(eventSearchForm.getDisplayEventId());
     		events = new ArrayList<Event>();
     		events.add(event);
     		eventSearchForm.setMapCenter(event.getTsGeometry().getGeometry().getCentroid());
@@ -149,7 +152,7 @@ public class SearchHelper {
     		eventSearchForm.setMapType(event.getMapType());
     		totalResults = 1L;
     		//now remove the id from the form - we don't want to get stuck forever showing this event
-    		eventSearchForm.setEventId(null);
+    		eventSearchForm.setDisplayEventId(null);
     		
     	} else if (eventSearchForm.getMapCenter() != null) {
             int firstRecord = PaginatingFormHelper.calculateFirstRecord(eventSearchForm, MAX_RECORDS);
@@ -166,13 +169,19 @@ public class SearchHelper {
         //for debugging
         //addDebugBoundingBox(events, bounds);
         
-        model.put(MODEL_TOTAL_RESULTS, totalResults);
-        model.put(MODEL_EVENTS, events);
+    	prepareModel(model, events, totalResults);
         //NOTE: we are putting the events into the command so that the page javascript
         //functions can properly display them using google's mapping API
         eventSearchForm.setSearchResults(JSONFormat.toJSON(events));
         return events;
     }
+
+	@SuppressWarnings("unchecked")
+	public void prepareModel(Map model, List<Event> events, Long totalResults) {
+		model.put(MODEL_TOTAL_RESULTS, totalResults);
+    	model.put(MODEL_EVENTS, events);
+	}
+    
 
     /**
      * Find the search bounding box.  It depends on the map center and zoom level.
@@ -202,34 +211,6 @@ public class SearchHelper {
 	}
 
 
-	/**
-	 * If we just added a new event, it can be very confusing for the user to have the icon
-	 * disappear because it isn't high in the search results.  This is a kludge to help them
-	 * but it is only partially successful because the next time they hit 'search', their icon may disappear.  
-	 * I guess they will just have to get used to it?
-	 * So we will add the new event to the search results this one time
-	 * TODO - this may still be confusing to the user
-	 * 
-	 * @param request request
-	 * @param events list of events 
-	 */
-	public void addNewlyCreatedEvent(HttpServletRequest request,
-			List<Event> events) {
-		Event event = (Event) WebUtils.getSessionAttribute(request, EventController.SESSION_EVENT);
-		if (event != null) {
-			//erase it for next time
-			WebUtils.setSessionAttribute(request, EventController.SESSION_EVENT, null);
-			boolean alreadyInList = false;
-			for (Event listEvent : events) {
-				if (event.getId().equals(listEvent.getId())) {
-					alreadyInList = true;
-				}
-			}
-			if (!alreadyInList) {
-		    	events.add(event);           		
-			}
-		}
-	}
 
 	/**
 	 * Useful for debugging bounding box problems.
