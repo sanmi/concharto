@@ -19,7 +19,6 @@ import org.springframework.web.util.WebUtils;
 import com.tech4d.tsm.auth.AuthConstants;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.service.EventSearchService;
-import com.tech4d.tsm.util.JSONFormat;
 import com.tech4d.tsm.web.util.DisplayTagHelper;
 
 public class EventSearchController extends AbstractFormController {
@@ -207,7 +206,7 @@ public class EventSearchController extends AbstractFormController {
     	searchHelper.bindGetParameters(request, eventSearchForm);
     	
     	//geocode
-		String mapKey = getMessageSourceAccessor().getMessage(searchHelper.makeMapKeyCode(request));
+		String mapKey = makeMapKey(request);
     	searchHelper.geocode(mapKey, request, eventSearchForm);
     	
     	//save the form for redirect
@@ -215,14 +214,18 @@ public class EventSearchController extends AbstractFormController {
     	
     	return new ModelAndView(new RedirectView(request.getContextPath() + "/" + getSuccessView() + ".htm"));
     }
+
+	private String makeMapKey(HttpServletRequest request) {
+        return getMessageSourceAccessor().getMessage(searchHelper.makeMapKeyCode(request));
+	}
     
     @SuppressWarnings("unchecked")
 	private Map doSearch( HttpServletRequest request, BindException errors, EventSearchForm eventSearchForm) {
     	Map model = errors.getModel();
-    	List<Event> events = searchHelper.doSearch(request, model, eventSearchForm);
-    	eventSearchForm.setSearchResults(JSONFormat.toJSON(events));
+		String mapKey = makeMapKey(request);
+    	List<Event> events = searchHelper.doSearch(mapKey, request, model, eventSearchForm);
     	//save the results for later "show forms", e.g. in the event we click edit but then hit 'cancel' 
-        WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_RESULTS, model.get(SearchHelper.MODEL_EVENTS));        	
+        WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_RESULTS, events);        	
     	return model;
     }
 

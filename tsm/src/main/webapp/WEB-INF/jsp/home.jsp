@@ -10,10 +10,8 @@
 			<script type="text/javascript">
 	//<![CDATA[
 	function search() {
-			var what = document.getElementById("eventSearchForm").what.value;
-			var when = document.getElementById("eventSearchForm").when.value;
-			var where = document.getElementById("eventSearchForm").where.value;
-			document.location='${basePath}search/eventsearch.htm?_where='+where+'&_when='+when+'&_what='+what+'&_fit=true';
+			document.getElementById("eventSearchForm").isFitViewToResults.value = 'true';
+			document.event.submit();
 	}
 	
 	function editEvent() {
@@ -25,7 +23,7 @@
 	<jsp:attribute name="stylesheet">home.css,simpleform.css</jsp:attribute>
 
 	<jsp:body>
-	<form:form name="event" id="eventSearchForm" commandName="eventSearch" onsubmit="search(); return false">
+	<form:form name="event" id="eventSearchForm" action="search/eventsearch.htm" commandName="eventSearch" onsubmit="search(); return false">
 			<form:hidden path="boundingBoxSW" htmlEscape="true"/>
 			<form:hidden path="boundingBoxNE" htmlEscape="true"/>
 			<form:hidden path="mapCenter" htmlEscape="true"/>

@@ -52,7 +52,6 @@ public class EmbeddedSearchController extends SimpleFormController {
 		if (null == WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME)) {
 			return showForm(request, response, errors);
 		}
-		String mapKey = getMessageSourceAccessor().getMessage(searchHelper.makeMapKeyCode(request));
 		
 		EventSearchForm eventSearchForm = (EventSearchForm) command;
     	//this request contains enough information to do a search right now
@@ -60,12 +59,10 @@ public class EmbeddedSearchController extends SimpleFormController {
         //populate the form with parameters off the URL query string
     	searchHelper.bindGetParameters(request, eventSearchForm);
     	
-    	//geocode
-    	searchHelper.geocode(mapKey, request, eventSearchForm);
-    	
     	//search
     	Map model = errors.getModel(); 
-    	searchHelper.doSearch(request, model, eventSearchForm);
+		String mapKey = getMessageSourceAccessor().getMessage(searchHelper.makeMapKeyCode(request));
+    	searchHelper.doSearch(mapKey, request, model, eventSearchForm);
     	return new ModelAndView(getSuccessView(), model);
 	}
 
