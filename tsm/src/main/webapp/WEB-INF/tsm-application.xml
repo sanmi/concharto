@@ -14,6 +14,7 @@
     </property>
   </bean>
   <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+  	<property name="systemPropertiesMode" value="2"/> <!-- allow system properties to override -->
     <property name="locations">
       <list>
         <value>classpath:jdbc.properties</value>
