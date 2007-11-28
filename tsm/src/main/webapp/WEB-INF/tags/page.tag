@@ -60,7 +60,7 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 			<a class="linkleft links" href="${basePath}info/legal.htm" >Legal</a>
 			<a class="linkleft links" class="linkleft" href="#" onclick="alert('Not Yet Implemented');">About</a>
 			<a class="links linkleft" href="#" onclick="alert('Not Yet Implemented');">Feedback</a>
-	  	<span class="links linkleftright">Version <spring:message code="version"/></span>
+	  	<span class="links linkleftright">Version <spring:message code="app.version"/></span>
 	  </div>
   </c:if>
 
