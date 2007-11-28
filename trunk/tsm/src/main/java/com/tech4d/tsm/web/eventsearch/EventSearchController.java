@@ -71,7 +71,21 @@ public class EventSearchController extends AbstractFormController {
             return super.formBackingObject(request);
         }
     }
-    /**
+    
+    /*
+     * If there is data in the Where field, we try to geocode it
+     * @see org.springframework.web.servlet.mvc.BaseCommandController#onBind(javax.servlet.http.HttpServletRequest, java.lang.Object, org.springframework.validation.BindException)
+     */
+    @Override
+	protected void onBind(HttpServletRequest request, Object command, BindException errors) throws Exception {
+    	EventSearchForm eventSearchForm = (EventSearchForm) command;
+    	if ((!StringUtils.isEmpty(eventSearchForm.getWhere())) && (eventSearchForm.getMapCenter() == null)) {
+        	searchHelper.geocode(makeMapKey(request), request, eventSearchForm);
+    	}
+		super.onBindAndValidate(request, command, errors);
+	}
+
+	/**
      * Override the default setting.  If there are query parameters in the URL, we assume
      * this is a form submission (e.g. when=, where=, what=)
      */
@@ -133,7 +147,9 @@ public class EventSearchController extends AbstractFormController {
             }
             //clear out the search results
             eventSearchForm.setSearchResults(null);
-            returnModelAndView = showForm(request, response, errors);
+            Map model = errors.getModel();
+            model.put(SearchHelper.MODEL_TOTAL_RESULTS, 0);
+            returnModelAndView = new ModelAndView(getFormView(), model);
         } else if ((!StringUtils.isEmpty(request.getQueryString()) && 
         		(null == DisplayTagHelper.getPageParameterId(request, SearchHelper.DISPLAYTAG_TABLE_ID)))) {
         	//if this is a form submission via query params (except for the displaytag query params), 
@@ -225,7 +241,7 @@ public class EventSearchController extends AbstractFormController {
 		String mapKey = makeMapKey(request);
     	List<Event> events = searchHelper.doSearch(mapKey, request, model, eventSearchForm);
     	//save the results for later "show forms", e.g. in the event we click edit but then hit 'cancel' 
-        WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_RESULTS, events);        	
+        WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_RESULTS, events);        
     	return model;
     }
 

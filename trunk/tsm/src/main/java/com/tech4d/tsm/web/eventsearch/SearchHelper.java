@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -112,6 +113,10 @@ public class SearchHelper {
         	//String mapKey = formController.getMessageSourceAccessor().getMessage(makeMapKeyCode(request));
         	GAddress address = GGcoder.geocode(eventSearchForm.getWhere(), mapKey);
         	Point point = address.getPoint();
+        	eventSearchForm.setMapCenter(point);
+        	if (point == null) {
+        		eventSearchForm.setIsGeocodeSuccess(false);
+        	}
         	if (null == eventSearchForm.getMapZoom()) {
         		//if they didn't supply the zoom level, we will get it from the address accuracy
             	if (address.getAccuracy() < SensibleMapDefaults.ACCURACY_TO_ZOOM.length) {
@@ -120,8 +125,8 @@ public class SearchHelper {
             		eventSearchForm.setMapZoom(SensibleMapDefaults.ZOOM_COUNTRY);  
             	}
         	}
-        	eventSearchForm.setMapCenter(point);
     	} else {
+    		//no location was specified, we will use the default
     		eventSearchForm.setMapZoom(SensibleMapDefaults.ZOOM_COUNTRY);  
         	eventSearchForm.setMapCenter(SensibleMapDefaults.USA);
     	}
@@ -172,13 +177,21 @@ public class SearchHelper {
 					log.info("Exception geocoding location " + eventSearchForm.getWhere() + e);
 				}
     		}
-            //int firstRecord = PaginatingFormHelper.calculateFirstRecord(eventSearchForm, MAX_RECORDS);
-            firstRecord = DisplayTagHelper.getFirstRecord(request, DISPLAYTAG_TABLE_ID, DISPLAYTAG_PAGESIZE);
-            LatLngBounds bounds = getBounds(eventSearchForm);
-            events = eventSearchService.search(DISPLAYTAG_PAGESIZE, firstRecord, 
-            		eventSearchForm.getWhat(), eventSearchForm.getWhen(), bounds, getVisibility(eventSearchForm));
-            totalResults = eventSearchService.getCount(
-            		eventSearchForm.getWhat(), eventSearchForm.getWhen(), bounds, getVisibility(eventSearchForm));
+    		//we are ok to go if IsGeocodeSuccess is null or True
+    		if (!BooleanUtils.isFalse(eventSearchForm.getIsGeocodeSuccess())) {
+                firstRecord = DisplayTagHelper.getFirstRecord(request, DISPLAYTAG_TABLE_ID, DISPLAYTAG_PAGESIZE);
+                LatLngBounds bounds = getBounds(eventSearchForm);
+                events = eventSearchService.search(DISPLAYTAG_PAGESIZE, firstRecord, 
+                		eventSearchForm.getWhat(), eventSearchForm.getWhen(), bounds, getVisibility(eventSearchForm));
+                totalResults = eventSearchService.getCount(
+                		eventSearchForm.getWhat(), eventSearchForm.getWhen(), bounds, getVisibility(eventSearchForm));
+    		} else {
+    			//failed geocode, no points
+    			events = new ArrayList<Event>();
+        		totalResults = 0L;
+        		firstRecord = 0;
+    		}
+    		
 
     	} 
         //for debugging
