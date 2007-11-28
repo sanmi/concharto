@@ -9,7 +9,16 @@
         <value>errors</value>
         <value>messages</value>
         <value>map</value>
+        <value>application</value>
       </list>
     </property>
   </bean>
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations">
+      <list>
+        <value>classpath:jdbc.properties</value>
+        <value>classpath:application.properties</value>
+      </list>
+    </property>
+	</bean>
 </beans>

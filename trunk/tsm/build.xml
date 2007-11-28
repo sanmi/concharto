@@ -8,7 +8,7 @@
 	<property name="name" value="${ant.project.name}" />
 
 	<property name="webroot.dir" value="src/main/webapp" />
-	<property name="webroot.messages.dir" value="src/main/messages" />
+	<property name="webroot.properties.dir" value="src/main/properties" />
 	<property name="webroot.webinf.dir" value="${webroot.dir}/WEB-INF" />
 	<property name="db.ddl.dir" value="${webroot.webinf.dir}" />
 	<property name="db.additional.ddl.dir" value="database" />
@@ -60,6 +60,7 @@
 		<pathelement path="${target.test.classes.dir}" />
 		<pathelement path="${src.test.conf.dir}" />
 		<pathelement path="${webroot.webinf.dir}" />
+		<pathelement path="${webroot.properties.dir}"/>
 		<fileset dir="${lib.build.dir}">
 			<include name="**/*.jar" />
 		</fileset>
@@ -191,7 +192,7 @@
 			<fileset dir="${target.classes.dir}">
 				<include name="**/*" />
 			</fileset>
-			<fileset dir="${webroot.messages.dir}">
+			<fileset dir="${webroot.properties.dir}">
 				<include name="**/*" />
 			</fileset>
 		</copy>
