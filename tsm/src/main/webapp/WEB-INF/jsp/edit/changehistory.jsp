@@ -14,12 +14,6 @@
 		document.location="event.htm?listid=" + id;
 	}
 	
-		<%-- user has clicked on next, prev or a page number --%>
-	function nextPage(pageCommand) {
-		document.getElementById("changeHistoryForm").pageCommand.value = pageCommand;
-		document.change.submit();
-	}
-	
 		//]]>
 		</script>
 	</jsp:attribute>

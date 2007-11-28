@@ -45,7 +45,7 @@ public class AuditChangeUtil {
 			for (AuditFieldChange auditFieldChange : changes) {
 				if (!revertList.containsKey(auditFieldChange.getPropertyName())) {
 					revertList.put(auditFieldChange.getPropertyName(), auditFieldChange.getOldValue());
-					System.out.println("Field: " + auditFieldChange.getPropertyName() + "=" + auditFieldChange.getOldValue());
+					//System.out.println("Field: " + auditFieldChange.getPropertyName() + "=" + auditFieldChange.getOldValue());
 				}
 			}
 		}
@@ -61,7 +61,7 @@ public class AuditChangeUtil {
 			for (AuditFieldChange auditFieldChange : changes) {
 				if (!revertList.containsKey(auditFieldChange.getPropertyName())) {
 					revertList.put(auditFieldChange.getPropertyName(), auditFieldChange.getOldValue());
-					System.out.println("Field: " + auditFieldChange.getPropertyName() + "=" + auditFieldChange.getOldValue());
+					//System.out.println("Field: " + auditFieldChange.getPropertyName() + "=" + auditFieldChange.getOldValue());
 				}
 			}
 		}

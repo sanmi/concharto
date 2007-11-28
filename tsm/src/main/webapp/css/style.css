@@ -98,8 +98,12 @@ h1, h2 {
     line-height: 0;
 }
 
-a.summary:link, a.summary:visited, a.links:link, a.links:visited, a.more:link, a.more:visited, a.nexPrev:link, a.nextPrev:visited  {
+a.summary:link, a.summary:visited, a.links:link, a.links:visited, a.more:link, a.more:visited, a.nexPrev:link, a.nextPrev:visited {
     color: blue;
+}
+
+.pagelinks a:visited, .pagelinks a:link {
+	color:blue;
 }
 
 a.errorlinks:link, a.errorlinks:visited {

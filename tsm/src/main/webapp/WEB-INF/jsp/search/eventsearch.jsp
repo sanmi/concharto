@@ -8,6 +8,7 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 <% pageContext.setAttribute("linefeed", "\n"); %>
 
+
 <tsm:page title="Event">
 	<jsp:attribute name="head">
 		<%-- we use includes so we can comment the javascript --%>
@@ -20,7 +21,7 @@
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 
 	<jsp:body>
-		<form:form name="event" id="eventSearchForm" commandName="eventSearch" onsubmit="search(); return false">
+		<form:form name="event" id="eventSearchForm" commandName="eventSearch" action="eventsearch.htm" onsubmit="search(); return false">
 			<form:hidden path="boundingBoxSW" htmlEscape="true"/>
 			<form:hidden path="boundingBoxNE" htmlEscape="true"/>
 			<form:hidden path="mapCenter" htmlEscape="true"/>
@@ -31,8 +32,6 @@
 			<form:hidden path="isAddEvent"/>
 			<form:hidden path="editEventId"/>
 			<form:hidden path="displayEventId"/>
-			<form:hidden path="currentRecord"/>
-			<form:hidden path="pageCommand"/>
 			<form:hidden path="isFitViewToResults"/>
 	  	<jsp:include page="include/searchbar.jsp"/>
 	  
@@ -45,7 +44,7 @@
 						<div class="resultcount">
 							<c:choose>
 			  				<c:when test="${fn:length(events) > 0}">
-					  			Displaying events <b>${eventSearch.currentRecord + 1}  - ${eventSearch.currentRecord + fn:length(events) }</b>  
+					  			Displaying events <b>${currentRecord + 1}  - ${currentRecord + fn:length(events) }</b>  
 					  			of <b><c:out value="${totalResults}"/></b>
 				 				</c:when>
 			  				<c:otherwise>
@@ -89,9 +88,13 @@
 							<display:table id="event" 
 												name="events" 
 												requestURI="${basePath}${requestURI}.htm"
+												pagesize="${pagesize}"
+												partialList="true" 
+												size="${totalResults}"
+												excludedParams="*"						
 												>
 								<display:setProperty name="basic.msg.empty_list"> </display:setProperty>
-								<display:setProperty name="paging.banner.placement"> </display:setProperty>
+								<display:setProperty name="paging.banner.placement">both</display:setProperty>
 								<display:setProperty name="paging.banner.item_name"> </display:setProperty>
 								<display:setProperty name="paging.banner.items_name"> </display:setProperty>
 								<display:setProperty name="paging.banner.onepage"> </display:setProperty>
@@ -99,6 +102,7 @@
 								<display:setProperty name="paging.banner.one_item_found"> </display:setProperty>
 								<display:setProperty name="paging.banner.all_items_found"> </display:setProperty>
 								<display:setProperty name="paging.banner.some_items_found"> </display:setProperty>
+		
 								<display:column autolink="true">
 									<div class="result">
 			            	<span class="letter">(<c:out value="${fn:substring(test,event_rowNum-1,event_rowNum)}"/>)</span>
@@ -127,15 +131,7 @@
 									</div>
 								</display:column>
 							</display:table>
-											
-				    <div class="nextPrev">
-					    <c:if test="${eventSearch.currentRecord > 0}"> 
-						    	<a class="nextPrev" href="#" onclick="nextPage('previous')">Previous</a>
-					    </c:if>
-					    <c:if test="${totalResults > eventSearch.currentRecord + fn:length(events)}"> 
-						    	<a class="nextPrev" href="#" onclick="nextPage('next')">Next</a>
-					    </c:if>
-				    </div>
+															    
 			  	</div>
 			  </td>
 			  <td>

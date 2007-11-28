@@ -268,17 +268,10 @@
 
 		document.getElementById("eventSearchForm").mapType.value = getMapTypeIndex();
 		document.getElementById("eventSearchForm").mapZoom.value = map.getZoom();
-		document.getElementById("eventSearchForm").currentRecord.value = 0;
-		document.getElementById("eventSearchForm").pageCommand.value = '';
 		document.event.submit();
 	  
 	}
 
-	<%-- user has clicked on next, prev or a page number --%>
-	function nextPage(pageCommand) {
-		document.getElementById("eventSearchForm").pageCommand.value = pageCommand;
-		document.event.submit();
-	}
   <%-- END POST FUNCTIONS  ============================= --%>
   
 //]]>

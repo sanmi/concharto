@@ -20,6 +20,7 @@ import com.tech4d.tsm.auth.AuthConstants;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.service.EventSearchService;
 import com.tech4d.tsm.util.JSONFormat;
+import com.tech4d.tsm.web.util.DisplayTagHelper;
 
 public class EventSearchController extends AbstractFormController {
 	private static final Log log = LogFactory.getLog(EventSearchController.class);
@@ -103,9 +104,11 @@ public class EventSearchController extends AbstractFormController {
                 List<Event> events = (List<Event>) WebUtils
 						.getSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_RESULTS);
 				if (events != null) {
-					searchHelper.prepareModel(model, events, (long) events.size());
+					searchHelper.prepareModel(model, events, (long) events.size(), 0);
 				}
 			}
+			displayTagModelElements( model);
+
 			return new ModelAndView(getFormView(), model);
 		} else {
 			return showForm(request, errors, getFormView());
@@ -124,7 +127,6 @@ public class EventSearchController extends AbstractFormController {
 		}
 		
         EventSearchForm eventSearchForm = (EventSearchForm) command;
-        logSearchQuery(eventSearchForm);
         ModelAndView returnModelAndView;
         if (errors.hasErrors()) {
             if (logger.isDebugEnabled()) {
@@ -133,14 +135,15 @@ public class EventSearchController extends AbstractFormController {
             //clear out the search results
             eventSearchForm.setSearchResults(null);
             returnModelAndView = showForm(request, response, errors);
-        } else if (!StringUtils.isEmpty(request.getQueryString())) {
-        	//if this is a form submission via query params, we will have to geocode first 
-        	//then do a redirect
+        } else if ((!StringUtils.isEmpty(request.getQueryString()) && 
+        		(null == DisplayTagHelper.getPageParameterId(request, SearchHelper.DISPLAYTAG_TABLE_ID)))) {
+        	//if this is a form submission via query params (except for the displaytag query params), 
+        	//we will have to geocode first then do a redirect
             eventSearchForm = new EventSearchForm();
         	returnModelAndView = handleGet(request, eventSearchForm);
         } else {
             logger.debug("No errors -> processing submit");
-            if ((eventSearchForm.getIsAddEvent() != null) && (eventSearchForm.getIsAddEvent() == true)) {
+            if ((eventSearchForm.getIsAddEvent() != null) && (eventSearchForm.getIsAddEvent())) {
                 //we are creating a new event
             	eventSearchForm.setIsAddEvent(false);
                 //todo may want to inject the view here
@@ -153,12 +156,16 @@ public class EventSearchController extends AbstractFormController {
                 returnModelAndView = new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm?listid=" + id));
             } else {
             	//we are doing a regular search
+            	long time = System.currentTimeMillis(); 
                 Map model = doSearch(request, errors, eventSearchForm);
             	//fit the map to the search results if they specified a place name
                 if (!StringUtils.isEmpty(eventSearchForm.getWhere())) {
                 	eventSearchForm.setIsFitViewToResults(true);
                 }
+    			// needed so the displaytag paging can work
+    	        displayTagModelElements(model);
             	returnModelAndView = new ModelAndView(getSuccessView(), model);
+                logSearchQuery(eventSearchForm, System.currentTimeMillis()-time);
             }
         }
         //put the data into the session in case we are leaving to edit, and then want to come back
@@ -166,7 +173,13 @@ public class EventSearchController extends AbstractFormController {
         return returnModelAndView;
     }
 
-	private void logSearchQuery(EventSearchForm eventSearchForm) {
+	@SuppressWarnings("unchecked")
+	private void displayTagModelElements( Map model) {
+		model.put(DisplayTagHelper.MODEL_PAGESIZE, SearchHelper.DISPLAYTAG_PAGESIZE);
+		model.put(DisplayTagHelper.MODEL_REQUEST_URI, formView);
+	}
+
+	private void logSearchQuery(EventSearchForm eventSearchForm, long time) {
 		if (log.isInfoEnabled()) {
         	StringBuffer msg = new StringBuffer("search,");
         	msg.append("where,\"").append(eventSearchForm.getWhere());
@@ -175,6 +188,7 @@ public class EventSearchController extends AbstractFormController {
         		msg.append(eventSearchForm.getWhen().getAsText());
         	}
         	msg.append("\",what,\"").append(eventSearchForm.getWhat()).append("\"");
+        	msg.append(", time, ").append(time);
         	log.info(msg);
         }
 	}
