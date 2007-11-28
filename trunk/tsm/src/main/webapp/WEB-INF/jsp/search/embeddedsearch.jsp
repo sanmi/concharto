@@ -46,8 +46,6 @@
 			<form:hidden path="isAddEvent"/>
 			<form:hidden path="editEventId"/>
 			<form:hidden path="displayEventId"/>
-			<form:hidden path="currentRecord"/>
-			<form:hidden path="pageCommand"/>
 			<form:hidden path="isFitViewToResults"/>
 			<form:hidden path="where"/>
 			<form:hidden path="when"/>

@@ -29,8 +29,8 @@ import com.tech4d.tsm.util.LatLngBounds;
 import com.tech4d.tsm.util.ProximityHelper;
 import com.tech4d.tsm.util.SensibleMapDefaults;
 import com.tech4d.tsm.util.TimeRangeFormat;
+import com.tech4d.tsm.web.util.DisplayTagHelper;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
-import com.tech4d.tsm.web.util.PaginatingFormHelper;
 import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
@@ -47,12 +47,14 @@ public class SearchHelper {
 	public static final String QUERY_WHERE = "_where";
 	public static final String QUERY_ID = "_id";
 	public static final String QUERY_FIT = "_fit";
-    public static final int MAX_RECORDS = 25;
     public static final String MODEL_EVENTS = "events";
     public static final String MODEL_TOTAL_RESULTS = "totalResults";
+    public static final String MODEL_CURRENT_RECORD = "currentRecord";
     public static final String SESSION_DO_SEARCH_ON_SHOW = "doSearch";
 	public static final String SESSION_EVENT_SEARCH_FORM = "eventSearchForm";
 	public static final String SESSION_EVENT_SEARCH_RESULTS = "searchResults";
+    public static final String DISPLAYTAG_TABLE_ID = "event";
+    public static final int DISPLAYTAG_PAGESIZE = 25;
 
 	private EventSearchService eventSearchService;
 
@@ -143,6 +145,7 @@ public class SearchHelper {
          */
 		List<Event> events; 
 		Long totalResults;
+		Integer firstRecord;
     	if (eventSearchForm.getDisplayEventId() != null) {
     		Event event = eventSearchService.findById(eventSearchForm.getDisplayEventId());
     		events = new ArrayList<Event>();
@@ -151,25 +154,28 @@ public class SearchHelper {
     		eventSearchForm.setMapZoom(event.getZoomLevel());
     		eventSearchForm.setMapType(event.getMapType());
     		totalResults = 1L;
+    		firstRecord = 0;
     		//now remove the id from the form - we don't want to get stuck forever showing this event
     		eventSearchForm.setDisplayEventId(null);
     		
     	} else if (eventSearchForm.getMapCenter() != null) {
-            int firstRecord = PaginatingFormHelper.calculateFirstRecord(eventSearchForm, MAX_RECORDS);
-            eventSearchForm.setCurrentRecord(firstRecord);
+            //int firstRecord = PaginatingFormHelper.calculateFirstRecord(eventSearchForm, MAX_RECORDS);
+            firstRecord = DisplayTagHelper.getFirstRecord(request, DISPLAYTAG_TABLE_ID, DISPLAYTAG_PAGESIZE);
             LatLngBounds bounds = getBounds(eventSearchForm);
-            events = eventSearchService.search(MAX_RECORDS, firstRecord, 
+            events = eventSearchService.search(DISPLAYTAG_PAGESIZE, firstRecord, 
             		eventSearchForm.getWhat(), eventSearchForm.getWhen(), bounds, getVisibility(eventSearchForm));
             totalResults = eventSearchService.getCount(
             		eventSearchForm.getWhat(), eventSearchForm.getWhen(), bounds, getVisibility(eventSearchForm));
+
     	} else {
     		events = new ArrayList<Event>();
     		totalResults = 0L;
+    		firstRecord = 0;
     	}
         //for debugging
         //addDebugBoundingBox(events, bounds);
         
-    	prepareModel(model, events, totalResults);
+    	prepareModel( model, events, totalResults, firstRecord);
         //NOTE: we are putting the events into the command so that the page javascript
         //functions can properly display them using google's mapping API
         eventSearchForm.setSearchResults(JSONFormat.toJSON(events));
@@ -177,8 +183,9 @@ public class SearchHelper {
     }
 
 	@SuppressWarnings("unchecked")
-	public void prepareModel(Map model, List<Event> events, Long totalResults) {
-		model.put(MODEL_TOTAL_RESULTS, totalResults);
+	public void prepareModel(Map model, List<Event> events, Long totalResults, Integer currentRecord) {		
+		model.put(MODEL_CURRENT_RECORD, currentRecord);
+		model.put(MODEL_TOTAL_RESULTS, Math.round(totalResults));
     	model.put(MODEL_EVENTS, events);
 	}
     

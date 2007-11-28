@@ -48,7 +48,6 @@ public class GGcoder {
         if (HttpURLConnection.HTTP_OK == returnCode) {
 
             JSONObject placemark = (JSONObject) query(json, "Placemark[0]");
-            System.out.println(placemark.toString(3));
 
             final StringBuffer commonId = new StringBuffer("AddressDetails.Country.AdministrativeArea");
 

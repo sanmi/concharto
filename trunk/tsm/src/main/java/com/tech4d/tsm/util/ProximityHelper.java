@@ -125,7 +125,7 @@ public class ProximityHelper {
 		Double d = Math.acos(Math.sin(lat1)*Math.sin(lat2) + 
                 Math.cos(lat1)*Math.cos(lat2) *
                 Math.cos(lon2-lon1)) * EARTHS_RADIUS;
-		System.out.println("distance: " + d);
+		//System.out.println("distance: " + d);
 		return d;
 	}
 	
