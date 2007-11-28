@@ -10,6 +10,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.CustomBooleanEditor;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -57,8 +59,8 @@ public class SearchHelper {
     public static final int DISPLAYTAG_PAGESIZE = 25;
 
 	private EventSearchService eventSearchService;
+	private static final Log log = LogFactory.getLog(SearchHelper.class);
 
-	
     public SearchHelper(EventSearchService eventSearchService) {
     	this.eventSearchService = eventSearchService;
 	}
@@ -105,6 +107,7 @@ public class SearchHelper {
      */
 	public void geocode(String mapKey, HttpServletRequest request,
 			EventSearchForm eventSearchForm) throws IOException {
+
 		if (!StringUtils.isEmpty(eventSearchForm.getWhere())) {
         	//String mapKey = formController.getMessageSourceAccessor().getMessage(makeMapKeyCode(request));
         	GAddress address = GGcoder.geocode(eventSearchForm.getWhere(), mapKey);
@@ -129,13 +132,14 @@ public class SearchHelper {
 	 * Search for events and return results in the model.  Some search results are also put in the form
 	 * so that the javascript functions may use them.
 	 * 
+     * @param mapKey google api key
 	 * @param request request
 	 * @param model model containing search results
 	 * @param eventSearchForm form containing search parameters and search results    
 	 * @return a list of Event objects
 	 */
     @SuppressWarnings("unchecked")
-    public List<Event> doSearch( HttpServletRequest request, Map model, EventSearchForm eventSearchForm) {
+    public List<Event> doSearch(String mapKey, HttpServletRequest request, Map model, EventSearchForm eventSearchForm) {
         /*
          * 1. Get the lat-long bounding box of whatever zoom
          * level we are at. 2. Parse the time field to extract a time range 3.
@@ -158,7 +162,16 @@ public class SearchHelper {
     		//now remove the id from the form - we don't want to get stuck forever showing this event
     		eventSearchForm.setDisplayEventId(null);
     		
-    	} else if (eventSearchForm.getMapCenter() != null) {
+    	} else { 
+    		if (eventSearchForm.getMapCenter() == null) {
+    	    	//geocode
+    	    	try {
+					geocode(mapKey, request, eventSearchForm);
+				} catch (IOException e) {
+					//TODO, perhaps some better error handling here??
+					log.info("Exception geocoding location " + eventSearchForm.getWhere() + e);
+				}
+    		}
             //int firstRecord = PaginatingFormHelper.calculateFirstRecord(eventSearchForm, MAX_RECORDS);
             firstRecord = DisplayTagHelper.getFirstRecord(request, DISPLAYTAG_TABLE_ID, DISPLAYTAG_PAGESIZE);
             LatLngBounds bounds = getBounds(eventSearchForm);
@@ -167,11 +180,7 @@ public class SearchHelper {
             totalResults = eventSearchService.getCount(
             		eventSearchForm.getWhat(), eventSearchForm.getWhen(), bounds, getVisibility(eventSearchForm));
 
-    	} else {
-    		events = new ArrayList<Event>();
-    		totalResults = 0L;
-    		firstRecord = 0;
-    	}
+    	} 
         //for debugging
         //addDebugBoundingBox(events, bounds);
         
