@@ -124,7 +124,10 @@ public class EventSearchController extends AbstractFormController {
 
 			return new ModelAndView(getFormView(), model);
 		} else {
-			return showForm(request, errors, getFormView());
+			//nothing to show
+			Map model = errors.getModel();
+            model.put(SearchHelper.MODEL_TOTAL_RESULTS, 0);
+			return new ModelAndView(getFormView(), model);
 		}
 	}
 
