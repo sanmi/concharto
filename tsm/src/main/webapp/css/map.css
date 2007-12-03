@@ -24,8 +24,8 @@
     color: #3670A7;
 }
 .mapedit #eventForm .errorlabel {
-    color: red;
-    font-style:bold;
+	color: red;
+	font-weight: bold;
 }
 
 .mapedit #eventForm .radio {
@@ -71,7 +71,7 @@
 .mapedit #results {
   overflow-x:hidden; 
   overflow-y:scroll;
-  overflow:-moz-scrollbars-vertical!important;
+  overflow:auto -moz-scrollbars-vertical!important;
 }
 .mapedit #event td, .mapedit #event tr, .mapedit #event table   {
 	margin: 0;
@@ -139,7 +139,7 @@
 .mapedit .nextPrev {
     margin: 1em .2em 1em .2em;
     font-size: large;
-    fort-weight: bold;
+    font-weight: bold;
 }
 
 .mapedit .changes {

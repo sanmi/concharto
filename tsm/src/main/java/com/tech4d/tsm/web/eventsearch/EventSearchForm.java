@@ -27,7 +27,7 @@ public class EventSearchForm  {
     private Long displayEventId;
     private Boolean isAddEvent;
     private String show;
-    private Boolean isFitViewToResults;
+    private Boolean isOnlyWithinMapBounds;
     
 	public String getShow() {
 		return show;
@@ -118,11 +118,11 @@ public class EventSearchForm  {
     public void setIsGeocodeSuccess(Boolean isGeocodeSuccess) {
         this.isGeocodeSuccess = isGeocodeSuccess;
     }
-    public Boolean getIsFitViewToResults() {
-		return isFitViewToResults;
+	public Boolean getIsOnlyWithinMapBounds() {
+		return isOnlyWithinMapBounds;
 	}
-	public void setIsFitViewToResults(Boolean isFitViewToResults) {
-		this.isFitViewToResults = isFitViewToResults;
+	public void setIsOnlyWithinMapBounds(Boolean isOnlySearchCurrentMapBounds) {
+		this.isOnlyWithinMapBounds = isOnlySearchCurrentMapBounds;
 	}
     
 }

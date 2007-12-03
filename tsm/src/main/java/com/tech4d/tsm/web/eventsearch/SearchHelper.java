@@ -49,7 +49,7 @@ public class SearchHelper {
 	public static final String QUERY_WHEN = "_when";
 	public static final String QUERY_WHERE = "_where";
 	public static final String QUERY_ID = "_id";
-	public static final String QUERY_FIT = "_fit";
+	public static final String QUERY_BOUNDED = "_bounded";
     public static final String MODEL_EVENTS = "events";
     public static final String MODEL_TOTAL_RESULTS = "totalResults";
     public static final String MODEL_CURRENT_RECORD = "currentRecord";
@@ -94,8 +94,9 @@ public class SearchHelper {
     	if ((zoom != null) && (zoom >0) && (zoom < SensibleMapDefaults.NUM_ZOOM_LEVELS)) {
         	eventSearchForm.setMapZoom(zoom);
     	}
-    	eventSearchForm.setIsFitViewToResults(ServletRequestUtils.getBooleanParameter(request, QUERY_FIT));
+    	eventSearchForm.setIsOnlyWithinMapBounds(ServletRequestUtils.getBooleanParameter(request, QUERY_BOUNDED));
     	eventSearchForm.setDisplayEventId(ServletRequestUtils.getLongParameter(request, QUERY_ID));
+    	eventSearchForm.setIsOnlyWithinMapBounds(false);  //no bounds to search with
     	WebUtils.setSessionAttribute(request, SESSION_DO_SEARCH_ON_SHOW, true);
 	}
 
@@ -221,7 +222,7 @@ public class SearchHelper {
 		//if we are below a certain zoom level, we will still search a wider area
 		LatLngBounds bounds = null;
 		if ((StringUtils.isEmpty(eventSearchForm.getWhere())) && 
-				((eventSearchForm.getIsFitViewToResults() != null) && (eventSearchForm.getIsFitViewToResults()))) {
+				BooleanUtils.isFalse(eventSearchForm.getIsOnlyWithinMapBounds())) {
 			//when they specify fit view to all results, we don't want a bounding box, unless
 			//they also specify a place, in which case the geocode takes precedence
 			return null;
