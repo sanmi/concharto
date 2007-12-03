@@ -7,6 +7,7 @@
 <%@attribute name="stylesheet" required="false" type="java.lang.String"%>
 <%@attribute name="bodyattr" required="false" type="java.lang.String"%>
 <%@attribute name="stripped" required="false" type="java.lang.String"%>
+<%@attribute name="nohead" required="false" type="java.lang.String"%>
 <%@tag import="com.tech4d.tsm.auth.AuthConstants" %>
 
 <%
@@ -47,7 +48,9 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 
 	<c:if test="${stripped != 'true'}">
 		<jsp:include flush="true" page="/WEB-INF/jsp/include/topmenu.jsp"/>
-		<jsp:include flush="true" page="/WEB-INF/jsp/include/head.jsp"/>
+		<c:if test="${nohead != 'true'}">
+			<jsp:include flush="true" page="/WEB-INF/jsp/include/head.jsp"/>
+	  </c:if>
   </c:if>
 	<div id="content">
 		<jsp:doBody />

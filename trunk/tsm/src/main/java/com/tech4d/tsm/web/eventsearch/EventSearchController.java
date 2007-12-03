@@ -178,7 +178,7 @@ public class EventSearchController extends AbstractFormController {
                 Map model = doSearch(request, errors, eventSearchForm);
             	//fit the map to the search results if they specified a place name
                 if (!StringUtils.isEmpty(eventSearchForm.getWhere())) {
-                	eventSearchForm.setIsFitViewToResults(true);
+                	eventSearchForm.setIsOnlyWithinMapBounds(false);
                 }
     			// needed so the displaytag paging can work
     	        displayTagModelElements(model);

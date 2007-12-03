@@ -1,7 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
 <div class="nav">
 <ul class="nav_left"><li><a href="${basePath}">Home</a></li
 <c:if test="${fn:length(username)>0}">
@@ -17,4 +16,5 @@
 ><li><a href="${basePath}logout.htm">Sign out</a></li
 ></c:if></ul>
 </div>
+<div class="clearfloat"></div>
 

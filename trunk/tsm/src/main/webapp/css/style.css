@@ -1,7 +1,8 @@
-body {
+body, div{
 	margin:0;
 	padding:0;
 	font: small Arial, Helvetica, sans-serif;
+	
 }
 h1, h2 {
 	color: #426293;
@@ -28,7 +29,7 @@ h1, h2 {
 
 .nav ul li{
     display: inline;
-    padding: 0 0 2em .1em;
+    padding: 0 0 0 .1em;
     margin: 0;
 }
 

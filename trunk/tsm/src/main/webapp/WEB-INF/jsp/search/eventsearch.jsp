@@ -19,6 +19,7 @@
 	<jsp:attribute name="stylesheet">textcontent.css,map.css</jsp:attribute>
 	<jsp:attribute name="script">prototype-1.7.0.js,map.js,json.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
+	<jsp:attribute name="nohead">true</jsp:attribute>
 
 	<jsp:body>
 		<form:form name="event" id="eventSearchForm" commandName="eventSearch" action="eventsearch.htm" onsubmit="search(); return false">
@@ -32,12 +33,11 @@
 			<form:hidden path="isAddEvent"/>
 			<form:hidden path="editEventId"/>
 			<form:hidden path="displayEventId"/>
-			<form:hidden path="isFitViewToResults"/>
-	  	<jsp:include page="include/searchbar.jsp"/>
-	  
+	  	<jsp:include page="include/searchbar.jsp">
+	  		<jsp:param name="showSearchOptions" value="true"/>
+	  	</jsp:include>
 		  
 			<%-- Pull the center from the form object so we can center using javascript (see above) --%>
-		
 			<table><tbody><tr>			
 				<td id="sidebar">
 		    	<div id="results" >
