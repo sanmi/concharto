@@ -26,6 +26,7 @@ import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.service.EventSearchService;
+import com.tech4d.tsm.service.SearchParams;
 import com.tech4d.tsm.service.Visibility;
 import com.tech4d.tsm.util.JSONFormat;
 import com.tech4d.tsm.util.LatLngBounds;
@@ -50,6 +51,7 @@ public class SearchHelper {
 	public static final String QUERY_WHERE = "_where";
 	public static final String QUERY_ID = "_id";
 	public static final String QUERY_BOUNDED = "_bounded";
+	public static final String QUERY_INCLUDE_TIMERANGE_OVERLAPS = "_timeoverlaps";
     public static final String MODEL_EVENTS = "events";
     public static final String MODEL_TOTAL_RESULTS = "totalResults";
     public static final String MODEL_CURRENT_RECORD = "currentRecord";
@@ -94,9 +96,10 @@ public class SearchHelper {
     	if ((zoom != null) && (zoom >0) && (zoom < SensibleMapDefaults.NUM_ZOOM_LEVELS)) {
         	eventSearchForm.setMapZoom(zoom);
     	}
-    	eventSearchForm.setIsOnlyWithinMapBounds(ServletRequestUtils.getBooleanParameter(request, QUERY_BOUNDED));
+    	eventSearchForm.setLimitWithinMapBounds(ServletRequestUtils.getBooleanParameter(request, QUERY_BOUNDED));
+    	eventSearchForm.setIncludeTimeRangeOverlaps((ServletRequestUtils.getBooleanParameter(request, QUERY_INCLUDE_TIMERANGE_OVERLAPS)));
     	eventSearchForm.setDisplayEventId(ServletRequestUtils.getLongParameter(request, QUERY_ID));
-    	eventSearchForm.setIsOnlyWithinMapBounds(false);  //no bounds to search with
+    	eventSearchForm.setLimitWithinMapBounds(false);  //no bounds to search with
     	WebUtils.setSessionAttribute(request, SESSION_DO_SEARCH_ON_SHOW, true);
 	}
 
@@ -182,10 +185,13 @@ public class SearchHelper {
     		if (!BooleanUtils.isFalse(eventSearchForm.getIsGeocodeSuccess())) {
                 firstRecord = DisplayTagHelper.getFirstRecord(request, DISPLAYTAG_TABLE_ID, DISPLAYTAG_PAGESIZE);
                 LatLngBounds bounds = getBounds(eventSearchForm);
-                events = eventSearchService.search(DISPLAYTAG_PAGESIZE, firstRecord, 
-                		eventSearchForm.getWhat(), eventSearchForm.getWhen(), bounds, getVisibility(eventSearchForm));
-                totalResults = eventSearchService.getCount(
-                		eventSearchForm.getWhat(), eventSearchForm.getWhen(), bounds, getVisibility(eventSearchForm));
+                SearchParams params = new SearchParams();
+                params.setTextFilter(eventSearchForm.getWhat());
+                params.setTimeRange(eventSearchForm.getWhen());
+                params.setVisibility(getVisibility(eventSearchForm));
+                params.setIncludeTimeRangeOverlaps(BooleanUtils.isTrue(eventSearchForm.getIncludeTimeRangeOverlaps()));
+                events = eventSearchService.search(DISPLAYTAG_PAGESIZE, firstRecord, bounds, params);
+                totalResults = eventSearchService.getCount(bounds, params);
     		} else {
     			//failed geocode, no points
     			events = new ArrayList<Event>();
@@ -222,7 +228,7 @@ public class SearchHelper {
 		//if we are below a certain zoom level, we will still search a wider area
 		LatLngBounds bounds = null;
 		if ((StringUtils.isEmpty(eventSearchForm.getWhere())) && 
-				BooleanUtils.isFalse(eventSearchForm.getIsOnlyWithinMapBounds())) {
+				BooleanUtils.isFalse(eventSearchForm.getLimitWithinMapBounds())) {
 			//when they specify fit view to all results, we don't want a bounding box, unless
 			//they also specify a place, in which case the geocode takes precedence
 			return null;

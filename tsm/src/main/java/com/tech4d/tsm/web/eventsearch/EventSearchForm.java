@@ -27,7 +27,8 @@ public class EventSearchForm  {
     private Long displayEventId;
     private Boolean isAddEvent;
     private String show;
-    private Boolean isOnlyWithinMapBounds;
+    private Boolean limitWithinMapBounds;
+    private Boolean includeTimeRangeOverlaps;
     
 	public String getShow() {
 		return show;
@@ -118,11 +119,17 @@ public class EventSearchForm  {
     public void setIsGeocodeSuccess(Boolean isGeocodeSuccess) {
         this.isGeocodeSuccess = isGeocodeSuccess;
     }
-	public Boolean getIsOnlyWithinMapBounds() {
-		return isOnlyWithinMapBounds;
+	public Boolean getLimitWithinMapBounds() {
+		return limitWithinMapBounds;
 	}
-	public void setIsOnlyWithinMapBounds(Boolean isOnlySearchCurrentMapBounds) {
-		this.isOnlyWithinMapBounds = isOnlySearchCurrentMapBounds;
+	public void setLimitWithinMapBounds(Boolean isOnlySearchCurrentMapBounds) {
+		this.limitWithinMapBounds = isOnlySearchCurrentMapBounds;
+	}
+	public Boolean getIncludeTimeRangeOverlaps() {
+		return includeTimeRangeOverlaps;
+	}
+	public void setIncludeTimeRangeOverlaps(Boolean includeTimeRangeOverlaps) {
+		this.includeTimeRangeOverlaps = includeTimeRangeOverlaps;
 	}
     
 }

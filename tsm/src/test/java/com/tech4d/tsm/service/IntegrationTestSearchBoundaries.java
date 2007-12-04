@@ -54,9 +54,13 @@ public class IntegrationTestSearchBoundaries {
         StyleUtil.setupStyle();
     }
     
-    private void assertSearchMatch(int matchesExpected, String dateText) throws java.text.ParseException {
-        List<Event> events = eventSearchService.search(MAX_RESULTS, 0, null,
-                TimeRangeFormat.parse(dateText), null, Visibility.NORMAL);
+    private void assertSearchMatch(int overlapMatchesExpected, int nonOverlapMatchesExpected, String dateText) throws java.text.ParseException {
+    	assertSearchMatch(overlapMatchesExpected, dateText, true);
+    	assertSearchMatch(nonOverlapMatchesExpected, dateText, false);
+    }
+    private void assertSearchMatch(int matchesExpected, String dateText, boolean includeOverlaps) throws java.text.ParseException {
+        List<Event> events = eventSearchService.search(MAX_RESULTS, 0, null, 
+        		new SearchParams(null, TimeRangeFormat.parse(dateText), Visibility.NORMAL, includeOverlaps));
         assertEquals(matchesExpected, events.size());        
     }
 
@@ -72,21 +76,21 @@ public class IntegrationTestSearchBoundaries {
     	Point boundingBoxSW =  (Point) new WKTReader().read("POINT (120 20)");
     	Point boundingBoxNE =  (Point) new WKTReader().read("POINT (-156 34)");
     	LatLngBounds bounds = new LatLngBounds(boundingBoxSW, boundingBoxNE);
-    	assertEquals(2, eventSearchService.search(10, 0, null, null, bounds, null).size());
+    	assertEquals(2, eventSearchService.search(10, 0, bounds, new SearchParams(null, null, null, true)).size());
     }
     
     @Test public void testTimeBoundaries() throws java.text.ParseException {
         makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522-1527"), "Stuff", null);
-        assertSearchMatch(0, "1528");
-        assertSearchMatch(0, "1521");
-        assertSearchMatch(0, "1528 - 1900");
-        assertSearchMatch(0, "1519 - 1521");
-        assertSearchMatch(1, "1522");
-        assertSearchMatch(1, "1527");
-        assertSearchMatch(1, "1522-1527");
-        assertSearchMatch(1, "1526 - 1527");
-        assertSearchMatch(1, "1522-1540");
-        assertSearchMatch(1, "1520-1540");
+        assertSearchMatch(0, 0, "1528");
+        assertSearchMatch(0, 0, "1521");
+        assertSearchMatch(0, 0, "1528 - 1900");
+        assertSearchMatch(0, 0, "1519 - 1521");
+        assertSearchMatch(1, 0, "1522");
+        assertSearchMatch(1, 0, "1527");
+        assertSearchMatch(1, 1, "1522-1527");
+        assertSearchMatch(1, 0, "1526 - 1527");
+        assertSearchMatch(1, 1, "1522-1540");
+        assertSearchMatch(1, 1, "1520-1540");
     }
 
     @Test public void testInvisible() throws java.text.ParseException {
@@ -99,10 +103,10 @@ public class IntegrationTestSearchBoundaries {
         event.setVisible(false);
         eventDao.saveOrUpdate(event);
         //should only see one
-        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, null, null, Visibility.NORMAL).size());        
+        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams(null, null, Visibility.NORMAL, true)).size());        
         
         //now test showing only invisible
-        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, null, null, Visibility.HIDDEN).size());        
+        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams(null, null, Visibility.HIDDEN, true)).size());        
         
     }
     
@@ -115,10 +119,10 @@ public class IntegrationTestSearchBoundaries {
         event.setHasUnresolvedFlag(true);
         eventDao.saveOrUpdate(event);
         //should see both
-        assertEquals(2, eventSearchService.search(MAX_RESULTS, 0, null, null, null, Visibility.NORMAL).size());        
+        assertEquals(2, eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams( null, null, Visibility.NORMAL, true)).size());        
         
         //now test showing only invisible
-        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, null, null, Visibility.FLAGGED).size());        
+        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams(null, null, Visibility.FLAGGED, true)).size());        
     	
     }
     

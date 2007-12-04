@@ -10,7 +10,7 @@
 			<script type="text/javascript">
 	//<![CDATA[
 	function search() {
-			document.getElementById("eventSearchForm").isOnlyWithinMapBounds.value = 'false';
+			document.getElementById("eventSearchForm").limitWithinMapBounds.value = 'false';
 			document.event.submit();
 	}
 	

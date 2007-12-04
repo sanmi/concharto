@@ -46,7 +46,8 @@
 			<form:hidden path="isAddEvent"/>
 			<form:hidden path="editEventId"/>
 			<form:hidden path="displayEventId"/>
-			<form:hidden path="isOnlyWithinMapBounds"/>
+			<form:hidden path="limitWithinMapBounds"/>
+			<form:hidden path="includeTimeRangeOverlaps"/>
 			<form:hidden path="where"/>
 			<form:hidden path="when"/>
 			<form:hidden path="what"/>
