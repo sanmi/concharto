@@ -46,12 +46,12 @@
     <c:choose>
     	<c:when test="${param.showSearchOptions == 'true'}">
 		    <span class="action">
-		  		<form:checkbox path="isOnlyWithinMapBounds" value="true"/> Only near current map 
-		  		<%-- <form:checkbox path=""/> Exclude overlapping time ranges --%>
+		  		<form:checkbox path="limitWithinMapBounds" value="true"/> Only on current map 
+		  		<form:checkbox path="includeTimeRangeOverlaps"/> Include overlapping time ranges 
 		    </span>
     	</c:when>
     	<c:otherwise>
-	  		<form:hidden path="isOnlyWithinMapBounds"/> 
+	  		<form:hidden path="limitWithinMapBounds"/> 
     	</c:otherwise>
     </c:choose>
   

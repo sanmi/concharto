@@ -57,7 +57,7 @@
 		}
 		adjustSidebarIE();
 		var where = document.getElementById("eventSearchForm").where.value
-		if ((isOnlyWithinMapBounds() == false) ) {
+		if ((limitWithinMapBounds() == false) ) {
 			<%-- fit map to the results --%>
 			if (0 != _fitToPolygon.length) {
 				var boundsPoly = new GPolyline(_fitToPolygon);
@@ -81,7 +81,7 @@
 
 	<%-- called by createOverlay --%>
 	function createMarker(event) { 
-		if ((isOnlyWithinMapBounds() == false) ) {
+		if ((limitWithinMapBounds() == false) ) {
 			<%-- if we are trying to fit the map to the events, we will add 
 			     all events to a large poly.  We only do this for events because
 			     polygons and lines can span large areas (e.g. an ocean crossing that 
@@ -206,12 +206,12 @@
 		saveAndSubmit();		
 	}
 	
-	function isOnlyWithinMapBounds() {
-		return document.getElementById("eventSearchForm").isOnlyWithinMapBounds.checked ; 
+	function limitWithinMapBounds() {
+		return document.getElementById("eventSearchForm").limitWithinMapBounds.checked ; 
 	}
 	
-	function setIsOnlyWithinMapBounds(value) {
-		document.getElementById("eventSearchForm").isOnlyWithinMapBounds.value = value;
+	function setLimitWithinMapBounds(value) {
+		document.getElementById("eventSearchForm").limitWithinMapBounds.value = value;
 	}
 
 	<%-- user has clicked on 'search' --%>

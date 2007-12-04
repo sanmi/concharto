@@ -16,7 +16,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tech4d.tsm.model.Event;
-import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.LapTimer;
 import com.tech4d.tsm.util.LatLngBounds;
 import com.tech4d.tsm.util.ProximityHelper;
@@ -43,6 +42,9 @@ public class EventSearchServiceHib implements EventSearchService {
         "((t.begin >= :earliest AND t.begin < :latest) OR " +  
         " (t.end > :earliest AND t.end <= :latest) OR " +
         " (t.begin < :earliest AND t.end > :latest)) ";
+    private static String SQL_TIMERANGE_EXCLUDE_OVERLAPS_CLAUSE = 
+        " (t.begin between :earliest AND :latest) AND " +  
+        " (t.end between :earliest AND :latest)";
 
     private static final String SQL_VISIBLE_CLAUSE = " NOT(ev.visible  <=> false) ";
     private static final String SQL_HIDDEN_CLAUSE = " ev.visible  <=> false ";
@@ -104,17 +106,16 @@ public class EventSearchServiceHib implements EventSearchService {
     /*
      * @see com.tech4d.tsm.service.EventSearchService#getCount
      */
-	public Long getCount(String textFilter, TimeRange timeRange, 
-			LatLngBounds bounds, Visibility visibility) {
+	public Long getCount(LatLngBounds bounds, SearchParams params) {
         Long totalResults = 0L;
 		if (bounds != null) {
 	    	Set<Geometry> boxes =ProximityHelper.getBoundingBoxes(bounds.getSouthWest(), bounds.getNorthEast());
 	        //There are 1 or 2 bounding boxes (see comment above)
 	        for (Geometry boundingBox : boxes) {
-	        	totalResults += getCountInternal(textFilter, timeRange, boundingBox, visibility);
+	        	totalResults += getCountInternal(boundingBox, params);
 	        }
 		} else {
-			totalResults = getCountInternal(textFilter, timeRange, null, visibility);
+			totalResults = getCountInternal(null, params);
 		}
 		return totalResults;
 	}
@@ -123,9 +124,9 @@ public class EventSearchServiceHib implements EventSearchService {
      * @see com.tech4d.tsm.service.EventSearchService#getCount
      */
     @SuppressWarnings("unchecked")
-	private Long getCountInternal(String textFilter, TimeRange timeRange, Geometry boundingBox, Visibility visibility) {
+	private Long getCountInternal(Geometry boundingBox, SearchParams params) {
         LapTimer timer = new LapTimer(this.logger);
-        SQLQuery sqlQuery = createQuery(SQL_PREFIX_GET_COUNT, textFilter, timeRange, boundingBox, visibility);
+        SQLQuery sqlQuery = createQuery(SQL_PREFIX_GET_COUNT, boundingBox, params);
         List result = sqlQuery.addScalar("count(*)", Hibernate.LONG).list();
         timer.timeIt("count").logDebugTime();
         return (Long) result.get(0);
@@ -134,8 +135,8 @@ public class EventSearchServiceHib implements EventSearchService {
     /*
      * @see com.tech4d.tsm.service.EventSearchService#search
      */
-    public List<Event> search(int maxResults, int firstResult, String textFilter, TimeRange timeRange,
-            LatLngBounds bounds, Visibility visibility) {
+    public List<Event> search(int maxResults, int firstResult, 
+            LatLngBounds bounds, SearchParams params) {
         List<Event> events = new ArrayList<Event>();
     	if (bounds != null) {
         	Set<Geometry> boxes = ProximityHelper.getBoundingBoxes(bounds.getSouthWest(), bounds.getNorthEast());
@@ -145,7 +146,7 @@ public class EventSearchServiceHib implements EventSearchService {
             		logger.debug(boundingBox.toText());
             	}
                 List<Event> results = searchInternal(maxResults, firstResult, 
-                		textFilter, timeRange, boundingBox, visibility);
+                		boundingBox, params);
                 events.addAll(results);
             }
 
@@ -158,7 +159,7 @@ public class EventSearchServiceHib implements EventSearchService {
             }
     		
     	} else {
-    		events = searchInternal(maxResults, firstResult, textFilter, timeRange, null, visibility);
+    		events = searchInternal(maxResults, firstResult, null, params);
     	}
         return events;
     }
@@ -186,10 +187,10 @@ public class EventSearchServiceHib implements EventSearchService {
 
 
     @SuppressWarnings("unchecked")
-    private List<Event> searchInternal(int maxResults, int firstResult, String textFilter, TimeRange timeRange,
-            Geometry boundingBox, Visibility visibility) {
+    private List<Event> searchInternal(int maxResults, int firstResult, 
+            Geometry boundingBox, SearchParams params) {
         LapTimer timer = new LapTimer(this.logger);
-        SQLQuery sqlQuery = createQuery(SQL_PREFIX_SEARCH, textFilter, timeRange, boundingBox, visibility);
+        SQLQuery sqlQuery = createQuery(SQL_PREFIX_SEARCH, boundingBox, params);
                
         List<Event> events = sqlQuery
             .addEntity(Event.class)
@@ -200,20 +201,19 @@ public class EventSearchServiceHib implements EventSearchService {
         return events;
     }
 
-    private SQLQuery createQuery(String prefix, String textFilter, TimeRange timeRange, 
-    		Geometry boundingBox, Visibility visbility) {
+    private SQLQuery createQuery(String prefix, Geometry boundingBox, SearchParams params) {
         StringBuffer select = new StringBuffer(prefix).append(SQL_SELECT_STUB);
     	select.append(SQL_TIME_JOIN); //always join on time, so we can order by time
         StringBuffer clause = new StringBuffer();
         boolean hasConjuncted = false;
-        if (visbility == Visibility.NORMAL) {
+        if (params.getVisibility() == Visibility.NORMAL) {
             hasConjuncted = addClause(hasConjuncted, clause, SQL_VISIBLE_CLAUSE);
-        } else if (visbility == Visibility.HIDDEN) {
+        } else if (params.getVisibility() == Visibility.HIDDEN) {
         	hasConjuncted = addClause(hasConjuncted, clause, SQL_HIDDEN_CLAUSE);
-        } else if (visbility == Visibility.FLAGGED) {
+        } else if (params.getVisibility() == Visibility.FLAGGED) {
         	hasConjuncted = addClause(hasConjuncted, clause, SQL_FLAGGED_CLAUSE);
         } 
-        if (!StringUtils.isEmpty(textFilter)) {
+        if (!StringUtils.isEmpty(params.getTextFilter())) {
         	select.append(SQL_SEARCH_JOIN);
         	hasConjuncted = addClause(hasConjuncted, clause, SQL_MATCH_CLAUSE);
         }
@@ -221,8 +221,12 @@ public class EventSearchServiceHib implements EventSearchService {
         	select.append(SQL_GEO_JOIN);
         	hasConjuncted = addClause(hasConjuncted, clause, SQL_MBRWITHIN_CLAUSE);
         }
-        if (timeRange != null) {
-        	addClause(hasConjuncted, clause, SQL_TIMERANGE_CLAUSE);
+        if (params.getTimeRange() != null) {
+        	if (params.isIncludeTimeRangeOverlaps()) {
+            	addClause(hasConjuncted, clause, SQL_TIMERANGE_CLAUSE);
+        	} else {
+            	addClause(hasConjuncted, clause, SQL_TIMERANGE_EXCLUDE_OVERLAPS_CLAUSE);
+        	}
         }
         clause.append(SQL_ORDER_CLAUSE);
         select.append(clause);
@@ -234,12 +238,12 @@ public class EventSearchServiceHib implements EventSearchService {
         if (boundingBox != null) {
             sqlQuery.setString("geom_text", boundingBox.toText());
         }
-        if (!StringUtils.isEmpty(textFilter)) {
-            sqlQuery.setString("search_text", textFilter);
+        if (!StringUtils.isEmpty(params.getTextFilter())) {
+            sqlQuery.setString("search_text", params.getTextFilter());
         }
-        if (timeRange != null) {
-            sqlQuery.setBigInteger("earliest", BigInteger.valueOf(timeRange.getBegin().getDate().getTime()));
-            sqlQuery.setBigInteger("latest", BigInteger.valueOf(timeRange.getEnd().getDate().getTime()));
+        if (params.getTimeRange() != null) {
+            sqlQuery.setBigInteger("earliest", BigInteger.valueOf(params.getTimeRange().getBegin().getDate().getTime()));
+            sqlQuery.setBigInteger("latest", BigInteger.valueOf(params.getTimeRange().getEnd().getDate().getTime()));
         }
         return sqlQuery;
     }
