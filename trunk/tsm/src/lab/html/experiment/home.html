@@ -5,12 +5,12 @@
 <title>Time Space Map</title>
 <style type="text/css">
 	body {
-	background: #E1E4D6 url(images/tile-backg.gif) repeat-x;
+	background: #FFFFFF url(images/tile-backg.gif) repeat-x;
 	margin: 0;
 	padding: 0;
-	text-align:center;
 	font: 9pt Arial, Helvetica, sans-serif;
-	color: #202020;
+	color: #202020;	
+	text-align:left;
 	}
 
 	#nav {
@@ -46,8 +46,8 @@
 	color: #047BDD;
 	}
 	a {
-	 	font-weight:bold;
-		text-decoration: none;
+	font-weight:bold;
+	text-decoration: none;
 	}
 	#content {
 	text-align:left;
@@ -65,7 +65,7 @@
 	text-align:left;
 	position:relative;
 	left: 380px;
-	width: 38em;
+	width: 42em;
 	padding: 0;
 	}
 	#tagline {
@@ -77,9 +77,9 @@
 	}
 	#totals b{
 	font-style: normal;
-	font-weight: normal;
+	font-weight: bold;
 	font-variant: normal;
-	font-family: "Arial Black", Gadget, sans-serif, Arial;
+	font-family: Arial, Helvetica, sans-serif;
 	}
 	#addbox {
 	position:relative;
@@ -89,14 +89,18 @@
 	width: 15em;
 	}
 	.biglink a{
-	font: normal 12pt "Arial Black", Gadget, sans-serif, Arial;
+	font: bold 12pt Arial, Helvetica, sans-serif;
 	}
 	#searchbox {
-	position:relative;
-	left: 45px;
-	top: -6px;
+	position:absolute;
+	top: 68px;
+	left:40px;
+	width: 1050px;
+	margin-right:auto;
+	margin-left:auto;
 	font-weight: bold;
 	font-size:10pt;
+	width: 55em;
 	}
 	#searchbox .biglabel {
 	font-size:14pt;
@@ -116,23 +120,120 @@
 	#searchbox .button {
 		margin-bottom: 1px;
 	}
+	#searchbox input {
+	font: 10pt Arial, Helvetica, sans-serif;
+	}
 	#heading {
-		display:inline;
-		margin-left:auto;
-		margin-right:auto;
+	text-align:center;
 	}
 	.clearfloat {
 	float:none;
 	}
 	#main {
 	position:absolute;
-	top: 188px;
-	width: 1050px;
-	margin-right:auto;
-	margin-left:auto;
+	top: 251px;
+	}
+	#main h1 {
+	font-size: 14pt;
+	margin: .2em 0;
+	padding: .2em 0;
+	}
+	#main table {
+	width:100%;
+	}
+	#main #left {
+	padding: 15px 20px 0 25px;
+	}
+	#main #right {
+	padding: 25px 25px 0 20px;
+	width: 540px;
+	}
+	#main p{
+	margin: 0 0 .8em 0;
+	padding:0;
+	font-size:11pt;
+	}
+	#main #right p{
+	padding: 0;
+	margin: 8px 0 8px 18px;
+	}
+	#main td {
+	vertical-align: top;
+	}
+	#main #spotlightbox {
+	background: url(images/spotlight-backg.png) repeat-x;
+	height:496px;
+	width:551px;
+	}
+	#main #borderbox {
+	text-align:center
+	}
+	#main #embeddedmap {
+	background-color:white; 
+	padding:10px;
+	}
+	#main ul {
+	padding: .1em  .4em .1em 2em;
+	margin:.4em 0;
+	list-style: url(images/raquo.gif);
+	}
+	#main .recent {
+	background: url(images/recent-backg.png) repeat-x;
+	width: 100%;
+	padding: .4em;
+	margin: 0;
+	font-weight:bold;
+	}
+	#main .recent hr {
+	color: #BBC7D5;
+	background-color: #BBC7D5;
+	height: 1px;	
+	border: none 0; 
+	}
+	#maintabback {
+	}
+	#maintab {
+	position:absolute;
+	top: 232px;	
+	font-size: 15px;
+	font-weight: bold;
+	padding: 0;
+	margin: 0;
+	background-color: #5197DC;
+	border-bottom: #5197DC solid 1px;
+	}
+	#maintab .left {
+	margin: 0 0 0 45px;	
+	}
+	#maintab .selected, #maintab .unselected  {
+	padding: 6px 20px 0px 20px;
+	margin: 0 3px;
+	border-left:white solid 1px;
+	border-right:white solid 1px;
+	border-top:white solid 1px;
+	}
+	#maintab .selected {
+	padding: 6px 20px 1px 20px;
+	background-color: white;
+	border-bottom:white solid 1px;
+	}
+	#maintab .unselected {
+	padding: 6px 20px 0px 20px;
+	background-color: #C4DEF9;
+	border-bottom:#AECDE9 solid 1px;
+	}
+	#maintab a:link, #maintab a:visited {
+	color: #033898;
 	}
 </style>
-
+<!--[if IE 6]>
+<style type="text/css">
+	#maintab {
+	position:relative;
+	top: -3.75em;	
+  }
+</style>
+<![endif]-->
 </head>
 
 <body>
@@ -142,10 +243,11 @@
       <li>Hello, <b>frank</b></li> <li><a href="#">Settings</a></li> | <li><a href="#">Signout</a></li>
     </ul>
   </div>
-	<span class="nav_left"><img src="images/nav-left.png" /></span>
+	<div class="nav_left" ><img src="images/nav-left.png" /></div>
 </div>
+<div class="clearfloat"></div>
 
-<div id="heading"><img src="images/title.jpg" /></div>
+<div id="heading" ><img  src="images/title.jpg" /></div>
 <div id="content">
   <div id="tagline">
     An encyclopedic atlas of history and happenings that <a href="#">anyone can edit.</a></div>
@@ -156,22 +258,21 @@
   </div>
   <div id="searchbox">
     <table>
+      <col id="left"/>
+      <col id="right"/>
       <tr>
-        <td></td>
-        <td>Where <span class="eg">e.g., &quot;Gettysburg, PA&quot;</span></td>
-        <td>When <span class="eg">e.g., &quot;1962&quot;,&quot;Oct 14, 1066&quot;,&quot;1880-1886&quot;</span></td>
-        <td>What <span class="eg">e.g., &quot;Battle&quot;</span></td>
+        <td>Where <span class="eg">e.g., Gettysburg, PA</span></td>
+        <td>When <span class="eg">e.g., 1962; Oct 14,1066; 1880-1886</span></td>
+        <td>What <span class="eg">e.g., Battle</span></td>
         <td></td>
       </tr>
       <tr>
-        <td>  <span class="biglabel">Search: </span></td>
         <td><input type="text" size="22" /></td>
         <td><input type="text" size="35" /></td>
         <td><input type="text" size="22" /></td>
-        <td><span class="button"><img class="button" src="images/search.jpg" /></span></td>
+        <td><input type="submit" value="Search"/></td>
       </tr>
       <tr>
-        <td></td>
         <td><span class="options"><input type="checkbox"/> Search current map shown.</span></td>
         <td colspan="2">
         	<span class="options"><input type="checkbox"/> Find events that occurred only <em>within</em> the time frame specified.</span>
@@ -182,8 +283,97 @@
   </div>
   <div id="tabbar">
   </div>
-  <div id="main">
-  asdfasdf asdfasdfasdf asdf asdf asdf s  </div>
+</div>
+<div id="maintab">
+	<span class="left">&nbsp;&nbsp;</span>
+  <span class="selected">Home</span>
+  <a class="unselected" href="#">Take A Tour</a>
+  <a class="unselected" href="#">Guidelines</a>
+</div>
+<div id="main">
+	<table>
+    <col id="leftbar"/>
+    <col id="rightbar"/>
+    <tr>
+    <td id="left" >
+      <h1>An Atlas of History and Happenings</h1>
+      <p>Time Space Map is an encyclopedic, online atlas of history and happenings that anyone can edit; a geographic wiki. You
+      can search, add or edit, view or undo changes, discuss, watch, tag, or flag for removal.</p>
+      <ul>
+        <li><a href="#">Take a tour</a></li>
+        <li><a href="#">Policies and guidelines</a></li>
+        <li><a href="#">Why are we doing this</a></li>
+      </ul>
+      <h1>Recently Added</h1>
+      <div class="recent" >
+      </div>
+      <div class="recent" >
+      	<ul>
+        	<li> 
+            <a href="#">Construction on the Église St.-Etienne-du-Mont ends</a> <br/>
+            1626 <br/>
+            <em>Paris, France</em>
+            <hr/>
+          </li>
+        	<li> 
+            <a href="#"> Flight of Dirigible Norge transpolar crossing</a> <br/>
+            May 11, 1926 - May 14, 1926, 07:30AM  <br/>
+            <em>Spitsbergen, Norway to Teller, Alaska</em>
+            <hr/>
+          </li>
+        	<li> 
+            <a href="#"> Jean Louis Verger convicted of the murder of the Archbishop</a> <br/>
+            January 17, 1857<br/>
+            <em>Court of Assize, Paris, France</em>
+            <hr/>
+          </li>
+        	<li> 
+            <a href="#">Construction on the Église St.-Etienne-du-Mont ends</a> <br/>
+            1626 <br/>
+            <em>Paris, France</em>
+            <hr/>
+          </li>
+        	<li> 
+            <a href="#">Construction on the Église St.-Etienne-du-Mont ends</a> <br/>
+            1626 <br/>
+            <em>Paris, France</em>
+            <hr/>
+          </li>
+        	<li> 
+            <a href="#">Construction on the Église St.-Etienne-du-Mont ends</a> <br/>
+            1626 <br/>
+            <em>Paris, France</em>
+            <hr/>
+          </li>
+        	<li> 
+            <a href="#">Construction on the Église St.-Etienne-du-Mont ends</a> <br/>
+            1626 <br/>
+            <em>Paris, France</em>
+            <hr/>
+          </li>
+        	<li> 
+            <a href="#">More recently added ...</a> <br/>
+          </li>
+				</ul>        
+      </div>
+      <div style="width:400px"></div>
+    </td>
+    <td id="right" >
+	    <div id="spotlightbox">
+        <img src="images/spotlight.png" />
+        <p><a class="links" href='${basePath}search/eventsearch.htm?_what="new york draft riots"&_bounded=false'>
+          Civil War, 1863 New York Draft Riots (9 events)</a></p>    
+        <div id="borderbox">
+          <iframe id="embeddedmap" 
+          	src='http://www.timespacemap.com/search/embeddedsearch.htm?_what="new york draft riots"&_fit=true'
+            height="380" width="500" frameborder="0" scrolling="no">
+           	This browser doesn't support embedding a map.
+          </iframe>
+        </div> 
+      </div>
+    </td>
+    </tr>
+  </table>
 </div>
 
 <span class="footer"></span>
