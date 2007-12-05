@@ -1,0 +1,128 @@
+@charset "utf-8";
+/* CSS Document */
+	body {
+	margin: 0;
+	padding: 0;
+	font: 9pt Arial, Helvetica, sans-serif;
+	color: #202020;	
+	text-align:left;
+	}
+
+	#nav {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:31px;
+	}
+	.nav_left {
+	float:right;
+	display:inline;
+	height: 31px;
+	padding: 0;
+	margin: 0;	
+	}
+	.nav_block {
+	background: url(../images/nav.png) repeat-x;
+	float:right;
+	display:inline;
+	height: 31px;
+	padding: .5em 1em .4em .4em;
+	margin: 0 10px 0 0;	
+	}
+	.nav_block ul{
+	padding: 0;
+	margin: 0;
+	}
+	.nav_block ul li {
+	display:inline;
+	}
+	a:link, a:visited {
+	color: #047BDD;
+	}
+	a {
+	font-weight:bold;
+	text-decoration: none;
+	}
+	#content {
+	text-align:left;
+	position:relative;
+	margin: 0;
+	padding: 0;
+	top: -152px;
+	width: 1050px;
+	margin-right:auto;
+	margin-left:auto;
+	}
+	#tagline, #totals{
+	color: #4D4D4D;
+	font:italic 700 9pt Georgia, "Times New Roman", Times, serif;
+	text-align:left;
+	position:relative;
+	left: 380px;
+	width: 42em;
+	padding: 0;
+	}
+	#tagline {
+	margin: 0;
+	}
+	#totals {
+	margin-top: 4px;
+	margin-right:auto;
+	}
+	#totals b{
+	font-style: normal;
+	font-weight: bold;
+	font-variant: normal;
+	font-family: Arial, Helvetica, sans-serif;
+	}
+	#addbox {
+	position:relative;
+	left: 830px;
+	top: 22px;
+	font-weight: bold;
+	width: 15em;
+	}
+	.biglink a{
+	font: bold 12pt Arial, Helvetica, sans-serif;
+	}
+	#searchbox {
+	position:absolute;
+	top: 68px;
+	left:40px;
+	width: 1050px;
+	margin-right:auto;
+	margin-left:auto;
+	font-weight: bold;
+	font-size:10pt;
+	width: 55em;
+	}
+	#searchbox .biglabel {
+	font-size:14pt;
+	}
+	#searchbox .eg, #searchbox .options {
+	font-weight: normal;
+	font-size:8pt;
+	}
+	#searchbox tr td {
+		padding: 0 .1em;
+		margin: 0;
+	}
+	#searchbox .options input{
+		margin: 0;
+		padding: 0;
+	}
+	#searchbox .button {
+		margin-bottom: 1px;
+	}
+	#searchbox input {
+	font: 10pt Arial, Helvetica, sans-serif;
+	}
+	#heading {
+	text-align:center;
+	}
+	.clearfloat {
+	float:none;
+	}
+
+
