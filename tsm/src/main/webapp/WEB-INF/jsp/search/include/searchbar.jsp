@@ -14,9 +14,20 @@
           <col id="left"/>
           <col id="right"/>
           <tr>
-            <td>Where <span class="eg">e.g., Gettysburg, PA</span></td>
-            <td>When <span class="eg">e.g., 1962; Oct 14,1066; 1880-1886</span></td>
-            <td>What <span class="eg">e.g., Battle</span></td>
+	          <td>
+			  			<form:errors path="where"><span class="errorLabel"></form:errors>
+			        Where <span class="eg">e.g., Gettysburg, PA</span>
+			  			<form:errors path="where"></span></form:errors>
+		  			</td>
+            <!--  <td>Where <span class="eg">e.g., Gettysburg, PA</span></td>  -->
+            <td>
+            	<form:errors path="when"><span class="errorLabel"></form:errors>
+            	When <span class="eg">e.g., 1962; Oct 14,1066; 1880-1886</span>
+            	<form:errors path="when"></span></form:errors>
+            </td>
+            <td>
+            	What <span class="eg">e.g., Battle</span>
+            </td>
             <td></td>
           </tr>
           <tr>
@@ -25,23 +36,34 @@
             <td><form:input path="what" size="22"/></td>
             <td><input type="submit" name="Search" value="Search" /></td>
           </tr>
-          <tr>
-            <td><span class="options">
-            	<form:checkbox path="limitWithinMapBounds" value="true"/>
-             Search current map shown.</span>
-            </td>
-            <td colspan="2">
-              <span class="options"><form:checkbox path="excludeTimeRangeOverlaps"/>
-              Find events that occurred only <em>within</em> the time frame specified.</span>
-            </td>
-            <td></td>
-          </tr>
+				  <c:choose>
+				  	<c:when test="${param.showSearchOptions == 'true'}">
+		          <tr>
+		            <td>
+		            	<span class="options">
+		            		<form:checkbox path="limitWithinMapBounds" value="true"/>
+		            		Search current map shown.
+		            	</span>
+		            </td>
+		            <td colspan="2">
+		              <span class="options">
+		              	<form:checkbox path="excludeTimeRangeOverlaps"/>
+		              	Find events that occurred only <em>within</em> the time frame specified.
+		              </span>
+		            </td>
+		            <td></td>
+		          </tr>
+				  	</c:when>
+				  	<c:otherwise>
+				 		<form:hidden path="limitWithinMapBounds"/> 
+				  	</c:otherwise>
+				  </c:choose>
         </table>
       </div>
     </td>
   </tr>
 </table>
-<c:if test="${fn:contains(roles, 'admin')}">
+<c:if test="${fn:contains(roles, 'admin') && param.showAdminBar == 'true'}">
 	<div class="adminBox">
 	 	<span class="label">ADMIN</span>
 	 	<span class="adminField">

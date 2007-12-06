@@ -20,10 +20,17 @@
 	//]]>
 	</script>
 	</jsp:attribute>	
-	<jsp:attribute name="stylesheet">home.css,simpleform.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">main.css,header.css</jsp:attribute>
 	<jsp:attribute name="nohead">true</jsp:attribute>
+	<jsp:attribute name="nohomemenu">true</jsp:attribute>
+	<jsp:attribute name="bodyattr">id="home"</jsp:attribute>
 
 	<jsp:body>
+
+	<div id="heading" >
+		<img  src="images/title-home.jpg" />	
+	</div>
+	
 	<form:form name="event" id="eventSearchForm" action="search/eventsearch.htm" commandName="eventSearch" onsubmit="search(); return false">
 			<form:hidden path="boundingBoxSW" htmlEscape="true"/>
 			<form:hidden path="boundingBoxNE" htmlEscape="true"/>
@@ -38,107 +45,67 @@
 	  	<c:if test="${isFirstView != null}">
 				<input type="hidden" id="isFirstView" value="true"/>					
 	  	</c:if>
-	  	<jsp:include page="search/include/searchbar.jsp"/>
+	  	<div id="searchboxcontent">
+	  		<jsp:include page="search/include/searchbar.jsp">
+	  			<jsp:param name="showSearchOptions" value="false"/>
+	  			<jsp:param name="showAdminBar" value="false"/>
+	  		</jsp:include>
+	  	</div>
 	  </form:form>
-	  	
-  	<div id="home_page" >
-  		<table>
-				<col id="leftbar"/>
-				<col id="rightbar"/>
-  		<tr>
-  			<td id="leftbar" >
-  				<div class="infoBox">
-					<span class="resultcount"></span>
-						<p>
-							There are <b>${totalEvents}</b> events total. 
-						</p>
-						<h1>What Happened Everywhere</h1>
-						<p>
-							<span class="subtag">								
-							 An encyclopedic, online atlas of history and happenings that anyone can edit. 
-							 A geographic wiki - you can 
-							 <a class="links" href="info/tour.htm#search">search</a>, 
-							 <a class="links" href="info/tour.htm#add">add or edit</a>,
-							 <a class="links" href="info/tour.htm#changes">view or undo changes</a>,
-							 <a class="links" href="info/tour.htm#discuss">discuss</a>,
-							 <a class="links" href="info/tour.htm#flag">flag for removal</a>
-							</span>
-						</p>
-						<ul>
-							<li><a class="links" href="info/tour.htm">Take a tour</a></li>
-							<li><a class="links" href="#" onclick="alert('Not Implemented')">Policies and guidelines</a></li>
-							<li><a class="links" href="#" onclick="alert('Not Implemented')">Why are we doing this?</a></li>
-						</ul>
-					</div>
-					<div class="infoBox">
-	  				<h2>Recently Added</h2>
-	  				<ul>
-	  				<c:forEach items="${recentEvents}" var="event" varStatus="status">
-	  					<li class="event">
-	  						<a class='links' href='${basePath}search/eventsearch.htm?_id=${event.id}'>
-	  							${event.summary}, ${event.when.asText}
-	  							<c:if test="${event.where != null && event.where != ''}">, ${event.where}</c:if> 
-	  						</a>
-	  					</li>
-	  				</c:forEach>
-  				</div>
-					
-  			</td>
-  			
-  			<td>
-  				<div class="infoBox" >
-						<h2>Destination Spotlight</h2>
-						Events about <a class="links" href='${basePath}search/eventsearch.htm?_what="new york draft riots"&_bounded=false'>Civil War, 1863 New York Draft Riots</a>
-					</div>
-					<div class="borderBox">
-						<iframe src='${basePath}search/embeddedsearch.htm?_what="new york draft riots"&_fit=true'
-									height="350" width="500" frameborder="0" scrolling="no">
-					   This browser doesn't support embedding a map.
-						</iframe>
-					</div>
-  			</td>
-  		</tr>
-  		<tr>
-  			<td colspan="2">
-  				<div class="infoBox">
-						<h2>Beta Testers</h2>
-						<p>
-							Thank you for participating in the very early stages of this project.  Our goal is to create an
-							encyclopedic database of <em>everything that ever happened anywhere</em> by using the power of mass collaboration.  
-							At present, the system is fairly basic - it allows you to create and edit events using a  
-							unique combination of wiki and mapping capabilities.  Please <a class="links" href="mailto:betatest@timespacemap.com">let us know</a> what you think.  
-						</p>
-						<p>
-							There are now <b>${totalEvents}</b> events in the database. You can help to create a better 
-							<span class="timefont">time</span><span class="spacefont">space</span><span class="mapfont">map</span> by:
-						</p>
-						<ul>
-							<li>Adding historical or current events</li>
-							<li>Reporting problems</li>
-							<li>Suggesting improvements</li>
-							<li>Requesting features</li>
-							<li>Tell your friends - ask them to be beta testers</li>
-						</ul>
-						<p>	
-							During the beta program we will be rolling out lots of new features and what we build will 
-							depend on the feedback we get from you.  Some of the possibilities include: 
-						</p>	
-						<ul>
-							<li>Thumbnail pictures for events</li>
-							<li>Arrows on lines</li>
-							<li>Improved look and feel</li>
-							<li>Advanced search</li>
-							<li>Advanced polygon editing</li>
-							<li>Change notifications </li>
-							<li>Embed a <span class="timefont">time</span><span class="spacefont">space</span><span class="mapfont">map</span> in your page (e.g. a blog or facebook account)</li>
-						</ul>
-						<p>
-							Type something into the search bar and see what happens!
-						</p>
-					</div>
-				</td>
-  		</tr>	
-  		</table>
+		<div id="maintab">
+			<span class="left">&nbsp;&nbsp;</span>
+		  <span class="selected" style="height: 20px;"><img src="images/invisible.gif" height="20" width="1"/>Home</span>
+		  <a class="unselected" href="#">Take A Tour</a>
+		  <a class="unselected" href="#">Guidelines</a>
+		</div>
+		<div id="main">
+			<table>
+		    <col id="leftbar"/>
+		    <col id="rightbar"/>
+		    <tr>
+		    <td id="left" >
+		      <h1>An Atlas of History and Happenings</h1>
+		      <p>Time Space Map is an encyclopedic, online atlas of history and happenings that anyone can edit; a geographic wiki. You
+		      can search, add or edit, view or undo changes, discuss, watch, tag, or flag for removal.</p>
+		      <ul>
+						<li><a href="info/tour.htm">Take a tour</a></li>
+						<li><a href="#" onclick="alert('Not Implemented')">Policies and guidelines</a></li>
+						<li><a href="#" onclick="alert('Not Implemented')">Why are we doing this?</a></li>
+		      </ul>
+		      <h1>Recently Added</h1>
+		      <div class="recent" >
+		      </div>
+		      <div class="recent" >
+		      	<ul>
+							<c:forEach items="${recentEvents}" var="event" varStatus="status">
+		  					<li> 
+			            <a class='links' href='${basePath}search/eventsearch.htm?_id=${event.id}'>${event.summary}</a> <br/>
+			            ${event.when.asText} <br/>
+			            <em><c:if test="${event.where != null && event.where != ''}">, ${event.where}</c:if></em>
+			            <hr/>
+			          </li>
+		  				</c:forEach>	  					
+						</ul>        
+		      </div>
+		      <div style="width:400px"></div>
+		    </td>
+		    <td id="right" >
+			    <div id="spotlightbox">
+		        <img src="images/spotlight.png" />
+		        <p><a class="links" href='${basePath}search/eventsearch.htm?_what="new york draft riots"&_bounded=false'>
+		        	Civil War, 1863 New York Draft Riots</a>
+		        </p>    
+		        <div id="borderbox">
+		          <iframe id="embeddedmap" 
+		          	src='${basePath}search/embeddedsearch.htm?_what="new york draft riots"&_fit=true'
+		            height="380" width="500" frameborder="0" scrolling="no">
+		           	This browser doesn't support embedding a map.
+		          </iframe>
+		        </div> 
+		      </div>
+		    </td>
+		    </tr>
+		  </table>
 		</div>
 	</jsp:body>
 </tsm:page>

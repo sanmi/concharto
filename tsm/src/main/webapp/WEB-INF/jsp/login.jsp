@@ -6,6 +6,8 @@
 
 <tsm:page title="Login">
 	<jsp:attribute name="bodyattr">onload="document.getElementById('loginForm').username.focus()"</jsp:attribute>
+	<jsp:attribute name="stylesheet">header.css</jsp:attribute>
+
 	<jsp:body>
 	  <form:form id="loginForm" name="login" commandName="login"> 
 	  	<div class="loginForm">

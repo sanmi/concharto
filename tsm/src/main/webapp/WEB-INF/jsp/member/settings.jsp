@@ -6,6 +6,8 @@
 
 
 <tsm:page title="Settings">
+	<jsp:attribute name="stylesheet">header.css</jsp:attribute>
+
 	<jsp:body>
 	  <form:form id="settingsForm" name="settings" commandName="settings"> 
 	  	<form:hidden path="username"/>
