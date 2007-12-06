@@ -13,8 +13,8 @@
 	_markerIcon.infoShadowAnchor = new GPoint(18, 18);
 	
 	_entPointIcon = new GIcon();
-	_entPointIcon.image = "<c:out value='${basePath}'/>images/icons/square.png";
-	_entPointIcon.shadow = "<c:out value='${basePath}'/>images/icons/square_shadow.png";
+	_entPointIcon.image = "${basePath}images/icons/square.png";
+	_entPointIcon.shadow = "${basePath}images/icons/square_shadow.png";
 	_entPointIcon.iconSize = new GSize(10, 10);
 	_entPointIcon.shadowSize = new GSize(12, 12);
 	_entPointIcon.iconAnchor = new GPoint(5, 5);
