@@ -15,8 +15,8 @@
 	<%-- Create a base icon for all of our markers that specifies the
 	     shadow, icon dimensions, etc. --%>
 	var _markerIcon = new GIcon();
-	_markerIcon.image = "http://labs.google.com/ridefinder/images/mm_20_red.png";
-	_markerIcon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
+	_markerIcon.image = "${basePath}images/icons/mm_20_red.png";
+	_markerIcon.shadow = "${basePath}images/icons/mm_20_shadow.png";
 	_markerIcon.iconSize = new GSize(12, 20);
 	_markerIcon.shadowSize = new GSize(22, 20);
 	_markerIcon.iconAnchor = new GPoint(6, 20);

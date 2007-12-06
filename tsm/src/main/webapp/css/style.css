@@ -1,13 +1,14 @@
-body, div{
-	margin:0;
-	padding:0;
-	font: small Arial, Helvetica, sans-serif;
-	
-}
-h1, h2 {
-	color: #426293;
-	margin-bottom:.2em;
-}
+@charset "utf-8";
+/* CSS Document */
+	body {
+	margin: 0;
+	padding: 0;
+	font: 9pt Arial, Helvetica, sans-serif;
+	color: #202020;	
+	text-align:left;
+	background: url(../images/short-backg.gif) repeat-x;
+	}
+
 
 .nav {
   border-bottom: 1px solid #D7E5F2;
@@ -52,25 +53,32 @@ h1, h2 {
 	text-align: left; 
 }  
 
-.adminField, .adminAction {
-	padding-right:1em;
-	padding-left:1em;
-	font-style: italic;
-	color: blue;
-}
-.adminAction{
-	border-left:1px solid #e0e0e0;
-}
 .adminBox{
-	padding:.2em .2em .2em .2em;
+	margin: 0.2em .2em 0;
+	padding:0 0 0 .6em;
 	border:1px solid #e0e0e0;
 	color:gray;
 	font-weight: bold;
 	font-size: x-small;
 	background: #FFFFCC;
 }
-
-
+.adminBox td {
+	vertical-align: middle;
+}
+.adminField, .adminAction {
+	padding: 0 1em;
+	margin: 0;
+	font-style: italic;
+	font-weight: normal;
+	font-size:8pt;
+}
+.adminBox .label {
+	position:relative;
+	top: -2px;
+}
+.adminAction{
+	border-left:1px solid #e0e0e0;
+}
 
 #footer {
     border-top: 1px solid #D7E5F2;
@@ -98,7 +106,14 @@ h1, h2 {
     font-size: 1px;
     line-height: 0;
 }
-
+a:link, a:visited {
+color: #047BDD;
+}
+a {
+font-weight:bold;
+text-decoration: none;
+}
+/*
 a.summary:link, a.summary:visited, a.links:link, a.links:visited, a.more:link, a.more:visited, a.nexPrev:link, a.nextPrev:visited {
     color: blue;
 }
@@ -106,15 +121,16 @@ a.summary:link, a.summary:visited, a.links:link, a.links:visited, a.more:link, a
 .pagelinks a:visited, .pagelinks a:link {
 	color:blue;
 }
-
+*/
 a.errorlinks:link, a.errorlinks:visited {
-    color: red;
+  color: red;
+	text-decoration: underline;
 }
-
+/*
 a.nexPrev:link, a.nextPrev:visited {
     color: blue;
 }
-
+*/
 .loginForm, .settingsForm {
     margin:40px 0 60px 60px;
 }
@@ -174,3 +190,139 @@ a.nexPrev:link, a.nextPrev:visited {
 .mapfont {
 	color:black;
 }
+
+/* ---------------- NEW STUFF --------------*/
+
+	#nav {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:31px;
+	}
+	.nav_left {
+	float:right;
+	display:inline;
+	height: 31px;
+	padding: 0;
+	margin: 0;	
+	}
+	.nav_block {
+	background: url(../images/nav.png) repeat-x;
+	float:right;
+	display:inline;
+	height: 31px;
+	padding: .5em 1em .4em .4em;
+	margin: 0 10px 0 0;	
+	}
+	.nav_block ul{
+	padding: 0;
+	margin: 0;
+	}
+	.nav_block ul li {
+	display:inline;
+	}
+	a:link, a:visited {
+	color: #047BDD;
+	}
+	a {
+	font-weight:bold;
+	text-decoration: none;
+	}
+	#content-- {
+	text-align:left;
+	position:relative;
+	margin: 0;
+	padding: 0;
+	top: -152px;
+	width: 1050px;
+	margin-right:auto;
+	margin-left:auto;
+	}
+	#tagline, #totals{
+	color: #4D4D4D;
+	font:italic 700 9pt Georgia, "Times New Roman", Times, serif;
+	text-align:left;
+	position:relative;
+	left: 380px;
+	width: 42em;
+	padding: 0;
+	}
+	#tagline {
+	margin: 0;
+	}
+	#totals {
+	margin-top: 4px;
+	margin-right:auto;
+	}
+	#totals b{
+	font-style: normal;
+	font-weight: bold;
+	font-variant: normal;
+	font-family: Arial, Helvetica, sans-serif;
+	}
+	#addbox {
+	position:relative;
+	left: 830px;
+	top: 22px;
+	font-weight: bold;
+	width: 15em;
+	}
+	.biglink a{
+	font: bold 12pt Arial, Helvetica, sans-serif;
+	}
+	#searchbox {
+	position:absolute;
+	top: 68px;
+	left:40px;
+	width: 1050px;
+	margin-right:auto;
+	margin-left:auto;
+	font-weight: bold;
+	font-size:10pt;
+	width: 5em; 
+	}
+	#searchbox .biglabel {
+	font-size:14pt;
+	}
+	#searchbox .eg, #searchbox .options {
+	font-weight: normal;
+	font-size:8pt;
+	}
+	#searchbox tr td {
+		padding: 0 .1em;
+		margin: 0;
+	}
+	#searchbox .options input{
+		margin: 0;
+		padding: 0;
+	}
+	#searchbox .button {
+		margin-bottom: 1px;
+	}
+	#searchbox input {
+	font: 10pt Arial, Helvetica, sans-serif;
+	}
+	#heading {
+	text-align:center;
+	}
+	.clearfloat {
+	float:none;
+	}
+	.footer {
+	margin:0;
+	padding:0;
+	}
+	
+	#homemenu a {
+  position: absolute;
+  height: 1em;
+  top: 0px; 
+  }
+  #homemenu a i { visibility: hidden; }
+  a#home { top:8px; left:44px; width:255px; height:58px; }
+  #headershort{
+	height:85px;
+	width:100%;
+  background: url(../images/title-short.jpg) no-repeat;
+	}  

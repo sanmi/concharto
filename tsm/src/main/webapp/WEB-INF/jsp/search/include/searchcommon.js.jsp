@@ -15,7 +15,7 @@
 	<%-- Create a base icon for all of our markers that specifies the
 	     shadow, icon dimensions, etc. --%>
 	var _baseIcon = new GIcon();
-	_baseIcon.shadow = "http://www.google.com/mapfiles/shadow50.png";
+	_baseIcon.shadow = "${basePath}images/icons/shadow50.png";
 	_baseIcon.iconSize = new GSize(20, 34);
 	_baseIcon.shadowSize = new GSize(37, 34);
 	_baseIcon.iconAnchor = new GPoint(9, 34);
@@ -92,7 +92,7 @@
 	  <%-- Create a lettered icon for this point using our icon class --%>
 	  var letter = String.fromCharCode("A".charCodeAt(0) + _overlayIndex);
 	  var letteredIcon = new GIcon(_baseIcon);
-	  letteredIcon.image = "http://www.google.com/mapfiles/marker" + letter + ".png";
+	  letteredIcon.image = "${basePath}images/icons/marker" + letter + ".png";
 	
 	  <%-- Set up our GMarkerOptions object --%>
 	  var markerOptions = { icon:letteredIcon };
@@ -189,7 +189,7 @@
 		}
 		return overlay.getVertex(closest);
 	}
-	
+		
   <%-- END WHILEFUNCTIONS  ============================= --%>
 
   <%-- BEGIN POST FUNCTIONS  ============================= --%>

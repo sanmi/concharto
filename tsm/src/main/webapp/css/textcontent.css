@@ -36,9 +36,6 @@
 .textcontent ul {
 	font-size: medium;	
 }
-.textcontent A:hover {
-	text-decoration:underline overline;
-}
 
 #tourpage {
 	padding: 0 4em 0 4em;

@@ -97,7 +97,7 @@ public class SearchHelper {
         	eventSearchForm.setMapZoom(zoom);
     	}
     	eventSearchForm.setLimitWithinMapBounds(ServletRequestUtils.getBooleanParameter(request, QUERY_BOUNDED));
-    	eventSearchForm.setIncludeTimeRangeOverlaps((ServletRequestUtils.getBooleanParameter(request, QUERY_INCLUDE_TIMERANGE_OVERLAPS)));
+    	eventSearchForm.setExcludeTimeRangeOverlaps((ServletRequestUtils.getBooleanParameter(request, QUERY_INCLUDE_TIMERANGE_OVERLAPS)));
     	eventSearchForm.setDisplayEventId(ServletRequestUtils.getLongParameter(request, QUERY_ID));
     	eventSearchForm.setLimitWithinMapBounds(false);  //no bounds to search with
     	WebUtils.setSessionAttribute(request, SESSION_DO_SEARCH_ON_SHOW, true);
@@ -189,7 +189,7 @@ public class SearchHelper {
                 params.setTextFilter(eventSearchForm.getWhat());
                 params.setTimeRange(eventSearchForm.getWhen());
                 params.setVisibility(getVisibility(eventSearchForm));
-                params.setIncludeTimeRangeOverlaps(BooleanUtils.isTrue(eventSearchForm.getIncludeTimeRangeOverlaps()));
+                params.setIncludeTimeRangeOverlaps(BooleanUtils.isFalse(eventSearchForm.getExcludeTimeRangeOverlaps()));
                 events = eventSearchService.search(DISPLAYTAG_PAGESIZE, firstRecord, bounds, params);
                 totalResults = eventSearchService.getCount(bounds, params);
     		} else {
