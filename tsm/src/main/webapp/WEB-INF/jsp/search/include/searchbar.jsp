@@ -33,7 +33,7 @@
           <tr>
             <td><form:input path="where" size="22"/></td>
             <td><form:input path="when" size="35"/></td>
-            <td><form:input path="what" size="22"/></td>
+            <td><form:input path="what" size="22" htmlEscape="true"/></td>
             <td><input type="submit" name="Search" value="Search" /></td>
           </tr>
 				  <c:choose>
