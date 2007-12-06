@@ -82,7 +82,7 @@
 		      	<ul>
 							<c:forEach items="${recentEvents}" var="event" varStatus="status">
 		  					<li> 
-			            <a class='links' href='${basePath}search/eventsearch.htm?_id=${event.id}'>${event.summary}</a> <br/>
+			            <a  href='${basePath}search/eventsearch.htm?_id=${event.id}'>${event.summary}</a> <br/>
 			            ${event.when.asText} <br/>
 			            <em><c:if test="${event.where != null && event.where != ''}">, ${event.where}</c:if></em>
 			            <hr/>
@@ -95,7 +95,7 @@
 		    <td id="right" >
 			    <div id="spotlightbox">
 		        <img src="images/spotlight.png" />
-		        <p><a class="links" href='${basePath}search/eventsearch.htm?_what="new york draft riots"&_bounded=false'>
+		        <p><a  href='${basePath}search/eventsearch.htm?_what="new york draft riots"&_bounded=false'>
 		        	Civil War, 1863 New York Draft Riots</a>
 		        </p>    
 		        <div id="borderbox">

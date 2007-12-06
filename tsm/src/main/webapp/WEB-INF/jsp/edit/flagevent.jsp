@@ -30,8 +30,8 @@
 					</form:errors>
 				<div class="infoBox">
 					<h2>Should this Event be Deleted or Moved?</h2>
-					<div>Before flagging a item, please check the <a class="links" href="#flagHistory">flag history</a> 
-						and the <a class="links" href="#changeHistory">change history</a> 
+					<div>Before flagging a item, please check the <a href="#flagHistory">flag history</a> 
+						and the <a href="#changeHistory">change history</a> 
 		  			to be sure you can't simple revert a recent change.  Also, please review the 
 		  			<a href="#" onclick="alert('Not Implemented')">deletion policy</a>.  For instance, if
 		  			an event violates the <a href="#" onclick="alert('Not Implemented')">Neutral Point of View Policy</a>, it may be better to fix it than delete it.

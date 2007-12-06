@@ -37,7 +37,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 		<div class="changeEntry">
 				Revision <c:out value="${auditEntryTable.version}"/>, 
 				<c:out value="${actionLabels[auditEntryTable.action]}"/> <%-- TODO switch to messages here --%>
-				<a class="links" href="#" onclick="alert('Not Implemented')">${auditEntryTable.user}</a> 
+				<a  href="#" onclick="alert('Not Implemented')">${auditEntryTable.user}</a> 
 	 		<fmt:formatDate value="${auditEntryTable.dateCreated}" pattern="MMM dd, yyyy hh:mm a"/>
 	 		
 	 		<c:choose>
@@ -76,7 +76,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 						</display:table> 
 					</div>
 					<c:if test="${dt.id > 0}">
-						<a class="links" href="${basePath}edit/undoevent.htm?id=${auditEntryTable.entityId}&toRev=${auditEntryTable.version-1}">
+						<a  href="${basePath}edit/undoevent.htm?id=${auditEntryTable.entityId}&toRev=${auditEntryTable.version-1}">
 							Undo this revision
 						</a>
 					</c:if>
