@@ -2,6 +2,8 @@
 	width: 320px;
 	padding: 5px 0;
 	border:1px solid #999999;
+	background: url(../images/results-backg.gif) repeat-y; 
+	background-position: right; 
 }
 
 #map {
@@ -10,18 +12,28 @@
     border:1px solid #999999; 
     margin:-1px;
 }
-.mapedit table {
-    width:100%;
+.mapedit {
+	padding:0;
+	margin:0;
 }
-.mapedit #eventForm .inputcell {
-    background-color: #F9FBFD;
-    border: 1px solid #D7E5F2;
-    padding: 10px 4px 5px 2px;
-    margin: 0 .2em 2px .2em;
+.mapedit table {
+  width:100%;
+	margin:0;
+	padding:0;
+}
+.mapedit form {
+	margin:0;
+	padding:0;
+}
+.mapedit .mainarea table {
+}
+.mapedit #eventForm .inputcell {    
+	border-top: 1px solid #e0e0e0;
+  padding: 10px 4px 5px 2px;
+  margin: 0 .2em 2px .2em;
 }
 .mapedit #eventForm .inputlabel, .errorlabel {
-    font: Verdana, Geneva, Arial, Helvetica, sans-serif;
-    color: #3670A7;
+    font-weight: bold;
 }
 .mapedit #eventForm .errorlabel {
 	color: red;
@@ -56,9 +68,6 @@
 	padding: 0;
 	margin: 0 0 4px 0;
 	font-size:x-large;
-}
-.mapedit A:hover {
-	text-decoration:underline overline;
 }
 .mapedit td {
 	vertical-align:top;
@@ -102,22 +111,20 @@
 
 .mapedit .result, .mapedit .inforesult {
 	padding:.1em;
-	border: 1px solid #e0e0e0;
+	border-bottom: 1px solid #e0e0e0;
 	margin: 0 .1em 0 .1em;
 }
-
 .mapedit .inforesult {
   overflow-x:hidden; 
   overflow-y:scroll;
   overflow:-moz-scrollbars-vertical!important;
 }
 
-.mapedit .result .letter {
-	font-weight: bold;
+.mapedit .iconcol {
+	width: 22px;
 }
 
 .mapedit .result .when {
-    color:#3670A7;
     font-weight:bold;
 }
 

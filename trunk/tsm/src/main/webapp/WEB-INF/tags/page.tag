@@ -47,18 +47,19 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 <body ${bodyattr}>
 
 	<c:if test="${stripped != 'true'}">
-		<jsp:include flush="true" page="/WEB-INF/jsp/include/topmenu.jsp"/>
+		<jsp:include flush="true" page="/WEB-INF/jsp/include/topmenu.jsp"/>		
 		<c:if test="${nohead != 'true'}">
 			<jsp:include flush="true" page="/WEB-INF/jsp/include/head.jsp"/>
 	  </c:if>
+		<div id="homemenu"> 
+	  	<a href="${basePath}" id="home"><i>Home</i></a>
+	  </div>		
   </c:if>
 	<div id="content">
 		<jsp:doBody />
 	</div>
-
 	<c:if test="${stripped != 'true'}">
 	  <div id="footer">
-		  <div id="clearFloat"/>  
 			&copy 2007, Time Space Map  
 			<a class="linkleft links" href="${basePath}info/legal.htm" >Legal</a>
 			<a class="linkleft links" class="linkleft" href="#" onclick="alert('Not Yet Implemented');">About</a>

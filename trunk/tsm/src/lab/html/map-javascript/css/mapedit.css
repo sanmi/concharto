@@ -39,9 +39,6 @@ body {
 #novel {
 	margin:20px;
 }
-A:hover {
-	text-decoration:underline overline;
-}
 td {
 	vertical-align:top;
 }

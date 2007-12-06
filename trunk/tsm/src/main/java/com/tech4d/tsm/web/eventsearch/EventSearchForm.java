@@ -28,7 +28,7 @@ public class EventSearchForm  {
     private Boolean isAddEvent;
     private String show;
     private Boolean limitWithinMapBounds;
-    private Boolean includeTimeRangeOverlaps;
+    private Boolean excludeTimeRangeOverlaps;
     
 	public String getShow() {
 		return show;
@@ -125,11 +125,11 @@ public class EventSearchForm  {
 	public void setLimitWithinMapBounds(Boolean isOnlySearchCurrentMapBounds) {
 		this.limitWithinMapBounds = isOnlySearchCurrentMapBounds;
 	}
-	public Boolean getIncludeTimeRangeOverlaps() {
-		return includeTimeRangeOverlaps;
+	public Boolean getExcludeTimeRangeOverlaps() {
+		return excludeTimeRangeOverlaps;
 	}
-	public void setIncludeTimeRangeOverlaps(Boolean includeTimeRangeOverlaps) {
-		this.includeTimeRangeOverlaps = includeTimeRangeOverlaps;
+	public void setExcludeTimeRangeOverlaps(Boolean includeTimeRangeOverlaps) {
+		this.excludeTimeRangeOverlaps = includeTimeRangeOverlaps;
 	}
     
 }

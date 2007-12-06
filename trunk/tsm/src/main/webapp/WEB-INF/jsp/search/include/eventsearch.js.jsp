@@ -30,6 +30,8 @@
     	var top = document.getElementById("map").offsetTop;
     	var height = getHeight() - top - 44;
     	document.getElementById("results").style.height=height+"px";
+    	<%-- DEBUG the following is a Kludge! for an IE 6 rendering problem argh!--%>
+    	document.getElementById("results").style.width = "320px"; 
 	}
   <%-- END WHILEFUNCTIONS  ============================= --%>
 

@@ -1,0 +1,15 @@
+@charset "utf-8";
+/* CSS Document */
+	.mapedit {
+	background: #FFFFFF url(../images/search-backg.gif) repeat-x;
+	}
+	#addbox {
+	position:relative;
+	left: 830px;
+	top: 54px;
+	}
+  #headerbar {
+	height:147px;
+	width:100%;
+	background: url(../images/title-search.jpg) no-repeat;
+	}

@@ -16,12 +16,15 @@
 		<jsp:include page="include/searchcommon.js.jsp"/>
 		<jsp:include page="include/eventsearch.js.jsp"/>
 	</jsp:attribute>
-	<jsp:attribute name="stylesheet">textcontent.css,map.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">textcontent.css,map.css,search.css</jsp:attribute>
 	<jsp:attribute name="script">prototype-1.7.0.js,map.js,json.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 	<jsp:attribute name="nohead">true</jsp:attribute>
 
 	<jsp:body>
+		<!--[if lt IE 7.]>
+		<script defer type="text/javascript" src="${baspath}/javascript/pngfix.js"></script>
+		<![endif]-->
 		<form:form name="event" id="eventSearchForm" commandName="eventSearch" action="eventsearch.htm" onsubmit="search(); return false">
 			<form:hidden path="boundingBoxSW" htmlEscape="true"/>
 			<form:hidden path="boundingBoxNE" htmlEscape="true"/>
@@ -33,12 +36,14 @@
 			<form:hidden path="isAddEvent"/>
 			<form:hidden path="editEventId"/>
 			<form:hidden path="displayEventId"/>
+	  	
 	  	<jsp:include page="include/searchbar.jsp">
 	  		<jsp:param name="showSearchOptions" value="true"/>
-	  	</jsp:include>
+	  	</jsp:include>	
 		  
 			<%-- Pull the center from the form object so we can center using javascript (see above) --%>
-			<table><tbody><tr>			
+		 
+			<table class="mainarea"><tbody><tr>			
 				<td id="sidebar">
 		    	<div id="results" >
 						<div class="resultcount">
@@ -102,12 +107,16 @@
 								<display:setProperty name="paging.banner.one_item_found"> </display:setProperty>
 								<display:setProperty name="paging.banner.all_items_found"> </display:setProperty>
 								<display:setProperty name="paging.banner.some_items_found"> </display:setProperty>
-		
+
+								<display:column autolink="true" class="iconcol">
+									<img height='34' width='20' src="${basePath}images/icons/marker<c:out value='${fn:substring(test,event_rowNum-1,event_rowNum)}'/>.png" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"/>
+								</display:column>
+								
 								<display:column autolink="true">
 									<div class="result">
-			            	<span class="letter">(<c:out value="${fn:substring(test,event_rowNum-1,event_rowNum)}"/>)</span>
-					          <span class="when"><c:out value="${event.when.asText}"/></span>, 
-					          <a class="summary" href="#" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"><c:out value="${event.summary}"/></a><br/>
+			            	<div>					           
+					          <a class="summary" href="#" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"><c:out value="${event.summary}"/></a></div>
+					          <div class="when"><c:out value="${event.when.asText}"/></div>
 					          <span class="where"><c:out value="${event.where}"/></span> <br/>
 					           <%-- We want to keep any line breaks but escape all other html --%>
 					          <c:set var="description" value="${fn:escapeXml(fn:substring(event.description,0,300))}"/>
@@ -145,6 +154,7 @@
 					</div>
 				</td>
 			</tr></tbody></table>
+		
 		</form:form>	
 
 	</jsp:body>
