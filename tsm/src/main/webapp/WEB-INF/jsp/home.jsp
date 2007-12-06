@@ -45,19 +45,24 @@
 	  	<c:if test="${isFirstView != null}">
 				<input type="hidden" id="isFirstView" value="true"/>					
 	  	</c:if>
-	  	<div id="searchboxcontent">
+	  	<div id="searchboxcontent">			  	  		
 	  		<jsp:include page="search/include/searchbar.jsp">
 	  			<jsp:param name="showSearchOptions" value="false"/>
 	  			<jsp:param name="showAdminBar" value="false"/>
 	  		</jsp:include>
+				<div id="tagline">
+			    An encyclopedic atlas of history and happenings that anyone can edit.<%-- TODO finish this <a href="#">anyone can edit.</a>--%></div>
+			  <div id="totals"> <a href='${basePath}search/eventsearch.htm'><b>${totalEvents}</b> events and counting...</a> </div>
 	  	</div>
 	  </form:form>
+	  <%-- TODO finish this 
 		<div id="maintab">
 			<span class="left">&nbsp;&nbsp;</span>
 		  <span class="selected" style="height: 20px;"><img src="images/invisible.gif" height="20" width="1"/>Home</span>
 		  <a class="unselected" href="#">Take A Tour</a>
 		  <a class="unselected" href="#">Guidelines</a>
 		</div>
+		--%>
 		<div id="main">
 			<table>
 		    <col id="leftbar"/>
@@ -73,8 +78,6 @@
 						<li><a href="#" onclick="alert('Not Implemented')">Why are we doing this?</a></li>
 		      </ul>
 		      <h1>Recently Added</h1>
-		      <div class="recent" >
-		      </div>
 		      <div class="recent" >
 		      	<ul>
 							<c:forEach items="${recentEvents}" var="event" varStatus="status">

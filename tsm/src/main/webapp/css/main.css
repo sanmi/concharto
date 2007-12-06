@@ -22,6 +22,8 @@
 	}
 	
 	#main {
+	position:relative;
+	top:-44px;
 	}
 	#main h1 {
 	font-size: 14pt;
@@ -70,7 +72,7 @@
 	#main .recent {
 	background: url(../images/recent-backg.png) repeat-x;
 	width: 100%;
-	padding: .4em;
+	padding: 1em .4em;
 	margin: 0;
 	font-weight:bold;
 	}
@@ -80,8 +82,7 @@
 	height: 1px;	
 	border: none 0; 
 	}
-	#maintabback {
-	}
+
 	#maintab {
 	position:absolute;
 /*	top: 232px;	 */
@@ -120,4 +121,28 @@
 
 	#home #searchbox {
 	top: 72px;
+	}
+	#tagline, #totals{
+	color: #4D4D4D;
+	font:italic 700 9pt Georgia, "Times New Roman", Times, serif;
+	text-align:left;
+	position:relative;
+	top: -40px;
+	left: 380px;
+	width: 42em;
+	padding: 0;
+	}
+	#tagline {
+	margin: 0;
+	}
+	#totals {
+	margin-top: 4px;
+	margin-right:auto;
+	}
+	#totals b{
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	font-family: "Arial Black", Arial, Helvetica, sans-serif;
+	font-size:10pt;
 	}
