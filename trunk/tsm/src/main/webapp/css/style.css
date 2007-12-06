@@ -1,14 +1,18 @@
 @charset "utf-8";
 /* CSS Document */
-	body {
+body {
 	margin: 0;
 	padding: 0;
 	font: 9pt Arial, Helvetica, sans-serif;
 	color: #202020;	
 	text-align:left;
 	background: url(../images/short-backg.gif) repeat-x;
-	}
+}
 
+form {
+	margin:0;
+	padding:0;
+}
 
 .nav {
   border-bottom: 1px solid #D7E5F2;
@@ -46,13 +50,11 @@
 .nav .name {
     color:black;
 }
-
 #container { 
 	width: 100%;
 	background: #FFFFFF;
 	text-align: left; 
 }  
-
 .adminBox{
 	margin: 0.2em .2em 0;
 	padding:0 0 0 .6em;
@@ -99,8 +101,7 @@
 	border-left:1px solid #e0e0e0;
 	border-right:1px solid #e0e0e0;
 }
-
-.clearfloat { /* this class should be placed on a div or break element and should be the final element before the close of a container that should fully contain a float */
+.clearfloat { 
 	clear:both;
     height:0;
     font-size: 1px;
@@ -113,24 +114,13 @@ a {
 font-weight:bold;
 text-decoration: none;
 }
-/*
-a.summary:link, a.summary:visited, a.links:link, a.links:visited, a.more:link, a.more:visited, a.nexPrev:link, a.nextPrev:visited {
-    color: blue;
-}
-
-.pagelinks a:visited, .pagelinks a:link {
-	color:blue;
-}
-*/
 a.errorlinks:link, a.errorlinks:visited {
   color: red;
 	text-decoration: underline;
 }
-/*
-a.nexPrev:link, a.nextPrev:visited {
-    color: blue;
+img {
+	border:none;
 }
-*/
 .loginForm, .settingsForm {
     margin:40px 0 60px 60px;
 }
@@ -229,100 +219,6 @@ a.nexPrev:link, a.nextPrev:visited {
 	font-weight:bold;
 	text-decoration: none;
 	}
-	#content-- {
-	text-align:left;
-	position:relative;
-	margin: 0;
-	padding: 0;
-	top: -152px;
-	width: 1050px;
-	margin-right:auto;
-	margin-left:auto;
-	}
-	#tagline, #totals{
-	color: #4D4D4D;
-	font:italic 700 9pt Georgia, "Times New Roman", Times, serif;
-	text-align:left;
-	position:relative;
-	left: 380px;
-	width: 42em;
-	padding: 0;
-	}
-	#tagline {
-	margin: 0;
-	}
-	#totals {
-	margin-top: 4px;
-	margin-right:auto;
-	}
-	#totals b{
-	font-style: normal;
-	font-weight: bold;
-	font-variant: normal;
-	font-family: Arial, Helvetica, sans-serif;
-	}
-	#addbox {
-	position:relative;
-	left: 830px;
-	top: 22px;
-	font-weight: bold;
-	width: 15em;
-	}
-	.biglink a{
-	font: bold 12pt Arial, Helvetica, sans-serif;
-	}
-	#searchbox {
-	position:absolute;
-	top: 68px;
-	left:40px;
-	width: 1050px;
-	margin-right:auto;
-	margin-left:auto;
-	font-weight: bold;
-	font-size:10pt;
-	width: 5em; 
-	}
-	#searchbox .biglabel {
-	font-size:14pt;
-	}
-	#searchbox .eg, #searchbox .options {
-	font-weight: normal;
-	font-size:8pt;
-	}
-	#searchbox tr td {
-		padding: 0 .1em;
-		margin: 0;
-	}
-	#searchbox .options input{
-		margin: 0;
-		padding: 0;
-	}
-	#searchbox .button {
-		margin-bottom: 1px;
-	}
-	#searchbox input {
-	font: 10pt Arial, Helvetica, sans-serif;
-	}
-	#heading {
-	text-align:center;
-	}
 	.clearfloat {
 	float:none;
 	}
-	.footer {
-	margin:0;
-	padding:0;
-	}
-	
-	#homemenu a {
-  position: absolute;
-  height: 1em;
-  top: 0px; 
-  }
-  #homemenu a i { visibility: hidden; }
-  a#home { top:8px; left:44px; width:255px; height:58px; }
-  #headershort{
-	height:85px;
-	width:100%;
-  background: url(../images/title-short.jpg) no-repeat;
-	}  

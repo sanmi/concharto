@@ -8,6 +8,7 @@
 <%@attribute name="bodyattr" required="false" type="java.lang.String"%>
 <%@attribute name="stripped" required="false" type="java.lang.String"%>
 <%@attribute name="nohead" required="false" type="java.lang.String"%>
+<%@attribute name="nohomemenu" required="false" type="java.lang.String"%>
 <%@tag import="com.tech4d.tsm.auth.AuthConstants" %>
 
 <%
@@ -51,9 +52,11 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 		<c:if test="${nohead != 'true'}">
 			<jsp:include flush="true" page="/WEB-INF/jsp/include/head.jsp"/>
 	  </c:if>
-		<div id="homemenu"> 
-	  	<a href="${basePath}" id="home"><i>Home</i></a>
-	  </div>		
+		<c:if test="${nohomemenu != 'true'}">
+			<div id="homemenu"> 
+		  	<a href="${basePath}" id="home"><i>Home</i></a>
+		  </div>
+	  </c:if>		
   </c:if>
 	<div id="content">
 		<jsp:doBody />

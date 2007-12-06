@@ -16,7 +16,7 @@
 		<jsp:include page="include/searchcommon.js.jsp"/>
 		<jsp:include page="include/eventsearch.js.jsp"/>
 	</jsp:attribute>
-	<jsp:attribute name="stylesheet">textcontent.css,map.css,search.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">textcontent.css,map.css,search.css,header.css</jsp:attribute>
 	<jsp:attribute name="script">prototype-1.7.0.js,map.js,json.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 	<jsp:attribute name="nohead">true</jsp:attribute>
@@ -39,6 +39,7 @@
 	  	
 	  	<jsp:include page="include/searchbar.jsp">
 	  		<jsp:param name="showSearchOptions" value="true"/>
+	  		<jsp:param name="showAdminBar" value="true"/>
 	  	</jsp:include>	
 		  
 			<%-- Pull the center from the form object so we can center using javascript (see above) --%>

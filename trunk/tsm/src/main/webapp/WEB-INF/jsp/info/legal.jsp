@@ -3,7 +3,7 @@
 
 
 <tsm:page title="Legal">
-	<jsp:attribute name="stylesheet">textcontent.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">textcontent.css,header.css</jsp:attribute>
 
 	<jsp:body>
 	  	<div class="textcontent">

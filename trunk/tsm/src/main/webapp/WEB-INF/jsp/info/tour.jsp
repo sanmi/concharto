@@ -3,14 +3,13 @@
 
 
 <tsm:page title="Tour">
-	<jsp:attribute name="stylesheet">textcontent.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">textcontent.css,header.css</jsp:attribute>
 
 	<jsp:body>
   	<div id="tourpage" class="textcontent" >
-			<p>
-				<span class="subtag">
-					<span class="timefont">time</span><span class="spacefont">space</span><span class="mapfont">map</span>
-				</span>  
+  		<br/>
+			<p>				
+				Time Space Map
 				is an online encyclopedic atlas of history and happenings that anyone can edit.  It is a 
 				<em>geographic wiki</em> that gives you simple and elegant answers to hard questions like 
 				"What interesting things happened near where I am driving? What happened near our hotel 
