@@ -114,6 +114,9 @@ a {
 font-weight:bold;
 text-decoration: none;
 }
+.links {
+font-weight:normal;
+}
 a.errorlinks:link, a.errorlinks:visited {
   color: red;
 	text-decoration: underline;

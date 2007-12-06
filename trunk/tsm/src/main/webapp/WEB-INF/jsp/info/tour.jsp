@@ -17,11 +17,11 @@
 				like from 1858 to 1869?"
 			</p>
 			<ul>
-			  <li><a class="links" href="#search">Search</a></li>
-			  <li><a class="links" href="#add">Add or Edit</a></li>
-			  <li><a class="links" href="#changes">View or Undo Changes</a></li>
-			  <li><a class="links" href="#discuss">Discuss</a></li>
-			  <li><a class="links" href="#flag">Flag for removal</a></li>
+			  <li><a href="#search">Search</a></li>
+			  <li><a href="#add">Add or Edit</a></li>
+			  <li><a href="#changes">View or Undo Changes</a></li>
+			  <li><a href="#discuss">Discuss</a></li>
+			  <li><a href="#flag">Flag for removal</a></li>
 			</ul>
 			
 			<a name="search"></a>
