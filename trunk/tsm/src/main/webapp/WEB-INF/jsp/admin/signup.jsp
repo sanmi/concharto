@@ -5,6 +5,7 @@
 
 
 <tsm:page title="Signup">
+	<jsp:attribute name="stylesheet">header.css</jsp:attribute>
 	<jsp:body>
 		<form:form id="signupForm" name="signup" commandName="signup"> 
 	  	<div class="loginForm">
