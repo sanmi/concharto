@@ -69,12 +69,7 @@
 					     want to show England --%>
 					if ((where != '') && (zoom > map.getZoom())) {
 						zoom = map.getZoom();
-					}
-					
-					<%-- never zoom in more than 13 --%>
-					if (zoom > 13) {
-						zoom = 13;
-					}
+					}					
 				}
 				map.setZoom(zoom);
 				map.setCenter(boundsPoly.getBounds().getCenter());
