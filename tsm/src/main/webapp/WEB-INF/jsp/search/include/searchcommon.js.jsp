@@ -57,21 +57,24 @@
 		}
 		adjustSidebarIE();
 		var where = document.getElementById("eventSearchForm").where.value
-		if ((limitWithinMapBounds() == false) ) {
+		var zoomOverride = document.getElementById("eventSearchForm").zoomOverride.value;
+		if (limitWithinMapBounds() == false)  {
 			<%-- fit map to the results --%>
 			if (0 != _fitToPolygon.length) {
 				var boundsPoly = new GPolyline(_fitToPolygon);
-				var zoom = map.getBoundsZoomLevel(boundsPoly.getBounds());
-				<%-- if they specified a place name, then we only want to zoom out to fit,
-				     not zoom in (e.g. only one place matching the criteria in England, we still
-				     want to show England --%>
-				if ((where != '') && (zoom > map.getZoom())) {
-					zoom = map.getZoom();
-				}
-				
-				<%-- never zoom in more than 13 --%>
-				if (zoom > 13) {
-					zoom = 13;
+				if (zoomOverride != 'true') {
+					var zoom = map.getBoundsZoomLevel(boundsPoly.getBounds());
+					<%-- if they specified a place name, then we only want to zoom out to fit,
+					     not zoom in (e.g. only one place matching the criteria in England, we still
+					     want to show England --%>
+					if ((where != '') && (zoom > map.getZoom())) {
+						zoom = map.getZoom();
+					}
+					
+					<%-- never zoom in more than 13 --%>
+					if (zoom > 13) {
+						zoom = 13;
+					}
 				}
 				map.setZoom(zoom);
 				map.setCenter(boundsPoly.getBounds().getCenter());

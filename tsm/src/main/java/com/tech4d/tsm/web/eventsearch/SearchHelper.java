@@ -49,8 +49,8 @@ public class SearchHelper {
 	public static final String QUERY_WHAT = "_what";
 	public static final String QUERY_WHEN = "_when";
 	public static final String QUERY_WHERE = "_where";
+	public static final String QUERY_MAPTYPE = "_maptype";
 	public static final String QUERY_ID = "_id";
-	public static final String QUERY_BOUNDED = "_bounded";
 	public static final String QUERY_INCLUDE_TIMERANGE_OVERLAPS = "_timeoverlaps";
     public static final String MODEL_EVENTS = "events";
     public static final String MODEL_TOTAL_RESULTS = "totalResults";
@@ -95,8 +95,10 @@ public class SearchHelper {
     	//check for incorrect zoom
     	if ((zoom != null) && (zoom >0) && (zoom < SensibleMapDefaults.NUM_ZOOM_LEVELS)) {
         	eventSearchForm.setMapZoom(zoom);
+        	eventSearchForm.setZoomOverride(true);
     	}
-    	eventSearchForm.setLimitWithinMapBounds(ServletRequestUtils.getBooleanParameter(request, QUERY_BOUNDED));
+    	eventSearchForm.setMapType(ServletRequestUtils.getIntParameter(request, QUERY_MAPTYPE));
+    	eventSearchForm.setLimitWithinMapBounds(false);
     	eventSearchForm.setExcludeTimeRangeOverlaps((ServletRequestUtils.getBooleanParameter(request, QUERY_INCLUDE_TIMERANGE_OVERLAPS)));
     	eventSearchForm.setDisplayEventId(ServletRequestUtils.getLongParameter(request, QUERY_ID));
     	eventSearchForm.setLimitWithinMapBounds(false);  //no bounds to search with
@@ -131,7 +133,9 @@ public class SearchHelper {
         	}
     	} else {
     		//no location was specified, we will use the default
-    		eventSearchForm.setMapZoom(SensibleMapDefaults.ZOOM_COUNTRY);  
+    		if (eventSearchForm.getMapZoom() == null) {
+        		eventSearchForm.setMapZoom(SensibleMapDefaults.ZOOM_COUNTRY);      			
+    		}
         	eventSearchForm.setMapCenter(SensibleMapDefaults.USA);
     	}
 	}
