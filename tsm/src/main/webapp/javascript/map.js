@@ -178,6 +178,6 @@
   
   function autolink(dataStr) {
   	var linked = dataStr.gsub('((ftp|https?)://[^ ,;\t\n<]*)','<a href="#{1}" target="_top">#{1}</a>');
-  	linked = linked.gsub('." target','" target');  	
+  	linked = linked.gsub('[.]" target','" target');  	
   	return linked;
   }
