@@ -31,6 +31,7 @@
 			<form:hidden path="mapCenter" htmlEscape="true"/>
 			<form:hidden path="searchResults" htmlEscape="true"/>
 			<form:hidden path="mapZoom"/>
+			<form:hidden path="zoomOverride"/>
 			<form:hidden path="mapType"/>
 			<form:hidden path="isGeocodeSuccess"/>
 			<form:hidden path="isAddEvent"/>

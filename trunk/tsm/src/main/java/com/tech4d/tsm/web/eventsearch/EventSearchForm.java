@@ -20,6 +20,7 @@ public class EventSearchForm  {
     private Point boundingBoxSW;
     private Point boundingBoxNE;
     private Integer mapZoom;
+    private Boolean zoomOverride;
     private Integer mapType;
     private Boolean isGeocodeSuccess;
     private String searchResults;
@@ -42,7 +43,13 @@ public class EventSearchForm  {
     public void setMapZoom(Integer mapZoom) {
         this.mapZoom = mapZoom;
     }
-    public Point getBoundingBoxNE() {
+    public Boolean getZoomOverride() {
+		return zoomOverride;
+	}
+	public void setZoomOverride(Boolean zoomOverride) {
+		this.zoomOverride = zoomOverride;
+	}
+	public Point getBoundingBoxNE() {
         return boundingBoxNE;
     }
     public void setBoundingBoxNE(Point boundingBoxNE) {
