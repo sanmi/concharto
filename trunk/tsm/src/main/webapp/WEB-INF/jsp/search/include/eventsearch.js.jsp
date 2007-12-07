@@ -13,7 +13,7 @@
 		if (event.hasUnresolvedFlags == 'true') {
 			html += '<span class="errorLabel"><em>This event has been <a class="errorlinks" href="${basePath}edit/eventdetails.htm?id=' + event.id + '">flagged!</a></em></span>';
 		} else {
-			html += '<a class="links" href="${basePath}edit/eventdetails.htm?id=' + event.id + '">details</a>';
+			html += '<a class="links" href="${basePath}edit/eventdetails.htm?id=' + event.id + '">changes</a>';
 		}
 		html += '<br/></div>';
 		return html;
