@@ -32,15 +32,11 @@
 	function initialize() {
 		initializeMap();
 
-		<%-- check to see whether this is "add" or "edit" --%>
-		if (document.getElementById("eventForm").id.value != "") {
-			<%-- we are edititing --%>
-			<%-- set map type from the event --%>
-			var mapType = document.getElementById("eventForm").mapType.value;
-			if (mapType != '') {
-				map.setMapType(G_DEFAULT_MAP_TYPES[mapType]);
-			}
-		} 
+		var mapType = document.getElementById("eventForm").mapType.value;
+		<%-- set map type from the event --%>			
+		if (mapType != '') {
+			map.setMapType(G_DEFAULT_MAP_TYPES[mapType]);				
+		}
 		var eventsJSON = document.getElementById("eventForm").searchResults.value;
 		if (eventsJSON != '') {
 			var excludeEventId = document.getElementById("eventForm").id.value;
@@ -173,7 +169,7 @@
 	}
 	
 	function showPolyMessage() {
-		var html = " <b>Click anywhere</b> on the map to add a point<br/><b>Drag a point </b> to edit the line.";
+		var html = " <b>Click anywhere</b> on the map to add a point<br/><b>Drag a point </b> to edit the line.<br/><b>Click a point</b> to delete it.";
     map.openInfoWindowHtml(map.getCenter(), html);
 	}
 

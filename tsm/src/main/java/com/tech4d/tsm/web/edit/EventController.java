@@ -67,6 +67,7 @@ public class EventController extends SimpleFormController {
                 //default geometry type is point
                 eventForm.setGeometryType(GeometryType.POINT);
                 eventForm.setMapCenter(eventSearchForm.getMapCenter());
+                eventForm.setMapType(eventSearchForm.getMapType());
             } else {
                 eventForm.setZoomLevel(SensibleMapDefaults.ZOOM_USA);
                 //default geometry type is point
