@@ -52,7 +52,7 @@
 	  		</jsp:include>
 				<div id="tagline">
 			    An encyclopedic atlas of history and happenings that anyone can edit.<%-- TODO finish this <a href="#">anyone can edit.</a>--%></div>
-			  <div id="totals"> <a href='${basePath}search/eventsearch.htm'><b>${totalEvents}</b> events and counting...</a> </div>
+			  <div id="totals"> <a href='${basePath}search/eventsearch.htm?_what=&_where=&_when='><b>${totalEvents}</b> events and counting...</a> </div>
 	  	</div>
 	  </form:form>
 	  <%-- TODO finish this 
