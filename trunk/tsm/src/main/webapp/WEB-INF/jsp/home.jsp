@@ -84,7 +84,7 @@
 		  					<li> 
 			            <a  href='${basePath}search/eventsearch.htm?_id=${event.id}'>${event.summary}</a> <br/>
 			            ${event.when.asText} <br/>
-			            <em><c:if test="${event.where != null && event.where != ''}">, ${event.where}</c:if></em>
+			            <em><c:if test="${event.where != null && event.where != ''}">${event.where}</c:if></em>
 			            <hr/>
 			          </li>
 		  				</c:forEach>	  					
