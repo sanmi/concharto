@@ -62,7 +62,9 @@
 			<%-- fit map to the results --%>
 			if (0 != _fitToPolygon.length) {
 				var boundsPoly = new GPolyline(_fitToPolygon);
-				if (zoomOverride != 'true') {
+				if (zoomOverride == 'true') {
+					document.getElementById("eventSearchForm").zoomOverride.value = 'false';
+				}	else {				
 					var zoom = map.getBoundsZoomLevel(boundsPoly.getBounds());
 					<%-- if they specified a place name, then we only want to zoom out to fit,
 					     not zoom in (e.g. only one place matching the criteria in England, we still
