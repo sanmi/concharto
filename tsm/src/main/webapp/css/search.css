@@ -1,7 +1,7 @@
 @charset "utf-8";
 /* CSS Document */
 	.mapedit {
-	background: #FFFFFF url(../images/search-backg.gif) repeat-x;
+	background: #FFFFFF url(../images/search-backg.png) repeat-x;
 	}
 	#addbox {
 	position:relative;
@@ -11,5 +11,5 @@
   #headerbar {
 	height:147px;
 	width:100%;
-	background: url(../images/title-search.jpg) no-repeat;
+	background: url(../images/title-search.png) no-repeat;
 	}

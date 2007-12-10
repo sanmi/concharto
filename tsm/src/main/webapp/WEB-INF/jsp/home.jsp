@@ -28,7 +28,7 @@
 	<jsp:body>
 
 	<div id="heading" >
-		<img  src="images/title-home.jpg" />	
+		<img  src="images/title-home.png" />	
 	</div>
 	
 	<form:form name="event" id="eventSearchForm" action="search/eventsearch.htm" commandName="eventSearch" onsubmit="search(); return false">
