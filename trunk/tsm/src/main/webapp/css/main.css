@@ -1,13 +1,13 @@
 @charset "utf-8";
 /* CSS Document */
 	#home {
-	background: #FFFFFF url(../images/home-backg.gif) repeat-x;
+	background: #FFFFFF url(../images/home-backg.png) repeat-x;
 	}
 
 	#headerhome{
 	height:213px;
 	width:100%;
-  background: url(../images/title-home.jpg) no-repeat;
+  background: url(../images/title-home.png) no-repeat;
 	}  
 	
 	#searchboxcontent {
