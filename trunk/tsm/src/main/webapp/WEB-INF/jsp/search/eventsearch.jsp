@@ -22,9 +22,6 @@
 	<jsp:attribute name="nohead">true</jsp:attribute>
 
 	<jsp:body>
-		<!--[if lt IE 7.]>
-		<script defer type="text/javascript" src="${baspath}/javascript/pngfix.js"></script>
-		<![endif]-->
 		<form:form name="event" id="eventSearchForm" commandName="eventSearch" action="eventsearch.htm" onsubmit="search(); return false">
 			<form:hidden path="boundingBoxSW" htmlEscape="true"/>
 			<form:hidden path="boundingBoxNE" htmlEscape="true"/>
@@ -111,7 +108,7 @@
 								<display:setProperty name="paging.banner.some_items_found"> </display:setProperty>
 
 								<display:column autolink="true" class="iconcol">
-									<img height='34' width='20' src="${basePath}images/icons/marker<c:out value='${fn:substring(test,event_rowNum-1,event_rowNum)}'/>.png" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"/>
+									<img height='34' width='20' src="${basePath}images/icons/marker<c:out value='${fn:substring(test,event_rowNum-1,event_rowNum)}'/>.gif" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"/>
 								</display:column>
 								
 								<display:column autolink="true">
