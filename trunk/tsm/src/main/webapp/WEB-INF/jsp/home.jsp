@@ -73,9 +73,9 @@
 		      <p>Time Space Map is an encyclopedic, online atlas of history and happenings that anyone can edit; a geographic wiki. You
 		      can search, add or edit, view or undo changes, discuss, watch, tag, or flag for removal.</p>
 		      <ul>
-						<li><a href="info/tour.htm">Take a tour</a></li>
-						<li><a href="#" onclick="alert('Not Implemented')">Policies and guidelines</a></li>
-						<li><a href="#" onclick="alert('Not Implemented')">Why are we doing this?</a></li>
+						<li><a href="http://wiki.timespacemap.com/Tour">Take a tour</a></li>
+						<li><a href="http://wiki.timespacemap.com/Guidelines">Policies and guidelines</a></li>
+						<li><a href="http://wiki.timespacemap.com/About">About Time Space Map</a></li>
 		      </ul>
 		      <h1>Recently Added</h1>
 		      <div class="recent" >
