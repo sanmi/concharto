@@ -64,10 +64,13 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 	<c:if test="${stripped != 'true'}">
 	  <div id="footer">
 			&copy 2007, Time Space Map  
-			<a class="linkleft links" href="${basePath}info/legal.htm" >Legal</a>
-			<a class="linkleft links" class="linkleft" href="#" onclick="alert('Not Yet Implemented');">About</a>
-			<a class="links linkleft" href="#" onclick="alert('Not Yet Implemented');">Feedback</a>
-	  	<span class="links linkleftright">Version <spring:message code="app.version"/></span>
+			<a class="linkleft links" href="http://wiki.timespacemap.com/Legal" >Legal</a>
+			<a class="linkleft links" class="linkleft" href="http://wiki.timespacemap.com/About" onclick="alert('Not Yet Implemented');">About</a>
+			<a class="links linkleft" href="http://wiki.timespacemap.com/Feedback">Feedback</a>
+	  	<span class="links linkleft">Version <spring:message code="app.version"/></span>
+			<a class="links linkleftright" href="http://creativecommons.org/licenses/by-nc-sa/3.0/us" >
+				<img src="http://i.creativecommons.org/l/by-sa/3.0/us/80x15.png"/>
+			</a>
 	  </div>
   </c:if>
 

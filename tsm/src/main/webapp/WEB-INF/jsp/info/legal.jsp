@@ -141,7 +141,7 @@
 		<a rel="license" href="http://creativecommons.org/licenses/by-sa/2.5/">
 		<img alt="Creative Commons License" src="http://creativecommons.org/images/public/somerights20.png" id="creative_commons"></a>
 	
-		This Terms of Use document  is derived from the privacy policy published by http://www.timespacemap.com and is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.5/">Creative Commons Attribution-ShareAlike 2.5 License</a>. 
+		This Terms of Use document  is derived from the privacy policy published by http://www.swivel.com and is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.5/">Creative Commons Attribution-ShareAlike 2.5 License</a>. 
 		<!--/Creative Commons License-->
 		<!-- 
 		<rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -232,7 +232,7 @@
 	<p>
 		<a rel="license" href="http://creativecommons.org/licenses/by-sa/2.5/"><img alt="Creative Commons License" src="http://creativecommons.org/images/public/somerights20.png" valign="top" style="padding: 3px 10px 10px 0pt;" align="left" border="0"></a>
 		
-		This Privacy Policy document is derived from the privacy policy published by http://www.timespacemap.com and is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.5/">Creative Commons Attribution-ShareAlike 2.5 License</a>.<!--/Creative Commons License--><!-- <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+		This Privacy Policy document is derived from the privacy policy published by http://www.swivel.com  and is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.5/">Creative Commons Attribution-ShareAlike 2.5 License</a>.<!--/Creative Commons License--><!-- <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 						<Work rdf:about="">
 							<license rdf:resource="http://creativecommons.org/licenses/by-sa/2.5/" />
 						<dc:title>Swivel Privacy Policy</dc:title>
