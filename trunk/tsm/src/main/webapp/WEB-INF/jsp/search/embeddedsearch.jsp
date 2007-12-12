@@ -18,6 +18,9 @@
 		<%-- the main initialize function --%>
 		function initialize_embedded() {
 			initialize(new GSmallMapControl());
+	   	var top = document.getElementById("map").offsetTop;
+	   	var height = getHeight();
+	   	document.getElementById("map").style.height=height+"px";		
 		}
 	
 		<%-- override create html for info bubbles --%>	

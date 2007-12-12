@@ -101,7 +101,7 @@
 		        <div id="borderbox">
 		          <iframe id="embeddedmap" 
 		          	src='${basePath}search/embeddedsearch.htm?_where=london, england&_what="kensington palace"&_zoom=17&_maptype=1'
-		            height="380" width="500" frameborder="0" scrolling="no">
+		            height="330" width="500" frameborder="0" scrolling="no">
 		           	This browser doesn't support embedding a map.
 		          </iframe>
 		        </div> 

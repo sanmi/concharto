@@ -59,11 +59,13 @@
 	}
 	#main #borderbox {
 	text-align:center
-	}
+	}	
 	#main #embeddedmap {
 	background-color:white; 
 	padding:10px;
+	margin:0;
 	}
+	
 	#main ul {
 	padding: .1em  .4em .1em 2em;
 	margin:.4em 0;
