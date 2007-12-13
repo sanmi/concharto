@@ -11,9 +11,11 @@ public class SensibleMapDefaults {
     public static final int ZOOM_BOX_THRESHOLD = 10;
     public static final int ZOOM_COUNTRY = 5;
     public static final int ZOOM_USA = 4;
+    public static final int ZOOM_WORLD = 2;
     public static int NUM_ZOOM_LEVELS = 19;
     public static double[] SEARCH_BOX_DIMENTSIONS = new double[NUM_ZOOM_LEVELS];
     public static Point USA;
+    public static Point NORTH_ATLANTIC;
     
     static {
     	//the low zoom levels have variable search boxes
@@ -27,5 +29,7 @@ public class SensibleMapDefaults {
     	}
     	GeometryFactory gf = new GeometryFactory();
     	USA = gf.createPoint(new Coordinate(-96.667916, 37.013086));
+    	NORTH_ATLANTIC = gf.createPoint(new Coordinate(-40.5176, 38.5482));
+    	
     }
 }

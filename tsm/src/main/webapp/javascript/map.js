@@ -25,20 +25,19 @@
 			//map.setCenter(new GLatLng(40.879721,-76.998322),10);  //la la land, PA
 			setMapExtent();
 			map.checkResize(); //tell the map that we have resized it
-			showUsa(); 
+			showDefault(); 
 		}
 	}
-	
-	function showUsa() {
-		var diagonal = new GPolyline([
-  		new GLatLng(23.3220,-127.1777),
-  		new GLatLng(51.3992,-64.8632)
+	function showDefault() {		
+		diagonal = new GPolyline([
+  		new GLatLng(53,-127),
+  		new GLatLng(-23,25)
 		]);
 		var bounds = diagonal.getBounds();
 		map.setCenter(bounds.getCenter());  
 		map.setZoom(map.getBoundsZoomLevel(bounds));
 	}
-
+	
 	function setMapExtent() {
     	var top = document.getElementById("map").offsetTop;
     	var height = getHeight() - top - 32;

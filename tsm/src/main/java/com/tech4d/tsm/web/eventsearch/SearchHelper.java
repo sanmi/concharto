@@ -134,9 +134,9 @@ public class SearchHelper {
     	} else {
     		//no location was specified, we will use the default
     		if (eventSearchForm.getMapZoom() == null) {
-        		eventSearchForm.setMapZoom(SensibleMapDefaults.ZOOM_COUNTRY);      			
+        		eventSearchForm.setMapZoom(SensibleMapDefaults.ZOOM_WORLD);      			
     		}
-        	eventSearchForm.setMapCenter(SensibleMapDefaults.USA);
+        	eventSearchForm.setMapCenter(SensibleMapDefaults.NORTH_ATLANTIC);
     	}
 	}
   
