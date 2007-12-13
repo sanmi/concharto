@@ -19,6 +19,7 @@ import com.tech4d.tsm.OpenSessionInViewIntegrationTest;
 import com.tech4d.tsm.auth.ThreadLocalUserContext;
 import com.tech4d.tsm.auth.UserContext;
 import com.tech4d.tsm.dao.AuditEntryDao;
+import com.tech4d.tsm.dao.AuditUserChange;
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.dao.EventTesterDao;
 import com.tech4d.tsm.dao.EventUtil;
@@ -35,6 +36,7 @@ import com.vividsolutions.jts.io.WKTReader;
 public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest {
 
     private static final String USERNAME = "bob";
+    private static final String USERNAME2 = "joe";
     private static final int MAX_RESULTS = 100;
     private static EventDao eventDao;
     private static AuditEntryDao auditEntryDao;
@@ -69,13 +71,15 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
     }
 
     @Before public void setupUserContext() {
-        UserContext userContext = new UserContext();
-        userContext.setUsername(USERNAME);
-        ThreadLocalUserContext.setUserContext(userContext);
+    	setupUserContext(USERNAME);
         eventTesterDao.deleteAll();
     }
     
-
+    private void setupUserContext(String username) {
+        UserContext userContext = new UserContext();
+        userContext.setUsername(username);
+        ThreadLocalUserContext.setUserContext(userContext);
+    }
     
     /**
      * 
@@ -192,6 +196,38 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
         revertAndAssert(rev2, 2);
         revertAndAssert(rev1, 1);
         revertAndAssert(rev0, 0);
+    }
+    
+    /** 
+     * Test getting auditable events by username
+     * @throws ParseException
+     */
+    @Test public void byUsername() throws ParseException {
+    	makeEvents(3);
+    	setupUserContext(USERNAME2);
+    	makeEvents(5);
+    	assertEquals(3, auditEntryDao.getAuditEntries(USERNAME, Event.class, 0, 20).size());
+    	assertEquals(3L, auditEntryDao.getAuditEntriesCount(USERNAME, Event.class));
+    	assertEquals(5, auditEntryDao.getAuditEntries(USERNAME2, Event.class, 0, 20).size());
+    	assertEquals(5L, auditEntryDao.getAuditEntriesCount(USERNAME2, Event.class));
+    	//limit size of results
+    	List<AuditUserChange> entries = auditEntryDao.getAuditEntries(USERNAME2, Event.class, 0, 3);
+    	AuditUserChange first = entries.get(0);
+    	assertEquals(3, entries.size());
+    	//limit size of results, first record is different
+    	entries = auditEntryDao.getAuditEntries(USERNAME2, Event.class, 1, 3);
+    	AuditUserChange second = entries.get(0);
+    	assertEquals(3, entries.size());
+    	//check the order
+    	assertTrue(first.getAuditEntry().getEntityId() < second.getAuditEntry().getEntityId());
+    	//check the join.  The first event summary should be different than the second
+    	assertTrue(!((Event)first.getAuditable()).getSummary().equals(((Event)second.getAuditable()).getSummary()));
+    }
+    
+    private void makeEvents(int numEvents) throws ParseException {
+    	for (int i=0; i<numEvents; i++) {
+        	eventDao.save(eventUtil.createEvent("summary " + i));
+    	}
     }
     
     private void revertAndAssert(Event expected, int rev) {

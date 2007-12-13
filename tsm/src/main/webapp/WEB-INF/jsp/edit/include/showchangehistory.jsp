@@ -34,9 +34,11 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 		</display:setProperty>
 		<display:column>
 		
+		<%-- TODO make it so we don't show empty changes or we record something for empty changes (e.g. added a flag) --%>
 		<div class="changeEntry">
+		
 				Revision <c:out value="${auditEntryTable.version}"/>, 
-				<c:out value="${actionLabels[auditEntryTable.action]}"/> <%-- TODO switch to messages here --%>
+				<spring:message code="audit.action.field.${auditEntryTable.action}"/> by
 				<a  href="#" onclick="alert('Not Implemented')">${auditEntryTable.user}</a> 
 	 		<fmt:formatDate value="${auditEntryTable.dateCreated}" pattern="MMM dd, yyyy hh:mm a"/>
 	 		

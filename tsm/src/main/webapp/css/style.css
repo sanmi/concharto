@@ -216,6 +216,9 @@ img {
 	.nav_block ul li {
 	display:inline;
 	}
+	.nav_block li {
+	margin-left: .5em;
+	}
 	a:link, a:visited {
 	color: #047BDD;
 	}
