@@ -38,7 +38,6 @@
 		var mapCenterJSON = document.getElementById("eventSearchForm").mapCenter.value;
 		
 		var mapZoom = parseInt(document.getElementById("eventSearchForm").mapZoom.value);
-
 		<%-- set map type from the event --%>
 		var mapType = document.getElementById("eventSearchForm").mapType.value;
 		if (mapType != '') {
@@ -64,7 +63,7 @@
 				var boundsPoly = new GPolyline(_fitToPolygon);
 				if (zoomOverride == 'true') {
 					document.getElementById("eventSearchForm").zoomOverride.value = 'false';
-				}	else {				
+				}	else if (_fitToPolygon.length > 1){				
 					var zoom = map.getBoundsZoomLevel(boundsPoly.getBounds());
 					<%-- if they specified a place name, then we only want to zoom out to fit,
 					     not zoom in (e.g. only one place matching the criteria in England, we still
@@ -76,6 +75,7 @@
 				map.setZoom(zoom);
 				map.setCenter(boundsPoly.getBounds().getCenter());
 			}
+			
 		}
 	}
 
