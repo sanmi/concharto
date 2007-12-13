@@ -12,18 +12,23 @@ import org.springframework.web.servlet.mvc.AbstractController;
 import com.tech4d.tsm.dao.AuditEntryDao;
 
 public class ChangeHistoryController extends AbstractController {
-    private String formView;
+    private static final int DEFAULT_PAGE_SIZE = 10;
+	private String formView;
     private ChangeHistoryControllerHelper changeHistoryControllerHelper = new ChangeHistoryControllerHelper();
+    private int pageSize = DEFAULT_PAGE_SIZE;
+    
     public String getFormView() {
         return formView;
     }
-
+    public void setPageSize(int pageSize) {
+    	this.pageSize = pageSize;
+    }
     public void setFormView(String formView) {
         this.formView = formView;
     }
     
     public void setAuditEntryDao(AuditEntryDao auditEntryDao) {
-        changeHistoryControllerHelper.setAuditEntryDao(auditEntryDao);
+        changeHistoryControllerHelper.setAuditEntryDao(auditEntryDao, pageSize);
     }
 
 	@SuppressWarnings("unchecked")

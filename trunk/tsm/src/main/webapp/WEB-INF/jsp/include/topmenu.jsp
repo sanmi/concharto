@@ -9,12 +9,18 @@
 				</c:if><c:if test="${username != null}">
 				<li><span class="name">Hello, <b>${username}</b> </span>&nbsp;</li>
 				<li> 
-					<a href="${basePath}">Home</a> | 
+					<a href="${basePath}">Home</a>  
 				</li>
+				<li>|</li>
 				<li> 
 					<a href="${basePath}member/settings.htm">Settings</a>
 				</li>
-				<li> | <a href="${basePath}logout.htm">Sign out</a></li>
+				<li>|</li>
+				<li> 
+					<a href="${basePath}member/contributions.htm?user=${username}">Contributions</a>
+				</li>
+				<li>|</li>
+				<li><a href="${basePath}logout.htm">Sign out</a></li>
 				</c:if></ul>
     </div>
     <div class="nav_left" ><img src="${basePath}images/nav-left.png" /></div>

@@ -25,13 +25,14 @@ public class EventUtil {
     private Date begin;
     private Date end;
     List<User> users = new ArrayList<User>();
+    private static Geometry defaultGeometry; 
 
     /**
      * Instantiate this utility with a hibernate session factory so 
      * that we can refresh objects
      * @param sessionFactory  hibernate session factory
      */
-    public EventUtil(SessionFactory sessionFactory) {
+    public EventUtil(SessionFactory sessionFactory)  {
         super();
         this.sessionFactory = sessionFactory;
         Calendar cal = new GregorianCalendar(107 + 1900, 8, 22, 12, 22, 3);
@@ -39,6 +40,11 @@ public class EventUtil {
         begin = cal.getTime();
         cal.set(Calendar.SECOND, 35);
         end = cal.getTime();
+        try {
+			defaultGeometry = new WKTReader().read("POINT (20 20)");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
     }
 
     public Date getBegin() {
@@ -52,9 +58,13 @@ public class EventUtil {
     public Event createEvent() throws ParseException {
         return createEvent(new Date(), new Date());
     }
+    public Event createEvent(String summary) { 
+    	return createEvent(defaultGeometry, new TimeRange(new Date(), new Date()),
+            null, summary, "sdf");
+    }
 
     public Event createEvent(Date begin, Date end) throws ParseException {
-        return createEvent(new WKTReader().read("POINT (20 20)"), new TimeRange(begin, end));
+        return createEvent(defaultGeometry, new TimeRange(begin, end));
 
     }
 

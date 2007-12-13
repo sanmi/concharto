@@ -20,6 +20,7 @@
           <prop key="member/settings.htm">settingsController</prop>
           
           <prop key="edit/changehistory.htm">changeHistoryController</prop>
+          <prop key="member/contributions.htm">contributionsController</prop>
 
           <prop key="edit/flagevent.htm">flagEventController</prop>
           <prop key="edit/flageventsuccess.htm">flagEventController</prop>
@@ -114,6 +115,11 @@
 
 	<bean id="changeHistoryController" class="com.tech4d.tsm.web.changehistory.ChangeHistoryController" parent="baseEventController">
 		<property name="formView" value="edit/changehistory" />
+		<property name="auditEntryDao" ref="auditEntryDao" />
+	</bean>
+	<bean id="contributionsController" class="com.tech4d.tsm.web.changehistory.ChangeHistoryController" parent="baseEventController">
+		<property name="formView" value="member/contributions" />
+		<property name="pageSize" value="25"/>
 		<property name="auditEntryDao" ref="auditEntryDao" />
 	</bean>
 

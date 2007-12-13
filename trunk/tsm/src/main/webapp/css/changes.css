@@ -1,0 +1,31 @@
+@charset "utf-8";
+/* CSS Document */
+
+#auditEntryTable tr{
+	padding: .2em .5em;
+	margin: 0 .2em;
+}
+
+#auditEntryTable td{
+	padding: .2em .5em;
+	margin: 0 .2em;
+	border: 1px solid #e0e0e0;
+}
+#auditEntryTable th {
+	padding: .2em .5em;
+	margin: 0 .2em;
+	background-color: #e0e0e0;
+}  
+ 
+#auditEntryTable .summary {
+	min-width: 12em;
+}
+#auditEntryTable .action {
+	width: 8em;
+}
+#auditEntryTable .date {
+	width: 12em;
+}
+
+
+
