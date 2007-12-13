@@ -8,8 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
+import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.dao.EventDao;
+import com.tech4d.tsm.web.eventsearch.SearchHelper;
 
 public class HomeController extends SimpleFormController {
 	private static final int MAX_RECENT_EVENTS = 10;
@@ -30,6 +32,8 @@ public class HomeController extends SimpleFormController {
 		Map model = errors.getModel();
 		model.put(MODEL_RECENT_EVENTS, eventDao.findRecent(MAX_RECENT_EVENTS));
 		model.put(MODEL_TOTAL_EVENTS, eventDao.getTotalCount());
+		//clear out the eventSearchForm session if there is one
+		WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_FORM, null);
 		return new ModelAndView(getFormView(), model);
 	}
 

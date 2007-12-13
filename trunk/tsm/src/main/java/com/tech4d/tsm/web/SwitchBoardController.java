@@ -67,6 +67,8 @@ public class SwitchBoardController extends MultiActionController {
         while (attrNames.hasMoreElements()) {
         	String name = (String) attrNames.nextElement();
         	WebUtils.setSessionAttribute(request, name, null);
+        	//free all session data
+        	request.getSession().invalidate();
         }
         return new ModelAndView("redirect:/");
     }

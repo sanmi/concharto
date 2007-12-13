@@ -69,10 +69,10 @@ public class EventController extends SimpleFormController {
                 eventForm.setMapCenter(eventSearchForm.getMapCenter());
                 eventForm.setMapType(eventSearchForm.getMapType());
             } else {
-                eventForm.setZoomLevel(SensibleMapDefaults.ZOOM_USA);
+                eventForm.setZoomLevel(SensibleMapDefaults.ZOOM_WORLD);
                 //default geometry type is point
                 eventForm.setGeometryType(GeometryType.POINT);
-                eventForm.setMapCenter(SensibleMapDefaults.USA);
+                eventForm.setMapCenter(SensibleMapDefaults.NORTH_ATLANTIC);
             }
         }
         return eventForm;
