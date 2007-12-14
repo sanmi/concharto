@@ -39,7 +39,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 		
 				Revision <c:out value="${auditEntryTable.version}"/>, 
 				<spring:message code="audit.action.field.${auditEntryTable.action}"/> by
-				<a  href="#" onclick="alert('Not Implemented')">${auditEntryTable.user}</a> 
+				<a  href="${basePath}member/contributions.htm?user=${auditEntryTable.user}" >${auditEntryTable.user}</a> 
 	 		<fmt:formatDate value="${auditEntryTable.dateCreated}" pattern="MMM dd, yyyy hh:mm a"/>
 	 		
 	 		<c:choose>

@@ -27,7 +27,7 @@
 		 	<fmt:formatDate value="${dt.created}" pattern="MMM dd, yyyy hh:mm a"/>
 		</display:column>
 		<display:column sortable="true" title="User" >
-		 	<a href="#" onclick="alert('Not Implemented')">${dt.user.username}</a>
+		 	<a href="${basePath}member/contributions.htm?user=${dt.user.username}">${dt.user.username}</a>
 		</display:column>
 		<display:column title="Comment">${dt.comment}&nbsp;</display:column>
 		<display:column title="Reason" >
