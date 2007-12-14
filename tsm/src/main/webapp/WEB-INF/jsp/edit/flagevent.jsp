@@ -9,12 +9,7 @@
 
 <tsm:page title="Flag Event">
 	<jsp:attribute name="head">
-		<jsp:include page="../include/mapkey.js.jsp"/>
-		<script type="text/javascript">
-			function closeIt() {
-				parent.window.Control.Modal.close();
-			}		
-		</script>
+		<jsp:include page="../include/mapkey.js.jsp"/>		
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">map.css,simpleform.css,header.css</jsp:attribute>
 	<jsp:attribute name="bodyattr">class="mapedit"</jsp:attribute>
