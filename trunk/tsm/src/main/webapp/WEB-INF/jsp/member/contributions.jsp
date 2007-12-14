@@ -29,10 +29,10 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 								partialList="true" 
 								size="${totalResults}"						
 								>
-				<display:setProperty name="basic.msg.empty_list">There have been no changes</display:setProperty>
+				<display:setProperty name="basic.msg.empty_list">There have been no edits</display:setProperty>
 				<display:setProperty name="paging.banner.placement">both</display:setProperty>
-				<display:setProperty name="paging.banner.item_name">Change</display:setProperty>
-				<display:setProperty name="paging.banner.items_name">Changes</display:setProperty>
+				<display:setProperty name="paging.banner.item_name">Edits</display:setProperty>
+				<display:setProperty name="paging.banner.items_name">Edits</display:setProperty>
 				<display:setProperty name="paging.banner.onepage">&nbsp;</display:setProperty>
 				<display:setProperty name="paging.banner.no_items_found">&nbsp;</display:setProperty>
 				<display:setProperty name="paging.banner.one_item_found">&nbsp;</display:setProperty>
