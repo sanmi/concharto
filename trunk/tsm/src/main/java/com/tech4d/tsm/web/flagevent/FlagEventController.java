@@ -19,6 +19,7 @@ import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.Flag;
 import com.tech4d.tsm.model.User;
 import com.tech4d.tsm.web.changehistory.ChangeHistoryControllerHelper;
+import com.tech4d.tsm.web.eventsearch.SearchSessionUtil;
 
 /**
  * Allows the user to flag an event to be deleted or moved
@@ -57,11 +58,14 @@ public class FlagEventController extends SimpleFormController {
 		String username = (String) WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME);
 		FlagEventForm flagEventForm = (FlagEventForm) command;
 		
-		saveFlag(flagEventForm, eventId, username);
+		Event event = saveFlag(flagEventForm, eventId, username);
+		//update the event that is in the search results, since we are going back there
+		SearchSessionUtil.updateEventInSession(request, event);
 		return new ModelAndView(getSuccessView(), errors.getModel());
 	}
 
-	private void saveFlag(FlagEventForm flagEventForm, Long eventId, String username) {
+
+	private Event saveFlag(FlagEventForm flagEventForm, Long eventId, String username) {
 		Event event = eventDao.findById(eventId);
 		event.setHasUnresolvedFlag(true);
 		User user = userDao.find(username);
@@ -69,6 +73,7 @@ public class FlagEventController extends SimpleFormController {
 				user, event);
 		flagDao.save(flag);
 		eventDao.saveOrUpdate(event);
+		return event;
 	}
 
 	@SuppressWarnings("unchecked")

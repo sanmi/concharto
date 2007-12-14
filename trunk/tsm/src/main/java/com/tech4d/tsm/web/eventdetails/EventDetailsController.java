@@ -25,6 +25,7 @@ import com.tech4d.tsm.model.Flag;
 import com.tech4d.tsm.service.RevertEventService;
 import com.tech4d.tsm.web.SwitchBoardController;
 import com.tech4d.tsm.web.changehistory.ChangeHistoryControllerHelper;
+import com.tech4d.tsm.web.eventsearch.SearchSessionUtil;
 
 public class EventDetailsController extends MultiActionController{
 	private static final String MODEL_EVENT = "event";
@@ -98,6 +99,8 @@ public class EventDetailsController extends MultiActionController{
     	Event event = flag.getEvent();
     	if (Flag.DISPOSITION_DELETED.equals(disposition)) {
         	eventDao.delete(flag.getEvent());
+    		//update the event that is in the search results, since we are going back there
+    		SearchSessionUtil.deleteEventInSession(request, flag.getEvent().getId());
             //redirect back to search
             return searchModelAndView(request);
         } else {
