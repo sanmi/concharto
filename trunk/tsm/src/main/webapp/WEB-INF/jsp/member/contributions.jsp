@@ -65,8 +65,13 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 						<em>event has been deleted</em> 
 					</c:if>
 				</display:column>
-				<display:column title="when" property="auditable.when.asText"/>
-				<display:column title="where" property="auditable.where"/>	
+				<display:column title="when" >
+					${auditEntryTable.auditable.when.asText} &nbsp; <%-- IE6 hack --%>
+				</display:column>
+				<display:column title="where" >
+					${auditEntryTable.auditable.where} &nbsp; <%-- IE6 hack --%>
+				
+				</display:column>	
 		 	</display:table>		
 
 		</div>	  	
