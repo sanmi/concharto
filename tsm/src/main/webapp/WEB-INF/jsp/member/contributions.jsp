@@ -49,11 +49,21 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 						<spring:message code="audit.action.field.${auditEntryTable.auditEntry.action}"/>						
 				</display:column>
 				<display:column title="Action" class="action">
-					<a  href="${basePath}edit/event.htm?listid=${auditEntryTable.auditable.id}">edit</a> | 
-					<a  href="${basePath}edit/eventdetails.htm?id=${auditEntryTable.auditable.id}">changes</a>
+					<c:choose>
+						<c:when test="${auditEntryTable.auditable.summary != null}">  <%-- todo this is a kludge - fix it --%>
+							<a href="${basePath}edit/event.htm?listid=${auditEntryTable.auditEntry.entityId}">edit</a> | 
+							<a href="${basePath}edit/eventdetails.htm?id=${auditEntryTable.auditEntry.entityId}">changes</a>
+						</c:when>
+						<c:otherwise>
+							<em>n/a</em>
+						</c:otherwise>
+					</c:choose>
 				</display:column>
 				<display:column title="Summary" class="summary">
-					<a  href='${basePath}search/eventsearch.htm?_id=${auditEntryTable.auditable.id}'>${auditEntryTable.auditable.summary}</a>
+					<a  href='${basePath}search/eventsearch.htm?_id=${auditEntryTable.auditEntry.entityId}'>${auditEntryTable.auditable.summary}</a>
+					<c:if test="${auditEntryTable.auditable.summary == null}">
+						<em>event has been deleted</em> 
+					</c:if>
 				</display:column>
 				<display:column title="when" property="auditable.when.asText"/>
 				<display:column title="where" property="auditable.where"/>	
