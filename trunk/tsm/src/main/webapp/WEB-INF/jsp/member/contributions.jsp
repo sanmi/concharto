@@ -19,7 +19,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 	<jsp:body>
 		
 		<div class="loginForm">			
-			<h2>Member Contributions for <a  href="#" onclick="alert('Not Implemented')">${param.user}</a></h2>
+			<h2>Member Contributions for ${param.user}</h2>
 			
 			<display:table id="auditEntryTable" 
 								name="userChanges" 
@@ -46,7 +46,8 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 					<fmt:formatDate value="${auditEntryTable.auditEntry.dateCreated}" pattern="MMM dd, yyyy hh:mm a"/>
 				</display:column>
 				<display:column title="Change" >
-						<spring:message code="audit.action.field.${auditEntryTable.auditEntry.action}"/>						
+						<spring:message code="audit.action.field.${auditEntryTable.auditEntry.action}"/>
+						r${auditEntryTable.auditEntry.version}						
 				</display:column>
 				<display:column title="Action" class="action">
 					<c:choose>
