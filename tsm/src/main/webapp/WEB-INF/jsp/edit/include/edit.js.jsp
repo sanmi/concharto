@@ -31,7 +31,7 @@
 	<%-- the main initialize function --%>
 	function initialize() {
 		initializeMap();
-
+		
 		var mapType = document.getElementById("eventForm").mapType.value;
 		<%-- set map type from the event --%>			
 		if (mapType != '') {
@@ -44,6 +44,12 @@
 			createOverlays(events, excludeEventId);
 		}
 		createEditableOverlay();
+
+		<%-- this is to fix render time rearranging on IE and firefox--%>		
+		$('smaller').hide();
+		$('smaller').removeClassName('hidden');
+		$('larger').removeClassName('hidden');
+		
 	}
 	
 	function removeClickListener() {
@@ -274,6 +280,23 @@
 		}
 	}
 	
+	function smaller() {
+		var elements = $('sidebar').getElementsByClassName('expando');
+		for (var i=0; i<elements.length; i++) {
+			elements[i].setStyle({width: '24em'});
+		}
+		$('smaller').hide();
+		$('larger').show();
+	}
+		
+	function larger() {
+		var elements = $('sidebar').getElementsByClassName('expando');
+		for (var i=0; i<elements.length; i++) {
+			elements[i].setStyle({width: '40em'});
+		}
+		$('larger').hide();
+		$('smaller').show();
+	}
 	<%-- END WHILE FUNCTIONS (initialization) ============================= --%>
 	
   <%-- BEGIN MISC FUNCTIONS ============================= --%>
@@ -364,6 +387,12 @@
 		var id = document.getElementById("eventForm").id.value;
 		if (id != '') {
 			document.location="changehistory.htm?id=" + id;
+		}
+	}
+	function discuss() {
+		var id = document.getElementById("eventForm").id.value;
+		if (id != '') {
+			document.location="$/event/discuss.htm?id=" + id;
 		}
 	}
   <%-- END POST FUNCTIONS ============================= --%>

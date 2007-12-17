@@ -43,7 +43,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 					<span class="pagebanner"><b>{0}</b> {1} found.</span>
 				</display:setProperty>
 				<display:column title="Date" class="date">
-					<fmt:formatDate value="${auditEntryTable.auditEntry.dateCreated}" pattern="MMM dd, yyyy hh:mm a"/>
+					<fmt:formatDate value="${auditEntryTable.auditEntry.dateCreated}" pattern="MMM dd, yyyy hh:mm a z"/>
 				</display:column>
 				<display:column title="Change" >
 						<spring:message code="audit.action.field.${auditEntryTable.auditEntry.action}"/>

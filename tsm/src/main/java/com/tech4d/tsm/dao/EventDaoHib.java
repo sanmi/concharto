@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.EventSearchText;
+import com.tech4d.tsm.model.WikiText;
 
 @Transactional
 public class EventDaoHib implements EventDao {
@@ -41,6 +42,15 @@ public class EventDaoHib implements EventDao {
         }
         this.sessionFactory.getCurrentSession().saveOrUpdate(event);
     }
+
+    /**
+     * TODO probably belongs in a different dao?
+     */
+    public void saveOrUpdate(WikiText text) {
+        this.sessionFactory.getCurrentSession().saveOrUpdate(text);
+    	
+    }
+
 
     /*
      * (non-Javadoc)
@@ -89,4 +99,17 @@ public class EventDaoHib implements EventDao {
     	return Math.round(count);
     }
 
+	@SuppressWarnings("unchecked")
+	public WikiText getDiscussion(Long eventId) {
+    	List results = this.sessionFactory.getCurrentSession()
+    	.createQuery("select event.discussion from Event event where event.id = ?)")
+    	.setLong(0, eventId)
+    	.list();
+    	if (0 == results.size()) {
+    		return null;
+    	} else {
+    		return (WikiText) results.get(0);
+    	}
+	}
+    
 }

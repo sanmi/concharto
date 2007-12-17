@@ -37,7 +37,10 @@
           <prop key="admin/flagdisposition.htm">eventDetailsController</prop>
           <prop key="edit/eventdetails.htm">eventDetailsController</prop>
           <prop key="edit/undoevent.htm">eventDetailsController</prop>
-          
+
+          <prop key="event/discuss.htm">discussController</prop>
+          <prop key="edit/discussedit.htm">discussEditController</prop>
+
           <prop key="info/legal.htm">urlFilenameViewController</prop>
           <prop key="info/tour.htm">urlFilenameViewController</prop>
           <prop key="404.htm">urlFilenameViewController</prop>
@@ -162,6 +165,21 @@
 		<property name="auditEntryDao" ref="auditEntryDao" />
 		<property name="eventDao" ref="eventDao" />
 		<property name="flagDao" ref="flagDao" />
+	</bean>
+
+	<bean id="discussControllerBase" class="com.tech4d.tsm.web.discuss.DiscussController">
+		<property name="commandName" value="discussion" />
+		<property name="commandClass" value="com.tech4d.tsm.web.discuss.WikiTextForm" />
+		<property name="eventDao" ref="eventDao" />
+	</bean>
+	<bean id="discussController" class="com.tech4d.tsm.web.discuss.DiscussController" 
+		parent="discussControllerBase">
+		<property name="formView" value="event/discuss" />
+	</bean>
+	<bean id="discussEditController" class="com.tech4d.tsm.web.discuss.DiscussController" 
+		parent="discussControllerBase">
+		<property name="formView" value="edit/discussedit" />
+		<property name="successView" value="event/discuss" />
 	</bean>
 	
 </beans>

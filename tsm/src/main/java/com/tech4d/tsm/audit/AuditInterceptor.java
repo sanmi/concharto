@@ -14,8 +14,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.type.Type;
 
-import com.tech4d.tsm.auth.ThreadLocalUserContext;
-import com.tech4d.tsm.auth.UserContext;
+import com.tech4d.tsm.auth.AuthHelper;
 import com.tech4d.tsm.dao.AuditLogWriter;
 import com.tech4d.tsm.model.Auditable;
 import com.tech4d.tsm.model.audit.AuditEntry;
@@ -203,8 +202,7 @@ public class AuditInterceptor extends EmptyInterceptor {
      * @return user id
      */
     private String getUsername() {
-        UserContext userContext = ThreadLocalUserContext.getUserContext();
-        return userContext.getUsername();
+        return AuthHelper.getUsername();
     }
 
     /**

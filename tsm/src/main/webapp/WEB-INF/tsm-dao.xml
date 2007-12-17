@@ -64,6 +64,7 @@
   	<property name="auditFieldChangeFormatters">
   		<set>
   			<value>com.tech4d.tsm.audit.EventFieldChangeFormatter</value>
+  			<value>com.tech4d.tsm.audit.WikiTextChangeFormatter</value>
   		</set>
   	</property>
   </bean>

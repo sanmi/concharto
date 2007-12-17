@@ -22,17 +22,18 @@
 	
 
 <jsp:body>
-		<table><tr><td>			
 			<div class="changes">
 				<div class="miniTabBar">
-					<a href="#" class="miniTabUnselected" onclick="edit(); return false;">Edit</a>
-					<span class="miniTabSelected" >Change History</span>
+					<a class="miniTabUnselected" href="${basePath}edit/event.htm?listid=${param.id}">Event</a>
+ 		    	<a class="miniTabUnselected" href="${basePath}event/discuss.htm?id=${param.id}">Discussion</a>
+					<span class="miniTabSelected  miniTabLSpace" >Changes</span>
 	      </div>
-	      <jsp:include page="include/showchangehistory.jsp"/>   
+	      <div class="changeBar">
+		         <jsp:include page="include/showchangehistory.jsp"/>   
+	      </div>
 	  	  
 	  	<input type="button" value="Back to Edit" onclick="edit(); return false;"/>
 	  	
-	 	</td></tr></table>
 </jsp:body>
 </tsm:page>
 
