@@ -8,4 +8,10 @@ public class AuthHelper {
 		UserContext userContext = ThreadLocalUserContext.getUserContext();
         return StringUtils.contains(userContext.getRoles(), AuthConstants.ROLE_ADMIN);
     }
+	
+    public static String getUsername() {
+        UserContext userContext = ThreadLocalUserContext.getUserContext();
+        return userContext.getUsername();
+    }
+
 }

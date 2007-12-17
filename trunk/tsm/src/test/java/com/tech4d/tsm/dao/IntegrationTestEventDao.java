@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tech4d.tsm.OpenSessionInViewIntegrationTest;
 import com.tech4d.tsm.model.Event;
+import com.tech4d.tsm.model.WikiText;
 import com.tech4d.tsm.util.ContextUtil;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
@@ -87,10 +88,8 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
         eventUtil.assertEquivalent(event, returned);
     }
 
-    /**
+    /*
      * Tests Auditing
-     * @throws ParseException
-     * @throws InterruptedException
      */
     @Test
     public void testSaveAndResave() throws ParseException, InterruptedException {
@@ -164,5 +163,27 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
         assertNull(event);
     }
     
-
+    @Test
+    public void saveUpdateGetDiscussion() throws ParseException {
+    	Event event = eventUtil.createEvent();
+    	WikiText discussion = new WikiText();
+    	String text = "sdfgsdfgsdfgsdfg sdfg sdf gsdfg ";
+    	discussion.setText(text);
+    	event.setDiscussion(discussion);
+        eventDao.saveOrUpdate(event);
+        Event returned = eventDao.findById(event.getId());
+        assertEquals(text, returned.getDiscussion().getText());    
+        
+        //update
+        String updated = "gfdfgdfg 333";
+        discussion.setText(updated);
+        eventDao.saveOrUpdate(discussion);
+        returned = eventDao.findById(event.getId());
+        assertEquals(updated, returned.getDiscussion().getText());
+        
+        //get
+        discussion = eventDao.getDiscussion(returned.getId());
+        assertEquals(updated, discussion.getText());
+    }
+    
 }

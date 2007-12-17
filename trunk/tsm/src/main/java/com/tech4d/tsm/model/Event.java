@@ -50,6 +50,7 @@ public class Event extends BaseAuditableEntity {
     private EventSearchText eventSearchText;
     private Integer zoomLevel;
     private Integer mapType;
+    private WikiText discussion;
 
     @Column(name = "_where", length=SZ_WHERE)  //'where' is a sql reserved word
     public String getWhere() {
@@ -207,7 +208,17 @@ public class Event extends BaseAuditableEntity {
         this.mapType = mapType;
     }
 
-    /**
+    @OneToOne (cascade = CascadeType.ALL)
+    @ForeignKey(name="FK_EVENT_DISCUSS")
+    public WikiText getDiscussion() {
+		return discussion;
+	}
+
+	public void setDiscussion(WikiText discussion) {
+		this.discussion = discussion;
+	}
+
+	/**
      * Returns a comma separated list of tags
      * @return a comma separated list of tags
      */

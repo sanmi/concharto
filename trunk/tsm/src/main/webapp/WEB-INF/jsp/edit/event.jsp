@@ -9,7 +9,7 @@
 <tsm:page title="Event">
 	<jsp:attribute name="head">
 		<jsp:include page="../include/mapkey.js.jsp"/>
-		<jsp:include page="include/edit.js.jsp"/>
+		<jsp:include page="include/edit.js.jsp"/>		
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">map.css,header.css</jsp:attribute>
 	<jsp:attribute name="script">prototype-1.7.0.js,map.js,json.js</jsp:attribute>
@@ -27,10 +27,13 @@
 					<form:hidden path="searchResults" htmlEscape="true"/>
 					
    		    <div class="miniTabBar">
-   		    	<span class="miniTabSelected">Edit</span>
-   		    	<a class="miniTabUnselected" href="#" onclick="changeHistory(); return false;">Change History</a>
+   		    	<span class="miniTabSelected">Event</span>
+   		    	<a class="miniTabUnselected" href="${basePath}event/discuss.htm?id=${param.listid}">Discussion</a>
+   		    	<a class="miniTabUnselected miniTabLSpace" href="${basePath}edit/changehistory.htm?id=${param.listid}">Changes</a>
 	 		    </div>
-   		    <div class="inputcell">
+   		    <div class="inputcell ">
+	 		    	<span id="larger" class="hidden"><a href="#" onClick="larger()">larger &raquo;</a></span>
+ 	 		    	<span id="smaller" class="hidden"><a href="#" onClick="smaller()">smaller &laquo;</a></span>
 		        <span class="radio">
 		        	<span class="inputlabel">Point:</span>
 		        	<form:radiobutton path="geometryType" value="point" onclick="setupNewPoint()"/> 
@@ -48,13 +51,13 @@
 		        <span class="errorlabel"><form:errors path="summary" element="div"/></span>
 		        <span class="inputlabel">Summary</span> 
 		        <br/>
-		        <form:input path="summary" size="45" maxlength="${event.SZ_SUMMARY}" htmlEscape="true"/>
+		        <form:input cssClass="textInput expando" path="summary" maxlength="${event.SZ_SUMMARY}" htmlEscape="true"/>
    		    </div>
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="where" element="div"/></span>
    		    	<span class="inputlabel">Where</span>
 	          <small>e.g., "gettysburg, pa" </small><br/>
-	          <form:input path="where" size="45" maxlength="${event.SZ_WHERE}" htmlEscape="true"/>
+	          <form:input cssClass="textInput expando" path="where" maxlength="${event.SZ_WHERE}" htmlEscape="true"/>
 	          <br/>
 	          <input  type="button" name="Find" value="Go to Location" onclick="showAddress(document.event.where.value); return false"/>             
 	          <small id="tip"><b>Tip:</b> drag and drop the lollypop!</small>
@@ -65,22 +68,22 @@
 	          <small>
 	            e.g. "1962" or "March, 1064" or "1880 - 1886" <a href="#">hints</a>
 	          </small><br/>
-		        <form:input path="when" size="45"/>
+		        <form:input cssClass="textInput expando" path="when" />
    		    </div>
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="description" element="div"/></span>
 	   		    <span class="inputlabel">Description</span><br/>
-						<form:textarea rows="5" cols="35" path="description"/>
+						<form:textarea cssClass="textInput expando" rows="5" path="description"/>
    		    </div>
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="tags" element="div"/></span>
    		    	<span class="inputlabel">Tags</span><br/>
-		        <form:input path="tags" size="45" maxlength="${event.SZ_TAGS}" htmlEscape="true"/>
+		        <form:input cssClass="textInput expando" path="tags" maxlength="${event.SZ_TAGS}" htmlEscape="true"/>
   		    </div>
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="source" element="div"/></span>
-   		    	<span class="inputlabel">Source</span>
-			      <form:input path="source" size="45" maxlength="${event.SZ_SOURCE}" htmlEscape="true"/>
+   		    	<span class="inputlabel">Source</span><br/>
+			      <form:textarea cssClass="textInput expando" path="source" rows="3" htmlEscape="true"/>
    		    </div>
 					<div class="inputcell">
 					 <input type="submit" name="Save" value="Save This Event" />
