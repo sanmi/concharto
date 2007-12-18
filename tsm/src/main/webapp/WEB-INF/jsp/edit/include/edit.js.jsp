@@ -39,7 +39,7 @@
 		}
 		var eventsJSON = document.getElementById("eventForm").searchResults.value;
 		if (eventsJSON != '') {
-			var excludeEventId = document.getElementById("eventForm").id.value;
+			var excludeEventId = document.getElementById("eventForm").eventId.value;
 			var events = eventsJSON.parseJSON();
 			createOverlays(events, excludeEventId);
 		}
@@ -384,13 +384,13 @@
 	}
 	
 	function changeHistory() {
-		var id = document.getElementById("eventForm").id.value;
+		var id = document.getElementById("eventForm").eventId.value;
 		if (id != '') {
 			document.location="changehistory.htm?id=" + id;
 		}
 	}
 	function discuss() {
-		var id = document.getElementById("eventForm").id.value;
+		var id = document.getElementById("eventForm").eventId.value;
 		if (id != '') {
 			document.location="$/event/discuss.htm?id=" + id;
 		}

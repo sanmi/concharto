@@ -27,18 +27,20 @@ public class SearchSessionUtil {
 	private static void updateEventInSession(HttpServletRequest request, Long eventId, Event event) {
 		List<Event> events = (List<Event>) 
 		WebUtils.getSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_RESULTS);
-		for (int i=0; i<events.size(); i++) {
-			if (events.get(i).getId().equals(eventId)) {
-				if (event == null) {
-					//the event was deleted, so we should remove it here
-					events.remove(i);
-				} else {
-					//replace it
-					events.set(i, event);
+		if (events != null) {
+			for (int i=0; i<events.size(); i++) {
+				if (events.get(i).getId().equals(eventId)) {
+					if (event == null) {
+						//the event was deleted, so we should remove it here
+						events.remove(i);
+					} else {
+						//replace it
+						events.set(i, event);
+					}
 				}
 			}
+			WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_RESULTS, events);
 		}
-		WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_RESULTS, events);
 	}
 
 }

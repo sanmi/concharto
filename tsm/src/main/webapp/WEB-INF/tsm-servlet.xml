@@ -19,7 +19,7 @@
           <prop key="admin/signup.htm">signupController</prop>
           <prop key="member/settings.htm">settingsController</prop>
           
-          <prop key="edit/changehistory.htm">changeHistoryController</prop>
+          <prop key="event/changehistory.htm">changeHistoryController</prop>
           <prop key="member/contributions.htm">contributionsController</prop>
 
           <prop key="edit/flagevent.htm">flagEventController</prop>
@@ -34,9 +34,8 @@
           <prop key="search/mapthumbnail.htm">switchBoardController</prop>
           <prop key="search/auditmapthumbnail.htm">switchBoardController</prop>
 
-          <prop key="admin/flagdisposition.htm">eventDetailsController</prop>
-          <prop key="edit/eventdetails.htm">eventDetailsController</prop>
-          <prop key="edit/undoevent.htm">eventDetailsController</prop>
+          <prop key="admin/flagdisposition.htm">changeHistoryController</prop>
+          <prop key="edit/undoevent.htm">changeHistoryController</prop>
 
           <prop key="event/discuss.htm">discussController</prop>
           <prop key="edit/discussedit.htm">discussEditController</prop>
@@ -76,11 +75,12 @@
 		<property name="auditEntryDao" ref="auditEntryDao" />
 	</bean>
 
-	<bean id="eventDetailsController" class="com.tech4d.tsm.web.eventdetails.EventDetailsController" parent="baseEventController" >
+	<bean id="changeHistoryController" class="com.tech4d.tsm.web.changehistory.EventDetailsController" parent="baseEventController" >
 		<property name="eventDao" ref="eventDao" />
 		<property name="flagDao" ref="flagDao" />
 		<property name="auditEntryDao" ref="auditEntryDao" />
 		<property name="revertEventService" ref="revertEventService" />
+		<property name="detailsView" value="event/changehistory"/>
 	</bean>
 
 	<bean id="loginFormValidator" class="com.tech4d.tsm.web.login.LoginFormValidator"/>
@@ -116,11 +116,7 @@
 		<property name="validator" ref="eventFormValidator"/>
 	</bean>
 
-	<bean id="changeHistoryController" class="com.tech4d.tsm.web.changehistory.ChangeHistoryController" parent="baseEventController">
-		<property name="formView" value="edit/changehistory" />
-		<property name="auditEntryDao" ref="auditEntryDao" />
-	</bean>
-	<bean id="contributionsController" class="com.tech4d.tsm.web.changehistory.ChangeHistoryController" parent="baseEventController">
+	<bean id="contributionsController" class="com.tech4d.tsm.web.changehistory.ContributionsController" parent="baseEventController">
 		<property name="formView" value="member/contributions" />
 		<property name="pageSize" value="25"/>
 		<property name="auditEntryDao" ref="auditEntryDao" />

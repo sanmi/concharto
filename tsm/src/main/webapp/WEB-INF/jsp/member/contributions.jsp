@@ -52,8 +52,8 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 				<display:column title="Action" class="action">
 					<c:choose>
 						<c:when test="${auditEntryTable.auditable.summary != null}">  <%-- todo this is a kludge - fix it --%>
-							<a href="${basePath}edit/event.htm?listid=${auditEntryTable.auditEntry.entityId}">edit</a> | 
-							<a href="${basePath}edit/eventdetails.htm?id=${auditEntryTable.auditEntry.entityId}">changes</a>
+							<a href="${basePath}edit/event.htm?id=${auditEntryTable.auditEntry.entityId}">edit</a> | 
+							<a href="${basePath}event/changehistory.htm?id=${auditEntryTable.auditEntry.entityId}">changes</a>
 						</c:when>
 						<c:otherwise>
 							<em>n/a</em>

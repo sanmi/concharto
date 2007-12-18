@@ -1,4 +1,4 @@
-package com.tech4d.tsm.web.eventdetails;
+package com.tech4d.tsm.web.changehistory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +24,6 @@ import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.Flag;
 import com.tech4d.tsm.service.RevertEventService;
 import com.tech4d.tsm.web.SwitchBoardController;
-import com.tech4d.tsm.web.changehistory.ChangeHistoryControllerHelper;
 import com.tech4d.tsm.web.eventsearch.SearchSessionUtil;
 
 public class EventDetailsController extends MultiActionController{
@@ -39,6 +38,7 @@ public class EventDetailsController extends MultiActionController{
     private FlagDao flagDao;
     private RevertEventService revertEventService;
     private ChangeHistoryControllerHelper changeHistoryControllerHelper = new ChangeHistoryControllerHelper();
+    private String detailsView;
 
     public void setEventDao(EventDao eventDao) {
         this.eventDao = eventDao;
@@ -56,8 +56,12 @@ public class EventDetailsController extends MultiActionController{
 		this.revertEventService = revertEventService;
 	}
 
-    @SuppressWarnings("unchecked")
-	public ModelAndView eventdetails(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void setDetailsView(String detailsView) {
+		this.detailsView = detailsView;
+	}
+
+	@SuppressWarnings("unchecked")
+	public ModelAndView changehistory(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map model = new HashMap();
 		Event event = getEvent(request);
     	if (event == null) {
@@ -70,10 +74,10 @@ public class EventDetailsController extends MultiActionController{
 		model.put(MODEL_EVENT, event);
     	model.put(MODEL_DISPOSITIONS, Flag.DISPOSITION_CODES);
     	//TODO fix this to get it from the app context 
-    	changeHistoryControllerHelper.doProcess("edit/eventdetails", request, model);
+    	changeHistoryControllerHelper.doProcess(this.detailsView, request, model);
         return new ModelAndView().addAllObjects(model);
     }
-    
+	
     private ModelAndView searchModelAndView(HttpServletRequest request) {
     	return new ModelAndView(new RedirectView(request.getContextPath() + "/search/eventsearch.htm", true));
     }
@@ -125,11 +129,12 @@ public class EventDetailsController extends MultiActionController{
             	}
             }
             event.setHasUnresolvedFlag(unresolved);
+    		SearchSessionUtil.updateEventInSession(request, event);
         	eventDao.save(event);
         }
         
         //redirect back to the list
-        return new ModelAndView(new RedirectView(request.getContextPath() + "/edit/eventdetails.htm?id=" + flag.getEvent().getId(), true));
+        return new ModelAndView(new RedirectView(request.getContextPath() + '/' + this.detailsView + ".htm?id=" + flag.getEvent().getId(), true));
     }
     
     public ModelAndView undoevent(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -141,7 +146,7 @@ public class EventDetailsController extends MultiActionController{
     		revertEventService.revertToRevision(revision, id);
     	}
         //redirect back to the list
-        return new ModelAndView(new RedirectView(request.getContextPath() + "/edit/eventdetails.htm?id=" + id, true));
+        return new ModelAndView(new RedirectView(request.getContextPath() + '/' + this.detailsView + ".htm?id=" + id, true));
     }
     	
 

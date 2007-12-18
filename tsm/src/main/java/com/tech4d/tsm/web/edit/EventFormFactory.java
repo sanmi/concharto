@@ -16,7 +16,7 @@ public class EventFormFactory {
     }
 
     public static Event updateEvent(Event event, EventForm eventForm) {
-        event.setId(eventForm.getId());
+        event.setId(eventForm.getEventId());
         event.setDescription(eventForm.getDescription());
         event.setSummary(eventForm.getSummary());
         event.setSource(eventForm.getSource());
@@ -31,7 +31,7 @@ public class EventFormFactory {
 
     public static EventForm getEventForm(Event event) {
         EventForm eventForm = new EventForm();
-        eventForm.setId(event.getId());
+        eventForm.setEventId(event.getId());
         eventForm.setDescription(event.getDescription());
         eventForm.setSummary(event.getSummary());
         eventForm.setSource(event.getSource());

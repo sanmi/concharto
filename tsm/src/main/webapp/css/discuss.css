@@ -2,15 +2,16 @@
 /* CSS Document */
 
 #discuss {
-	margin: 1em 4em;
-	padding:0;
+	margin: 0;
+	padding:.3em;
 }
 #discuss p {
 }
 #discussForm textarea {
-	width: 100%;
+	width: 99%;
 	height: 26em;
-	margin: 1em 0;
+	margin: 1em 0 auto auto;
+	padding: 0 0.2em;
 }
 #discuss .warning {
 	font-weight: bold;

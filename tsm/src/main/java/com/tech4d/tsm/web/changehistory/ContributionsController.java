@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
 
 import com.tech4d.tsm.dao.AuditEntryDao;
 
-public class ChangeHistoryController extends AbstractController {
+public class ContributionsController extends AbstractController {
     private static final int DEFAULT_PAGE_SIZE = 10;
 	private String formView;
     private ChangeHistoryControllerHelper changeHistoryControllerHelper = new ChangeHistoryControllerHelper();

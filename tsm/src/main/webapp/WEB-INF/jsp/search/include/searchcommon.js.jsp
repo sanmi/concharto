@@ -205,7 +205,7 @@
 		document.getElementById("eventSearchForm").mapCenter.value = gLatLngToJSON(map.getCenter());
 		saveAndSubmit();		
 	}
-	
+
 	function limitWithinMapBounds() {
 		return document.getElementById("eventSearchForm").limitWithinMapBounds.checked ; 
 	}

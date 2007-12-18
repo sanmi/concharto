@@ -94,10 +94,11 @@
 				descrWithBR.escapeHTML() + '<br/>' +
 				'<br/><b>Tags: </b>' + event.tags.escapeHTML() + '<br/>' + 
 				'<b>Source: </b>';
-				html += event.source.escapeHTML()
+				html += event.source.escapeHTML() + '</div>';
 				html = return2br(html);
 				html = html.gsub('{BR}','<br/>');
 				html = autolink(html);
+				
 	   return html;
 	}	
 	
