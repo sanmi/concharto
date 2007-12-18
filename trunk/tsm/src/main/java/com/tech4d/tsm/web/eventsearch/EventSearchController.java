@@ -171,7 +171,7 @@ public class EventSearchController extends AbstractFormController {
             	long id = eventSearchForm.getEditEventId(); 
             	eventSearchForm.setEditEventId(null);
                 //todo may want to inject the view here
-                returnModelAndView = new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm?listid=" + id));
+                returnModelAndView = new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm?id=" + id));
             } else {
             	//we are doing a regular search
             	long time = System.currentTimeMillis(); 

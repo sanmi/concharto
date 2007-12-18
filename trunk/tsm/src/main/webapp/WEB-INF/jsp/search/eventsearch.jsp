@@ -6,6 +6,7 @@
 <%@ taglib prefix="rx" uri="http://jakarta.apache.org/taglibs/regexp-1.0" %>
 <%@ taglib prefix="display" uri="http://displaytag.sf.net" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
+<%@ taglib prefix="wiki" uri="wikiRender" %>
 <% pageContext.setAttribute("linefeed", "\n"); %>
 
 
@@ -124,18 +125,19 @@
 					          	<a class="more" href="#" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"> ... more</a>
 					          </c:if> 
 										<br/>	
-					          <a  class="links" href="#" onclick="editEvent(<c:out value='${event.id}'/>)">edit</a>
-					          &nbsp; <a class="links" href="${basePath}edit/flagevent.htm?id=${event.id}" >flag</a>
-					          &nbsp; 
-					          <c:choose>
-					          	<c:when test="${event.hasUnresolvedFlag}">
-						          	<span class="errorLabel"><em>This event has been <a class="errorlinks" href="${basePath}edit/eventdetails.htm?id=${event.id}">flagged!</a></em></span>
-					          	</c:when>
-					          	<c:otherwise>
-						          	<a class="links" href="${basePath}edit/eventdetails.htm?id=${event.id}">changes</a>
-					          	</c:otherwise>
-					          </c:choose>
-					          <br/>
+										<div class="linkbar">
+						          <a class="links" href="#" onclick="editEvent(<c:out value='${event.id}'/>)">edit</a>
+						          <a class="links" href="${basePath}event/discuss.htm?id=${event.id}" >discuss</a>
+						          <c:choose>
+						          	<c:when test="${event.hasUnresolvedFlag}">
+							          	<span class="errorLabel"><em><a class="errorlinks" href="${basePath}event/changehistory.htm?id=${event.id}">Flagged</a></em></span>
+						          	</c:when>
+						          	<c:otherwise>
+							          	<a class="links" href="${basePath}event/changehistory.htm?id=${event.id}">changes</a>
+						          	</c:otherwise>
+						          </c:choose>
+						          <a class="links" href="${basePath}edit/flagevent.htm?id=${event.id}">flag</a>
+					          </div>
 									</div>
 								</display:column>
 							</display:table>

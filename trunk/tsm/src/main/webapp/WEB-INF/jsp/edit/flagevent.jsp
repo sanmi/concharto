@@ -50,17 +50,17 @@
 						<input type="button" value="Cancel" onclick="document.location='${basePath}search/eventsearch.htm'"/>
 					</div>
 				</div>
-		  	<jsp:include page="include/showevent.jsp"/>
+		  	<jsp:include page="../event/include/showevent.jsp"/>
 		  	<a name="flagHistory"/>
 		  	<div class="infoBox">
 					<h2>Flags on this Event</h2>
-					<jsp:include page="include/showflaghistory.jsp"/>
+					<jsp:include page="../event/include/showflaghistory.jsp"/>
 				</div>
 			  	
 		  	<a name="changeHistory"/>
 				<div class="infoBox">
 					<h2>Change History</h2>
-					<jsp:include page="include/showchangehistory.jsp"/>
+					<jsp:include page="../event/include/showchangehistory.jsp"/>
 				</div>
 			</form:form>
 		</div>

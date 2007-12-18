@@ -19,7 +19,7 @@
 		<table><tr>			
 			<td id="sidebar">
         <form:form name="event" id="eventForm" commandName="event"  method="post" onsubmit="saveEvent(); return false">
-					<form:hidden path="id"/>
+					<form:hidden path="eventId"/>
 					<form:hidden path="geometry" htmlEscape="true"/>
 					<form:hidden path="zoomLevel"/>
 					<form:hidden path="mapType"/>
@@ -28,8 +28,8 @@
 					
    		    <div class="miniTabBar">
    		    	<span class="miniTabSelected">Event</span>
-   		    	<a class="miniTabUnselected" href="${basePath}event/discuss.htm?id=${param.listid}">Discussion</a>
-   		    	<a class="miniTabUnselected miniTabLSpace" href="${basePath}edit/changehistory.htm?id=${param.listid}">Changes</a>
+   		    	<a class="miniTabUnselected" href="${basePath}event/discuss.htm?id=${param.id}">Discussion</a>
+   		    	<a class="miniTabUnselected" href="${basePath}event/changehistory.htm?id=${param.id}">Changes</a>
 	 		    </div>
    		    <div class="inputcell ">
 	 		    	<span id="larger" class="hidden"><a href="#" onClick="larger()">larger &raquo;</a></span>
@@ -86,7 +86,7 @@
 			      <form:textarea cssClass="textInput expando" path="source" rows="3" htmlEscape="true"/>
    		    </div>
 					<div class="inputcell">
-					 <input type="submit" name="Save" value="Save This Event" />
+					 <input type="submit" name="Save" value="Save This Event" accesskey="s" title="Save your changes [alt+shift+s]"/>
 					 <input type="button" name="Cancel" value="Cancel" onclick="javascript:document.location='${basePath}search/eventsearch.htm';"/>
 					</div>
 	      </form:form>

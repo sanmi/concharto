@@ -41,7 +41,7 @@ public class WikiRender extends SimpleTagSupport {
 		}
 		basePath += "/";
 
-		WikiModel wikiModel = new WikiModel(basePath + "images/${image}", basePath + "${title}");
+		WikiModel wikiModel = new WikiModel(basePath + "images/${image}", basePath + "search/eventsearch.htm?_id=${title}");
 		
 		String rendered = wikiModel.render(wikiText);
 		//implement ~~~ substitution for username

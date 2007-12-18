@@ -7,14 +7,15 @@
 	<%-- create html for info bubbles --%>	
 	function makeOverlayHtml(event) {
 		var html = createInfoWindowHtml(event) +  
-			'<br/><a class="links" href="#" onclick="editEvent(' + event.id + ')">edit</a> &nbsp;' +  
-			'<a class="links" href="/edit/flagevent.htm?id=' + event.id + '">flag</a> &nbsp;' +
-			'<a class="links" href="#" onclick="zoomTo(' + event.id + ')">zoom in</a> &nbsp;';
+			'<div class="linkbar"><a class="links" href="#" onclick="editEvent(' + event.id + ')">edit</a>' +  
+	    '<a class="links" href="/event/discuss.htm?id=' + event.id + '">discuss</a>'; 
 		if (event.hasUnresolvedFlags == 'true') {
-			html += '<span class="errorLabel"><em>This event has been <a class="errorlinks" href="${basePath}edit/eventdetails.htm?id=' + event.id + '">flagged!</a></em></span>';
+			html += '<span class="errorLabel"><em>This event has been <a class="errorlinks" href="${basePath}event/changehistory.htm?id=' + event.id + '">flagged!</a></em></span>';
 		} else {
-			html += '<a class="links" href="${basePath}edit/eventdetails.htm?id=' + event.id + '">changes</a>';
+			html += '<a class="links" href="${basePath}event/changehistory.htm?id=' + event.id + '">changes</a>';
 		}
+		html += '<a class="links" href="/edit/flagevent.htm?id=' + event.id + '">flag</a>' +
+			'<a class="links" href="#" onclick="zoomTo(' + event.id + ')">zoom in</a>';
 		html += '<br/></div>';
 		return html;
 	}

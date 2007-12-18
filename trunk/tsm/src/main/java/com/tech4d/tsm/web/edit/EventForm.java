@@ -15,7 +15,7 @@ public class EventForm {
     private String summary;
     private String description;
     private String tags;
-    private Long id;
+    private Long eventId;
     private String where;
     private TimeRange when;
     private String source;
@@ -26,12 +26,12 @@ public class EventForm {
     private Point mapCenter;
     private String searchResults;
 
-    public Long getId() {
-        return id;
+    public Long getEventId() {
+        return eventId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setEventId(Long id) {
+        this.eventId = id;
     }
 
     public EventForm() {
@@ -40,7 +40,7 @@ public class EventForm {
 
     public EventForm(Long id, String summary, String description, String tags) {
         super();
-        this.id = id;
+        this.eventId = id;
         this.summary = summary;
         this.description = description;
         this.tags = tags;

@@ -83,11 +83,6 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 						</a>
 					</c:if>
 		 		</c:when>
-		 		<c:otherwise>
-		 			<c:if test="${auditEntryTable.action != ACTION_INSERT}">
-			 			<div><em>There were no changes</em></div>
-		 			</c:if>
-		 		</c:otherwise>
 	 		</c:choose>
 
 	  </div>

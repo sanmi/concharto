@@ -23,6 +23,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 public class EventController extends SimpleFormController {
     public static final String SESSION_EVENT = "EVENT";
+	private static final String PARAM_ID = "id";
     EventDao eventDao;
 
     public void setEventDao(EventDao eventDao) {
@@ -43,7 +44,7 @@ public class EventController extends SimpleFormController {
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
-        Long id = ServletRequestUtils.getLongParameter(request, "listid");
+        Long id = ServletRequestUtils.getLongParameter(request, PARAM_ID);
         Event event;
         EventForm eventForm;
         EventSearchForm eventSearchForm = getEventSearchForm(request);
@@ -89,7 +90,7 @@ public class EventController extends SimpleFormController {
         }
         //now create or update the event
         Event event;
-        if (eventForm.getId() != null) {
+        if (eventForm.getEventId() != null) {
             //get the event from the session
             event = (Event) WebUtils.getSessionAttribute(request, SESSION_EVENT);
             event = com.tech4d.tsm.web.edit.EventFormFactory.updateEvent(event, eventForm);

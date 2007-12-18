@@ -29,7 +29,7 @@
 							</div>
 						</c:if>
 						<div class="formRow">
-							<a href="${basePath}edit/event.htm?listid=${event.id}">Edit this event</a>
+							<a href="${basePath}edit/event.htm?id=${event.id}">Edit this event</a>
 						</div>
 					</td>
 					<td>

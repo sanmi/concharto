@@ -33,9 +33,9 @@
             </c:forEach>&nbsp;
             </td>
             <td>${event.source}&nbsp;</td>
-            <c:url value="/event.htm?listid=${event.id}" var="editLink"/>
+            <c:url value="/event.htm?id=${event.id}" var="editLink"/>
             <td><a href="${editLink}">[edit]</a></td>
-            <c:url value="/switchboard/deleteEvent.htm?listid=${event.id}" var="delLink"/>
+            <c:url value="/switchboard/deleteEvent.htm?id=${event.id}" var="delLink"/>
             <td><a href="${delLink}">[x]</a></td> 
         </tr>
     </c:forEach>

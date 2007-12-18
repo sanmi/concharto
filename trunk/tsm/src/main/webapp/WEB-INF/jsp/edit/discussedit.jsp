@@ -54,7 +54,7 @@
 						<div>
 							<form:textarea path="wikiText.text"/>
 						</div>
-			  		<input type="button" value="Submit" onclick="submitDiscussion()"  accesskey="p" title="Save your changes [alt+shift+p]"/>
+			  		<input type="button" value="Submit" onclick="submitDiscussion()"  accesskey="s" title="Save your changes [alt+shift+s]"/>
 			  		<input type="button" value="Preview" onclick="preview()" accesskey="p" title="Preview your changes, please use this before saving! [alt+shift+p]"/>
 			  		<input type="button" value="Cancel" onclick="document.location='${basePath}event/discuss.htm?id=${param.id}'"/>
 		  		</form:form>
