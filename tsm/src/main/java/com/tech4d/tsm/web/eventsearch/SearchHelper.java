@@ -1,6 +1,9 @@
 package com.tech4d.tsm.web.eventsearch;
 
+import info.bliki.wiki.model.WikiModel;
+
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +12,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -36,6 +40,7 @@ import com.tech4d.tsm.util.TimeRangeFormat;
 import com.tech4d.tsm.web.util.DisplayTagHelper;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
 import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
+import com.tech4d.tsm.web.wikiText.WikiModelFactory;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
@@ -211,9 +216,32 @@ public class SearchHelper {
     	prepareModel( model, events, totalResults, firstRecord);
         //NOTE: we are putting the events into the command so that the page javascript
         //functions can properly display them using google's mapping API
-        eventSearchForm.setSearchResults(JSONFormat.toJSON(events));
+    	List<Event> renderedEvents = renderWiki(events, request);
+        eventSearchForm.setSearchResults(JSONFormat.toJSON(renderedEvents));
         return events;
     }
+
+	private List<Event> renderWiki(List<Event> events, HttpServletRequest request) {
+		List<Event> renderedEvents = new ArrayList<Event>();
+		WikiModel wikiModel = WikiModelFactory.newWikiModel(request);
+		for (Event event : events) {
+			try {
+				Event renderedEvent = (Event) BeanUtils.cloneBean(event);
+				renderedEvent.setDescription(wikiModel.render(event.getDescription()));
+				renderedEvent.setSource(wikiModel.render(event.getSource()));
+				renderedEvents.add(renderedEvent);
+			} catch (IllegalAccessException e) {
+				log.error(e);
+			} catch (InstantiationException e) {
+				log.error(e);
+			} catch (InvocationTargetException e) {
+				log.error(e);
+			} catch (NoSuchMethodException e) {
+				log.error(e);
+			}
+		}
+		return renderedEvents;
+	}
 
 	@SuppressWarnings("unchecked")
 	public void prepareModel(Map model, List<Event> events, Long totalResults, Integer currentRecord) {		

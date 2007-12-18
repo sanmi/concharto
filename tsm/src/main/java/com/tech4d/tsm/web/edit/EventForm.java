@@ -25,6 +25,9 @@ public class EventForm {
     private Integer mapType;
     private Point mapCenter;
     private String searchResults;
+    private Boolean showPreview;
+    private String previewEvent; 
+    private Boolean addEvent;
 
     public Long getEventId() {
         return eventId;
@@ -46,7 +49,7 @@ public class EventForm {
         this.tags = tags;
     }
 
-    public String getDescription() {
+	public String getDescription() {
         return description;
     }
 
@@ -102,7 +105,7 @@ public class EventForm {
         this.where = where;
     }
 
-    public String getSource() {
+	public String getSource() {
         return source;
     }
 
@@ -148,7 +151,31 @@ public class EventForm {
         this.searchResults = searchResults;
     }
 
-    public int getSZ_DESCRIPTION() {
+    public Boolean getShowPreview() {
+		return showPreview;
+	}
+
+	public void setShowPreview(Boolean showPreview) {
+		this.showPreview = showPreview;
+	}
+
+	public String getPreviewEvent() {
+		return previewEvent;
+	}
+
+	public void setPreviewEvent(String previewEvent) {
+		this.previewEvent = previewEvent;
+	}
+
+	public Boolean getAddEvent() {
+		return addEvent;
+	}
+
+	public void setAddEvent(Boolean addEvent) {
+		this.addEvent = addEvent;
+	}
+
+	public int getSZ_DESCRIPTION() {
         return SZ_DESCRIPTION;
     }
 

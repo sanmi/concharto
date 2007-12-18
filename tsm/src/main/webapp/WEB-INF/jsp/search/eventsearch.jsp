@@ -119,12 +119,11 @@
 					          <div class="when"><c:out value="${event.when.asText}"/></div>
 					          <span class="where"><c:out value="${event.where}"/></span> <br/>
 					           <%-- We want to keep any line breaks but escape all other html --%>
-					          <c:set var="description" value="${fn:escapeXml(fn:substring(event.description,0,300))}"/>
-					          <c:out value="${fn:replace(description, linefeed, '<br/>')}" escapeXml="false"/> 
+					          <c:set var="description" value="${fn:substring(event.description,0,300)}"/>
+					          <wiki:render wikiText="${description}"/>
 					          <c:if test="${fn:length(event.description) > 300}">
 					          	<a class="more" href="#" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"> ... more</a>
 					          </c:if> 
-										<br/>	
 										<div class="linkbar">
 						          <a class="links" href="#" onclick="editEvent(<c:out value='${event.id}'/>)">edit</a>
 						          <a class="links" href="${basePath}event/discuss.htm?id=${event.id}" >discuss</a>

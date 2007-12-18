@@ -7,7 +7,7 @@
 	<%-- create html for info bubbles --%>	
 	function makeOverlayHtml(event) {
 		var html = createInfoWindowHtml(event) +  
-			'<div class="linkbar"><a class="links" href="#" onclick="editEvent(' + event.id + ')">edit</a>' +  
+			'<div class="infolinkbar linkbar"><a class="links" href="#" onclick="editEvent(' + event.id + ')">edit</a>' +  
 	    '<a class="links" href="/event/discuss.htm?id=' + event.id + '">discuss</a>'; 
 		if (event.hasUnresolvedFlags == 'true') {
 			html += '<span class="errorLabel"><em>This event has been <a class="errorlinks" href="${basePath}event/changehistory.htm?id=' + event.id + '">flagged!</a></em></span>';

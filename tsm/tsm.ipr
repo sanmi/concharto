@@ -318,6 +318,10 @@
         <root url="jar://$PROJECT_DIR$/lib/deploy/commons-codec.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/deploy/displaytag.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/deploy/commons-io.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/deploy/commons-beanutils.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/deploy/regexp.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/deploy/ezmorph.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/deploy/oro.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
@@ -326,6 +330,7 @@
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/lib/local/jta.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/local/jts-1.8.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/local/bliki-3.0.0.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
@@ -340,31 +345,14 @@
         <root url="jar://$PROJECT_DIR$/lib/tools/antlr.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/tools/asm-attrs.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/tools/asm.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/avalon-framework.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/tools/cglib.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/commons-beanutils.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/tools/commons-collections.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/commons-lang.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/tools/commons-logging.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/tools/dom4j.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/ezmorph.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/tools/freemarker.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/tools/hibernate-tools.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/tools/hibernate.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/jaxen.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/jdom.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/json-lib.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/tools/jtidy.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/junit.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/log4j.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/logkit.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/servlet-api.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/xalan.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/xercesImpl.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/xml-apis.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/xmlParserAPIs.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/xom.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/tools/commons-io.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

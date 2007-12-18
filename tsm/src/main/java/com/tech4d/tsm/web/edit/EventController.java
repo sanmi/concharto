@@ -14,6 +14,7 @@ import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.GeometryType;
+import com.tech4d.tsm.util.JSONFormat;
 import com.tech4d.tsm.util.SensibleMapDefaults;
 import com.tech4d.tsm.web.eventsearch.EventSearchForm;
 import com.tech4d.tsm.web.eventsearch.SearchHelper;
@@ -22,7 +23,7 @@ import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
 import com.vividsolutions.jts.geom.Geometry;
 
 public class EventController extends SimpleFormController {
-    public static final String SESSION_EVENT = "EVENT";
+	public static final String SESSION_EVENT = "EVENT";
 	private static final String PARAM_ID = "id";
     EventDao eventDao;
 
@@ -50,11 +51,12 @@ public class EventController extends SimpleFormController {
         EventSearchForm eventSearchForm = getEventSearchForm(request);
         if (id != null) {
             //get the event
+        	//TODO this is getting called twice - once on showForm and once on processFormSubmission
             event = this.eventDao.findById(id);
             //TODO don't use session if possible!!!
             //save it in the session for later modification
             WebUtils.setSessionAttribute(request, SESSION_EVENT, event);
-            eventForm = com.tech4d.tsm.web.edit.EventFormFactory.getEventForm(event);
+            eventForm = EventFormFactory.getEventForm(event, request);
             if (eventSearchForm != null) {
                 eventForm.setSearchResults(eventSearchForm.getSearchResults());
                 eventForm.setMapCenter(eventSearchForm.getMapCenter());
@@ -79,30 +81,40 @@ public class EventController extends SimpleFormController {
         return eventForm;
     }
 
+    
     @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+	protected ModelAndView processFormSubmission(HttpServletRequest request,
+			HttpServletResponse response, Object command, BindException errors)
+			throws Exception {
         EventForm eventForm = (EventForm)command;
 
-        //change the map center of the search form to wherever we are now!    	
-        EventSearchForm eventSearchForm = getEventSearchForm(request);
-        if (eventSearchForm == null) {
-        	eventSearchForm = new EventSearchForm();
-        }
-        //now create or update the event
-        Event event;
-        if (eventForm.getEventId() != null) {
-            //get the event from the session
-            event = (Event) WebUtils.getSessionAttribute(request, SESSION_EVENT);
-            event = com.tech4d.tsm.web.edit.EventFormFactory.updateEvent(event, eventForm);
+        if (eventForm.getShowPreview()) {
+        	Event event = EventFormFactory.createEvent(eventForm);
+        	EventFormFactory.renderWiki(event, request);
+        	eventForm.setPreviewEvent(JSONFormat.toJSON(event));
+            return new ModelAndView(getFormView(), errors.getModel());
         } else {
-            event = com.tech4d.tsm.web.edit.EventFormFactory.createEvent(eventForm);
+            //change the map center of the search form to wherever we are now!    	
+            EventSearchForm eventSearchForm = getEventSearchForm(request);
+            if (eventSearchForm == null) {
+            	eventSearchForm = new EventSearchForm();
+            }
+            //now create or update the event
+            Event event;
+            if (eventForm.getEventId() != null) {
+                //get the event from the session
+                event = (Event) WebUtils.getSessionAttribute(request, SESSION_EVENT);
+                event = EventFormFactory.updateEvent(event, eventForm);
+            } else {
+                event = EventFormFactory.createEvent(eventForm);
+            }
+            this.eventDao.saveOrUpdate(event);
+            eventSearchForm.setDisplayEventId(event.getId()); //we want to show only the event we've just edited  
+            WebUtils.setSessionAttribute(request, SESSION_EVENT, event);
+            WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_FORM, eventSearchForm);
+        	WebUtils.setSessionAttribute(request, SearchHelper.SESSION_DO_SEARCH_ON_SHOW, true);
+            return new ModelAndView(getSuccessView());        	
         }
-        this.eventDao.saveOrUpdate(event);
-        eventSearchForm.setDisplayEventId(event.getId()); //we want to show only the event we've just edited  
-        WebUtils.setSessionAttribute(request, SESSION_EVENT, event);
-        WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_FORM, eventSearchForm);
-    	WebUtils.setSessionAttribute(request, SearchHelper.SESSION_DO_SEARCH_ON_SHOW, true);
-        return new ModelAndView(getSuccessView());
-    }
+	}
 
 }
