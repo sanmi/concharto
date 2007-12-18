@@ -165,11 +165,11 @@ public class EventSearchController extends AbstractFormController {
                 //we are creating a new event
             	eventSearchForm.setIsAddEvent(false);
                 //todo may want to inject the view here
-                returnModelAndView = new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm"));
+                returnModelAndView = new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm?addEvent=true"));
             } else if ((null != eventSearchForm.getEditEventId())) {
                 //we are editing an event
             	long id = eventSearchForm.getEditEventId(); 
-            	eventSearchForm.setEditEventId(null);
+            	eventSearchForm.setEditEventId(null); //reset
                 //todo may want to inject the view here
                 returnModelAndView = new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm?id=" + id));
             } else {

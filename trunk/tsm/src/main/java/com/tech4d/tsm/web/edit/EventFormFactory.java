@@ -1,8 +1,13 @@
 package com.tech4d.tsm.web.edit;
 
+import info.bliki.wiki.model.WikiModel;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.tech4d.tsm.util.GeometryType;
+import com.tech4d.tsm.web.wikiText.WikiModelFactory;
 import com.vividsolutions.jts.geom.Geometry;
 
 public class EventFormFactory {
@@ -29,8 +34,9 @@ public class EventFormFactory {
         return event;
     }
 
-    public static EventForm getEventForm(Event event) {
+    public static EventForm getEventForm(Event event, HttpServletRequest request) {
         EventForm eventForm = new EventForm();
+
         eventForm.setEventId(event.getId());
         eventForm.setDescription(event.getDescription());
         eventForm.setSummary(event.getSummary());
@@ -49,6 +55,14 @@ public class EventFormFactory {
             eventForm.setTags(tags);
         }
         return eventForm;
+    }
+    
+    public static void renderWiki(Event event, HttpServletRequest request) {
+        WikiModel wikiModel = WikiModelFactory.newWikiModel(request);
+        //DEBUG clean up other stuff
+    	event.setDescription(wikiModel.render(event.getDescription()));
+        event.setSource(wikiModel.render(event.getSource()));
+    	
     }
 
 }

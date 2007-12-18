@@ -78,26 +78,20 @@
     }
 	
 	function createInfoWindowHtml(event, width /* optional */, height /* optional */) {
-		var divclass;
 		if (width==null || width=='null' || width=='') { width = 450};
 		if (height==null || height=='null' || height=='') {
-			height = '';
-			divclass='result';
+			height = 'max-height:375px;';
 		} else {
 			height = 'height:' + height + 'px;'
-			divclass='inforesult';
 		}
-		var descrWithBR = event.description.gsub('(\r\n|[\r\n])', '{BR}');		//IE6 issue with escapeHTML		 
-	  var html = '<div class="'+divclass+'" style="width:' + width +'px;'+ height +'margin-bottom:10px">' + 
-	   		event.when + '<br/><b>' + event.summary.escapeHTML() +'</b><br/><em>' + 
-				event.where.escapeHTML() + '</em><br/>' +
-				descrWithBR.escapeHTML() + '<br/>' +
-				'<br/><b>Tags: </b>' + event.tags.escapeHTML() + '<br/>' + 
+	  var html = '<div class="result inforesult" style="width:' + width +'px;'+ height +'margin-bottom:10px">' +
+	  		'<b>' + event.summary.escapeHTML() +'</b><br/>' + 
+	   		'<b>' + event.when + '</b><br/>' + 
+				'<em>' + event.where.escapeHTML() + '</em><br/>' +
+				event.description  +
+				'<b>Tags: </b>' + event.tags.escapeHTML() + '<br/>' + 
 				'<b>Source: </b>';
-				html += event.source.escapeHTML() + '</div>';
-				html = return2br(html);
-				html = html.gsub('{BR}','<br/>');
-				html = autolink(html);
+				html += event.source + '</div>';
 				
 	   return html;
 	}	

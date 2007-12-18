@@ -25,6 +25,9 @@
 					<form:hidden path="mapType"/>
 					<form:hidden path="mapCenter" htmlEscape="true"/>
 					<form:hidden path="searchResults" htmlEscape="true"/>
+					<form:hidden path="showPreview"/>
+					<form:hidden path="previewEvent" htmlEscape="true"/>
+					<form:hidden path="addEvent"/>
 					
    		    <div class="miniTabBar">
    		    	<span class="miniTabSelected">Event</span>
@@ -48,6 +51,7 @@
         		</span>
    		    </div>
    		    <div class="inputcell">
+		        <span class="errorlabel"><form:errors path="geometry" element="div"/></span>
 		        <span class="errorlabel"><form:errors path="summary" element="div"/></span>
 		        <span class="inputlabel">Summary</span> 
 		        <br/>
@@ -72,21 +76,22 @@
    		    </div>
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="description" element="div"/></span>
-	   		    <span class="inputlabel">Description</span><br/>
+	   		    <span class="inputlabel">Description</span> <small>(wiki markup)</small><br/>
 						<form:textarea cssClass="textInput expando" rows="5" path="description"/>
    		    </div>
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="tags" element="div"/></span>
-   		    	<span class="inputlabel">Tags</span><br/>
+   		    	<span class="inputlabel">Tags</span> <small>(comma separated)</small><br/>
 		        <form:input cssClass="textInput expando" path="tags" maxlength="${event.SZ_TAGS}" htmlEscape="true"/>
   		    </div>
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="source" element="div"/></span>
-   		    	<span class="inputlabel">Source</span><br/>
+   		    	<span class="inputlabel">Source</span> <small>(wiki markup)</small><br/>
 			      <form:textarea cssClass="textInput expando" path="source" rows="3" htmlEscape="true"/>
    		    </div>
 					<div class="inputcell">
 					 <input type="submit" name="Save" value="Save This Event" accesskey="s" title="Save your changes [alt+shift+s]"/>
+					 <input type="button" name="Preview" value="Preview" accesskey="p" title="Save your changes [alt+shift+p]" onclick="preview();"/>
 					 <input type="button" name="Cancel" value="Cancel" onclick="javascript:document.location='${basePath}search/eventsearch.htm';"/>
 					</div>
 	      </form:form>

@@ -88,10 +88,11 @@
 	function createEditableOverlay() {
 		var geometryType = getGeometryType();
 		var geom = getEventFormGeom();
-		if (geom == null) {
+		var marker;
+		if ((document.getElementById("eventForm").addEvent.value == 'true')) {
 			<%-- this means we are adding to the map.  Default is "point" --%>
 			var center = getEventFormCenter();
-			createEditableMarker(new GLatLng(center.lat,center.lng));
+			marker = createEditableMarker(new GLatLng(center.lat,center.lng));
 			
 		} else {
 			if (geometryType == "point") {
@@ -104,9 +105,9 @@
 					<%-- we switched from a line or poly to a point - just use the map center --%>
 					point = map.getCenter();
 				}
-				createEditableMarker(point);
+				marker = createEditableMarker(point);
 			} else if ((geometryType == "line") || (geometryType == "polygon")) {
-				createEditablePoly(geom);
+				marker = createEditablePoly(geom);
 				addClickListener();					
 			}
 		}
@@ -127,43 +128,53 @@
 	function createEditableMarker(point) {
 		var marker = new GMarker(point, {draggable: true});
 		marker.enableDragging();
-		var html = "<b>Drag me</b> <br/>anywhere on the map";
 		marker.bindInfoWindowHtml(html);
 		map.addOverlay(marker);
 		GEvent.addListener(marker, "dragstart", function() {
 			map.closeInfoWindow();
 		});	
 		map.setCenter(point, getZoom()); 
-		marker.openInfoWindow(html);
+	  if (document.getElementById("eventForm").showPreview.value == 'true') {
+			marker.openInfoWindow(makePreviewHtml());
+		} else {
+			var html = "<b>Drag me</b> <br/>anywhere on the map";
+			marker.openInfoWindow(html);
+		}
 		_editableMarker = marker;
+	}
+	
+	function makePreviewHtml() {
+	  	var event = getPreviewEvent();
+			return createInfoWindowHtml(event);
 	}
 	
 	<%-- create an editable poly from a json poly object --%>
 	function createEditablePoly(jsonLine) {
 		var points = [];
 		var marker;
-		var line = jsonLine.line;
-		<%-- if we are adding, then line will be null --%>
-		if (line) {
-			for (var i=0; i<line.length; i++) {
-				<%-- If this marker is a polygon clusure, i.e. it is the same as element 0, 
-				then we don't want to drag it --%>
-				if (!((i!=0) && (line[0].lat == line[i].lat) && (line[0].lng == line[i].lng))) {
-					var vertex = new GLatLng(line[i].lat, line[i].lng);
-					points.push(vertex);
-					addMarker(vertex);
-				}			
-			}
-			<%-- draw the line between them --%>
-			//drawPoly();
-	
-			<%-- we create a poly here just so we can find the centroid --%>
-			var poly = new newPoly(points, getGeometryType());
-			goToPoly(poly);
-		}
+		if (jsonLine != null) {
+			var line = jsonLine.line;
+			<%-- if we are adding, then line will be null --%>
+			if (line) {
+				for (var i=0; i<line.length; i++) {
+					<%-- If this marker is a polygon clusure, i.e. it is the same as element 0, 
+					then we don't want to drag it --%>
+					if (!((i!=0) && (line[0].lat == line[i].lat) && (line[0].lng == line[i].lng))) {
+						var vertex = new GLatLng(line[i].lat, line[i].lng);
+						points.push(vertex);
+						addMarker(vertex);
+					}			
+				}
 		
+				<%-- we create a poly here just so we can find the centroid --%>
+				var poly = newPoly(points, getGeometryType());
+				goToPoly(poly);
+			}
+			
+			drawPoly();
+		}
 		showPolyMessage();
-		drawPoly();
+		
 	}
 	
 	function goToPoly(poly) {
@@ -175,8 +186,15 @@
 	}
 	
 	function showPolyMessage() {
-		var html = " <b>Click anywhere</b> on the map to add a point<br/><b>Drag a point </b> to edit the line.<br/><b>Click a point</b> to delete it.";
+		var html;
+		if ((document.getElementById("eventForm").showPreview.value == 'true') &&
+		     (_polyMarkers.length >0)) {
+			html = makePreviewHtml();
+		} else {
+			html = " <b>Click anywhere</b> on the map to add a point<br/><b>Drag a point </b> to edit the line.<br/><b>Click a point</b> to delete it.";
+		}
     map.openInfoWindowHtml(map.getCenter(), html);
+	
 	}
 
 	<%-- add a marker to the poly --%>
@@ -269,6 +287,7 @@
 	
 	<%-- remove point AND poly overlay --%>
 	function removeEditableOverlay() {
+		document.getElementById("eventForm").showPreview.value = 'false';
 		if (_editableMarker) {
 			map.removeOverlay(_editableMarker);
 		} 		
@@ -318,6 +337,15 @@
 			}
 	}
 	
+	function getPreviewEvent() {
+			var eventJSON = document.getElementById("eventForm").previewEvent.value;
+			if (eventJSON != '') {
+				return eventJSON.parseJSON();			
+			} else {
+				return null;
+			}
+	}
+	
   function getGeometryType() {
 		if (document.getElementById("eventForm").geometryType1.checked) {
 			return "point";
@@ -346,13 +374,24 @@
   <%-- BEGIN POST FUNCTIONS ============================= --%>
 	<%-- called on form submit --%>	
 	function saveEvent() {
+		document.getElementById("eventForm").showPreview.value = 'false';
+		submitEvent();
+	}
+	
+	function preview() {
+		document.getElementById("eventForm").showPreview.value = 'true';
+		submitEvent();
+	}
+	
+	function submitEvent() {
 		saveGeometry();
 		document.getElementById("eventForm").zoomLevel.value = map.getZoom();
 		document.getElementById("eventForm").mapType.value = getMapTypeIndex();
 		document.getElementById("eventForm").mapCenter.value = gLatLngToJSON(map.getCenter());
 		document.event.submit();
-	}			
-
+	}
+	
+	
 	<%-- saves either point or line or poly depending on edit mode --%>
 	function saveGeometry() {
 		var geometryType = getGeometryType();

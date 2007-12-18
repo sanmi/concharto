@@ -128,20 +128,22 @@ public class JSONFormat {
         } else if (GeometryType.POLYGON.equals(geometryType)) {
             JSONArray jsonPoints = json.getJSONArray(GeometryType.LINE);
             Coordinate[] coordinates = getCoordinates(jsonPoints);
-            //if they didn't close the polygon, we will close it for them
-            if (!coordinates[0].equals(coordinates[coordinates.length-1])) {
-                //create a larger array and copy the contents
-                Coordinate[] closedCoordinates = new Coordinate[coordinates.length+1];
-                for (int i=0; i<coordinates.length; i++) {
-                    closedCoordinates[i] = coordinates[i];
+            if (coordinates.length >0) {
+            	//if they didn't close the polygon, we will close it for them
+                if (!coordinates[0].equals(coordinates[coordinates.length-1])) {
+                    //create a larger array and copy the contents
+                    Coordinate[] closedCoordinates = new Coordinate[coordinates.length+1];
+                    for (int i=0; i<coordinates.length; i++) {
+                        closedCoordinates[i] = coordinates[i];
+                    }
+                    //last element = first element
+                    Coordinate closure = (Coordinate) coordinates[0].clone();
+                    closedCoordinates[closedCoordinates.length-1] = closure;
+                    coordinates = closedCoordinates;
                 }
-                //last element = first element
-                Coordinate closure = (Coordinate) coordinates[0].clone();
-                closedCoordinates[closedCoordinates.length-1] = closure;
-                coordinates = closedCoordinates;
             }
             LinearRing ring = gf.createLinearRing(coordinates); 
-            result = gf.createPolygon(ring, null);
+            result = gf.createPolygon(ring, null);	
         }
         return result;
     }
