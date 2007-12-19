@@ -32,6 +32,7 @@
   <%-- END OBJECT DEFINITIONS ============================= --%>
   <%-- BEGIN PRE FUNCTIONS (initialization) ============================= --%>
 	function initialize(mapControl) {
+		adjustSidebarIE();
 		
 		initializeMap(mapControl);
 		<%-- map center and map zoom --%>
@@ -75,7 +76,6 @@
 				map.setZoom(zoom);
 				map.setCenter(boundsPoly.getBounds().getCenter());
 			}
-			
 		}
 	}
 
