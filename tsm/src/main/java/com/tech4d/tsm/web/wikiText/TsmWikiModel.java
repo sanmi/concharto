@@ -1,5 +1,7 @@
 package com.tech4d.tsm.web.wikiText;
 
+import info.bliki.wiki.model.WikiModel;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -7,15 +9,13 @@ import org.apache.commons.lang.StringUtils;
 
 import com.tech4d.tsm.auth.AuthHelper;
 
-import info.bliki.wiki.model.WikiModel;
-
 public class TsmWikiModel extends WikiModel {
 	private static final String USER_TAGS = "~~~~";
-	private String contextPath;
+	private String basePath; //full base url plus port number
 	
-	public TsmWikiModel(String contextPath, String imageBaseURL, String linkBaseURL) {
+	public TsmWikiModel(String basePath, String imageBaseURL, String linkBaseURL) {
 		super(imageBaseURL, linkBaseURL);
-		this.contextPath = contextPath;
+		this.basePath = basePath;
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class TsmWikiModel extends WikiModel {
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy hh:mm a z");
 		StringBuffer replaceWith = new StringBuffer()
 			.append("<a href='")
-			.append(this.contextPath)
+			.append(this.basePath)
 			.append("member/contributions.htm?user=")
 			.append(username).append("'>").append(username).append("</a> ")
 			.append(sdf.format(new Date()));
