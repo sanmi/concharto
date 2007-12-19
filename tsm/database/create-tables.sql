@@ -36,10 +36,11 @@
         positive integer,
         _where varchar(512),
         zoomLevel integer,
-        tsGeometry_id bigint,
-        styleSelector_id bigint,
         when_id bigint,
+        discussion_id bigint,
+        tsGeometry_id bigint,
         eventSearchText_id bigint,
+        styleSelector_id bigint,
         primary key (id)
     );
 
@@ -171,6 +172,12 @@
         roles_id bigint not null
     );
 
+    create table WikiText (
+        id bigint not null auto_increment,
+        text text,
+        primary key (id)
+    );
+
     alter table AuditFieldChange 
         add index FK_AUDITENTR_AUDITFLD (auditEntry_id), 
         add constraint FK_AUDITENTR_AUDITFLD 
@@ -194,6 +201,12 @@
         add constraint FK_EVENT_GEOM 
         foreign key (tsGeometry_id) 
         references TsGeometry (id);
+
+    alter table Event 
+        add index FK_EVENT_DISCUSS (discussion_id), 
+        add constraint FK_EVENT_DISCUSS 
+        foreign key (discussion_id) 
+        references WikiText (id);
 
     alter table Event 
         add index FK_EVENT_TIMEPR (when_id), 
