@@ -54,6 +54,11 @@
 	}
 		//]]>
 		</script>
+		<style type="text/css">
+			body {
+				background-image: none;
+			}
+		</style>
 	</jsp:attribute>
 	<jsp:attribute name="script">map.js,json.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="setMapExtent();"</jsp:attribute>

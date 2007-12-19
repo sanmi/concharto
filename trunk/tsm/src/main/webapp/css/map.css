@@ -136,43 +136,43 @@
 }
 .result .links {
 }
-.result ul, .mapedit .result ol  {
+.wikitext ul, .mapedit .wikitext ol  {
 	margin-top: .2em;
 	margin-bottom: .2em;
 	padding-top: .2em;
 	padding-bottom: .2em;
 	list-style-position: inside; 
 }
-.result li{
+.wikitext li{
 	text-indent: -2.2em;
 }
-.result p {
+.wikitext p {
 	margin:0;
 	paddding:0;
 }
-.result h1,
-.result h2,
-.result h3,
-.result h4,
-.result h5 {
+.wikitext h1,
+.wikitext h2,
+.wikitext h3,
+.wikitext h4,
+.wikitext h5 {
 	font-weight: bold;
 	margin: .3em 0 0 0;
 	padding: 0;
 }
-.result h1 { font-size: 11pt; 	border-bottom: 1px solid #e0e0e0; }
-.result h2 { font-size: 10pt; font-style: italic;}
-.result h3 { font-size: 10pt; }
-.result h4 { font-size: 10pt; font-weight: normal;}
-.result h5 { font-size: 10pt; font-weight: normal;}
-.result td, .result th { 
+.wikitext h1 { font-size: 11pt; 	border-bottom: 1px solid #e0e0e0; }
+.wikitext h2 { font-size: 10pt; font-style: italic;}
+.wikitext h3 { font-size: 10pt; }
+.wikitext h4 { font-size: 10pt; font-weight: normal;}
+.wikitext h5 { font-size: 10pt; font-weight: normal;}
+.wikitext td, .wikitext th { 
 	padding: .2em .5em;
 	margin: 0;
 	border: 1px solid #e0e0e0;
 }
-.result th {
+.wikitext th {
 	background-color: #e0e0e0;
 }
-.result pre { 
+.wikitext pre { 
 	padding: 0 .2em;
 	margin: 0;
 }

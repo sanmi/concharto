@@ -1,6 +1,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-			<div class="infoBox">
+<%@ taglib prefix="wiki" uri="wikiRender" %>
+			<div class="infoBox wikitext">
 	  		<table><tr>
 	  			<td>
 						<h2>Event Information</h2>
@@ -14,14 +15,15 @@
 							<span class="formLabel">Where:</span> <c:out value="${event.where}" escapeXml="true"/>
 						</div>
 						<div class="formRow">
-							<span class="formLabel">Description:</span><c:out value="${event.description}" escapeXml="true"/> 
+							<span class="formLabel">Description:</span>
+							<wiki:render wikiText="${event.description}"/> 
 						</div>
 						<div class="formRow">
 								<span class="formLabel">Tags:</span><c:out value="${event.userTags}" escapeXml="true"/>
 						</div>
 						<div class="formRow">
 							<span class="formLabel">Source:</span> 
-							<jsp:include page="../../include/sourcelink.jsp"/>
+							<wiki:render wikiText="${event.source}"/>
 						</div>
 						<c:if test="${event.hasUnresolvedFlags}">
 							<div class="formRow">

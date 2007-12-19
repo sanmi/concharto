@@ -34,6 +34,11 @@
 		
 		//]]>
 		</script>
+		<style type="text/css">
+			body {
+				background-image: none;
+			}
+		</style>
 		<jsp:include page="include/searchcommon.js.jsp"/>
 	</jsp:attribute>
 

@@ -84,7 +84,7 @@
 		} else {
 			height = 'height:' + height + 'px;'
 		}
-	  var html = '<div class="result inforesult" style="width:' + width +'px;'+ height +'margin-bottom:10px">' +
+	  var html = '<div class="result inforesult wikitext" style="width:' + width +'px;'+ height +'margin-bottom:10px">' +
 	  		'<b>' + event.summary.escapeHTML() +'</b><br/>' + 
 	   		'<b>' + event.when + '</b><br/>' + 
 				'<em>' + event.where.escapeHTML() + '</em><br/>' +
