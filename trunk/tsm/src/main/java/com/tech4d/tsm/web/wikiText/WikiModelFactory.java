@@ -9,14 +9,18 @@ public class WikiModelFactory {
 
 	public static WikiModel newWikiModel(HttpServletRequest request) {
 		String contextPath = request.getContextPath();
-		String basePath = request.getScheme()+"://"+request.getServerName()+contextPath;
+		StringBuffer basePathsb = new StringBuffer()
+			.append(request.getScheme())
+			.append("://")
+			.append(request.getServerName());
 		int port = request.getServerPort();
 		if (port != 80) {
-			basePath += ":" + port;
+			basePathsb.append(":").append(port);
 		}
-		basePath += "/";
+		basePathsb.append('/').append(contextPath);
+		String basePath = basePathsb.toString();
 
-		return new TsmWikiModel(contextPath, basePath + "images/${image}", basePath + "search/eventsearch.htm?_id=${title}");
+		return new TsmWikiModel(basePath, basePath + "images/${image}", basePath + "search/eventsearch.htm?_id=${title}");
 	}
 
 	
