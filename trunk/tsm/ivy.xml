@@ -48,6 +48,7 @@
 			<exclude module="ehcache"/>
 		</dependency>        
 		<dependency org="junit" name="junit" rev="4.4" conf="build->default"/>
+		<dependency org="javax.servlet.jsp" name="jsp-api" rev="2.1" conf="build->default"/>
 		
 	</dependencies>
 </ivy-module>
