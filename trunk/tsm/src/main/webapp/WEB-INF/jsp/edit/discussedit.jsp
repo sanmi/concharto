@@ -35,24 +35,29 @@
 		  	<div id="discuss">
 		  	
 		  		<div class="infoBox">
-		  		 This is a discussion page.  Please respect the 
-		  		 <a href="http://wiki.timespacemap.com/Discussion_Guidelines">discussion guidelines</a>, 
-		  		 and remember to sign your posts by typing four tildes (~~~~).
+			  		This is a discussion page.  Please respect the 
+			  		<a href="http://wiki.timespacemap.com/Discussion_Guidelines">discussion guidelines</a>, 
+			  		and remember to sign your posts by typing four tildes (~~~~).
 		  		</div>
-		  		<c:if test="${discussion.showPreview == true}">
+		  		
+		  		<div class="infoBox">
+			  		<jsp:include page="../event/include/showsummary.jsp"/>
+			  	</div>
+		  		
+		  		<c:if test="${discussForm.showPreview == true}">
 			  		<h1>Preview</h1>
 			  		<span class="warning">This is only a preview; changes have not been saved! </span>
 				  	<p>
 				  	<hr/>
-				  	<div class="preview">
-						<wiki:render wikiText="${discussion.wikiText.text}"/> 
+				  	<div class="preview wikitext">
+						<wiki:render wikiText="${discussForm.event.discussion.text}"/> 
 						</div> 	
 		  		</c:if>
 
-					<form:form name="discussion" id="discussForm" commandName="discussion" >
+					<form:form name="discussion" id="discussForm" commandName="discussForm" >
 						<form:hidden path="showPreview" />
 						<div>
-							<form:textarea path="wikiText.text"/>
+							<form:textarea path="event.discussion.text"/>
 						</div>
 			  		<input type="button" value="Submit" onclick="submitDiscussion()"  accesskey="s" title="Save your changes [alt+shift+s]"/>
 			  		<input type="button" value="Preview" onclick="preview()" accesskey="p" title="Preview your changes, please use this before saving! [alt+shift+p]"/>

@@ -164,7 +164,7 @@
 	</bean>
 
 	<bean id="discussControllerBase" class="com.tech4d.tsm.web.discuss.DiscussController">
-		<property name="commandName" value="discussion" />
+		<property name="commandName" value="discussForm" />
 		<property name="commandClass" value="com.tech4d.tsm.web.discuss.WikiTextForm" />
 		<property name="eventDao" ref="eventDao" />
 	</bean>

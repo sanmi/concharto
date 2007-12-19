@@ -16,11 +16,14 @@
 				<jsp:include page="include/tabs.jsp"/>
 		  	
 		  	<div class="simpleForm" >
-		  		<div class="infoBox">
+			  	<div class="infoBox">
+			  		<jsp:include page="include/showsummary.jsp"/>
+			  	</div>
+		  		<div class="infoBox wikitext">
 			  		<c:choose>
-			  			<c:when test="${fn:length(discussion.wikiText.text) >0}">
+			  			<c:when test="${fn:length(discussForm.event.discussion.text) >0}">
 						  	<input type="button" value="Edit" onclick="document.location='${basePath}edit/discussedit.htm?id=${param.id}'"/>
-						  	<wiki:render wikiText="${discussion.wikiText.text}"/>
+						  	<wiki:render wikiText="${discussForm.event.discussion.text}"/>
 						  	
 			  			</c:when>
 			  			<c:otherwise>

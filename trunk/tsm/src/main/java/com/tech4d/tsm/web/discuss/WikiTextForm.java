@@ -1,30 +1,25 @@
 package com.tech4d.tsm.web.discuss;
 
-import com.tech4d.tsm.model.WikiText;
+import com.tech4d.tsm.model.Event;
 
 public class WikiTextForm {
-	private WikiText wikiText;
 	private boolean showPreview;
+	private Event event;
 	
-
+	public WikiTextForm(Event event) {
+		super();
+		this.event = event;
+	}
 	public boolean getShowPreview() {
 		return showPreview;
 	}
 	public void setShowPreview(boolean showPreview) {
 		this.showPreview = showPreview;
 	}
-	public WikiTextForm(WikiText wikiText) {
-		super();
-		this.wikiText = wikiText;
+	public Event getEvent() {
+		return event;
 	}
-	public WikiTextForm() {
-		wikiText = new WikiText();
+	public void setEvent(Event event) {
+		this.event = event;
 	}
-	public WikiText getWikiText() {
-		return wikiText;
-	}
-	public void setWikiText(WikiText wikiText) {
-		this.wikiText = wikiText;
-	}
-
 }

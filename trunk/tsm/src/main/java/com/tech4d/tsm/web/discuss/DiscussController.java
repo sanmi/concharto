@@ -27,12 +27,13 @@ public class DiscussController extends SimpleFormController {
 	protected Object formBackingObject(HttpServletRequest request)
 			throws Exception {
         Long id = ServletRequestUtils.getLongParameter(request, PARAM_ID);
-        WikiText discussion = eventDao.getDiscussion(id);
-        if (null != discussion) {
-        	return new WikiTextForm(discussion);
-        } else {
-        	return new WikiTextForm();
+        Event event = eventDao.findById(id);
+        if (null == event.getDiscussion()) {
+        	//there is no existing discussion, so add a blank one
+        	event.setDiscussion(new WikiText());
         }
+        return new WikiTextForm(event);
+        
 	}
 
 
@@ -54,17 +55,8 @@ public class DiscussController extends SimpleFormController {
 		if (discussion.getShowPreview()) {
 			return new ModelAndView(getFormView(), errors.getModel());
 		}else {
-			if (null == discussion.getWikiText().getId()) {
-				//this is a new discussion and we need to add it to the event
-				//todo put this in a transaction?
-		        Long id = ServletRequestUtils.getLongParameter(request, PARAM_ID);
-		        Event event = eventDao.findById(id);
-		        event.setDiscussion(discussion.getWikiText());
-		        eventDao.saveOrUpdate(event);
-			} else {
-				//this isn't new we just need to save the discussion
-				eventDao.saveOrUpdate(discussion.getWikiText());
-			}
+			//this isn't new we just need to save the discussion
+			eventDao.saveOrUpdate(discussion.getEvent());
 			return super.onSubmit(request, response, command, errors);
 		}
 	}
