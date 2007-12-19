@@ -255,7 +255,7 @@
 	  </sequential>
 	</macrodef>
 	
-	<target name="integration-test" depends="create-db-dev, compile-tests">
+	<target name="integration-test" depends=" compile-tests">
 		<do-test include="**/IntegrationTest*.class" exclude="**/*$$*"/>
 	</target>
 	
@@ -267,7 +267,7 @@
 		<do-test include="${single.test}.class" exclude="**/*$$*"/>
 	</target>
 
-	<target name="test" depends="integration-test, unit-test"/>
+	<target name="test" depends="create-db-dev, integration-test, unit-test"/>
 	<!-- end test targets -->
 	
 	<!-- Begin deploy Targets -->
