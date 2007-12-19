@@ -175,6 +175,8 @@
 .wikitext pre { 
 	padding: 0 .2em;
 	margin: 0;
+	border: 1px dashed #e0e0e0;
+	background-color: #FAFAFA;
 }
 .mapedit .searchbar{
   width:auto;

@@ -19,7 +19,7 @@
 							<wiki:render wikiText="${event.description}"/> 
 						</div>
 						<div class="formRow">
-								<span class="formLabel">Tags:</span><c:out value="${event.userTags}" escapeXml="true"/>
+								<span class="formLabel">Tags: </span><c:out value="${event.userTagsAsString}" escapeXml="true"/>
 						</div>
 						<div class="formRow">
 							<span class="formLabel">Source:</span> 
