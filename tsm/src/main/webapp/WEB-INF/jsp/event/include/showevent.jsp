@@ -1,8 +1,14 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="wiki" uri="wikiRender" %>
-			<div class="infoBox wikitext">
-	  		<table><tr>
+			<div >
+	  		<table class="infoBox wikitext"><tr>
+					<td>
+						<iframe src="${basePath}search/mapthumbnail.htm?id=${event.id}"
+	   						height="250" width="400" frameborder="0" scrolling="no">
+						   This browser doesn't support embedding a map.
+	  				</iframe>
+					</td>
 	  			<td>
 						<h2>Event Information</h2>
 						<div class="formRow">
@@ -33,12 +39,6 @@
 						<div class="formRow">
 							<a href="${basePath}edit/event.htm?id=${event.id}">Edit this event</a>
 						</div>
-					</td>
-					<td>
-						<iframe src="${basePath}search/mapthumbnail.htm?id=${event.id}"
-	   						height="250" width="400" frameborder="0" scrolling="no">
-						   This browser doesn't support embedding a map.
-	  				</iframe>
 					</td>
 				</tr>
 				
