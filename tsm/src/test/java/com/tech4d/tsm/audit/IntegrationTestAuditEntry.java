@@ -207,7 +207,7 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
     	setupUserContext(USERNAME2);
     	makeEvents(5);
     	assertEquals(3, auditEntryDao.getAuditEntries(USERNAME, Event.class, 0, 20).size());
-    	assertEquals(3L, auditEntryDao.getAuditEntriesCount(USERNAME, Event.class));
+    	assertEquals(3L, (long)auditEntryDao.getAuditEntriesCount(USERNAME, Event.class));
     	assertEquals(5, auditEntryDao.getAuditEntries(USERNAME2, Event.class, 0, 20).size());
     	assertEquals(5L, auditEntryDao.getAuditEntriesCount(USERNAME2, Event.class));
     	//limit size of results
