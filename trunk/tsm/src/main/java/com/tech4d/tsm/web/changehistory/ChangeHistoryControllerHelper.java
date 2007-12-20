@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 
 import com.tech4d.tsm.dao.AuditEntryDao;
@@ -41,7 +42,12 @@ public class ChangeHistoryControllerHelper {
 	@SuppressWarnings("unchecked")
     public Map doProcess(Class<?> clazz, String formView, HttpServletRequest request, Map model, int pageSize) throws Exception {
         Integer firstRecord = DisplayTagHelper.getFirstRecord(request, DISPLAYTAG_TABLE_ID, pageSize);
-        Long id = ServletRequestUtils.getLongParameter(request, MODEL_ID);
+        Long id;
+        try {
+        	id = ServletRequestUtils.getLongParameter(request, MODEL_ID);
+        } catch (ServletRequestBindingException e) {
+        	id = null;
+        }
         String user = ServletRequestUtils.getStringParameter(request, MODEL_USER);
         Long totalResults;
         if (id != null) {
