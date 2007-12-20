@@ -11,7 +11,6 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.auth.AuthConstants;
-import com.tech4d.tsm.dao.AuditEntryDao;
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.dao.FlagDao;
 import com.tech4d.tsm.dao.UserDao;
@@ -28,14 +27,18 @@ import com.tech4d.tsm.web.eventsearch.SearchSessionUtil;
 public class FlagEventController extends SimpleFormController {
 	private static final String MODEL_REASONS = "reasons";
 	private static final String REQUEST_ID = "id";
-	private static final String MODEL_EVENT = "event";
-	//TODO refactor this it is also in EventDetailsController
+	//TODO refactor this it is also in EventAdminController
 	private static final String MODEL_DISPOSITIONS = "dispositions";  
-    private ChangeHistoryControllerHelper changeHistoryControllerHelper = new ChangeHistoryControllerHelper();
+    private ChangeHistoryControllerHelper changeHistoryControllerHelper;
 	private FlagDao flagDao; 
 	private EventDao eventDao; 
 	private UserDao userDao;
+	private int PAGE_SIZE = 10;
 	
+	public void setChangeHistoryControllerHelper(
+			ChangeHistoryControllerHelper changeHistoryControllerHelper) {
+		this.changeHistoryControllerHelper = changeHistoryControllerHelper;
+	}
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}
@@ -45,9 +48,6 @@ public class FlagEventController extends SimpleFormController {
 	public void setFlagDao(FlagDao flagDao) {
 		this.flagDao = flagDao;
 	}
-    public void setAuditEntryDao(AuditEntryDao auditEntryDao) {
-        changeHistoryControllerHelper.setAuditEntryDao(auditEntryDao);
-    }
 
 
 	@Override
@@ -81,14 +81,11 @@ public class FlagEventController extends SimpleFormController {
 	protected ModelAndView showForm(HttpServletRequest request,
 			HttpServletResponse response, BindException errors)
 			throws Exception {
-		Long eventId = new Long(request.getParameter(REQUEST_ID));
 		Map model = errors.getModel();
 		
-		Event event = eventDao.findById(eventId);
-		model.put(MODEL_EVENT, event);
     	model.put(MODEL_DISPOSITIONS, Flag.DISPOSITION_CODES);
 		model.put(MODEL_REASONS, Flag.REASON_CODES);
-    	changeHistoryControllerHelper.doProcess("edit/flagevent.htm", request, model);
+    	changeHistoryControllerHelper.doProcess(Event.class, "edit/flagevent.htm", request, model, PAGE_SIZE);
         return new ModelAndView().addAllObjects(model);
 	}
 

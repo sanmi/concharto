@@ -19,8 +19,9 @@
           <prop key="admin/signup.htm">signupController</prop>
           <prop key="member/settings.htm">settingsController</prop>
           
-          <prop key="event/changehistory.htm">changeHistoryController</prop>
+          <prop key="event/changehistory.htm">eventHistoryController</prop>
           <prop key="member/contributions.htm">contributionsController</prop>
+          <prop key="event/discusshistory.htm">wikiTextHistoryController</prop>
 
           <prop key="edit/flagevent.htm">flagEventController</prop>
           <prop key="edit/flageventsuccess.htm">flagEventController</prop>
@@ -34,8 +35,9 @@
           <prop key="search/mapthumbnail.htm">switchBoardController</prop>
           <prop key="search/auditmapthumbnail.htm">switchBoardController</prop>
 
-          <prop key="admin/flagdisposition.htm">changeHistoryController</prop>
-          <prop key="edit/undoevent.htm">changeHistoryController</prop>
+          <prop key="admin/flagdisposition.htm">eventAdminController</prop>
+          <prop key="edit/undoevent.htm">eventUndoController</prop>
+          <prop key="edit/undodiscuss.htm">discussUndoController</prop>
 
           <prop key="event/discuss.htm">discussController</prop>
           <prop key="edit/discussedit.htm">discussEditController</prop>
@@ -75,11 +77,9 @@
 		<property name="auditEntryDao" ref="auditEntryDao" />
 	</bean>
 
-	<bean id="changeHistoryController" class="com.tech4d.tsm.web.changehistory.EventDetailsController" parent="baseEventController" >
+	<bean id="eventAdminController" class="com.tech4d.tsm.web.changehistory.EventAdminController" parent="baseEventController" >
 		<property name="eventDao" ref="eventDao" />
 		<property name="flagDao" ref="flagDao" />
-		<property name="auditEntryDao" ref="auditEntryDao" />
-		<property name="revertEventService" ref="revertEventService" />
 		<property name="detailsView" value="event/changehistory"/>
 	</bean>
 
@@ -116,10 +116,29 @@
 		<property name="validator" ref="eventFormValidator"/>
 	</bean>
 
-	<bean id="contributionsController" class="com.tech4d.tsm.web.changehistory.ContributionsController" parent="baseEventController">
+	<bean id="changeHistoryControllerHelper" class="com.tech4d.tsm.web.changehistory.ChangeHistoryControllerHelper">
+		<property name="auditEntryDao" ref="auditEntryDao" />
+		<property name="eventDao" ref="eventDao" />
+	</bean>
+	<bean id="contributionsController" class="com.tech4d.tsm.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
 		<property name="formView" value="member/contributions" />
 		<property name="pageSize" value="25"/>
-		<property name="auditEntryDao" ref="auditEntryDao" />
+		<property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
+		<property name="auditableClass" value="com.tech4d.tsm.model.Event" />
+	</bean>
+
+	<bean id="eventHistoryController" class="com.tech4d.tsm.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
+		<property name="formView" value="event/changehistory" />
+		<property name="pageSize" value="10"/>
+		<property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
+		<property name="auditableClass" value="com.tech4d.tsm.model.Event" />
+	</bean>
+
+	<bean id="wikiTextHistoryController" class="com.tech4d.tsm.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
+		<property name="formView" value="event/discusshistory" />
+		<property name="pageSize" value="10"/>
+		<property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
+		<property name="auditableClass" value="com.tech4d.tsm.model.WikiText" />
 	</bean>
 
 	<bean id="eventSearchFormValidator" class="com.tech4d.tsm.web.eventsearch.EventSearchFormValidator"/>
@@ -158,9 +177,9 @@
 		<property name="successView" value="edit/flageventsuccess" />
 		<property name="validator" ref="flagEventFormValidator"/>
 		<property name="userDao" ref="userDao"/>
-		<property name="auditEntryDao" ref="auditEntryDao" />
 		<property name="eventDao" ref="eventDao" />
 		<property name="flagDao" ref="flagDao" />
+		<property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
 	</bean>
 
 	<bean id="discussControllerBase" class="com.tech4d.tsm.web.discuss.DiscussController">
@@ -178,4 +197,14 @@
 		<property name="successView" value="event/discuss" />
 	</bean>
 	
+	<bean id="eventUndoController" class="com.tech4d.tsm.web.changehistory.AuditableUndoController">
+		<property name="successView" value="event/changehistory" />
+		<property name="revertEventService" ref="revertEventService" />
+		<property name="auditableClass" value="com.tech4d.tsm.model.Event" />
+	</bean>
+	<bean id="discussUndoController" class="com.tech4d.tsm.web.changehistory.AuditableUndoController">
+		<property name="successView" value="event/discusshistory" />
+		<property name="revertEventService" ref="revertEventService" />
+		<property name="auditableClass" value="com.tech4d.tsm.model.WikiText" />
+	</bean>
 </beans>

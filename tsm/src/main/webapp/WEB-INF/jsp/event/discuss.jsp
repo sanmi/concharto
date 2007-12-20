@@ -13,7 +13,13 @@
 
 <jsp:body>
 			<div class="changes">
-				<jsp:include page="include/tabs.jsp"/>
+				<div class="miniTabBar">
+					<a class="miniTabUnselected" href="${basePath}edit/event.htm?id=${param.id}">Event</a>
+					<span class="miniTabSelected" >Discussion</span>
+				  <a class="miniTabUnselected miniTabLSpace" href="${basePath}event/discusshistory.htm?id=${discussForm.event.discussion.id}&eventId=${param.id}">Changes</a>
+				</div>
+				<div class="changeBar">
+				</div>
 		  	
 		  	<div class="simpleForm" >
 			  	<div class="infoBox">

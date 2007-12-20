@@ -9,6 +9,8 @@ import org.springframework.web.bind.ServletRequestUtils;
 
 import com.tech4d.tsm.dao.AuditEntryDao;
 import com.tech4d.tsm.dao.AuditUserChange;
+import com.tech4d.tsm.dao.EventDao;
+import com.tech4d.tsm.model.Auditable;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.audit.AuditEntry;
 import com.tech4d.tsm.web.util.DisplayTagHelper;
@@ -24,34 +26,45 @@ public class ChangeHistoryControllerHelper {
     private static final String MODEL_AUDIT_ENTRIES = "auditEntries";
 	private static final String MODEL_USER_CHANGES = "userChanges";
     private static final String DISPLAYTAG_TABLE_ID = "auditEntryTable";
-    private static final int DEFAULT_DISPLAYTAG_PAGESIZE = 10;
+	private static final String MODEL_EVENT_ID = "eventId";
+	private static final String MODEL_EVENT = "event";
     private AuditEntryDao auditEntryDao;
-    private int pageSize;
+    private EventDao eventDao;
     
     public void setAuditEntryDao(AuditEntryDao auditEntryDao) {
-		setAuditEntryDao(auditEntryDao, DEFAULT_DISPLAYTAG_PAGESIZE);
+		this.auditEntryDao = auditEntryDao;
 	}
-    
-    public void setAuditEntryDao(AuditEntryDao auditEntryDao, int pageSize) {
-    	this.auditEntryDao = auditEntryDao;
-    	this.pageSize = pageSize;
-    }
+	public void setEventDao(EventDao eventDao) {
+		this.eventDao = eventDao;
+	}
 
 	@SuppressWarnings("unchecked")
-    public Map doProcess(String formView, HttpServletRequest request, Map model) throws Exception {
+    public Map doProcess(Class<?> clazz, String formView, HttpServletRequest request, Map model, int pageSize) throws Exception {
         Integer firstRecord = DisplayTagHelper.getFirstRecord(request, DISPLAYTAG_TABLE_ID, pageSize);
         Long id = ServletRequestUtils.getLongParameter(request, MODEL_ID);
         String user = ServletRequestUtils.getStringParameter(request, MODEL_USER);
         Long totalResults;
         if (id != null) {
-            Event event = new Event();
-            event.setId(id);
-            List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(event, firstRecord, pageSize);
-            totalResults = auditEntryDao.getAuditEntriesCount(event);        	
+        	//we are doing history for an Auditable
+            Long eventId = ServletRequestUtils.getLongParameter(request, MODEL_EVENT_ID);
+            Event event;
+            //TODO this is a UI hack : auditables are event or event.discussion
+            if (null == eventId) {
+            	event = eventDao.findById(id);
+            } else {
+            	event = eventDao.findById(eventId);
+            }
+            model.put(MODEL_EVENT_ID, eventId);
+            model.put(MODEL_EVENT, event);
+            Auditable auditable = (Auditable) clazz.newInstance();
+            auditable.setId(id);
+            List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(auditable, firstRecord, pageSize);
+            totalResults = auditEntryDao.getAuditEntriesCount(auditable);        	
             model.put(MODEL_AUDIT_ENTRIES, auditEntries);
         } else {
-        	List<AuditUserChange> userChanges = auditEntryDao.getAuditEntries(user, Event.class, firstRecord, pageSize);
-            totalResults = auditEntryDao.getAuditEntriesCount(user, Event.class);
+        	//we are doing history for a user
+        	List<AuditUserChange> userChanges = auditEntryDao.getAuditEntries(user, clazz, firstRecord, pageSize);
+            totalResults = auditEntryDao.getAuditEntriesCount(user, clazz);
             model.put(MODEL_USER_CHANGES, userChanges);
         }
         

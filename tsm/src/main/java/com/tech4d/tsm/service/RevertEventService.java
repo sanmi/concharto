@@ -1,7 +1,11 @@
 package com.tech4d.tsm.service;
 
-import com.tech4d.tsm.model.Event;
+import java.util.Set;
+
+import com.tech4d.tsm.model.Auditable;
 
 public interface RevertEventService {
-	Event revertToRevision(Integer revision, Long eventId);
+	Auditable revertToRevision(Class<?> clazz, Integer revision, Long eventId);
+	public void setAuditFieldChangeFormatters(Set<String> auditFieldChangeFormatters) 
+		throws InstantiationException, IllegalAccessException, ClassNotFoundException; 
 }

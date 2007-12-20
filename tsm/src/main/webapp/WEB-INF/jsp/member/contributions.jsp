@@ -42,40 +42,29 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 				<display:setProperty name="paging.banner.some_items_found">
 					<span class="pagebanner"><b>{0}</b> {1} found.</span>
 				</display:setProperty>
-				<display:column title="Date" class="date">
-					<fmt:formatDate value="${auditEntryTable.auditEntry.dateCreated}" pattern="MMM dd, yyyy hh:mm a z"/>
-				</display:column>
-				<display:column title="Change" >
-						<spring:message code="audit.action.field.${auditEntryTable.auditEntry.action}"/>
-						r${auditEntryTable.auditEntry.version}						
-				</display:column>
-				<display:column title="Action" class="action">
+				<display:column >
+					<fmt:formatDate value="${auditEntryTable.auditEntry.dateCreated}" pattern="MMM dd, yyyy hh:mm a z"/>,
+					<c:if test="${auditEntryTable.auditable.summary != null}">  <%-- todo this is a kludge - fix it --%>
+						(<a href="${basePath}edit/event.htm?id=${auditEntryTable.auditEntry.entityId}">edit</a> | 
+						<a href="${basePath}event/changehistory.htm?id=${auditEntryTable.auditEntry.entityId}">changes</a>),
+					</c:if>
+					(<spring:message code="audit.action.field.${auditEntryTable.auditEntry.action}"/>
+					r${auditEntryTable.auditEntry.version}), 						
 					<c:choose>
-						<c:when test="${auditEntryTable.auditable.summary != null}">  <%-- todo this is a kludge - fix it --%>
-							<a href="${basePath}edit/event.htm?id=${auditEntryTable.auditEntry.entityId}">edit</a> | 
-							<a href="${basePath}event/changehistory.htm?id=${auditEntryTable.auditEntry.entityId}">changes</a>
+						<c:when test="${auditEntryTable.auditable.summary == null}">
+							<em>event has been deleted</em> 
 						</c:when>
 						<c:otherwise>
-							<em>n/a</em>
+							<a href='${basePath}search/eventsearch.htm?_id=${auditEntryTable.auditEntry.entityId}'>${auditEntryTable.auditable.summary}</a>
+							${auditEntryTable.auditable.when.asText} &nbsp; <%-- IE6 hack --%>
+							${auditEntryTable.auditable.where} &nbsp; <%-- IE6 hack --%>
 						</c:otherwise>
-					</c:choose>
+					</c:choose> 
 				</display:column>
-				<display:column title="Summary" class="summary">
-					<a  href='${basePath}search/eventsearch.htm?_id=${auditEntryTable.auditEntry.entityId}'>${auditEntryTable.auditable.summary}</a>
-					<c:if test="${auditEntryTable.auditable.summary == null}">
-						<em>event has been deleted</em> 
-					</c:if>
-				</display:column>
-				<display:column title="when" >
-					${auditEntryTable.auditable.when.asText} &nbsp; <%-- IE6 hack --%>
-				</display:column>
-				<display:column title="where" >
-					${auditEntryTable.auditable.where} &nbsp; <%-- IE6 hack --%>
-				
-				</display:column>	
 		 	</display:table>		
 
 		</div>	  	
 	</jsp:body>
 </tsm:page>
+
 

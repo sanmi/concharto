@@ -7,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tech4d.tsm.model.Event;
+import com.tech4d.tsm.model.Auditable;
 import com.tech4d.tsm.model.EventSearchText;
 import com.tech4d.tsm.model.WikiText;
 
@@ -25,22 +26,41 @@ public class EventDaoHib implements EventDao {
      * @see com.tech4d.tsm.lab.EventDao#save(com.tech4d.tsm.model.lab.Event)
      */
     public Serializable save(Event event) {
-        //TODO First save a copy of the text to the MyISAM table.  Note MyISAM doesn't support 
-        //transactions, so if this fails and the second succeeds, we may have a duplicate 
-        //record later on 
-        event.setEventSearchText(new EventSearchText(event));
+    	return saveAuditable(event);
+    }
+    
+    public Serializable saveAuditable(Auditable auditable) {
+    	//-----------------------------------------------------------
+    	//TODO -- make an adapter for saving auditables rather than hard coding it here
+    	//-----------------------------------------------------------
+    	if (auditable instanceof Event) {
+            //TODO First save a copy of the text to the MyISAM table.  Note MyISAM doesn't support 
+            //transactions, so if this fails and the second succeeds, we may have a duplicate 
+            //record later on 
+            ((Event)auditable).setEventSearchText(new EventSearchText((Event) auditable));
+    	}
         //now we can save
-        return this.sessionFactory.getCurrentSession().save(event);
+        return this.sessionFactory.getCurrentSession().save(auditable);   	
     }
 
     public void saveOrUpdate(Event event) {
+    	saveOrUpdateAuditable(event);
+    }
+    
+    public void saveOrUpdateAuditable(Auditable auditable) {
+    	//-----------------------------------------------------------
+    	//TODO -- make an adapter for saving auditables rather than hard coding it here
+    	//-----------------------------------------------------------
         //TODO First update the search text object (see note above)
-        if (event.getEventSearchText() != null) {
-            event.getEventSearchText().copyFrom(event);
-        } else {
-            event.setEventSearchText(new EventSearchText(event));
-        }
-        this.sessionFactory.getCurrentSession().saveOrUpdate(event);
+    	if (auditable instanceof Event) {
+            if (((Event) auditable).getEventSearchText() != null) {
+            	((Event) auditable).getEventSearchText().copyFrom((Event) auditable);
+            } else {
+            	((Event) auditable).setEventSearchText(new EventSearchText((Event) auditable));
+            }    		 
+    	}
+        this.sessionFactory.getCurrentSession().saveOrUpdate(auditable);
+    	
     }
 
     /**
@@ -85,8 +105,12 @@ public class EventDaoHib implements EventDao {
     }
 
     public Event findById(Long id) {
-        return (Event) this.sessionFactory.getCurrentSession().get(
-                Event.class, id);
+        return (Event)findById(Event.class, id);
+    }
+
+    public Auditable findById(Class<?> clazz, Long id) {
+    	return (Auditable) this.sessionFactory.getCurrentSession().get(
+    			clazz, id);
     }
     
     @SuppressWarnings("unchecked")
