@@ -1,8 +1,5 @@
 package com.tech4d.tsm.web.changehistory;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,28 +13,20 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.auth.AuthConstants;
-import com.tech4d.tsm.auth.AuthHelper;
-import com.tech4d.tsm.dao.AuditEntryDao;
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.dao.FlagDao;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.Flag;
-import com.tech4d.tsm.service.RevertEventService;
 import com.tech4d.tsm.web.SwitchBoardController;
 import com.tech4d.tsm.web.eventsearch.SearchSessionUtil;
 
-public class EventDetailsController extends MultiActionController{
-	private static final String MODEL_EVENT = "event";
+public class EventAdminController extends MultiActionController{
 	private static final String PARAM_DISPOSITION = "disposition";
 	private static final String PARAM_ID = "id";
-	private static final String MODEL_DISPOSITIONS = "dispositions";
 	private static final Log log = LogFactory.getLog(SwitchBoardController.class);
 
-	private static final String PARAM_TO_REVISION = "toRev";
     private EventDao eventDao;
     private FlagDao flagDao;
-    private RevertEventService revertEventService;
-    private ChangeHistoryControllerHelper changeHistoryControllerHelper = new ChangeHistoryControllerHelper();
     private String detailsView;
 
     public void setEventDao(EventDao eventDao) {
@@ -48,47 +37,12 @@ public class EventDetailsController extends MultiActionController{
 		this.flagDao = flagDao;
 	}
 
-    public void setAuditEntryDao(AuditEntryDao auditEntryDao) {
-        changeHistoryControllerHelper.setAuditEntryDao(auditEntryDao);
-    }
-
-	public void setRevertEventService(RevertEventService revertEventService) {
-		this.revertEventService = revertEventService;
-	}
-
 	public void setDetailsView(String detailsView) {
 		this.detailsView = detailsView;
 	}
-
-	@SuppressWarnings("unchecked")
-	public ModelAndView changehistory(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Map model = new HashMap();
-		Event event = getEvent(request);
-    	if (event == null) {
-            return searchModelAndView(request);
-    	}
-    	//Regular users don't get to see it if it has been removed by an admin
-    	else if (!AuthHelper.isUserAnAdmin() && !(event.isVisible() == null) && !event.isVisible()) {
-    		return searchModelAndView(request);
-    	}
-		model.put(MODEL_EVENT, event);
-    	model.put(MODEL_DISPOSITIONS, Flag.DISPOSITION_CODES);
-    	//TODO fix this to get it from the app context 
-    	changeHistoryControllerHelper.doProcess(this.detailsView, request, model);
-        return new ModelAndView().addAllObjects(model);
-    }
 	
     private ModelAndView searchModelAndView(HttpServletRequest request) {
     	return new ModelAndView(new RedirectView(request.getContextPath() + "/search/eventsearch.htm", true));
-    }
-    
-    private Event getEvent(HttpServletRequest request) {
-    	String id = request.getParameter(PARAM_ID);
-    	if (!StringUtils.isEmpty(id)) {
-        	Long eventId = new Long(id);
-           	return eventDao.findById(eventId);
-    	}
-    	return null;
     }
 
     public ModelAndView flagdisposition(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -137,17 +91,5 @@ public class EventDetailsController extends MultiActionController{
         return new ModelAndView(new RedirectView(request.getContextPath() + '/' + this.detailsView + ".htm?id=" + flag.getEvent().getId(), true));
     }
     
-    public ModelAndView undoevent(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    	//TODO move this into another controller
-    	Long id = ServletRequestUtils.getLongParameter(request, PARAM_ID);
-    	Integer revision = ServletRequestUtils.getIntParameter(request, PARAM_TO_REVISION);
-
-    	if ((id != null) && (revision != null)) {
-    		revertEventService.revertToRevision(revision, id);
-    	}
-        //redirect back to the list
-        return new ModelAndView(new RedirectView(request.getContextPath() + '/' + this.detailsView + ".htm?id=" + id, true));
-    }
-    	
 
 }

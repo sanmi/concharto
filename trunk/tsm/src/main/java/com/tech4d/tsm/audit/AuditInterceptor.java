@@ -28,7 +28,7 @@ public class AuditInterceptor extends EmptyInterceptor {
     private ThreadLocalSets stateSets = new ThreadLocalSets();   // this is thread-safe
     private AuditLogWriter auditLogWriter;
     private SessionFactory sessionFactory;
-    Set<AuditFieldChangeFormatter> auditFormatters = new HashSet<AuditFieldChangeFormatter>();
+    private Set<AuditFieldChangeFormatter> auditFormatters = new HashSet<AuditFieldChangeFormatter>();
     
 
     /**
@@ -170,7 +170,6 @@ public class AuditInterceptor extends EmptyInterceptor {
                     auditEntries.add(auditEntry);
                 }
             }
-            //If this is an update, then only write the audit entry 
             auditLogWriter.save(auditEntries);
         } catch (HibernateException e) {
             clearStateSets();

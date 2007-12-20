@@ -73,6 +73,12 @@
 <!-- -->
   	<property name="eventDao" ref="eventDao"/>
   	<property name="auditEntryDao" ref="auditEntryDao"/>
+  	<property name="auditFieldChangeFormatters">
+  		<set>
+  			<value>com.tech4d.tsm.audit.EventFieldChangeFormatter</value>
+  			<value>com.tech4d.tsm.audit.WikiTextChangeFormatter</value>
+  		</set>
+  	</property>
   	 
   </bean>
 	<!-- End Transaction config -->

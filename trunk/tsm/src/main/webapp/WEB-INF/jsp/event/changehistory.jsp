@@ -31,9 +31,9 @@
 <jsp:body>
 			<div class="changes">
 				<div class="miniTabBar">
-					<a class="miniTabUnselected" href="${basePath}edit/event.htm?id=${param.id}">Event</a>
+					<a class="miniTabSelected" href="${basePath}edit/event.htm?id=${param.id}">Event</a>
  		    	<a class="miniTabUnselected" href="${basePath}event/discuss.htm?id=${param.id}">Discussion</a>
-					<span class="miniTabSelected" >Changes</span>
+					<span class="miniTabSelected miniTabLSpace" >Changes</span>
 	      </div>
 	      <div class="changeBar"></div>
 	      <div class="simpleForm">

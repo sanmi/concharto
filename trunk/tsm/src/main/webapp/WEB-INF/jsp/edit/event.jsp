@@ -32,7 +32,7 @@
    		    <div class="miniTabBar">
    		    	<span class="miniTabSelected">Event</span>
    		    	<a class="miniTabUnselected" href="${basePath}event/discuss.htm?id=${param.id}">Discussion</a>
-   		    	<a class="miniTabUnselected" href="${basePath}event/changehistory.htm?id=${param.id}">Changes</a>
+   		    	<a class="miniTabUnselected miniTabLSpace" href="${basePath}event/changehistory.htm?id=${param.id}">Changes</a>
 	 		    </div>
    		    <div class="inputcell ">
 	 		    	<span id="larger" class="hidden"><a href="#" onClick="larger()">larger &raquo;</a></span>

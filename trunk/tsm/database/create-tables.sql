@@ -36,11 +36,11 @@
         positive integer,
         _where varchar(512),
         zoomLevel integer,
-        when_id bigint,
-        discussion_id bigint,
         tsGeometry_id bigint,
-        eventSearchText_id bigint,
         styleSelector_id bigint,
+        discussion_id bigint,
+        eventSearchText_id bigint,
+        when_id bigint,
         primary key (id)
     );
 
@@ -81,8 +81,8 @@
         dispositionComment varchar(512),
         reason varchar(32),
         state varchar(255),
-        event_id bigint,
         user_id bigint,
+        event_id bigint,
         primary key (id)
     );
 
@@ -174,6 +174,9 @@
 
     create table WikiText (
         id bigint not null auto_increment,
+        created datetime,
+        lastModified datetime,
+        version bigint,
         text text,
         primary key (id)
     );
@@ -203,16 +206,16 @@
         references TsGeometry (id);
 
     alter table Event 
-        add index FK_EVENT_DISCUSS (discussion_id), 
-        add constraint FK_EVENT_DISCUSS 
-        foreign key (discussion_id) 
-        references WikiText (id);
-
-    alter table Event 
         add index FK_EVENT_TIMEPR (when_id), 
         add constraint FK_EVENT_TIMEPR 
         foreign key (when_id) 
         references TimePrimitive (id);
+
+    alter table Event 
+        add index FK_EVENT_DISCUSS (discussion_id), 
+        add constraint FK_EVENT_DISCUSS 
+        foreign key (discussion_id) 
+        references WikiText (id);
 
     alter table Event_UserTag 
         add index FK_EVENT_USERTAG (Event_id), 

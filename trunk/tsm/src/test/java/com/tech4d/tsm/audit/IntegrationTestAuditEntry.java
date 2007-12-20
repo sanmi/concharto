@@ -25,6 +25,7 @@ import com.tech4d.tsm.dao.EventTesterDao;
 import com.tech4d.tsm.dao.EventUtil;
 import com.tech4d.tsm.dao.StyleUtil;
 import com.tech4d.tsm.model.Event;
+import com.tech4d.tsm.model.WikiText;
 import com.tech4d.tsm.model.audit.AuditEntry;
 import com.tech4d.tsm.model.audit.AuditFieldChange;
 import com.tech4d.tsm.model.geometry.TsGeometry;
@@ -224,15 +225,56 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
     	assertTrue(!((Event)first.getAuditable()).getSummary().equals(((Event)second.getAuditable()).getSummary()));
     }
     
+    @Test public void wikiText() throws ParseException {
+    	Event event = eventUtil.createEvent();
+    	WikiText wikiText = new WikiText();
+    	wikiText.setText("==header== some stuff here");
+    	event.setDiscussion(wikiText);
+    	eventDao.saveOrUpdate(event);
+    	wikiText.setText("==header== some new stuff here");
+    	eventDao.saveOrUpdate(event);
+    	
+    	List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(wikiText,  0, 20); 
+    	assertEquals(2, auditEntries.size());
+    	Collection<AuditFieldChange> auditEntryFieldChanges = auditEntries.get(0).getAuditEntryFieldChange();
+    	assertEquals(1, auditEntryFieldChanges.size());
+    	
+    }
+
+    @Test public void testRevertWikiText() throws ParseException {
+    	//create an event with five changes and revert each one
+    	WikiText rev0 = new WikiText();
+    	rev0.setText("==header== some stuff here");
+        Serializable id = eventDao.saveAuditable(rev0);
+
+        WikiText rev1 = (WikiText) eventDao.findById(WikiText.class, (Long) id);
+        rev1.setText("==header== some extra stuff here");
+        eventDao.saveOrUpdateAuditable(rev1);
+
+        WikiText rev2 = (WikiText) eventDao.findById(WikiText.class, (Long) id);
+        rev2.setText("==header== some extra stuff here and here too!");
+        eventDao.saveOrUpdateAuditable(rev2);
+        
+        
+        revertAndAssertWikiText(rev2, 2);
+        revertAndAssertWikiText(rev1, 1);
+        revertAndAssertWikiText(rev0, 0);
+    }
+
     private void makeEvents(int numEvents) throws ParseException {
     	for (int i=0; i<numEvents; i++) {
         	eventDao.save(eventUtil.createEvent("summary " + i));
     	}
     }
+    private void revertAndAssertWikiText(WikiText expected, int rev) {
+        //List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(expected, 0, MAX_RESULTS);
+        WikiText reverted = (WikiText) revertEventService.revertToRevision(expected.getClass(), rev, expected.getId());
+        assertEquals(expected.getText(), reverted.getText());
+    }
     
     private void revertAndAssert(Event expected, int rev) {
         //List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(expected, 0, MAX_RESULTS);
-        Event reverted = revertEventService.revertToRevision(rev, expected.getId());
+        Event reverted = (Event) revertEventService.revertToRevision(Event.class, rev, expected.getId());
         eventUtil.assertEquivalent(expected, reverted);
         reverted = eventDao.findById(expected.getId());
         eventUtil.assertEquivalent(expected, reverted);

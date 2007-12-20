@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 
 @Entity
-public class WikiText extends BaseEntity {
+public class WikiText extends BaseAuditableEntity {
 	private String text;
 
 	@Lob
