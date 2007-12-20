@@ -37,7 +37,9 @@
 	      </div>
 	      <div class="changeBar"></div>
 	      <div class="simpleForm">
-      		<jsp:include page="include/showevent.jsp"/>
+			  	<div class="infoBox">
+			  		<c:import url="../event/include/showsummary.jsp"/>
+			  	</div>
 		
 					<c:if test="${fn:length(event.flags) > 0}">
 						<div class="infoBox">

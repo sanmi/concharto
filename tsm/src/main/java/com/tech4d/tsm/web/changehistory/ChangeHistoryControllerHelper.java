@@ -42,15 +42,20 @@ public class ChangeHistoryControllerHelper {
 	@SuppressWarnings("unchecked")
     public Map doProcess(Class<?> clazz, String formView, HttpServletRequest request, Map model, int pageSize) throws Exception {
         Integer firstRecord = DisplayTagHelper.getFirstRecord(request, DISPLAYTAG_TABLE_ID, pageSize);
-        Long id;
+        Long id = null;
+        boolean hasEmptyId = false;
         try {
         	id = ServletRequestUtils.getLongParameter(request, MODEL_ID);
         } catch (ServletRequestBindingException e) {
-        	id = null;
+        	//this can happen when a discussion has not yet been created for 
+        	//an event.  The URL will say ?id=&eventId=1234
+        	hasEmptyId = true;
         }
+       
         String user = ServletRequestUtils.getStringParameter(request, MODEL_USER);
-        Long totalResults;
-        if (id != null) {
+        Long totalResults = 0L;
+        //TODO - split this into two controllers one for user contribs, one for event changes
+        if ((id != null) ||(hasEmptyId)) {
         	//we are doing history for an Auditable
             Long eventId = ServletRequestUtils.getLongParameter(request, MODEL_EVENT_ID);
             Event event;
@@ -62,11 +67,13 @@ public class ChangeHistoryControllerHelper {
             }
             model.put(MODEL_EVENT_ID, eventId);
             model.put(MODEL_EVENT, event);
-            Auditable auditable = (Auditable) clazz.newInstance();
-            auditable.setId(id);
-            List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(auditable, firstRecord, pageSize);
-            totalResults = auditEntryDao.getAuditEntriesCount(auditable);        	
-            model.put(MODEL_AUDIT_ENTRIES, auditEntries);
+            if (!hasEmptyId) {
+	            Auditable auditable = (Auditable) clazz.newInstance();
+	            auditable.setId(id);
+	            List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(auditable, firstRecord, pageSize);
+	            totalResults = auditEntryDao.getAuditEntriesCount(auditable);        	
+	            model.put(MODEL_AUDIT_ENTRIES, auditEntries);
+            }
         } else {
         	//we are doing history for a user
         	List<AuditUserChange> userChanges = auditEntryDao.getAuditEntries(user, clazz, firstRecord, pageSize);
@@ -81,5 +88,4 @@ public class ChangeHistoryControllerHelper {
 
         return model;
     }
-
 }

@@ -18,12 +18,12 @@
 					<span class="miniTabSelected" >Discussion</span>
 				  <a class="miniTabUnselected miniTabLSpace" href="${basePath}event/discusshistory.htm?id=${discussForm.event.discussion.id}&eventId=${param.id}">Changes</a>
 				</div>
-				<div class="changeBar">
-				</div>
+				<div class="changeBar"></div>
 		  	
 		  	<div class="simpleForm" >
 			  	<div class="infoBox">
-			  		<jsp:include page="include/showsummary.jsp"/>
+			  		<c:set var="event" scope="request" value="${discussForm.event}"/>
+			  		<c:import url="../event/include/showsummary.jsp"/>
 			  	</div>
 		  		<div class="infoBox wikitext">
 			  		<c:choose>
