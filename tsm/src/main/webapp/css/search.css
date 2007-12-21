@@ -4,9 +4,7 @@
 	background: #FFFFFF url(../images/search-backg.gif) repeat-x;
 	}
 	#addbox {
-	position:relative;
-	left: 830px;
-	top: 54px;
+	top: 48px;
 	}
   #headerbar {
 	height:147px;

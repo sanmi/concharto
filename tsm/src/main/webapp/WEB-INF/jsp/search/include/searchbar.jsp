@@ -7,7 +7,6 @@
    	<td>
 	    <div id="addbox">
         <span class="biglink"><a href="#" onclick="editEvent('')">Add to the Map...</a></span>
-        <div>Add a Time Space Map event</div>
       </div>      
       <div id="searchbox">
         <table>

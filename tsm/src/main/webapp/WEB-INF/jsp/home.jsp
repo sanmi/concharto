@@ -55,14 +55,7 @@
 			  <div id="totals"> <a href='${basePath}search/eventsearch.htm?_what=&_where=&_when='><b>${totalEvents}</b> events and counting...</a> </div>
 	  	</div>
 	  </form:form>
-	  <%-- TODO finish this 
-		<div id="maintab">
-			<span class="left">&nbsp;&nbsp;</span>
-		  <span class="selected" style="height: 20px;"><img src="images/invisible.gif" height="20" width="1"/>Home</span>
-		  <a class="unselected" href="#">Take A Tour</a>
-		  <a class="unselected" href="#">Guidelines</a>
-		</div>
-		--%>
+	  
 		<div id="main">
 			<table>
 		    <col id="leftbar"/>
@@ -90,7 +83,7 @@
 		  				</c:forEach>	  					
 						</ul>        
 		      </div>
-		      <div style="width:400px"></div>
+		      <div class="rightwidth"></div>
 		    </td>
 		    <td id="right" >
 			    <div id="spotlightbox">
@@ -101,7 +94,7 @@
 		        <div id="borderbox">
 		          <iframe id="embeddedmap" 
 		          	src='${basePath}search/embeddedsearch.htm?_where=london, england&_what="kensington palace"&_zoom=17&_maptype=1'
-		            height="330" width="500" frameborder="0" scrolling="no">
+		            height="330" width="450" frameborder="0" scrolling="no">
 		           	This browser doesn't support embedding a map.
 		          </iframe>
 		        </div> 

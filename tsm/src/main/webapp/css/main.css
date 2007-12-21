@@ -16,7 +16,7 @@
 	margin: 0;
 	padding: 0;
 	top: -152px;
-	width: 1050px;
+	width: 855px;
 	margin-right:auto;
 	margin-left:auto;
 	}
@@ -34,11 +34,11 @@
 	width:100%;
 	}
 	#main #left {
-	padding: 15px 20px 0 25px;
+	padding: 15px 10px 0 25px;
 	}
 	#main #right {
-	padding: 25px 25px 0 20px;
-	width: 540px;
+	padding: 25px 25px 0 10px;
+	width: 500px;
 	}
 	#main p{
 	margin: 0 0 .8em 0;
@@ -55,7 +55,7 @@
 	#main #spotlightbox {
 	background: url(../images/spotlight-backg.png) repeat-x;
 	height:496px;
-	width:551px;
+	width:491px;
 	}
 	#main #borderbox {
 	text-align:center
@@ -77,6 +77,9 @@
 	padding: 1em .4em;
 	margin: 0;
 	font-weight:bold;
+	}
+	#main .rightwidth {
+	width:320px;
 	}
 	#main .recent hr {
 	color: #BBC7D5;

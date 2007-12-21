@@ -18,8 +18,8 @@
 	
 	#addbox {
 	position:relative;
-	left: 830px;
-	top: 52px;
+	left: 684px;
+	top: 43px;
 	font-weight: bold;
 	width: 15em;
 	}
@@ -30,7 +30,7 @@
 	position:absolute;
 	top: 68px;
 	left:40px;
-	width: 1050px;
+	width: 855px;
 	margin-right:auto;
 	margin-left:auto;
 	font-weight: bold;
