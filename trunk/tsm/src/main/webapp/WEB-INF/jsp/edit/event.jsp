@@ -29,11 +29,13 @@
 					<form:hidden path="previewEvent" htmlEscape="true"/>
 					<form:hidden path="addEvent"/>
 					
-   		    <div class="miniTabBar">
-   		    	<span class="miniTabSelected">Event</span>
-   		    	<a class="miniTabUnselected" href="${basePath}event/discuss.htm?id=${param.id}">Discussion</a>
-   		    	<a class="miniTabUnselected miniTabLSpace" href="${basePath}event/changehistory.htm?id=${param.id}">Changes</a>
-	 		    </div>
+	    		<c:if test="${param.id != null}">
+	   		    <div class="miniTabBar">
+	   		    	<span class="miniTabSelected">Event</span>
+	   		    	<a class="miniTabUnselected" href="${basePath}event/discuss.htm?id=${param.id}">Discussion</a>
+	   		    	<a class="miniTabUnselected miniTabLSpace" href="${basePath}event/changehistory.htm?id=${param.id}">Changes</a>
+		 		    </div>
+	    		</c:if>
    		    <div class="inputcell ">
 	 		    	<span id="larger" class="hidden"><a href="#" onClick="larger()">larger &raquo;</a></span>
  	 		    	<span id="smaller" class="hidden"><a href="#" onClick="smaller()">smaller &laquo;</a></span>
