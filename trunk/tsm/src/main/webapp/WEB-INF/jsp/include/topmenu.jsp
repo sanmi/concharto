@@ -7,7 +7,7 @@
 			<c:if test="${username == null}">
 				<li><a href="${basePath}login.htm">Sign in / create account</a></li>
 				</c:if><c:if test="${username != null}">
-				<li><span class="name">Hello, <b>${username}</b> </span>&nbsp;</li>
+				<li>Hello, <b>${username}</b> &nbsp;</li>
 				<li> 
 					<a href="${basePath}">Home</a>  
 				</li>
