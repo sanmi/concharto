@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -75,9 +76,9 @@
 		      	<ul>
 							<c:forEach items="${recentEvents}" var="event" varStatus="status">
 		  					<li> 
-			            <a  href='${basePath}search/eventsearch.htm?_id=${event.id}'>${event.summary}</a> <br/>
+			            <a  href='${basePath}search/eventsearch.htm?_id=${event.id}'><c:out value="${event.summary}" escapeXml="true"/></a> <br/>
 			            ${event.when.asText} <br/>
-			            <em><c:if test="${event.where != null && event.where != ''}">${event.where}</c:if></em>
+			            <em><c:if test="${event.where != null && event.where != ''}"><c:out value="${event.where}" escapeXml="true"/></c:if></em>
 			            <hr/>
 			          </li>
 		  				</c:forEach>	  					
