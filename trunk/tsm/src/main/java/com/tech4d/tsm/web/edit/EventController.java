@@ -78,6 +78,9 @@ public class EventController extends SimpleFormController {
                 eventForm.setMapCenter(SensibleMapDefaults.NORTH_ATLANTIC);
             }
         }
+        if (ServletRequestUtils.getStringParameter(request,"add") != null) {
+        	eventForm.setAddEvent(true);
+        }
         return eventForm;
     }
 
@@ -93,6 +96,8 @@ public class EventController extends SimpleFormController {
         	EventFormFactory.renderWiki(event, request);
         	eventForm.setPreviewEvent(JSONFormat.toJSON(event));
             return new ModelAndView(getFormView(), errors.getModel());
+        } else if (errors.hasErrors()) {
+        	return new ModelAndView(getFormView(), errors.getModel());
         } else {
             //change the map center of the search form to wherever we are now!    	
             EventSearchForm eventSearchForm = getEventSearchForm(request);
