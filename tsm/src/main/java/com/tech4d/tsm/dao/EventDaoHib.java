@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.Auditable;
 import com.tech4d.tsm.model.EventSearchText;
+import com.tech4d.tsm.model.PositionalAccuracy;
 import com.tech4d.tsm.model.WikiText;
 
 @Transactional
@@ -135,5 +136,16 @@ public class EventDaoHib implements EventDao {
     		return (WikiText) results.get(0);
     	}
 	}
+
+	@SuppressWarnings("unchecked")
+	public List<PositionalAccuracy> getPositionalAccuracies() {
+		
+		return this.sessionFactory.getCurrentSession().createQuery("select pa from PositionalAccuracy pa order by id asc").list();
+	}
+	
+    public Serializable save(PositionalAccuracy positionalAccuracy) {
+    	return this.sessionFactory.getCurrentSession().save(positionalAccuracy);
+    }
+	 
     
 }

@@ -28,3 +28,12 @@ VALUES(1,CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0,'frank@fsanmiguel.com','frank',
 INSERT INTO User_Role (user_id, roles_id) VALUES
 (1,1),(1,2),(1,3),(1,4),(1,5);
 
+--positional accuracies
+ALTER TABLE PositionalAccuracy AUTO_INCREMENT=0; 
+INSERT INTO PositionalAccuracy (id, name, visible) VALUES
+(1, 'UNSPECIFIED', true),
+(2, 'REGION', true),
+(3, 'CITY', true),
+(4, 'NEIGHBORHOOD', true),
+(5, 'ADDRESS', true),
+(6, 'PINPOINT', true);

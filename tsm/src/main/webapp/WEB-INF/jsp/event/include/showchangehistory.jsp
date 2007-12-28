@@ -7,7 +7,11 @@
 <%@ taglib prefix="display" uri="http://displaytag.sf.net" %>
 <%
 int geometryField = EventFieldChangeFormatter.TSGEOMETRY;
+int posAccuracyField = EventFieldChangeFormatter.POSITIONAL_ACCURACY;
+int discussField = EventFieldChangeFormatter.DISCUSSION;
 request.setAttribute("geometryField", geometryField);
+request.setAttribute("posAccuracyField", posAccuracyField);
+request.setAttribute("discussField", discussField);
 request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 %>
 	
@@ -57,6 +61,9 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 										   This browser doesn't support embedding a map.
 						 				</iframe>
 				   				</c:when>
+				   				<c:when test="${dt.propertyName == posAccuracyField}">
+				   					<spring:message code="event.positionalAccuracy.${dt.oldValue}"/>
+				   				</c:when>
 				   				<c:otherwise>
 				     				<c:out value="${dt.oldValue}"/>
 				   				</c:otherwise>
@@ -69,6 +76,12 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 						  						height="150" width="350" frameborder="0" scrolling="no">
 										   This browser doesn't support embedding a map.
 						 				</iframe>
+				   				</c:when>
+				   				<c:when test="${dt.propertyName == posAccuracyField}">
+				   					<spring:message code="event.positionalAccuracy.${dt.newValue}"/>
+				   				</c:when>
+				   				<c:when test="${dt.propertyName == discussField}">
+				   					<spring:message code="audit.event.field.value.${dt.newValue}"/>
 				   				</c:when>
 				   				<c:otherwise>
 				     				<c:out value="${dt.newValue}"/>

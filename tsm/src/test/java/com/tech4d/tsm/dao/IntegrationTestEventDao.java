@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tech4d.tsm.OpenSessionInViewIntegrationTest;
 import com.tech4d.tsm.model.Event;
+import com.tech4d.tsm.model.PositionalAccuracy;
 import com.tech4d.tsm.model.WikiText;
 import com.tech4d.tsm.util.ContextUtil;
 import com.vividsolutions.jts.geom.Point;
@@ -184,6 +185,23 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
         //get
         discussion = eventDao.getDiscussion(returned.getId());
         assertEquals(updated, discussion.getText());
+    }
+    
+    @Test
+    public void positionalAccuracies() throws ParseException {
+    	String name = "pretty good";
+    	PositionalAccuracy pa = new PositionalAccuracy("first", true);
+    	eventDao.save(pa);
+		pa = new PositionalAccuracy(name, true);
+    	eventDao.save(pa);
+    	assertEquals(2,eventDao.getPositionalAccuracies().size());
+    	
+    	Event event = eventUtil.createEvent();
+    	event.setPositionalAccuracy(pa);
+    	eventDao.saveOrUpdate(event);
+    	Event returned = eventDao.findById(event.getId());
+    	assertEquals(name, returned.getPositionalAccuracy().getName());
+    	
     }
     
 }

@@ -5,6 +5,7 @@ import info.bliki.wiki.model.WikiModel;
 import javax.servlet.http.HttpServletRequest;
 
 import com.tech4d.tsm.model.Event;
+import com.tech4d.tsm.model.PositionalAccuracy;
 import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.tech4d.tsm.util.GeometryType;
 import com.tech4d.tsm.web.wikiText.WikiModelFactory;
@@ -31,6 +32,9 @@ public class EventFormFactory {
         event.setWhen(eventForm.getWhen());
         event.setZoomLevel(eventForm.getZoomLevel());
         event.setMapType(eventForm.getMapType());
+        PositionalAccuracy pa = new PositionalAccuracy();
+        pa.setId(eventForm.getPositionalAccuracy());
+        event.setPositionalAccuracy(pa);
         return event;
     }
 
@@ -45,6 +49,9 @@ public class EventFormFactory {
         eventForm.setWhen(event.getWhen());
         eventForm.setZoomLevel(event.getZoomLevel());
         eventForm.setMapType(event.getMapType());
+        if (null != event.getPositionalAccuracy()) {
+            eventForm.setPositionalAccuracy(event.getPositionalAccuracy().getId());
+        }
         if (event.getTsGeometry() != null) {
             Geometry geom = event.getTsGeometry().getGeometry();
             eventForm.setGeometry(geom);

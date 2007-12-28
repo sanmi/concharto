@@ -28,6 +28,7 @@
         <mapping class="com.tech4d.tsm.model.audit.AuditEntry"/>
         <mapping class="com.tech4d.tsm.model.audit.AuditFieldChange"/>
         <mapping class="com.tech4d.tsm.model.WikiText"/>
+        <mapping class="com.tech4d.tsm.model.PositionalAccuracy"/>
     
     </session-factory>
 

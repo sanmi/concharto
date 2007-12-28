@@ -17,6 +17,7 @@ public class EventForm {
     private String tags;
     private Long eventId;
     private String where;
+    private Long positionalAccuracy;
     private TimeRange when;
     private String source;
     private String geometryType;
@@ -104,6 +105,14 @@ public class EventForm {
     public void setWhere(String where) {
         this.where = where;
     }
+
+	public Long getPositionalAccuracy() {
+		return positionalAccuracy;
+	}
+
+	public void setPositionalAccuracy(Long positionalAccuracy) {
+		this.positionalAccuracy = positionalAccuracy;
+	}
 
 	public String getSource() {
         return source;
