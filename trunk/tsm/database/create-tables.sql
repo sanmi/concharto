@@ -36,11 +36,12 @@
         positive integer,
         _where varchar(512),
         zoomLevel integer,
-        tsGeometry_id bigint,
-        styleSelector_id bigint,
         discussion_id bigint,
+        styleSelector_id bigint,
         eventSearchText_id bigint,
+        tsGeometry_id bigint,
         when_id bigint,
+        positionalAccuracy_id bigint,
         primary key (id)
     );
 
@@ -81,8 +82,15 @@
         dispositionComment varchar(512),
         reason varchar(32),
         state varchar(255),
-        user_id bigint,
         event_id bigint,
+        user_id bigint,
+        primary key (id)
+    );
+
+    create table PositionalAccuracy (
+        id bigint not null auto_increment,
+        name varchar(255),
+        visible bit,
         primary key (id)
     );
 
@@ -194,16 +202,16 @@
         references EventSearchText (id);
 
     alter table Event 
-        add index FK_EVENT_STYLE (styleSelector_id), 
-        add constraint FK_EVENT_STYLE 
-        foreign key (styleSelector_id) 
-        references StyleSelector (id);
-
-    alter table Event 
         add index FK_EVENT_GEOM (tsGeometry_id), 
         add constraint FK_EVENT_GEOM 
         foreign key (tsGeometry_id) 
         references TsGeometry (id);
+
+    alter table Event 
+        add index FK_EVENT_STYLE (styleSelector_id), 
+        add constraint FK_EVENT_STYLE 
+        foreign key (styleSelector_id) 
+        references StyleSelector (id);
 
     alter table Event 
         add index FK_EVENT_TIMEPR (when_id), 
@@ -216,6 +224,12 @@
         add constraint FK_EVENT_DISCUSS 
         foreign key (discussion_id) 
         references WikiText (id);
+
+    alter table Event 
+        add index FK_EVENT_POSACCURACY (positionalAccuracy_id), 
+        add constraint FK_EVENT_POSACCURACY 
+        foreign key (positionalAccuracy_id) 
+        references PositionalAccuracy (id);
 
     alter table Event_UserTag 
         add index FK_EVENT_USERTAG (Event_id), 

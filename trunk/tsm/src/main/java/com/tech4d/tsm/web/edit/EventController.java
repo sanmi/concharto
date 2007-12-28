@@ -1,5 +1,7 @@
 package com.tech4d.tsm.web.edit;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -85,19 +87,39 @@ public class EventController extends SimpleFormController {
     }
 
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
+	protected ModelAndView showForm(HttpServletRequest request,
+			HttpServletResponse response, BindException errors)
+			throws Exception {
+    	Map model = errors.getModel();
+		addAccuracies(model);
+		return new ModelAndView(getFormView(), model);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void addAccuracies(Map model) {
+        model.put("positionalAccuracies", eventDao.getPositionalAccuracies());
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
 	protected ModelAndView processFormSubmission(HttpServletRequest request,
 			HttpServletResponse response, Object command, BindException errors)
 			throws Exception {
         EventForm eventForm = (EventForm)command;
 
+    	Map model = errors.getModel();
         if (eventForm.getShowPreview()) {
         	Event event = EventFormFactory.createEvent(eventForm);
         	EventFormFactory.renderWiki(event, request);
         	eventForm.setPreviewEvent(JSONFormat.toJSON(event));
-            return new ModelAndView(getFormView(), errors.getModel());
+        	addAccuracies(model);
+            return new ModelAndView(getFormView(), model);
         } else if (errors.hasErrors()) {
-        	return new ModelAndView(getFormView(), errors.getModel());
+        	addAccuracies(model);
+        	return new ModelAndView(getFormView(), model);
         } else {
             //change the map center of the search form to wherever we are now!    	
             EventSearchForm eventSearchForm = getEventSearchForm(request);

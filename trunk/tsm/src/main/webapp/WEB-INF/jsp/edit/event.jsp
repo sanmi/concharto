@@ -61,6 +61,14 @@
 		        <form:input cssClass="textInput expando" path="summary" maxlength="${event.SZ_SUMMARY}" htmlEscape="true"/>
    		    </div>
    		    <div class="inputcell">
+		        <span class="errorlabel"><form:errors path="when" element="div"/></span>
+		        <span class="inputlabel">When</span> 
+	          <small>
+	            e.g. "1962" or "March, 1064" or "1880 - 1886" <a href="#">hints</a>
+	          </small><br/>
+		        <form:input cssClass="textInput expando" path="when" />
+   		    </div>
+   		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="where" element="div"/></span>
    		    	<span class="inputlabel">Where</span>
 	          <small>e.g., "gettysburg, pa" </small><br/>
@@ -70,12 +78,16 @@
 	          <small id="tip"><b>Tip:</b> drag and drop the lollypop!</small>
    		    </div>
    		    <div class="inputcell">
-		        <span class="errorlabel"><form:errors path="when" element="div"/></span>
-		        <span class="inputlabel">When</span> 
-	          <small>
-	            e.g. "1962" or "March, 1064" or "1880 - 1886" <a href="#">hints</a>
-	          </small><br/>
-		        <form:input cssClass="textInput expando" path="when" />
+   		    	<span class="inputlabel">Accuracy of the position is </span>
+						         
+	          <spring:bind path="event.positionalAccuracy">
+		          <select class="textInput" name="<c:out value="${status.expression}"/>" >
+		          	<c:forEach items="${positionalAccuracies}" var="accuracy" >
+			          	<option <c:if test="${event.positionalAccuracy == accuracy.id}">selected="true"</c:if> value="${accuracy.id}"><spring:message code="event.positionalAccuracy.${accuracy.id}"/></option>
+		          	</c:forEach>
+		          </select>
+	          </spring:bind>
+   		    	
    		    </div>
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="description" element="div"/></span>

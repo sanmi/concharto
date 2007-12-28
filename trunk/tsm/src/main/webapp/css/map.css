@@ -32,6 +32,9 @@
 #sidebar .inputcell .textInput {
 	font: 10pt Arial, Helvetica, sans-serif;
 }
+#sidebar .inputcell select {
+	margin-left: 1em;
+}
 #sidebar .expando {
 	width: 24em;
 }

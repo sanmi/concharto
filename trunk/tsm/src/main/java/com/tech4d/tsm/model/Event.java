@@ -58,6 +58,7 @@ public class Event extends BaseAuditableEntity {
     private Integer zoomLevel;
     private Integer mapType;
     private WikiText discussion;
+    private PositionalAccuracy positionalAccuracy;
 
     @Column(name = "_where", length=SZ_WHERE)  //'where' is a sql reserved word
     public String getWhere() {
@@ -271,4 +272,15 @@ public class Event extends BaseAuditableEntity {
     public void setEventSearchText(EventSearchText eventSearchText) {
         this.eventSearchText = eventSearchText;
     }
+
+    @OneToOne (cascade = {})
+    @ForeignKey(name="FK_EVENT_POSACCURACY")
+	public PositionalAccuracy getPositionalAccuracy() {
+		return positionalAccuracy;
+	}
+
+	public void setPositionalAccuracy(PositionalAccuracy positionalAccuracy) {
+		this.positionalAccuracy = positionalAccuracy;
+	}
+    
 }

@@ -58,6 +58,7 @@ public class EventTesterDaoHib implements EventTesterDao {
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from TimePrimitive").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from AuditFieldChange").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from AuditEntry").executeUpdate();
+        this.sessionFactory.getCurrentSession().createSQLQuery("delete from PositionalAccuracy").executeUpdate();
     }
 
     /*

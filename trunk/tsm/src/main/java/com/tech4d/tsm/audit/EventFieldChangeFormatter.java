@@ -7,7 +7,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.tech4d.tsm.model.Auditable;
+import com.tech4d.tsm.model.BaseEntity;
 import com.tech4d.tsm.model.Event;
+import com.tech4d.tsm.model.PositionalAccuracy;
 import com.tech4d.tsm.model.audit.AuditEntry;
 import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.tech4d.tsm.util.TimeRangeFormat;
@@ -21,6 +23,12 @@ public class EventFieldChangeFormatter extends BaseAuditFieldChangeFormatter{
     public static final int SOURCE = 4;
     public static final int TSGEOMETRY = 5;
     public static final int WHEN = 6;
+    public static final int MAPTYPE = 7;
+    public static final int POSITIONAL_ACCURACY = 8;
+    public static final int FLAGS = 9;
+    public static final int DISCUSSION = 10;
+    public static final int ZOOM_LEVEL = 11;
+	public static final String ENTITY_ADDED = "ADDED";
     protected final Log log = LogFactory.getLog(getClass());
 
     @SuppressWarnings("unchecked")
@@ -35,6 +43,7 @@ public class EventFieldChangeFormatter extends BaseAuditFieldChangeFormatter{
     public void refresh(Auditable auditable) {
         //this is enough to fetch into memory
         ((Event)auditable).getUserTags().size();
+        ((Event)auditable).getDiscussion();
     }
     
     /**
@@ -61,9 +70,45 @@ public class EventFieldChangeFormatter extends BaseAuditFieldChangeFormatter{
         makeChange(WHEN,
                 TimeRangeFormat.format(current.getWhen()), 
                 TimeRangeFormat.format(previous.getWhen()), auditEntry);
+        makeChange(MAPTYPE, nullSafeToString(current.getMapType()), nullSafeToString(previous.getMapType()), auditEntry);
+        makeChange(ZOOM_LEVEL, nullSafeToString(current.getZoomLevel()), nullSafeToString(previous.getZoomLevel()), auditEntry);
+        makeChange(POSITIONAL_ACCURACY, nullSafeToString(current.getPositionalAccuracy()), nullSafeToString(previous.getPositionalAccuracy()), auditEntry);
+        makeChange(DISCUSSION, checkExists(current.getDiscussion()), checkExists(previous.getDiscussion()), auditEntry);
         return auditEntry;
     }
     
+    
+   private String nullSafeToString(PositionalAccuracy positionalAccuracy) {
+		if (positionalAccuracy == null) {
+			return "";
+		}
+		return positionalAccuracy.getId().toString();
+	}
+
+   /**
+    * null safe to string or integer
+    * @param value an Integer
+    * @return "" or string representation of the Integer
+    */ 
+   private String nullSafeToString(Integer value) {
+		if (value == null) {
+			return "";
+		}
+		return value.toString();
+	}
+
+/**
+    * @param discussion
+    * @return "" if value is null, "added" if there is a value
+    */
+	private String checkExists(BaseEntity object) {
+		if (null == object) {
+			return "";
+		} else {
+			return ENTITY_ADDED;
+		}
+	}
+
 	public Auditable revertEntity(Auditable auditable, Map<Integer, String> changeList) {
 		Event event = (Event) auditable;
 		for (Integer field : changeList.keySet()) {
@@ -90,7 +135,15 @@ public class EventFieldChangeFormatter extends BaseAuditFieldChangeFormatter{
 				} catch (ParseException e) {
 					log.error("Error parsing time while performing a revert.  This should never happen.");
 				}
-			}
+			} else if (field == MAPTYPE) {
+				event.setMapType(new Integer(change));
+			} else if (field == ZOOM_LEVEL) {
+				event.setZoomLevel(new Integer(change));
+			}  else if (field == POSITIONAL_ACCURACY) {
+				PositionalAccuracy pa = new PositionalAccuracy();
+				pa.setId(new Long(change));
+				event.setPositionalAccuracy(pa);
+			} //NOTE you can't revert flags or discussions.
 		}
 		return event;
 	}
