@@ -19,9 +19,10 @@
 		<jsp:include page="include/eventsearch.js.jsp"/>
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">textcontent.css,map.css,header.css,search.css</jsp:attribute>
-	<jsp:attribute name="script">prototype-1.7.0.js,map.js,json.js</jsp:attribute>
-	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
+	<jsp:attribute name="script">prototype-1.6.0.js,map.js,json.js,yuisupport.js</jsp:attribute>
+	<jsp:attribute name="bodyattr">onload="init()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 	<jsp:attribute name="nohead">true</jsp:attribute>
+	<jsp:attribute name="hashelp">true</jsp:attribute>
 
 	<jsp:body>
 		<form:form name="event" id="eventSearchForm" commandName="eventSearch" action="eventsearch.htm" onsubmit="search(); return false">
@@ -81,7 +82,7 @@
 								<ul>
 								<li>2000-2006</li>
 								<li>Feb 1884 - Jan 1886</li>
-								<li>Jine 22, 1992 12am - June 30, 1992</li>
+								<li>June 22, 1992 12am - June 30, 1992</li>
 								<li>1992</li>
 								<li>October 1992</li>
 								<li>Oct 12, 1992, 12:23:05 am</li>
@@ -157,6 +158,8 @@
 			</tr></tbody></table>
 		
 		</form:form>	
+
+		<jsp:include page="../include/helpsearch.jsp"/>
 
 	</jsp:body>
 </tsm:page>

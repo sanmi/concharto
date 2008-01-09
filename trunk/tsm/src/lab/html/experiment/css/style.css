@@ -104,6 +104,9 @@
 	font-weight: normal;
 	font-size:8pt;
 	}
+	#searchbox .eg a {
+	font-weight: normal;
+	}
 	#searchbox tr td {
 		padding: 0 .1em;
 		margin: 0;

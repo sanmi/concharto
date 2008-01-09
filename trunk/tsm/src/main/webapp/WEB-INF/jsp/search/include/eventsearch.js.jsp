@@ -4,6 +4,14 @@
 
   <%-- BEGIN PRE FUNCTIONS (initialization) ============================= --%>
 
+	function init() {
+		initialize();
+		
+		<%-- YUI Help panels --%>
+		setHelpPanel('help_when', 'link_help_when');
+		setHelpPanel('help_what', 'link_help_what');
+	}
+
 	<%-- create html for info bubbles --%>	
 	function makeOverlayHtml(event) {
 		var html = createInfoWindowHtml(event) +  

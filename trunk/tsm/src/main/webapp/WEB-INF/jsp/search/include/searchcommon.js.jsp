@@ -136,11 +136,6 @@
 		_overlayIndex++;
 	}
 
-	function simpleModal() {
-			//Control.Modal.open('contents of modal');
-			modal2.open();
- 	}
-	
 
   <%-- END PRE FUNCTIONS (initialization) ============================= --%>
 
