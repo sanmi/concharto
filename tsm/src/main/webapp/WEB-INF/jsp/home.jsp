@@ -10,6 +10,26 @@
 		<jsp:attribute name="head">
 			<script type="text/javascript">
 	//<![CDATA[
+
+	function init() {
+		setHelpPanel('help_when', 'link_help_when');
+		setHelpPanel('help_what', 'link_help_what');
+	}
+	
+	function setHelpPanel2(panelContent, linkContext) {
+		var panel;
+		panel = new YAHOO.widget.Panel(panelContent, { 
+			width:"250px", 
+			visible:false, 
+			context:[linkContext,"tl","br"],
+			effect:{effect:YAHOO.widget.ContainerEffect.FADE,duration:0.25},
+			constraintoviewport:true 
+		});
+		panel.render(document.body);
+		YAHOO.util.Event.addListener(linkContext, "click", panel.show, panel, true);
+		return panel;
+	}
+	
 	function search() {
 			document.getElementById("eventSearchForm").limitWithinMapBounds.value = 'false';
 			document.event.submit();
@@ -22,17 +42,18 @@
 	</script>
 	</jsp:attribute>	
 	<jsp:attribute name="stylesheet">main.css,header.css</jsp:attribute>
+	<jsp:attribute name="bodyattr">onload="init()" id="home"</jsp:attribute>
 	<jsp:attribute name="nohead">true</jsp:attribute>
 	<jsp:attribute name="nohomemenu">true</jsp:attribute>
-	<jsp:attribute name="bodyattr">id="home"</jsp:attribute>
-
+	<jsp:attribute name="hashelp">true</jsp:attribute>
+	
 	<jsp:body>
 
-	<div id="heading" >
-		<img  src="images/title-home.png" />	
-	</div>
-	
-	<form:form name="event" id="eventSearchForm" action="search/eventsearch.htm" commandName="eventSearch" onsubmit="search(); return false">
+		<div id="heading" >
+			<img  src="images/title-home.png" />	
+		</div>
+		
+		<form:form name="event" id="eventSearchForm" action="search/eventsearch.htm" commandName="eventSearch" onsubmit="search(); return false">
 			<form:hidden path="boundingBoxSW" htmlEscape="true"/>
 			<form:hidden path="boundingBoxNE" htmlEscape="true"/>
 			<form:hidden path="mapCenter" htmlEscape="true"/>
@@ -104,6 +125,8 @@
 		    </tr>
 		  </table>
 		</div>
+				
+		<jsp:include page="include/helpsearch.jsp"/>
 	</jsp:body>
 </tsm:page>
 

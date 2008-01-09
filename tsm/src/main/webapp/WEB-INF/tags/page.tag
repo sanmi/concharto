@@ -9,6 +9,7 @@
 <%@attribute name="stripped" required="false" type="java.lang.String"%>
 <%@attribute name="nohead" required="false" type="java.lang.String"%>
 <%@attribute name="nohomemenu" required="false" type="java.lang.String"%>
+<%@attribute name="hashelp" required="false" type="java.lang.String"%>
 <%@tag import="com.tech4d.tsm.auth.AuthConstants" %>
 
 <%
@@ -27,9 +28,14 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd" >
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
-<title>Time Space Map - ${title} </title>
+<title>Time Space Map - ${title}  </title>
 <style type="text/css">
-    @import url("<c:url value="/css/style.css"/>");
+
+	<c:if test="${hashelp == 'true'}">
+		@import url("http://yui.yahooapis.com/2.4.1/build/container/assets/container.css");
+	</c:if>
+  @import url("<c:url value="/css/style.css"/>");
+
 	<c:forTokens var="item" items="${stylesheet}" delims=",">
     @import url("<c:url value="/css/"/>${item}");
 	</c:forTokens>    
@@ -39,6 +45,23 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 <script type="text/javascript" src="<c:url value="/javascript/"/>${item}">
 </script>
 </c:forTokens>    
+
+<c:if test="${hashelp == 'true'}">
+	<script type="text/javascript" src="<c:url value="/javascript/"/>yuisupport.js"></script>
+
+	<%-- YUI Dependencies --%>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+	
+	<%-- OPTIONAL: Animation (only required if enabling Animation) --%>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/animation/animation-min.js"></script>
+	
+	<%-- OPTIONAL: Drag & Drop (only required if enabling Drag & Drop) --%>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/dragdrop/dragdrop-min.js"></script>
+	
+	<%-- Source file --%>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/container/container-min.js"></script>	
+
+</c:if>
 
 <jsp:invoke fragment="head" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -63,12 +86,12 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 	</div>
 	<c:if test="${stripped != 'true'}">
 	  <div id="footer">
-			&copy 2007, Time Space Map  
+			&copy 2007, Time Space Map
 			<a class="linkleft links" href="http://wiki.timespacemap.com/Legal" >Legal</a>
 			<a class="linkleft links" class="linkleft" href="http://wiki.timespacemap.com/About" >About</a>
 			<a class="links linkleft" href="http://wiki.timespacemap.com/Feedback">Feedback</a>
 	  	<span class="links linkleft">Version <spring:message code="app.version"/></span>
-			<a class="links linkleftright" href="http://creativecommons.org/licenses/by-nc-sa/3.0/us" >
+			<a class="links linkleftright" href="http://creativecommons.org/licenses/by-sa/3.0/us" >
 				<img src="http://i.creativecommons.org/l/by-sa/3.0/us/80x15.png"/>
 			</a>
 	  </div>

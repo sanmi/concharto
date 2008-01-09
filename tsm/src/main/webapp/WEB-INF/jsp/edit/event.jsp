@@ -13,8 +13,9 @@
 		<jsp:include page="include/edit.js.jsp"/>		
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">map.css,header.css</jsp:attribute>
-	<jsp:attribute name="script">prototype-1.7.0.js,map.js,json.js</jsp:attribute>
+	<jsp:attribute name="script">prototype-1.6.0.js,map.js,json.js,yuisupport.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="setMapExtent();"</jsp:attribute>
+	<jsp:attribute name="hashelp">true</jsp:attribute>
 
 	<jsp:body>
 		<table><tr>			
@@ -64,7 +65,7 @@
 		        <span class="errorlabel"><form:errors path="when" element="div"/></span>
 		        <span class="inputlabel">When</span> 
 	          <small>
-	            e.g. "1962" or "March, 1064" or "1880 - 1886" <a href="#">hints</a>
+	            e.g. "1962" or "March, 1064" or "1880 - 1886" <a href="#" id="link_help_when">hint</a>
 	          </small><br/>
 		        <form:input cssClass="textInput expando" path="when" />
    		    </div>
@@ -73,12 +74,11 @@
    		    	<span class="inputlabel">Where</span>
 	          <small>e.g., "gettysburg, pa" </small><br/>
 	          <form:input cssClass="textInput expando" path="where" maxlength="${event.SZ_WHERE}" htmlEscape="true"/>
-	          <br/>
 	          <input  type="button" name="Find" value="Go to Location" onclick="showAddress(document.event.where.value); return false"/>             
 	          <small id="tip"><b>Tip:</b> drag and drop the lollypop!</small>
    		    </div>
    		    <div class="inputcell">
-   		    	<span class="inputlabel">Accuracy of the position is </span>
+   		    	<span class="inputlabel">Accuracy of the position </span>
 						         
 	          <spring:bind path="event.positionalAccuracy">
 		          <select class="textInput" name="<c:out value="${status.expression}"/>" >
@@ -87,7 +87,7 @@
 		          	</c:forEach>
 		          </select>
 	          </spring:bind>
-   		    	
+   		    	<small><a href="#" id="link_help_accuracy">hint</a></small>
    		    </div>
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="description" element="div"/></span>
@@ -96,7 +96,7 @@
    		    </div>
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="tags" element="div"/></span>
-   		    	<span class="inputlabel">Tags</span> <small>(comma separated)</small><br/>
+   		    	<span class="inputlabel">Tags</span> <small>(comma separated) <a href="#" id="link_help_tags">hint</a></small> <br/>
 		        <form:input cssClass="textInput expando" path="tags" maxlength="${event.SZ_TAGS}" htmlEscape="true"/>
   		    </div>
    		    <div class="inputcell">
@@ -104,11 +104,19 @@
    		    	<span class="inputlabel">Source</span> <small>(wiki markup)</small><br/>
 			      <form:textarea cssClass="textInput expando" path="source" rows="3" htmlEscape="true"/>
    		    </div>
-					<div class="inputcell">
+					<div class="inputcell">				
 					 <input type="submit" name="Save" value="Save This Event" accesskey="s" title="Save your changes [alt+shift+s]"/>
 					 <input type="button" name="Preview" value="Preview" accesskey="p" title="Save your changes [alt+shift+p]" onclick="preview();"/>
 					 <input type="button" name="Cancel" value="Cancel" onclick="javascript:document.location='${basePath}search/eventsearch.htm';"/>
+					 	<p class="textInput expando">
+							By submitting this, you are releasing your work under the 
+							<a href="http://wiki.timespacemap.com/Legal#User_Submissions">Creative Commons License</a>. 
+							You are also promising us that you wrote this yourself, or copied it from a public domain or 
+							similar free resource. <b>DO NOT SUBMIT COPYRIGHTED WORK WITHOUT PERMISSION!</b>
+						</p>		  		
+					 
 					</div>
+				
 	      </form:form>
 			</td>		   
 			<td>
@@ -122,6 +130,10 @@
 				</div>
 			</td>
 	 	</tr></table>
+
+		<jsp:include page="../include/helpwhen.jsp"/>
+		<jsp:include page="../include/helptags.jsp"/>
+		<jsp:include page="../include/helpaccuracy.jsp"/>
 	
 	</jsp:body>
 </tsm:page>
