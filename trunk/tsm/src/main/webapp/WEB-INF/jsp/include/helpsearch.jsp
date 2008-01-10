@@ -9,8 +9,9 @@
 	<div class="bd">
     Some examples of valid search terms:
     <ul>
-      <li>Exact match: "Battle of Gettysburg"</li>
-      <li>All words: +Battle +Gettysburg"</li>
+      <li>Exact match: <em><b>"</b>Battle of Gettysburg<b>"</b></em></li>
+      <li>Must have all words: <em>+Battle +Gettysburg</em></li>
+      <li>Exclude 'Gettysburg':<em> +Battle -Gettysburg</em></li>
     </ul>
   </div>
 </div>
