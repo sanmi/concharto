@@ -234,7 +234,7 @@ img {
 	margin: 3px;
 	}
 	.helpbox .bd {
-	float:clear;
+	float:none;
 	margin: .4em;
 	padding: 0;
 	}
