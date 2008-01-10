@@ -141,8 +141,12 @@ public class EventFieldChangeFormatter extends BaseAuditFieldChangeFormatter{
 				event.setZoomLevel(new Integer(change));
 			}  else if (field == POSITIONAL_ACCURACY) {
 				PositionalAccuracy pa = new PositionalAccuracy();
-				pa.setId(new Long(change));
-				event.setPositionalAccuracy(pa);
+				try {
+					pa.setId(new Long(change));
+					event.setPositionalAccuracy(pa);
+				} catch (NumberFormatException e) {
+					//nothing to do, just leave it null
+				}
 			} //NOTE you can't revert flags or discussions.
 		}
 		return event;
