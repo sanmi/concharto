@@ -1,4 +1,4 @@
-Some examples of valid time ranges are:
+Some examples of valid times are:
 <ul>
   <li>1992</li>
   <li>430 BC</li>

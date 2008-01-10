@@ -19,10 +19,9 @@
 		<jsp:include page="include/eventsearch.js.jsp"/>
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">textcontent.css,map.css,header.css,search.css</jsp:attribute>
-	<jsp:attribute name="script">prototype-1.6.0.js,map.js,json.js,yuisupport.js</jsp:attribute>
+	<jsp:attribute name="script">prototype.js,map.js,json.js,control.modal.js,help.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="init()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 	<jsp:attribute name="nohead">true</jsp:attribute>
-	<jsp:attribute name="hashelp">true</jsp:attribute>
 
 	<jsp:body>
 		<form:form name="event" id="eventSearchForm" commandName="eventSearch" action="eventsearch.htm" onsubmit="search(); return false">

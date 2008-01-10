@@ -214,11 +214,29 @@ img {
 	float:none;
 	}
 	
-	.helpbox {
+ .helpbox {
+ 	background-color: white;
+	width: 300px;
+	border: thick solid #e0e0e0;
+	}
+	.helpbox .hd {
+	border-bottom: 1px solid #e0e0e0;
+	font-size: 16px;
+	font-style: italic;	
+	font-weight: bold;
+	padding: 0 0 2px 24px;
+	margin: .2em;
 	background-color: white;
-	width: 250px;
-	border: thin solid #e0e0e0;
-	visibility: hidden;
+	background: url(../images/22xhelp.gif) no-repeat;
+	}
+	.helpbox .hd .tl {
+	float:right;
+	margin: 3px;
+	}
+	.helpbox .bd {
+	float:clear;
+	margin: .4em;
+	padding: 0;
 	}
 	.helpbox ul {
 	margin-left:10px;
@@ -229,17 +247,8 @@ img {
 	margin-left:5px;
 	padding-left:5px;
 	}	 
-	.yui-panel .hd {
-	border-bottom: 1px solid #e0e0e0;
-	padding: 3px 0 3px 24px;
-	margin: .2em;
-	color: black;
-	font-size: 16px;
-	font-style: italic;
-	background-color: white;
-	background:  url(../images/22xhelp.gif) no-repeat;
+	#modal_container {
 	}
-
-	.yui-panel .container-close { 
-	margin: 3px;
-	}
+	#modal_overlay {
+	background-color:#000;
+	}	

@@ -1,6 +1,10 @@
 <div id="help_when" class="helpbox">
-	<div class="hd">Time Ranges</div>
+	<div class="hd">
+		<jsp:include page="helpclose.jsp"/>
+		When
+	</div>
 	<div class="bd">
+		Use a date, a date and time or a range of dates/times.
     <jsp:include page="timerangeexamples.jsp"/>
   </div>
 </div>
