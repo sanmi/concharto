@@ -27,6 +27,7 @@ public class JSONFormat {
     public static final String FIELD_SUMMARY = "summary";
     public static final String FIELD_DESCRIPTION = "description";
     public static final String FIELD_WHERE = "where";
+    public static final String FIELD_ACCURACY = "accuracy";
     public static final String FIELD_WHEN = "when";
     public static final String FIELD_TAGS = "tags";
     public static final String FIELD_SOURCE = "source";
@@ -51,6 +52,12 @@ public class JSONFormat {
         jsonEvent.put(FIELD_SUMMARY, event.getSummary());
         jsonEvent.put(FIELD_DESCRIPTION, event.getDescription());
         jsonEvent.put(FIELD_WHERE, event.getWhere());
+        String accuracy = "";
+        if (null != event.getPositionalAccuracy()) {
+        	accuracy = event.getPositionalAccuracy().getName();
+        } 
+        //TODO this needs to be localized!
+        jsonEvent.put(FIELD_ACCURACY, accuracy);
         jsonEvent.put(FIELD_WHEN, TimeRangeFormat.format(event.getWhen()));
         jsonEvent.put(FIELD_TAGS, event.getUserTagsAsString());
         jsonEvent.put(FIELD_SOURCE, event.getSource());

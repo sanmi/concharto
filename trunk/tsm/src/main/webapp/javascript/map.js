@@ -87,8 +87,11 @@
 	  var html = '<div class="result inforesult wikitext" style="width:' + width +'px;'+ height +'margin-bottom:10px">' +
 	  		'<b>' + event.summary.escapeHTML() +'</b><br/>' + 
 	   		'<b>' + event.when + '</b><br/>' + 
-				'<em>' + event.where.escapeHTML() + '</em><br/>' +
-				event.description  +
+				'<em>' + event.where.escapeHTML();
+				if (event.accuracy != "") {
+					 html += ' (Accuracy: ' + event.accuracy + ')'; 
+				}
+				html += '</em><br/>' + event.description  +
 				'<b>Tags: </b>' + event.tags.escapeHTML() + '<br/>' + 
 				'<b>Source: </b>';
 				html += event.source + '</div>';

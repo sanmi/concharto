@@ -147,5 +147,8 @@ public class EventDaoHib implements EventDao {
     	return this.sessionFactory.getCurrentSession().save(positionalAccuracy);
     }
 	 
-    
+	public PositionalAccuracy getPositionalAccuracy(Long id) {
+		return (PositionalAccuracy) this.sessionFactory.getCurrentSession().load(PositionalAccuracy.class, id);
+	}
+
 }
