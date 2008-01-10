@@ -37,4 +37,7 @@ public interface EventDao {
 	public List<PositionalAccuracy> getPositionalAccuracies();
 	
 	public Serializable save(PositionalAccuracy positionalAccuracy);
+	
+	public PositionalAccuracy getPositionalAccuracy(Long id);
+	
 }

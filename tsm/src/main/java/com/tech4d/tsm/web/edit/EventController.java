@@ -14,6 +14,7 @@ import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.model.Event;
+import com.tech4d.tsm.model.PositionalAccuracy;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.GeometryType;
 import com.tech4d.tsm.util.JSONFormat;
@@ -114,8 +115,13 @@ public class EventController extends SimpleFormController {
         if (eventForm.getShowPreview()) {
         	Event event = EventFormFactory.createEvent(eventForm);
         	EventFormFactory.renderWiki(event, request);
-        	eventForm.setPreviewEvent(JSONFormat.toJSON(event));
+        	//for processing the drop down selector for positional accuracies
         	addAccuracies(model);
+        	if (null != event.getPositionalAccuracy()) {
+            	event.setPositionalAccuracy(
+            			(PositionalAccuracy) eventDao.getPositionalAccuracy(event.getPositionalAccuracy().getId()));
+        	}
+        	eventForm.setPreviewEvent(JSONFormat.toJSON(event));
             return new ModelAndView(getFormView(), model);
         } else if (errors.hasErrors()) {
         	addAccuracies(model);
