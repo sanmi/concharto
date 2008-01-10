@@ -21,11 +21,11 @@
             <!--  <td>Where <span class="eg">e.g., Gettysburg, PA</span></td>  -->
             <td>
             	<form:errors path="when"><span class="errorLabel"></form:errors>
-            	When <span class="eg">e.g., 1962; Oct 14,1066; 1880-1886 <a href="#" id="link_help_when">hint</a></span>
+            	When <span class="eg">e.g., 1962; Oct 14,1066; 1880-1886 <a href="#help_when"  class="link_help">hint</a></span>
             	<form:errors path="when"></span></form:errors>
             </td>
             <td>
-            	What <span class="eg">e.g., Battle <a href="#" id="link_help_what">hint</a></span>
+            	What <span class="eg">e.g., Battle <a href="#help_what" class="link_help">hint</a></span>
             </td>
             <td></td>
           </tr>

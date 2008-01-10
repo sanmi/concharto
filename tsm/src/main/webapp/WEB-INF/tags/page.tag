@@ -9,7 +9,6 @@
 <%@attribute name="stripped" required="false" type="java.lang.String"%>
 <%@attribute name="nohead" required="false" type="java.lang.String"%>
 <%@attribute name="nohomemenu" required="false" type="java.lang.String"%>
-<%@attribute name="hashelp" required="false" type="java.lang.String"%>
 <%@tag import="com.tech4d.tsm.auth.AuthConstants" %>
 
 <%
@@ -31,9 +30,6 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 <title>Time Space Map - ${title}  </title>
 <style type="text/css">
 
-	<c:if test="${hashelp == 'true'}">
-		@import url("http://yui.yahooapis.com/2.4.1/build/container/assets/container.css");
-	</c:if>
   @import url("<c:url value="/css/style.css"/>");
 
 	<c:forTokens var="item" items="${stylesheet}" delims=",">
@@ -45,23 +41,6 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 <script type="text/javascript" src="<c:url value="/javascript/"/>${item}">
 </script>
 </c:forTokens>    
-
-<c:if test="${hashelp == 'true'}">
-	<script type="text/javascript" src="<c:url value="/javascript/"/>yuisupport.js"></script>
-
-	<%-- YUI Dependencies --%>
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js"></script>
-	
-	<%-- OPTIONAL: Animation (only required if enabling Animation) --%>
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/animation/animation-min.js"></script>
-	
-	<%-- OPTIONAL: Drag & Drop (only required if enabling Drag & Drop) --%>
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/dragdrop/dragdrop-min.js"></script>
-	
-	<%-- Source file --%>
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/container/container-min.js"></script>	
-
-</c:if>
 
 <jsp:invoke fragment="head" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">

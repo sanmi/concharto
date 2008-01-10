@@ -1,5 +1,8 @@
 <div id="help_accuracy" class="helpbox">
-	<div class="hd">Accuracy of Position</div>
+	<div class="hd">
+		<jsp:include page="helpclose.jsp"/>
+		Accuracy of Position
+	</div>
 	<div class="bd">
     Sometimes you can't pinpoint exactly where an event occurred.  
     Use the accuracy field to let readers know how good the position is.  Some examples are:   

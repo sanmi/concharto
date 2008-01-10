@@ -50,10 +50,7 @@
 		$('smaller').removeClassName('hidden');
 		$('larger').removeClassName('hidden');
 		
-		<%-- YUI help --%>
-		setHelpPanel('help_when', 'link_help_when');	
-		setHelpPanel('help_tags', 'link_help_tags', 350);	
-		setHelpPanel('help_accuracy', 'link_help_accuracy', 350);	
+		setupHelpPanels();
 	}
 	
 	function removeClickListener() {

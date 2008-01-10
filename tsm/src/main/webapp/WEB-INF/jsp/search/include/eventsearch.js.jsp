@@ -7,9 +7,7 @@
 	function init() {
 		initialize();
 		
-		<%-- YUI Help panels --%>
-		setHelpPanel('help_when', 'link_help_when');
-		setHelpPanel('help_what', 'link_help_what');
+		setupHelpPanels();
 	}
 
 	<%-- create html for info bubbles --%>	

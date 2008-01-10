@@ -8,46 +8,51 @@
     <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
     
     <link rel="stylesheet" type="text/css" href="../../../main/webapp/css/style.css">
-	<script src="../../../main/webapp/javascript/prototype-1.6.0.js"></script>
+	<script src="../../../main/webapp/javascript/prototype.js"></script>
 	<script src="control.modal.js"></script>
- 	<script type='text/javascript' src='scriptaculous.js?load=effects'></script>
 
   <style type="text/css">
-	 .helpbox {
-	 	background-color: white;
-		width: 250px;
-		border: thick solid #e0e0e0;
-	 }
-	 .helpbox .helptitle {
-		border-bottom: 1px solid #e0e0e0;
-	  font: italic 17px Georgia, serif;
-		padding: 0 0 2px 24px;
-		margin: .2em;
-		background-color: white;
-		background: url(22xhelp.gif) no-repeat;
-	 }
-	 .helpbox .helpcontent {
-		margin: .4em;
-		padding: 0;
-	 }
-	.helpbox ul {
-		margin-left:10px;
-		padding-left:10px;
-		margin-top:.2em;
+	.helpbox {
+	background-color: white;
+	width: 250px;
+	border: thick solid #e0e0e0;
 	}
-	.helpbox  li {
-		margin-left:5px;
-		padding-left:5px;
+	.helpbox .hd {
+	border-bottom: 1px solid #e0e0e0;
+	font-size: 16px;
+	font-style: italic;
+	font-weight: bold;
+	padding: 0 0 2px 24px;
+	margin: .2em;
+	background-color: white;
+	background: url(22xhelp.gif) no-repeat;
+	}
+	.helpbox .hd .tl {
+	padding: 0;
+	float:right;
+	}
+	.helpbox .bd {
+	float:none;
+	margin: .4em;
+	padding: 0;
+	}
+	.helpbox ul {
+	margin-left:10px;
+	padding-left:10px;
+	margin-top:.2em;
+	}
+	.helpbox li {
+	margin-left:5px;
+	padding-left:5px;
 	}	 
   </style>
 	<script type="text/javascript">
 	
 	function init() {
-    document.getElementsByClassName('help').each(function(link){
+    document.getElementsByClassName('link_help').each(function(link){
         new Control.Modal(link, {
 				containerClassName: 'helpbox',
         opacity: 0.2,
-				fade: true,
         position: 'relative', 
         offsetLeft: 20, 
         offsetTop: 20
@@ -59,9 +64,9 @@
   
 <body onLoad="init()">
 
-	<a href="#modal_contents" class="help">Simple Modal Link</a> | 
-	<a href="#help_one" class="help">Help One</a> | 
-	<a href="#help_time" class="help">Help Two</a>
+	<a href="#modal_contents" class="link_help">Simple Modal Link</a> | 
+	<a href="#help_one" class="link_help">Help One</a> | 
+	<a href="#help_time" class="link_help">Help Two</a>
 
 <div id="help_one">
 	<div class="nav">
@@ -69,9 +74,13 @@
 	</div> 
 	<p>First Help section</p>
 </div>
+
 <div id="help_time" class="helpbox">
-		<div class="helptitle">Time Ranges</div>
-    <div class='helpcontent'>
+		<div class="hd">
+    	<span class="tl"><a href="#" onClick="Control.Modal.close(); return false;"><img src="12xclose.gif"></img></a></span>
+      Time Ranges
+    </div>
+    <div class='bd'>
       Examples of valid time ranges are:
       <ul>
         <li>1992</li>

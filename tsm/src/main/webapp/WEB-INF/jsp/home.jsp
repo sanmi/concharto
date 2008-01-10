@@ -12,8 +12,7 @@
 	//<![CDATA[
 
 	function init() {
-		setHelpPanel('help_when', 'link_help_when');
-		setHelpPanel('help_what', 'link_help_what');
+		setupHelpPanels();
 	}
 	
 	function setHelpPanel2(panelContent, linkContext) {
@@ -45,7 +44,7 @@
 	<jsp:attribute name="bodyattr">onload="init()" id="home"</jsp:attribute>
 	<jsp:attribute name="nohead">true</jsp:attribute>
 	<jsp:attribute name="nohomemenu">true</jsp:attribute>
-	<jsp:attribute name="hashelp">true</jsp:attribute>
+	<jsp:attribute name="script">prototype.js,control.modal.js,help.js</jsp:attribute>
 	
 	<jsp:body>
 
