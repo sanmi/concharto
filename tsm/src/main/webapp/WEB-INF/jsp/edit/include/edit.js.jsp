@@ -51,6 +51,16 @@
 		$('larger').removeClassName('hidden');
 		
 		setupHelpPanels();
+		
+		<%-- if it is a polyline or a point, automatically fit it to the window 
+				 no matter what, otherwise it can be confusing to the user.  For example, 
+				 the centroid of the polyline may be nowhere near the border in which 
+				 case you won't see the line at all.--%>
+		if (!isEmpty(_editablePoly) && _editablePoly.getVertexCount() >0) {
+			fitToPoly(_editablePoly, true);
+		} 
+		/*
+		*/
 	}
 	
 	function removeClickListener() {
@@ -113,7 +123,7 @@
 			}
 		}
 	}
-
+	
 	<%-- If we are editing a poly, add listener for clicking on the map --%>
 	function addClickListener() {
 		<%-- only add if it is missing --%>

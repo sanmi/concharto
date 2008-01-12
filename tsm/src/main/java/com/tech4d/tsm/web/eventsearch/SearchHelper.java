@@ -209,9 +209,14 @@ public class SearchHelper {
     		Event event = eventSearchService.findById(eventSearchForm.getDisplayEventId());
     		events = new ArrayList<Event>();
     		events.add(event);
-			eventSearchForm.setMapCenterOverride(true);
 			eventSearchForm.setMapCenter(event.getTsGeometry().getGeometry().getCentroid());
-    		eventSearchForm.setZoomOverride(true);
+			//Don't override the zoom for polylines or polygons no matter what.  Otherwise, there is too
+			//much opportunity for confusion.  For example, the centroid of the polyline may be nowhere 
+			//near the border in which case you won't see the line at all.
+			if (event.getTsGeometry().getGeometry() instanceof Point) {
+				eventSearchForm.setMapCenterOverride(true);
+	    		eventSearchForm.setZoomOverride(true);				
+			}
     		eventSearchForm.setMapZoom(event.getZoomLevel());
     		eventSearchForm.setMapType(event.getMapType());
     		totalResults = 1L;
