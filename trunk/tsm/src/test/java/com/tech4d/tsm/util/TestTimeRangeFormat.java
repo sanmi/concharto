@@ -128,6 +128,8 @@ public class TestTimeRangeFormat {
         assertEquals(makeDate(1,1,-2007), getBegin("2007 B.C."));  //TSM-159
         assertEquals(makeDate(1,1,-2007), getBegin("2007 BCE"));  //TSM-159       
         assertEquals(makeDate(1,1,900), getBegin("900 CE"));  //TSM-159
+        assertEquals(makeDate(1,1,-2007), getBegin("2007 B.C.E."));  //TSM-159       
+        assertEquals(makeDate(1,1,900), getBegin("900 C.E."));  //TSM-159
         assertEquivalent(makeDayRange(12,7,-1941, 12,8,-1941), parseTimeRange("DECEMBER 7, 1941 BC")); //TSM-159
 
         assertEquals(makeDate(3,1,-2007), getBegin("2007 BC, March"));
