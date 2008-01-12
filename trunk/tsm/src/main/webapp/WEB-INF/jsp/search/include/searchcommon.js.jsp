@@ -11,6 +11,8 @@
 	var _fitToPolygon = [];
 	var _fitToPolygonIndex = 0;
 	var _accuracy_to_zoom = [4, 5, 7, 10, 11, 12, 13, 14, 15];
+	var _initialZoom;
+	var _initialCenter;
 	
 	<%-- Create a base icon for all of our markers that specifies the
 	     shadow, icon dimensions, etc. --%>
@@ -36,7 +38,6 @@
 		initializeMap(mapControl);
 		<%-- map center and map zoom --%>
 		
-		var mapCenterJSON = $('mapCenter').value;
 		var zoomTxt = $('mapZoom').value;
 		var mapZoom;
 		if (!isEmpty(zoomTxt)) {
@@ -48,8 +49,8 @@
 			map.setMapType(G_DEFAULT_MAP_TYPES[mapType]);
 		}
 		
-		if (mapCenterJSON != "") {
-			var mapCenter = mapCenterJSON.parseJSON();
+		var mapCenter = getMapCenterFromJSON();
+		if (null != mapCenter) {
 			<%-- recenter the map --%>
 			map.setCenter(new GLatLng(mapCenter.lat,mapCenter.lng), mapZoom);			
 
@@ -76,8 +77,19 @@
 				}
 			}
 		}
+		_initialZoom = map.getZoom();
+		_initialCenter = map.getCenter();
 	}
-
+	
+	function getMapCenterFromJSON() {
+		var mapCenterJSON = $('mapCenter').value;
+		if (mapCenterJSON != "") {
+			return mapCenterJSON.parseJSON();
+		} else {
+			return null;
+		} 			
+	}
+	
 	function fitToResults() {
 		var boundsPoly = new GPolyline(_fitToPolygon);
 		var zoom = 12; //city level
