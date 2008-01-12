@@ -419,10 +419,10 @@ public class TimeRangeFormat  {
         text = StringUtils.replace(text, "   ", " ");
         text = StringUtils.replace(text, "  ", " ");
         text = StringUtils.replace(text, ".", "");  //B.C. = BC
-        text = StringUtils.replace(text, "BCE", "BC"); 
         //only replace CE when it is not in DECEMBER  regexp = [^E]CE
         Perl5Util myRegularExpression = new Perl5Util();        
-        text = myRegularExpression.substitute("s/[^E]CE/AD/g", text);
+        text = myRegularExpression.substitute("s/BCE/BC/gi", text);
+        text = myRegularExpression.substitute("s/[^E]CE/AD/gi", text);
         text = normalizeCommas(text);
         text = adjustADBC(text);
         return text;
