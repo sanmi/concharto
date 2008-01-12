@@ -105,7 +105,7 @@
 								<display:setProperty name="paging.banner.some_items_found"> </display:setProperty>
 
 								<display:column autolink="true" class="iconcol">
-									<img height='34' width='20' src="${basePath}images/icons/marker<c:out value='${fn:substring(test,event_rowNum-1,event_rowNum)}'/>.gif" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"/>
+									<a href="#"><img height='34' width='20' src="${basePath}images/icons/marker<c:out value='${fn:substring(test,event_rowNum-1,event_rowNum)}'/>.gif" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"/></a>
 								</display:column>
 								
 								<display:column autolink="true">
