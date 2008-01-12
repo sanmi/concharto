@@ -14,7 +14,6 @@
         opacity: 0.2,
         afterOpen: getLinkUrls
         });
-    
 	}
 
 	<%-- create html for info bubbles --%>	
@@ -104,15 +103,24 @@
 				urltext = append(urltext, '_ne',  formatLL(boundingBox.getNorthEast()));
 			}
 		}
-		urltext = append(urltext, '_zoom', map.getZoom());
+		if (hasChangedMap()) {
+			urltext = append(urltext, '_zoom', map.getZoom());
+			urltext = append(urltext, '_ll', formatLL(map.getCenter()) );
+		}
 		urltext = append(urltext, '_maptype', getMapTypeIndex());			
-		urltext = append(urltext, '_ll', formatLL(map.getCenter()) );
+			
 		<%-- get rid of spaces and '#' --%>
 		urltext = urltext.gsub('#','');
 		urltext = urltext.gsub(' ','+');
 		return urltext;
 	}
 	
+	function hasChangedMap() {
+		return 	(_initialZoom != map.getZoom()) ||
+			(_initialCenter.lat() != map.getCenter().lat()) ||
+			(_initialCenter.lng() != map.getCenter().lng());
+	}
+
 	function formatLL(ll) {
 		return ll.lat().toFixed(6) + ',' + ll.lng().toFixed(6);
 	}
