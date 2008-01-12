@@ -12,7 +12,7 @@ public class SensibleMapDefaults {
     public static final int ZOOM_COUNTRY = 5;
     public static final int ZOOM_USA = 4;
     public static final int ZOOM_WORLD = 2;
-    public static int NUM_ZOOM_LEVELS = 19;
+    public static int NUM_ZOOM_LEVELS = 20;  //19 for map data, 20 for satellite (possibly 21)
     public static double[] SEARCH_BOX_DIMENTSIONS = new double[NUM_ZOOM_LEVELS];
     public static Point USA;
     public static Point NORTH_ATLANTIC;
