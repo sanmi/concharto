@@ -36,32 +36,37 @@
 		initializeMap(mapControl);
 		<%-- map center and map zoom --%>
 		
-		var mapCenterJSON = document.getElementById("eventSearchForm").mapCenter.value;
-		
-		var mapZoom = parseInt(document.getElementById("eventSearchForm").mapZoom.value);
+		var mapCenterJSON = $('mapCenter').value;
+		var zoomTxt = $('mapZoom').value;
+		var mapZoom;
+		if (!isEmpty(zoomTxt)) {
+			mapZoom = parseInt(zoomTxt);
+		}
 		<%-- set map type from the event --%>
-		var mapType = document.getElementById("eventSearchForm").mapType.value;
+		var mapType = $('mapType').value;
 		if (mapType != '') {
 			map.setMapType(G_DEFAULT_MAP_TYPES[mapType]);
 		}
+		
 		if (mapCenterJSON != "") {
 			var mapCenter = mapCenterJSON.parseJSON();
 			<%-- recenter the map --%>
 			map.setCenter(new GLatLng(mapCenter.lat,mapCenter.lng), mapZoom);			
 
-			var eventsJSON = document.getElementById("eventSearchForm").searchResults.value;
+			var eventsJSON = $('searchResults').value;
 			if (eventsJSON != '') {
 				var events = eventsJSON.parseJSON();
 				createOverlays(events);
 			}
 		}
 		adjustSidebarIE();
-		var zoomOverride = document.getElementById("eventSearchForm").zoomOverride.value;
+		var zoomOverride = $('zoomOverride').value;
 		if ($('embed').value == 'true') {
 			fitToResults();
 		} else if (limitWithinMapBounds() == false)  {
 			<%-- fit map to the results unless there is an override --%>		
 			//alert($('mapCenterOverride').value != 'true');
+			
 			if ((0 != _fitToPolygon.length) && ($('mapCenterOverride').value != 'true')) {
 				if (zoomOverride == 'true') {
 					document.getElementById("eventSearchForm").zoomOverride.value = 'false';
