@@ -151,10 +151,11 @@
 		} 
 	}
 	
-	function fitToPoly(poly) {
+	function fitToPoly(poly, force /* optional */) {
+	  if (force == null) force = false;
 		var bounds = poly.getBounds();
 		var zoom = map.getBoundsZoomLevel(bounds);
-		if (zoom > map.getZoom()) {
+		if ((zoom > map.getZoom()) || (force == true)) {
 			map.setZoom(zoom);
 		}
 	}
