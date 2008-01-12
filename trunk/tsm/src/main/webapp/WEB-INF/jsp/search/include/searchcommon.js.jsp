@@ -77,6 +77,8 @@
 				}
 			}
 		}
+		<%-- This is for creating links.  We only override zoom and center if the user has
+		     changed the map since the page was rendered (e.g. initialize() was called) --%>
 		_initialZoom = map.getZoom();
 		_initialCenter = map.getCenter();
 	}
