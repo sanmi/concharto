@@ -116,8 +116,6 @@ public class SearchHelper {
     	Long eventId = ServletRequestUtils.getLongParameter(request, QUERY_ID);
     	if (null != eventId) {
         	eventSearchForm.setDisplayEventId(eventId);
-        	//allow the javascript client side code not to "fit" the map to the search results
-    		eventSearchForm.setMapCenterOverride(true);
     	}
     	Point ll = getLatLng(request, QUERY_LAT_LNG);
     	if (null != ll) {
@@ -211,12 +209,10 @@ public class SearchHelper {
     		Event event = eventSearchService.findById(eventSearchForm.getDisplayEventId());
     		events = new ArrayList<Event>();
     		events.add(event);
-    		if (!eventSearchForm.getMapCenterOverride()) {
-    			eventSearchForm.setMapCenter(event.getTsGeometry().getGeometry().getCentroid());
-    		}
-    		if (!eventSearchForm.getZoomOverride()) {
-        		eventSearchForm.setMapZoom(event.getZoomLevel());
-    		}
+			eventSearchForm.setMapCenterOverride(true);
+			eventSearchForm.setMapCenter(event.getTsGeometry().getGeometry().getCentroid());
+    		eventSearchForm.setZoomOverride(true);
+    		eventSearchForm.setMapZoom(event.getZoomLevel());
     		eventSearchForm.setMapType(event.getMapType());
     		totalResults = 1L;
     		firstRecord = 0;

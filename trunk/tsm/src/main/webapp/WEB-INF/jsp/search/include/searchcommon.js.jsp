@@ -66,7 +66,6 @@
 		} else if (limitWithinMapBounds() == false)  {
 			<%-- fit map to the results unless there is an override --%>		
 			//alert($('mapCenterOverride').value != 'true');
-			
 			if ((0 != _fitToPolygon.length) && ($('mapCenterOverride').value != 'true')) {
 				if (zoomOverride == 'true') {
 					document.getElementById("eventSearchForm").zoomOverride.value = 'false';
@@ -214,6 +213,11 @@
 		}
 		return overlay.getVertex(closest);
 	}
+		
+  function isEmpty(value) {
+		return ((null == value) || ('' == value));
+	}
+	
 		
   <%-- END WHILEFUNCTIONS  ============================= --%>
 
