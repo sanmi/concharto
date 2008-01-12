@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.apache.oro.text.perl.Perl5Util;
 import org.junit.Test;
 
 import com.tech4d.tsm.model.time.SimpleTimeRange;
@@ -124,6 +125,10 @@ public class TestTimeRangeFormat {
         //Test date formats
         assertEquals(makeDate(1,1,-2007), getBegin("2007BC"));
         assertEquals(makeDate(1,1,-2007), getBegin("2007 BC"));
+        assertEquals(makeDate(1,1,-2007), getBegin("2007 B.C."));  //TSM-159
+        assertEquals(makeDate(1,1,-2007), getBegin("2007 BCE"));  //TSM-159       
+        assertEquals(makeDate(1,1,900), getBegin("900 CE"));  //TSM-159
+        assertEquivalent(makeDayRange(12,7,-1941, 12,8,-1941), parseTimeRange("DECEMBER 7, 1941 BC")); //TSM-159
 
         assertEquals(makeDate(3,1,-2007), getBegin("2007 BC, March"));
         assertEquals(makeDate(3,1,-2007), getBegin("March, 2007 BC"));
@@ -191,8 +196,9 @@ public class TestTimeRangeFormat {
 
         assertEquals("941 BC - 940 BC", formatTimeRange(1,1,-941,1,1,-939));
         assertEquals("56 BC - 100 AD", formatTimeRange(1,1,-56,1,1,101));
+        assertEquals("1900 BC - 1800", formatTimeRange(1,1,-1900,1,1,1801));  //TSM-158
+
         assertEquals("941 BC", formatTimeRange(1,1,-941,1,1,-940));
-        
         assertEquals("March, 941 BC", formatTimeRange(3,1,-941,4,1,-941));
         
         /*        assertEquals("941 AD - 942 AD", formatTimeRange(1,1,941,1,1,943));
@@ -215,15 +221,6 @@ public class TestTimeRangeFormat {
             int m2, int d2, int y2, int hh2, int mm2, int ss2) {
         com.tech4d.tsm.model.time.SimpleTimeRange timeRange = makeDayRange(m1, d1, y1, hh1, mm1, ss1, m2, d2, y2, hh2, mm2, ss2);
         return TimeRangeFormat.format(timeRange);
-    }
-
-    private void assertException(String text) {
-        try {
-            TimeRangeFormat.parse(text);           
-            fail("should have thrown an exception");
-        } catch (ParseException e) {
-            //expected
-        } 
     }
 
     private com.tech4d.tsm.model.time.SimpleTimeRange parseTimeRange(String text) throws ParseException {

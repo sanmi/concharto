@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.oro.text.perl.Perl5Util;
 
 import com.tech4d.tsm.model.time.SimpleTimeRange;
 import com.tech4d.tsm.model.time.TimeRange;
@@ -299,7 +300,9 @@ public class TimeRangeFormat  {
         String format;
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(date);
-        if (cal.get(Calendar.YEAR) < MAX_YEAR_TO_DISLPAY_ERA) {
+        //if the year is an AD date and it is pretty old (e.g. less than 1000AD), then append the era
+        //always display the era for BC dates
+        if ((cal.get(Calendar.ERA) == GregorianCalendar.BC) || (cal.get(Calendar.YEAR) < MAX_YEAR_TO_DISLPAY_ERA)) {
             format = cp.getFormatWithEra();
         } else {
             format = cp.getFormat();
@@ -415,6 +418,11 @@ public class TimeRangeFormat  {
         text = StringUtils.replace(text, "    ", " ");
         text = StringUtils.replace(text, "   ", " ");
         text = StringUtils.replace(text, "  ", " ");
+        text = StringUtils.replace(text, ".", "");  //B.C. = BC
+        text = StringUtils.replace(text, "BCE", "BC"); 
+        //only replace CE when it is not in DECEMBER  regexp = [^E]CE
+        Perl5Util myRegularExpression = new Perl5Util();        
+        text = myRegularExpression.substitute("s/[^E]CE/AD/g", text);
         text = normalizeCommas(text);
         text = adjustADBC(text);
         return text;
