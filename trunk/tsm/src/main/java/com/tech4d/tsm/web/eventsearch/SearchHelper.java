@@ -41,7 +41,9 @@ import com.tech4d.tsm.web.util.DisplayTagHelper;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
 import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
 import com.tech4d.tsm.web.wikiText.WikiModelFactory;
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 /**
@@ -55,8 +57,13 @@ public class SearchHelper {
 	public static final String QUERY_WHEN = "_when";
 	public static final String QUERY_WHERE = "_where";
 	public static final String QUERY_MAPTYPE = "_maptype";
+	public static final String QUERY_LAT_LNG = "_ll";
+	public static final String QUERY_SW = "_sw";
+	public static final String QUERY_NE = "_ne";
 	public static final String QUERY_ID = "_id";
-	public static final String QUERY_INCLUDE_TIMERANGE_OVERLAPS = "_timeoverlaps";
+	public static final String QUERY_WITHIN_MAP_BOUNDS = "_withinMap";
+	public static final String QUERY_EXCLUDE_TIMERANGE_OVERLAPS = "_timeoverlaps";
+	public static final String QUERY_EMBED = "_embed";
     public static final String MODEL_EVENTS = "events";
     public static final String MODEL_TOTAL_RESULTS = "totalResults";
     public static final String MODEL_CURRENT_RECORD = "currentRecord";
@@ -103,11 +110,41 @@ public class SearchHelper {
         	eventSearchForm.setZoomOverride(true);
     	}
     	eventSearchForm.setMapType(ServletRequestUtils.getIntParameter(request, QUERY_MAPTYPE));
-    	eventSearchForm.setLimitWithinMapBounds(false);
-    	eventSearchForm.setExcludeTimeRangeOverlaps((ServletRequestUtils.getBooleanParameter(request, QUERY_INCLUDE_TIMERANGE_OVERLAPS)));
-    	eventSearchForm.setDisplayEventId(ServletRequestUtils.getLongParameter(request, QUERY_ID));
-    	eventSearchForm.setLimitWithinMapBounds(false);  //no bounds to search with
+    	eventSearchForm.setLimitWithinMapBounds((ServletRequestUtils.getBooleanParameter(request, QUERY_WITHIN_MAP_BOUNDS)));
+    	eventSearchForm.setExcludeTimeRangeOverlaps((ServletRequestUtils.getBooleanParameter(request, QUERY_EXCLUDE_TIMERANGE_OVERLAPS)));
+    	eventSearchForm.setEmbed((ServletRequestUtils.getBooleanParameter(request, QUERY_EMBED)));
+    	Long eventId = ServletRequestUtils.getLongParameter(request, QUERY_ID);
+    	if (null != eventId) {
+        	eventSearchForm.setDisplayEventId(eventId);
+        	//allow the javascript client side code not to "fit" the map to the search results
+    		eventSearchForm.setMapCenterOverride(true);
+    	}
+    	Point ll = getLatLng(request, QUERY_LAT_LNG);
+    	if (null != ll) {
+        	eventSearchForm.setMapCenter(ll);
+        	//tells the javascript client side code not to "fit" the map to the search results
+    		eventSearchForm.setMapCenterOverride(true);
+    	}
+    	eventSearchForm.setBoundingBoxNE(getLatLng(request, QUERY_NE));
+    	eventSearchForm.setBoundingBoxSW(getLatLng(request, QUERY_SW));
+    	
     	WebUtils.setSessionAttribute(request, SESSION_DO_SEARCH_ON_SHOW, true);
+	}
+	
+	private Point getLatLng(HttpServletRequest request, String query) throws ServletRequestBindingException {
+		String ll = ServletRequestUtils.getStringParameter(request, query);
+		String[] lls = StringUtils.split(ll, ',');
+		if ((null != lls) && (lls.length == 2)) {
+			try {
+				Double lat_y = new Double(lls[0]);
+				Double lng_x = new Double(lls[1]);
+				GeometryFactory gf = new GeometryFactory();
+		        return gf.createPoint(new Coordinate(lng_x, lat_y));
+			} catch (NumberFormatException e) {
+				//do nothing
+			}			
+		}
+		return null;
 	}
 
     /**
@@ -141,7 +178,9 @@ public class SearchHelper {
     		if (eventSearchForm.getMapZoom() == null) {
         		eventSearchForm.setMapZoom(SensibleMapDefaults.ZOOM_WORLD);      			
     		}
-        	eventSearchForm.setMapCenter(SensibleMapDefaults.NORTH_ATLANTIC);
+    		if (eventSearchForm.getMapCenter() == null) {
+    			eventSearchForm.setMapCenter(SensibleMapDefaults.NORTH_ATLANTIC);
+    		}
     	}
 	}
   
@@ -172,15 +211,24 @@ public class SearchHelper {
     		Event event = eventSearchService.findById(eventSearchForm.getDisplayEventId());
     		events = new ArrayList<Event>();
     		events.add(event);
-    		eventSearchForm.setMapCenter(event.getTsGeometry().getGeometry().getCentroid());
-    		eventSearchForm.setMapZoom(event.getZoomLevel());
+    		if (!eventSearchForm.getMapCenterOverride()) {
+    			eventSearchForm.setMapCenter(event.getTsGeometry().getGeometry().getCentroid());
+    		}
+    		if (!eventSearchForm.getZoomOverride()) {
+        		eventSearchForm.setMapZoom(event.getZoomLevel());
+    		}
     		eventSearchForm.setMapType(event.getMapType());
     		totalResults = 1L;
     		firstRecord = 0;
     		//now remove the id from the form - we don't want to get stuck forever showing this event
+    		//the browser javascript still needs the event id so it can crate a linkHere url, so we make
+    		//a copy of the id
+    		eventSearchForm.setLinkHereEventId(eventSearchForm.getDisplayEventId());
     		eventSearchForm.setDisplayEventId(null);
     		
     	} else { 
+    		eventSearchForm.setLinkHereEventId(null);
+    		eventSearchForm.setDisplayEventId(null);
     		if (eventSearchForm.getMapCenter() == null) {
     	    	//geocode
     	    	try {
@@ -198,7 +246,8 @@ public class SearchHelper {
                 params.setTextFilter(eventSearchForm.getWhat());
                 params.setTimeRange(eventSearchForm.getWhen());
                 params.setVisibility(getVisibility(eventSearchForm));
-                params.setIncludeTimeRangeOverlaps(BooleanUtils.isFalse(eventSearchForm.getExcludeTimeRangeOverlaps()));
+                //note these are opposites.. a value of null or false = false, true=true
+                params.setIncludeTimeRangeOverlaps(!BooleanUtils.isTrue(eventSearchForm.getExcludeTimeRangeOverlaps()));
                 events = eventSearchService.search(DISPLAYTAG_PAGESIZE, firstRecord, bounds, params);
                 totalResults = eventSearchService.getCount(bounds, params);
     		} else {
@@ -206,8 +255,7 @@ public class SearchHelper {
     			events = new ArrayList<Event>();
         		totalResults = 0L;
         		firstRecord = 0;
-    		}
-    		
+    		}    		
 
     	} 
         //for debugging
@@ -265,19 +313,35 @@ public class SearchHelper {
 			//they also specify a place, in which case the geocode takes precedence
 			return null;
 		}
-		if ((eventSearchForm.getMapZoom() >= SensibleMapDefaults.ZOOM_BOX_THRESHOLD) ||
-				((null == eventSearchForm.getBoundingBoxSW()) && (null == eventSearchForm.getBoundingBoxSW())))	{
-			if (null != eventSearchForm.getMapCenter()) {
-		    	bounds = ProximityHelper.getBounds(
-		    			SensibleMapDefaults.SEARCH_BOX_DIMENTSIONS[eventSearchForm.getMapZoom()], 
-		    			eventSearchForm.getMapCenter());  
+
+		if (hasBounds(eventSearchForm)) {
+			//we already have bounds
+			if (!zoomedInTooLow(eventSearchForm)) {
+				bounds = new LatLngBounds(eventSearchForm.getBoundingBoxSW(), eventSearchForm.getBoundingBoxNE());
+			} else  {
+				//when we are zoomed in real low we want to search more than just the visible map, instead
+				//use the a wider search radius
+				bounds = searchBoxBounds(eventSearchForm);
 			}
-		} else {
-		    bounds = new LatLngBounds(eventSearchForm.getBoundingBoxSW(), eventSearchForm.getBoundingBoxNE());
+		} else if (null != eventSearchForm.getWhere()){
+			//there is a location, but no bounds, so we have to make them
+			bounds = searchBoxBounds(eventSearchForm);
 		}
 		return bounds;
 	}
+	
+	private LatLngBounds searchBoxBounds(EventSearchForm eventSearchForm) {
+    	return ProximityHelper.getBounds(
+				SensibleMapDefaults.SEARCH_BOX_DIMENTSIONS[eventSearchForm.getMapZoom()], 
+				eventSearchForm.getMapCenter());  			
+	}
 
+	private boolean zoomedInTooLow(EventSearchForm eventSearchForm) {
+		return eventSearchForm.getMapZoom() >= SensibleMapDefaults.ZOOM_BOX_THRESHOLD;
+	}
+	private boolean hasBounds(EventSearchForm eventSearchForm) {
+		return ((null != eventSearchForm.getBoundingBoxSW()) && (null != eventSearchForm.getBoundingBoxSW()));
+	}
 
 
 	/**

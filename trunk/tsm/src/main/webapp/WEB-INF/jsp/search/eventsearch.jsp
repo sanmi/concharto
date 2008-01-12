@@ -28,6 +28,7 @@
 			<form:hidden path="boundingBoxSW" htmlEscape="true"/>
 			<form:hidden path="boundingBoxNE" htmlEscape="true"/>
 			<form:hidden path="mapCenter" htmlEscape="true"/>
+			<form:hidden path="mapCenterOverride" />
 			<form:hidden path="searchResults" htmlEscape="true"/>
 			<form:hidden path="mapZoom"/>
 			<form:hidden path="zoomOverride"/>
@@ -36,6 +37,8 @@
 			<form:hidden path="isAddEvent"/>
 			<form:hidden path="editEventId"/>
 			<form:hidden path="displayEventId"/>
+			<form:hidden path="linkHereEventId"/>
+			<form:hidden path="embed"/>
 	  	
 	  	<jsp:include page="include/searchbar.jsp">
 	  		<jsp:param name="showSearchOptions" value="true"/>
@@ -150,7 +153,17 @@
 		
 		</form:form>	
 
+		<div id="linkhere" class="linkbox">
+		    <div class='bd' style="margin:0; padding:0;">
+		    	<div class="tl"><a href="#" onClick="Control.Modal.close(); return false;"><img src="../images/12xclose.gif"></img></a></div>
+		    	<div class="label">Paste this text to link back to this map!</div>		    	
+		      <input id="linkhere_url" type="text" class="textinput" onclick="selectThis(this);" />
+		    	<div class="label">Paste this text to embed this map into a web page!</div>
+		      <input id="embedmap_html" type="text" class="textinput" onclick="selectThis(this);" />
+		    </div>
+		</div>		
 		<jsp:include page="../include/helpsearch.jsp"/>
+		
 
 	</jsp:body>
 </tsm:page>

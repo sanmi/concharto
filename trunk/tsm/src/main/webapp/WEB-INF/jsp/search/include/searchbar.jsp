@@ -40,7 +40,7 @@
 		          <tr>
 		            <td>
 		            	<span class="options">
-		            		<form:checkbox path="limitWithinMapBounds" value="true"/>
+		            		<form:checkbox path="limitWithinMapBounds"/>
 		            		Search current map shown.
 		            	</span>
 		            </td>
@@ -60,6 +60,15 @@
         </table>
       </div>
     </td>
+  </tr>
+  <tr>
+  	<td style="vertical-align: bottom;">
+			<c:if test="${param.showSearchOptions == 'true'}">
+			  <div id="linkhere_bar" class="linkBox" style="margin:.3em;float:right">
+					<a id="link_linkhere" href="#linkhere">Link to here</a>
+				</div>
+			</c:if>
+  	</td>
   </tr>
 </table>
 <c:if test="${fn:contains(roles, 'admin') && param.showAdminBar == 'true'}">

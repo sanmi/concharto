@@ -48,6 +48,7 @@
 			<form:hidden path="boundingBoxSW" htmlEscape="true"/>
 			<form:hidden path="boundingBoxNE" htmlEscape="true"/>
 			<form:hidden path="mapCenter" htmlEscape="true"/>
+			<form:hidden path="mapCenterOverride" />
 			<form:hidden path="searchResults" htmlEscape="true"/>
 			<form:hidden path="mapZoom"/>
 			<form:hidden path="zoomOverride"/>
@@ -56,6 +57,8 @@
 			<form:hidden path="isAddEvent"/>
 			<form:hidden path="editEventId"/>
 			<form:hidden path="displayEventId"/>
+			<form:hidden path="linkHereEventId"/>
+			<form:hidden path="embed"/>
 			<form:hidden path="limitWithinMapBounds"/>
 			<form:hidden path="excludeTimeRangeOverlaps"/>
 			<form:hidden path="where"/>
