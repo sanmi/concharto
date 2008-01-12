@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.WikiText;
+import com.tech4d.tsm.web.wikiText.SubstitutionMacro;
 
 public class DiscussController extends SimpleFormController {
 	
@@ -55,6 +56,9 @@ public class DiscussController extends SimpleFormController {
 		if (discussion.getShowPreview()) {
 			return new ModelAndView(getFormView(), errors.getModel());
 		}else {
+			//post process macros.  Later we will probably do something fancier for general macros.
+			String substituted = SubstitutionMacro.postSignature(request, discussion.getEvent().getDiscussion().getText());
+			discussion.getEvent().getDiscussion().setText(substituted);
 			//this isn't new we just need to save the discussion
 			eventDao.saveOrUpdate(discussion.getEvent());
 			return super.onSubmit(request, response, command, errors);
