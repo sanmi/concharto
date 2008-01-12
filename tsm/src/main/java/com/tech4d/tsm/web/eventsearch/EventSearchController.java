@@ -229,9 +229,9 @@ public class EventSearchController extends AbstractFormController {
         //populate the form with parameters off the URL query string
     	searchHelper.bindGetParameters(request, eventSearchForm);
     	
-    	//geocode if there is no map center
-		String mapKey = makeMapKey(request);
-		if (null == eventSearchForm.getMapCenter()) {
+    	//geocode if there is no map center and we aren't looking up by ID
+		if ((null == eventSearchForm.getDisplayEventId()) && (null == eventSearchForm.getMapCenter())) {
+			String mapKey = makeMapKey(request);
 	    	searchHelper.geocode(mapKey, request, eventSearchForm);
 		}
     	

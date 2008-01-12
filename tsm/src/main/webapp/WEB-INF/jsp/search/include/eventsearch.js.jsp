@@ -117,10 +117,6 @@
 		return ll.lat().toFixed(6) + ',' + ll.lng().toFixed(6);
 	}
 	
-  function isEmpty(value) {
-		return ((null == value) || ('' == value));
-	}
-	
 	function appendIfNotEmpty(urltext, query, value) {
 		//alert(query + ', ' + value + ', ' + isEmpty(value));
 		if (!isEmpty(value)) {
