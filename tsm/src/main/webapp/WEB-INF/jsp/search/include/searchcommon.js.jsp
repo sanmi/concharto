@@ -33,9 +33,9 @@
   <%-- BEGIN PRE FUNCTIONS (initialization) ============================= --%>
 	function initialize(mapControl) {
 		adjustSidebarIE();
-		
 		initializeMap(mapControl);
 		<%-- map center and map zoom --%>
+		
 		var mapCenterJSON = document.getElementById("eventSearchForm").mapCenter.value;
 		
 		var mapZoom = parseInt(document.getElementById("eventSearchForm").mapZoom.value);
@@ -56,39 +56,53 @@
 			}
 		}
 		adjustSidebarIE();
-		var where = document.getElementById("eventSearchForm").where.value
 		var zoomOverride = document.getElementById("eventSearchForm").zoomOverride.value;
-		if (limitWithinMapBounds() == false)  {
-			<%-- fit map to the results --%>
-			if (0 != _fitToPolygon.length) {
-				var boundsPoly = new GPolyline(_fitToPolygon);
+		if ($('embed').value == 'true') {
+			fitToResults();
+		} else if (limitWithinMapBounds() == false)  {
+			<%-- fit map to the results unless there is an override --%>		
+			//alert($('mapCenterOverride').value != 'true');
+			if ((0 != _fitToPolygon.length) && ($('mapCenterOverride').value != 'true')) {
 				if (zoomOverride == 'true') {
 					document.getElementById("eventSearchForm").zoomOverride.value = 'false';
-				}	else if (_fitToPolygon.length > 1){				
-					var zoom = map.getBoundsZoomLevel(boundsPoly.getBounds());
-					<%-- if they specified a place name, then we only want to zoom out to fit,
-					     not zoom in (e.g. only one place matching the criteria in England, we still
-					     want to show England --%>
-					if ((where != '') && (zoom > map.getZoom())) {
-						zoom = map.getZoom();
-					}					
+					var boundsPoly = new GPolyline(_fitToPolygon);
+					map.setCenter(getBoundsCenter(boundsPoly));
+				}	else {				
+					fitToResults();
 				}
-				map.setZoom(zoom);
-				map.setCenter(boundsPoly.getBounds().getCenter());
 			}
 		}
 	}
 
+	function fitToResults() {
+		var boundsPoly = new GPolyline(_fitToPolygon);
+		var zoom = 12; //city level
+		if (_fitToPolygon.length >= 2){							
+			zoom = map.getBoundsZoomLevel(boundsPoly.getBounds());
+			<%-- if they specified a place name, then we only want to zoom out to fit,
+			     not zoom in (e.g. only one place matching the criteria in England, we still
+			     want to show England --%>
+			if (!isEmpty($('where').value) && (zoom > map.getZoom())) {
+				zoom = map.getZoom();
+			}
+		}
+		map.setZoom(zoom);
+		map.setCenter(getBoundsCenter(boundsPoly));
+	}
+	
+	function getBoundsCenter(boundsPoly) {
+		<%-- if there is only one point, we don't do a fit, we just zoom to the point --%>
+		if (_fitToPolygon == 1) {
+			return _fitToPolygon[0];
+		} else {
+			return boundsPoly.getBounds().getCenter();
+		}
+	}
+	
 	<%-- called by createOverlay --%>
 	function createMarker(event) { 
-		if ((limitWithinMapBounds() == false) ) {
-			<%-- if we are trying to fit the map to the events, we will add 
-			     all events to a large poly.  We only do this for events because
-			     polygons and lines can span large areas (e.g. an ocean crossing that 
-			     ends at Baltimore ) --%>
-			_fitToPolygon[_fitToPolygonIndex] = new GLatLng(event.geom.lat, event.geom.lng);
-			_fitToPolygonIndex++;
-		}
+		updateFitToPolygon(new GLatLng(event.geom.lat, event.geom.lng));
+		
 	  <%-- Create a lettered icon for this point using our icon class --%>
 	  var letter = String.fromCharCode("A".charCodeAt(0) + _overlayIndex);
 	  var letteredIcon = new GIcon(_baseIcon);
@@ -105,6 +119,16 @@
 		recordOverlay( marker, html, "point", event.id)
 	}
 	
+	function updateFitToPolygon(gll) {
+		if ((limitWithinMapBounds() == false) ) {
+			<%-- if we are trying to fit the map to the events, we will add 
+			     all events to a large poly.  We only do this for events because
+			     polygons and lines can span large areas (e.g. an ocean crossing that 
+			     ends at Baltimore ) --%>
+			_fitToPolygon[_fitToPolygonIndex] = gll;
+			_fitToPolygonIndex++;
+		}
+	}
 	<%-- called by createOverlay --%>
 	function createPoly(event) {
 		var points = [];
@@ -113,6 +137,7 @@
 		for (i=0; i<line.length; i++) {
 			var vertex = new GLatLng(line[i].lat, line[i].lng);
 			points.push(vertex);
+			updateFitToPolygon(vertex);
 		}
 		var poly = newPoly(points, event.geom.gtype);
 		if (poly) {

@@ -22,6 +22,7 @@ import com.tech4d.tsm.service.EventSearchService;
 import com.tech4d.tsm.web.util.DisplayTagHelper;
 
 public class EventSearchController extends AbstractFormController {
+
 	private static final Log log = LogFactory.getLog(EventSearchController.class);
 
     private String formView;
@@ -104,7 +105,6 @@ public class EventSearchController extends AbstractFormController {
 		if ((eventSearchForm != null) && (!errors.hasErrors())) {
 
 			Map model = errors.getModel();
-			// there are some times we don't want to search, for instance when the
 			// user clicks cancel from another screen. In that case, we just use the
 			// last search
 			Boolean doSearch = (Boolean) WebUtils.getSessionAttribute(request, SearchHelper.SESSION_DO_SEARCH_ON_SHOW);
@@ -143,6 +143,9 @@ public class EventSearchController extends AbstractFormController {
 		}
 		
         EventSearchForm eventSearchForm = (EventSearchForm) command;
+        //reset zoom and map center overrides, they are only used for get strings
+        eventSearchForm.setMapCenterOverride(false);
+        eventSearchForm.setZoomOverride(false);
         ModelAndView returnModelAndView;
         if (errors.hasErrors()) {
             if (logger.isDebugEnabled()) {
@@ -182,6 +185,7 @@ public class EventSearchController extends AbstractFormController {
                 }
     			// needed so the displaytag paging can work
     	        displayTagModelElements(model);
+
             	returnModelAndView = new ModelAndView(getSuccessView(), model);
                 logSearchQuery(eventSearchForm, System.currentTimeMillis()-time);
             }
@@ -191,6 +195,7 @@ public class EventSearchController extends AbstractFormController {
         return returnModelAndView;
     }
 
+	
 	@SuppressWarnings("unchecked")
 	private void displayTagModelElements( Map model) {
 		model.put(DisplayTagHelper.MODEL_PAGESIZE, SearchHelper.DISPLAYTAG_PAGESIZE);
@@ -224,9 +229,11 @@ public class EventSearchController extends AbstractFormController {
         //populate the form with parameters off the URL query string
     	searchHelper.bindGetParameters(request, eventSearchForm);
     	
-    	//geocode
+    	//geocode if there is no map center
 		String mapKey = makeMapKey(request);
-    	searchHelper.geocode(mapKey, request, eventSearchForm);
+		if (null == eventSearchForm.getMapCenter()) {
+	    	searchHelper.geocode(mapKey, request, eventSearchForm);
+		}
     	
     	//save the form for redirect
     	//WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);

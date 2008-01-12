@@ -17,6 +17,7 @@ public class EventSearchForm  {
     private String where;
     private TimeRange when;
     private Point mapCenter;
+    private Boolean mapCenterOverride;
     private Point boundingBoxSW;
     private Point boundingBoxNE;
     private Integer mapZoom;
@@ -26,10 +27,12 @@ public class EventSearchForm  {
     private String searchResults;
     private Long editEventId;
     private Long displayEventId;
+    private Long linkHereEventId;
     private Boolean isAddEvent;
     private String show;
     private Boolean limitWithinMapBounds;
     private Boolean excludeTimeRangeOverlaps;
+    private Boolean embed;
     
 	public String getShow() {
 		return show;
@@ -67,7 +70,13 @@ public class EventSearchForm  {
     public void setMapCenter(Point whereLatLng) {
         this.mapCenter = whereLatLng;
     }
-    public String getWhat() {
+    public Boolean getMapCenterOverride() {
+		return mapCenterOverride;
+	}
+	public void setMapCenterOverride(Boolean mapCenterOverride) {
+		this.mapCenterOverride = mapCenterOverride;
+	}
+	public String getWhat() {
         return what;
     }
     public void setWhat(String what) {
@@ -114,6 +123,12 @@ public class EventSearchForm  {
 	public void setDisplayEventId(Long displayEventId) {
 		this.displayEventId = displayEventId;
 	}
+	public Long getLinkHereEventId() {
+		return linkHereEventId;
+	}
+	public void setLinkHereEventId(Long linkHereEventId) {
+		this.linkHereEventId = linkHereEventId;
+	}
 	public Integer getMapType() {
         return mapType;
     }
@@ -137,6 +152,12 @@ public class EventSearchForm  {
 	}
 	public void setExcludeTimeRangeOverlaps(Boolean includeTimeRangeOverlaps) {
 		this.excludeTimeRangeOverlaps = includeTimeRangeOverlaps;
+	}
+	public Boolean getEmbed() {
+		return embed;
+	}
+	public void setEmbed(Boolean embed) {
+		this.embed = embed;
 	}
     
 }

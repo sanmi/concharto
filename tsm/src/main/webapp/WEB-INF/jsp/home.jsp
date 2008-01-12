@@ -56,13 +56,17 @@
 			<form:hidden path="boundingBoxSW" htmlEscape="true"/>
 			<form:hidden path="boundingBoxNE" htmlEscape="true"/>
 			<form:hidden path="mapCenter" htmlEscape="true"/>
+			<form:hidden path="mapCenterOverride"/>
 			<form:hidden path="searchResults" htmlEscape="true"/>
 			<form:hidden path="mapZoom"/>
+			<form:hidden path="zoomOverride"/>
 			<form:hidden path="mapType"/>
 			<form:hidden path="isGeocodeSuccess"/>
 			<form:hidden path="isAddEvent"/>
 			<form:hidden path="editEventId"/>
 			<form:hidden path="displayEventId"/>
+			<form:hidden path="linkHereEventId"/>
+			<form:hidden path="embed"/>
 	  	<c:if test="${isFirstView != null}">
 				<input type="hidden" id="isFirstView" value="true"/>					
 	  	</c:if>
@@ -109,7 +113,7 @@
 		    <td id="right" >
 			    <div id="spotlightbox">
 		        <img src="images/spotlight.png" />
-		        <p><a  href='${basePath}search/eventsearch.htm?_where=london, england&_what="kensington palace"&_zoom=17&_maptype=1'>
+		        <p>What happened at <a  href='${basePath}search/eventsearch.htm?_where=london, england&_what="kensington palace"&_zoom=17&_maptype=1'>
 		        	Kensington Palace</a>
 		        </p>    
 		        <div id="borderbox">
@@ -118,13 +122,12 @@
 		            height="330" width="450" frameborder="0" scrolling="no">
 		           	This browser doesn't support embedding a map.
 		          </iframe>
-		        </div> 
 		      </div>
 		    </td>
 		    </tr>
 		  </table>
 		</div>
-				
+		
 		<jsp:include page="include/helpsearch.jsp"/>
 	</jsp:body>
 </tsm:page>

@@ -4,6 +4,7 @@
 	var geocoder = null;
 	
 	function initializeMap(control) {
+	
 		if (GBrowserIsCompatible()) {
 			// map and its equipment
 			map = new GMap2(document.getElementById("map"));
@@ -179,3 +180,9 @@
   	linked = linked.gsub('[.]" target','" target');  	
   	return linked;
   }
+  
+  function isEmpty(value) {
+		return ((null == value) || ('' == value));
+	}
+	
+  

@@ -12,12 +12,25 @@
 	<script src="control.modal.js"></script>
 
   <style type="text/css">
+	.linkbox {
+	background-color: white;
+	width: 420px;
+	border: thin solid #e0e0e0;
+	padding: .4em;
+	}
+	.linkbox .textinput {
+	width: 400px;
+	}
+	.linkbox .label {
+	margin: 0;
+	padding:1em 0 .2em 0;
+	}
 	.helpbox {
 	background-color: white;
 	width: 250px;
 	border: thick solid #e0e0e0;
 	}
-	.helpbox .hd {
+	.helpbox .hd, .linkbox .hd  {
 	border-bottom: 1px solid #e0e0e0;
 	font-size: 16px;
 	font-style: italic;
@@ -27,11 +40,11 @@
 	background-color: white;
 	background: url(22xhelp.gif) no-repeat;
 	}
-	.helpbox .hd .tl {
+	.helpbox .tl, .linkbox .tl {
 	padding: 0;
 	float:right;
 	}
-	.helpbox .bd {
+	.helpbox .bd, .linkbox .bd {
 	float:none;
 	margin: .4em;
 	padding: 0;
@@ -58,6 +71,18 @@
         offsetTop: 20
         });
     });
+    modal2 = new Control.Modal('link_linkhere',{
+				containerClassName: 'linkbox',
+        opacity: 0.2,
+        position: 'relative', 
+        offsetLeft: -400, 
+        offsetTop: 20
+        });
+	}
+	
+	function selectThis(element) {
+		element.focus();
+		element.select();
 	}
 	</script>
 </head>
@@ -65,14 +90,19 @@
 <body onLoad="init()">
 
 	<a href="#modal_contents" class="link_help">Simple Modal Link</a> | 
-	<a href="#help_one" class="link_help">Help One</a> | 
-	<a href="#help_time" class="link_help">Help Two</a>
+	<a href="#help_time" class="link_help">When hint</a> 
+	<div style="float:right">
+	<a href="#linkhere" id="link_linkhere">link here</a>  
+	</div>
 
-<div id="help_one">
-	<div class="nav">
-		<ul><li><a href="#" onClick="Control.Modal.close(); return false;">CLOSE X</a></li></ul>
-	</div> 
-	<p>First Help section</p>
+<div id="linkhere" class="linkbox">
+    <div class='bd' style="margin:0; padding:0;">
+    	<div class="tl"><a href="#" onClick="Control.Modal.close(); return false;"><img src="12xclose.gif"></img></a></div>
+    	<div class="label">Paste this text to link back to this map!</div>
+      <input id="linkhere_url" type="text" class="textinput" onclick="selectThis(this);" value="http://www.map4d.com/search/eventsearch.htm?_where=london,%20england&_what=%22kensington%20palace%22&_zoom=17&_maptype=1"/>
+    	<div class="label">Paste this text to embed this map into a web page!</div>
+      <input type="text" class="textinput" onclick="selectThis(this);" value="&lt;iframe src='http://www.map4d.com/search/eventsearch.htm?_where=london,%20england&_what=%22kensington%20palace%22&_zoom=17&_maptype=1"/>
+    </div>
 </div>
 
 <div id="help_time" class="helpbox">

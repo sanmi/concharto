@@ -53,6 +53,12 @@ form {
 	background: #FFFFFF;
 	text-align: left; 
 }  
+.linkBox{
+	float:right;
+	background: #F1F2EC;
+	padding:0 .6em;
+	margin:0;
+}
 .adminBox{
 	margin: 0.2em .2em 0;
 	padding:0 0 0 .6em;
@@ -214,6 +220,19 @@ img {
 	float:none;
 	}
 	
+ 	.linkbox {
+	background-color: white;
+	width: 420px;
+	border: thick solid #e0e0e0;
+	padding: .4em;
+	}
+	.linkbox .textinput {
+	width: 400px;
+	}
+	.linkbox .label {
+	margin: 0;
+	padding:1em 0 .2em 0;
+	}
  .helpbox {
  	background-color: white;
 	width: 300px;
@@ -229,11 +248,11 @@ img {
 	background-color: white;
 	background: url(../images/22xhelp.gif) no-repeat;
 	}
-	.helpbox .hd .tl {
+	.helpbox .tl, .linkbox .tl  {
 	float:right;
 	margin: 3px;
 	}
-	.helpbox .bd {
+	.helpbox .bd, .linkbox .bd {
 	float:none;
 	margin: .4em;
 	padding: 0;
