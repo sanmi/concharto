@@ -11,7 +11,8 @@
     <ul>
       <li>Exact match: <em><b>"</b>Battle of Gettysburg<b>"</b></em></li>
       <li>Must have all words: <em>+Battle +Gettysburg</em></li>
-      <li>Exclude 'Gettysburg':<em> +Battle -Gettysburg</em></li>
+      <li>Must have 'Battle' but not 'Gettysburg':<em> +Battle -Gettysburg</em></li>
+      <li>Any word beginning with 'Battle':<em> Battle*</em></li>
     </ul>
   </div>
 </div>
