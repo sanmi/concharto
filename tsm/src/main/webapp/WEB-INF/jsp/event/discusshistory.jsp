@@ -11,6 +11,8 @@
 	<jsp:attribute name="bodyattr">class="mapedit"</jsp:attribute>
 
 <jsp:body>
+		<%-- not sure why I need this -3px jog, can't get it to work from css file either --%>
+		<table style="margin:-3px;padding:0"><tr><td>
 			<div class="changes">
 				<div class="miniTabBar">
 					<a class="miniTabUnselected" href="${basePath}edit/event.htm?id=${param.eventId}">Event</a>
@@ -86,7 +88,7 @@
 			  	<input type="button" value="Back to Search" onclick="javascript:document.location='${basePath}search/eventsearch.htm';" />
 	    	</div>
 	  	</div>  
-	  	
+		</td></tr></table>	  	
 </jsp:body>
 </tsm:page>
 

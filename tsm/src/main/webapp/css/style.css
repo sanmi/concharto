@@ -7,7 +7,7 @@ body {
 	color: #202020;	
 	text-align:left;
 	background: url(../images/short-backg.png) repeat-x;
-	background-color: white;
+	background-color: #E1E4D6;
 }
 
 form {
@@ -47,12 +47,10 @@ form {
     width: 9em;
 		font-size: small;
 }
-
-#container { 
-	width: 100%;
-	background: #FFFFFF;
-	text-align: left; 
-}  
+#content {
+	margin: 0;
+	padding: 0;
+}
 .linkBox{
 	float:right;
 	background: #F1F2EC;
@@ -87,12 +85,12 @@ form {
 }
 
 #footer {
-    border-top: 1px solid #D7E5F2;
-	  width: 99%;
+	border-top:1px solid #E1E4D6;
+    background-color: #F3F3ED;
     left: 0;
     top: 0;
     padding: .2em;
-    margin: .2em;
+    margin: 0;
 }
 #footer .linkleftright, #footer .linkleft {
 	padding-left: 1em;
@@ -107,19 +105,19 @@ form {
 }
 .clearfloat { 
 	clear:both;
-    height:0;
-    font-size: 1px;
-    line-height: 0;
+  height:0;
+  font-size: 1px;
+  line-height: 0;
 }
 a:link, a:visited {
 color: #047BDD;
 }
 a {
-font-weight:bold;
-text-decoration: none;
+	font-weight:bold;
+	text-decoration: none;
 }
 .links {
-font-weight:normal;
+	font-weight:normal;
 }
 a.errorlinks:link, a.errorlinks:visited {
   color: red;
@@ -129,14 +127,18 @@ img {
 	border:none;
 }
 .loginForm, .settingsForm {
-    margin:40px 0 60px 60px;
+	padding:40px 0 60px 60px;
+	background-color: white;
+	margin: .2em;
+	border:1px solid #999999;
+	
 }
 .loginForm .errorLabel, .settingsForm .errorLabel {
-    padding-left: 0;
+	padding-left: 0;
 	color:red;
 }
 .settingsForm h2 {
-    margin-bottom: .2em;
+	margin-bottom: .2em;
 }
 
 .settingsForm .successMessage {
