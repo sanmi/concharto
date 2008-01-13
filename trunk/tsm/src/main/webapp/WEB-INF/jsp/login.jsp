@@ -10,7 +10,7 @@
 
 	<jsp:body>
 	  <form:form id="loginForm" name="login" commandName="login"> 
-	  	<div class="loginForm">
+	  	<div class="memberForm">
 				<h2>Welcome to the Time Space Map </h2>
 				<p>We are currently privately testing our service.  If you are interested in becoming a beta tester, 
 				please <a href="mailto:betatest@timespacemap.com"> contact us!</a>

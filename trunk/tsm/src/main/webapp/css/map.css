@@ -193,13 +193,13 @@
   padding-right:1em;
 }
 
-.changes {
+.pagepanel {
 	padding: 5px 0;
 	margin: .2em;
 	border:1px solid #999999;
 	background-color: white;
 }
-.changes .pagebanner {
+.pagepanel .pagebanner {
 	margin: .6em;
 }
 .changeBar {

@@ -8,7 +8,7 @@
 	<jsp:attribute name="stylesheet">header.css</jsp:attribute>
 	<jsp:body>
 		<form:form id="signupForm" name="signup" commandName="signup"> 
-	  	<div class="loginForm">
+	  	<div class="memberForm">
 	  		<h2>Sign Up</h2>
 	  		<form:errors path="*" cssClass="errorLabel" element="div"/>
 		  	<table>

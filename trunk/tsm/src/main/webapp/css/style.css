@@ -126,22 +126,22 @@ a.errorlinks:link, a.errorlinks:visited {
 img {
 	border:none;
 }
-.loginForm, .settingsForm {
+.memberForm {
 	padding:40px 0 60px 60px;
 	background-color: white;
 	margin: .2em;
 	border:1px solid #999999;
 	
 }
-.loginForm .errorLabel, .settingsForm .errorLabel {
+.memberForm .errorLabel{
 	padding-left: 0;
 	color:red;
 }
-.settingsForm h2 {
+.memberForm h2 {
 	margin-bottom: .2em;
 }
 
-.settingsForm .successMessage {
+.memberForm .successMessage {
   border:1px solid #999999;
   padding: .5em 1em .5em 1em;
   background-color:#009900;

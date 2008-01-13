@@ -18,7 +18,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 	
 	<jsp:body>
 		
-		<div class="loginForm">			
+		<div class="memberForm">			
 			<h2>Member Contributions for ${param.user}</h2>
 			
 			<display:table id="auditEntryTable" 

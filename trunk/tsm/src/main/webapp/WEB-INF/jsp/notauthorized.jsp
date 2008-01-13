@@ -3,7 +3,7 @@
 <tsm:page title="Not Authorized">
 	<jsp:attribute name="stylesheet">textcontent.css,header.css</jsp:attribute>
 	<jsp:body>
-	  	<div class="loginForm">
+	  	<div class="memberForm">
 				<h2>Sorry, you are not authorized to use this page</h2>
 				<a href="${pageContext.request.contextPath}/">Return</a>
 			</div>	  

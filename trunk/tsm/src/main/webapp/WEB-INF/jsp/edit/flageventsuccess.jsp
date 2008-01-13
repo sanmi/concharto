@@ -14,23 +14,22 @@
 		
 	</jsp:attribute>
 	<jsp:attribute name="stripped">false</jsp:attribute>
-	<jsp:attribute name="stylesheet">simpleform.css,header.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">map.css,simpleform.css,header.css</jsp:attribute>
+	<jsp:attribute name="bodyattr">class="mapedit"</jsp:attribute>
 
 	<jsp:body>
-		
-		<div class="simpleForm">
-			<div >
-				<h2>Thank you, this event has been flagged</h2>
+		<div class="pagepanel">
+			<div class="simpleForm">
 				<div>
-					To find out what happens next, read the <a href="http://wiki.timespacemap.com/Deletion_Policy">deletion policy</a>
-				</div>
-				<br/>
-		  	<input type="submit" value="Return to Search" onclick="document.location='${basePath}search/eventsearch.htm'"/>
-		  </div>
-	  	
-			
+					<h2>Thank you, this event has been flagged</h2>
+					<div>
+						To find out what happens next, read the <a href="http://wiki.timespacemap.com/Deletion_Policy">deletion policy</a>
+					</div>
+					<br/>
+			  	<input type="submit" value="Return to Search" onclick="document.location='${basePath}search/eventsearch.htm'"/>
+			  </div>
+			</div>
 		</div>
-
 	</jsp:body>
 </tsm:page>
 

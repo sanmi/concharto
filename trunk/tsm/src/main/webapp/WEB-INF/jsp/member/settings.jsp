@@ -11,7 +11,7 @@
 	<jsp:body>
 	  <form:form name="settings" commandName="settings" > 
 	  	<form:hidden path="username"/>
-	  	<div class="settingsForm">
+	  	<div class="memberForm">
 				<h2>Your Account Settings</h2>
 				<form:errors path="*" cssClass="errorLabel" element="div"/>
 		  	<table>
