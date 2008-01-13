@@ -61,19 +61,19 @@
 			}
 		}
 		adjustSidebarIE();
-		var zoomOverride = $('zoomOverride').value;
 		if ($('embed').value == 'true') {
+			<%-- always fit to results for embedded maps --%>
 			fitToResults();
 		} else if (limitWithinMapBounds() == false)  {
-			<%-- fit map to the results unless there is an override --%>		
-			//alert($('mapCenterOverride').value != 'true');
-			if ((0 != _fitToPolygon.length) && ($('mapCenterOverride').value != 'true')) {
-				if (zoomOverride == 'true') {
-					document.getElementById("eventSearchForm").zoomOverride.value = 'false';
-					var boundsPoly = new GPolyline(_fitToPolygon);
-					map.setCenter(getBoundsCenter(boundsPoly));
-				}	else {				
-					fitToResults();
+			if (!($('mapCenterOverride').value == 'true') || !($('zoomOverride').value == 'true')) {
+				fitToResults();
+			} else {
+				if (($('mapCenterOverride').value == 'true') && ((0 != _fitToPolygon.length))) {
+					$('mapCenterOverride').value = 'false';
+				} 
+				if ($('zoomOverride').value == 'true') {
+					<%-- reset it --%>
+					$('zoomOverride').value = 'false'; 
 				}
 			}
 		}

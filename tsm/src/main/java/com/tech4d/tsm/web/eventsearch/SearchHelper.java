@@ -216,6 +216,9 @@ public class SearchHelper {
 			if (event.getTsGeometry().getGeometry() instanceof Point) {
 				eventSearchForm.setMapCenterOverride(true);
 	    		eventSearchForm.setZoomOverride(true);				
+			} else {
+				eventSearchForm.setMapCenterOverride(false);
+	    		eventSearchForm.setZoomOverride(false);				
 			}
     		eventSearchForm.setMapZoom(event.getZoomLevel());
     		eventSearchForm.setMapType(event.getMapType());
