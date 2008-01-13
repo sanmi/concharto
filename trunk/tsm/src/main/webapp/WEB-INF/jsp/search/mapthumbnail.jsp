@@ -16,6 +16,8 @@
 	function initialize() {
 		initializeMap(new GSmallMapControl());
 		addEvent();
+   	var height = getHeight();
+   	document.getElementById("map").style.height=height+"px";		
 	}		
 	
 	function addEvent() {

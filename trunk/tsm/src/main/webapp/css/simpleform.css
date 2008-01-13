@@ -1,10 +1,14 @@
 @charset "utf-8";
 /* CSS Document */
-.simpleForm {
-    margin:2em 3em;
-    padding-right: 1em;
-}
 
+.tablejog {
+	style="margin:-3px;
+	padding:0"
+}
+.simpleForm {
+  margin:2em 3em;
+  padding-right: 1em;
+}
 .simpleForm .formLabel {
 	font-weight: bold;
 }
@@ -22,6 +26,7 @@
 	padding: 1em;
 	border: 1px solid #e0e0e0;
 	margin-bottom: .2em;
+	background-color: white;
 }
 
 .simpleForm li, ul {

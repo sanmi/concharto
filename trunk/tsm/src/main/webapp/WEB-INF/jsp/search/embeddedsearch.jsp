@@ -73,12 +73,6 @@
 					    </p>
 					  </noscript>
 					</div>
-			<table><tbody><tr>			
-				
-			  <td>
-					
-				</td>
-			</tr></tbody></table>
 		</form:form>	
 
 	</jsp:body>
