@@ -32,7 +32,7 @@
 <jsp:body>
 			<%-- not sure why I need this -3px jog, can't get it to work from css file either --%>
 			<table style="margin:-3px;padding:0"><tr><td>
-			<div class="changes">
+			<div class="pagepanel">
 				<div class="miniTabBar">
 					<a class="miniTabSelected" href="${basePath}edit/event.htm?id=${param.id}">Event</a>
  		    	<a class="miniTabUnselected" href="${basePath}event/discuss.htm?id=${param.id}">Discussion</a>

@@ -30,7 +30,7 @@
 	
 
 <jsp:body>
-			<div class="changes">
+			<div class="pagepanel">
 				<div class="miniTabBar">
 					<a class="miniTabUnselected" href="${basePath}edit/event.htm?id=${param.id}">Event</a>
 					<span class="miniTabSelected" >Discussion</span>

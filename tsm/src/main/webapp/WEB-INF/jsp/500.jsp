@@ -6,7 +6,7 @@
 	<jsp:attribute name="stylesheet">textcontent.css,header.css</jsp:attribute>
 
 	<jsp:body>
-		<div class="loginForm">
+		<div class="memberForm">
 			<h2>
 				Sorry, an error has occurred.  
 			</h2>
