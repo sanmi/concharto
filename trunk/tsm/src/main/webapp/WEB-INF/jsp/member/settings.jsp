@@ -6,7 +6,7 @@
 
 
 <tsm:page title="Settings">
-	<jsp:attribute name="stylesheet">header.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">simpleform.css,header.css</jsp:attribute>
 
 	<jsp:body>
 	  <form:form name="settings" commandName="settings" > 
@@ -14,8 +14,13 @@
 	  	<div class="memberForm">
 				<h2>Your Account Settings</h2>
 				<form:errors path="*" cssClass="errorLabel" element="div"/>
-		  	<table>
-		  		<tr>
+				
+		  	<table class="infoBox">
+					<colgroup span="2">
+						<col class="col1"></col>
+						<col class="col2"></col>
+					</colgroup>
+					<tr>
 		  			<td>Username</td>
 		  			<td>
 		  				${user.username}
@@ -35,14 +40,38 @@
 		  				</c:forEach>
 		  			</td>
 		  		</tr>
+		  	</table>
+
+  			<h2>Change Settings</h2>
+  			<c:if test="${success}">
+		  		<div class="successMessage" colspan="2">Your changes were successful</div>
+				</c:if>
+
+		  	<table class="infoBox">
+					<colgroup span="2">
+						<col class="col1"></col>
+						<col class="col2"></col>
+					</colgroup>
+					
 		  		<tr>
-		  			<td><h2>Change Settings</h2></td>
+		  			<td>
+		  				<form:errors path="email"><span class="errorLabel"></form:errors>
+		  				Email
+		  				<form:errors path="email"></span></form:errors>
+		  			</td>
+		  			<td>
+		  				<form:input path="email"/>
+		  			</td>
 		  		</tr>
-		  		<c:if test="${success}">
-			  		<tr >
-			  			<td class="successMessage" colspan="2">Your changes were successful</td>
-			  		</tr>
-		  		</c:if>
+		  	</table>
+
+		  	<table class="infoBox">
+					<colgroup span="2">
+						<col class="col1"></col>
+						<col class="col2"></col>
+					</colgroup>
+		  		<tr>
+		  		</tr>
 		  		<tr>
 		  			<td>
 		  				<form:errors path="existingPassword"><span class="errorLabel"></form:errors>
@@ -73,18 +102,8 @@
 		  				<form:password path="passwordConfirm"/>
 		  			</td>
 		  		</tr>
-		  		<tr>
-		  			<td>
-		  				<form:errors path="email"><span class="errorLabel"></form:errors>
-		  				Email
-		  				<form:errors path="email"></span></form:errors>
-		  			</td>
-		  			<td>
-		  				<form:input path="email"/>
-		  			</td>
-		  		</tr>
 		  	</table>
-			  <input type="submit" value="Save Changes"/>
+			  <input type="submit" value="Update"/>
 			  <input type="button" value="Done" onclick="document.location='${pageContext.request.contextPath}/'"/>
 		  </div>
 	  </form:form>

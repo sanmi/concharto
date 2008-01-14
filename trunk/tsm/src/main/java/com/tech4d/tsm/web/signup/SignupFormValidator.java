@@ -13,7 +13,8 @@ public class SignupFormValidator implements Validator {
         this.userDao = userDao;
     }
 
-    public boolean supports(Class clazz) {
+    @SuppressWarnings("unchecked")
+	public boolean supports(Class clazz) {
         return SignupForm.class.equals(clazz);
     }
 

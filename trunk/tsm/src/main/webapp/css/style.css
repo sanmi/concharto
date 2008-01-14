@@ -144,8 +144,16 @@ img {
 .memberForm .successMessage {
   border:1px solid #999999;
   padding: .5em 1em .5em 1em;
+ 	margin-bottom: 1em;
   background-color:#009900;
 	color:#FFFFFF;
+	width: 34.5em;
+}
+.memberForm .col1 {
+	width: 14em;
+}
+.memberForm .col2 {
+	width: 20em;
 }
 
 .simpleTable table {

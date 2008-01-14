@@ -13,7 +13,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 %>
 
 <tsm:page title="Change History">
-	<jsp:attribute name="stylesheet">changes.css,header.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">contributions.css,header.css</jsp:attribute>
 	<jsp:attribute name="bodyattr"></jsp:attribute>
 	
 	<jsp:body>
