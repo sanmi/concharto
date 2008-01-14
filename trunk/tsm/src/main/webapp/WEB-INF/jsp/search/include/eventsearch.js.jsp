@@ -81,7 +81,7 @@
 			'" height="330" width="450" frameborder="0" scrolling="no"></iframe> <br/>' + 
 			'<small><a href="' + 
 			urltext + 
-			'">View A Larger Map</a>';
+			'">View A Larger Map</a></small>';
 	}
 	
 	var hasQuery;
