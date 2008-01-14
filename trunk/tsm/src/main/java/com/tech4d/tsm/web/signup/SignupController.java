@@ -17,6 +17,7 @@ import com.tech4d.tsm.model.Role;
 import com.tech4d.tsm.model.User;
 import com.tech4d.tsm.service.EmailService;
 import com.tech4d.tsm.util.PasswordUtil;
+import com.tech4d.tsm.web.util.ConfirmationEmail;
 /**
  * Signup a new user
  */
@@ -56,7 +57,7 @@ public class SignupController extends SimpleFormController {
 
 	private void sendConfirmation(User user) {
 		MimeMessage message = emailService.createMimeMessage();
-		NewAccountConfirmationEmail.makeConfirmationMessage(message, user);
+		ConfirmationEmail.makeNewAccountConfirmationMessage(message, user);
 		emailService.sendMessage(message);
 	}
 

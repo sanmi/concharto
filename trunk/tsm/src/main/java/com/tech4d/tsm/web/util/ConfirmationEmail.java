@@ -1,4 +1,4 @@
-package com.tech4d.tsm.web.signup;
+package com.tech4d.tsm.web.util;
 
 import java.io.UnsupportedEncodingException;
 
@@ -12,9 +12,10 @@ import org.apache.commons.lang.StringUtils;
 import com.tech4d.tsm.model.User;
 
 /**
- * Create an new account confirmation email
+ * Create an new account confirmation email.
+ * TODO internationalize the text here.
  */
-public class NewAccountConfirmationEmail {
+public class ConfirmationEmail {
 	private static final String WELCOME_SUBJECT = "Welcome to Time Space Map";
 	private static String PARAM_NAME = ":name";
 	private static String  WELCOME_MESSAGE = "Hello " + PARAM_NAME + ",\n\n" + 
@@ -27,8 +28,9 @@ public class NewAccountConfirmationEmail {
 	"You can find out more about us at http://wiki.timespacemap.com/About.\n\n"; 
 //  "If you were not expecting this email, just ignore it, no further action is required to terminate the request.\n"
 	;
-
-	public static MimeMessage makeConfirmationMessage(MimeMessage message, User user) {
+	
+	
+	public static MimeMessage makeNewAccountConfirmationMessage(MimeMessage message, User user) {
     	InternetAddress from = new InternetAddress();
     	from.setAddress("notify@timespacemap.com");
     	InternetAddress to = new InternetAddress();
