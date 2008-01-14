@@ -100,6 +100,7 @@
 		<property name="formView" value="admin/signup" />
 		<property name="successView" value="redirect:/" />
 		<property name="userDao" ref="userDao"/>
+		<property name="emailService" ref="emailService"/>
 		<property name="validator" ref="signupFormValidator"/>
 	</bean>
 	
