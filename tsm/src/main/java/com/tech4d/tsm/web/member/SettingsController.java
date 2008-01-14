@@ -60,9 +60,18 @@ public class SettingsController extends SimpleFormController {
         //Once in formBackingObject and once showForm and now here.
         User user = userDao.find((String) WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME));
         
-        //verify the old password is correct
-        if ((user != null) && 
-            (PasswordUtil.isPasswordValid(settingsForm.getExistingPassword(), user.getPassword()))) {
+    	//the user can choose to fill out none or all of the password fields
+    	//if they don't enter any password fields, we don't need to validate them
+        boolean passwordOk;
+    	if (SettingsFormValidator.allPasswordFieldsAreEmpty(settingsForm)) {
+    		//no need to validate
+    		passwordOk = true;
+    	} else {
+            //verify the old password is correct
+    		passwordOk = (PasswordUtil.isPasswordValid(settingsForm.getExistingPassword(), user.getPassword()));
+    	}
+
+        if ((user != null) && (passwordOk)) {
             //ok we can change the information
             user.setPassword(PasswordUtil.encrypt(settingsForm.getPassword()));
             user.setEmail(settingsForm.getEmail());

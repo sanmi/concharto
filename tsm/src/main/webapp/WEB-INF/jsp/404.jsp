@@ -3,7 +3,7 @@
 
 
 <tsm:page title="Page Not Found">
-	<jsp:attribute name="stylesheet">textcontent.css,header.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">header.css</jsp:attribute>
 
 	<jsp:body>
 <div class="memberForm">
