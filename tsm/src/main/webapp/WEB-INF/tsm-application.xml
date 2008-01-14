@@ -22,4 +22,7 @@
       </list>
     </property>
 	</bean>
+	<bean id="emailService" class="com.tech4d.tsm.service.EmailService">
+		<property name="smtpHost" value="skipper"/>
+	</bean>
 </beans>

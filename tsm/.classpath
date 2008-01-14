@@ -76,6 +76,8 @@
 			<attribute name="javadoc_location" value="http://matheclipse.org/doc"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/deploy/mail-1.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/activation-1.1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="src/main/webapp/WEB-INF/classes"/>
 </classpath>
