@@ -5,7 +5,9 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
 public class AuthFormValidatorHelper {
-    public static void validate(AuthForm authForm, Errors errors) {
+    private static final int MIN_PASSWORD_SIZE = 4;
+
+	public static void validate(AuthForm authForm, Errors errors) {
     	validateEmail(authForm, errors);
     	validatePasswordFields(authForm, errors);
     }
@@ -22,6 +24,9 @@ public class AuthFormValidatorHelper {
             if (!authForm.getPassword().equals(authForm.getPasswordConfirm())) {
                 errors.rejectValue("password", "notSame.authForm.password");
             }
+        }
+        if (authForm.getPassword().length() < MIN_PASSWORD_SIZE) {
+        	errors.rejectValue("password", "tooSmall.authForm.password");
         }
     	
     }

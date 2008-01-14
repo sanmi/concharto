@@ -62,30 +62,29 @@ public class SettingsController extends SimpleFormController {
         
     	//the user can choose to fill out none or all of the password fields
     	//if they don't enter any password fields, we don't need to validate them
-        boolean passwordOk;
-    	if (SettingsFormValidator.allPasswordFieldsAreEmpty(settingsForm)) {
-    		//no need to validate
-    		passwordOk = true;
-    	} else {
-            //verify the old password is correct
-    		passwordOk = (PasswordUtil.isPasswordValid(settingsForm.getExistingPassword(), user.getPassword()));
-    	}
-
-        if ((user != null) && (passwordOk)) {
+        boolean passwordChanged = false;
+        if (!SettingsFormValidator.allPasswordFieldsAreEmpty(settingsForm)) {
+    		passwordChanged = true;
+        	//ok we have to validate the original password
+        	if (!PasswordUtil.isPasswordValid(settingsForm.getExistingPassword(), user.getPassword())) {
+                //tell the user there was a problem and let the default form handle the rest
+                errors.rejectValue("password", "invalidUserPasswd.authForm.username");
+                model.put(MODEL_USER, safeUser(user));
+                model.put(MODEL_SUCCESS, false);
+                return super.onSubmit(request, response, command, errors);
+        	} 
+        }
+        if (user != null) {
             //ok we can change the information
-            user.setPassword(PasswordUtil.encrypt(settingsForm.getPassword()));
+        	if (passwordChanged) {
+                user.setPassword(PasswordUtil.encrypt(settingsForm.getPassword()));
+        	}
             user.setEmail(settingsForm.getEmail());
             userDao.save(user);
             model.put(MODEL_SUCCESS, true);
             model.put(MODEL_USER, safeUser(user));
-            return new ModelAndView(getSuccessView(),model);
-        } else {
-            //tell the user there was a problem and let the default form handle the rest
-            errors.rejectValue("password", "invalidUserPasswd.authForm.username");
-            model.put(MODEL_USER, safeUser(user));
-            model.put(MODEL_SUCCESS, false);
-            return super.onSubmit(request, response, command, errors);
         }  
+        return new ModelAndView(getSuccessView(),model);
     }
     
     private User safeUser(User user) {
