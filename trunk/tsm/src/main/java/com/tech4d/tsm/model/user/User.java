@@ -1,4 +1,4 @@
-package com.tech4d.tsm.model;
+package com.tech4d.tsm.model.user;
 
 import java.util.List;
 
@@ -11,7 +11,8 @@ import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.ForeignKey;
 
-import com.tech4d.tsm.model.user.UserNote;
+import com.tech4d.tsm.model.BaseAuditableEntity;
+import com.tech4d.tsm.model.EventSummary;
 
 @Entity
 public class User extends BaseAuditableEntity {

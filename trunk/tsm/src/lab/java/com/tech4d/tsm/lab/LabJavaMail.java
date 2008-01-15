@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-import com.tech4d.tsm.model.User;
+import com.tech4d.tsm.model.user.User;
 import com.tech4d.tsm.util.PasswordUtil;
 
 public class LabJavaMail {

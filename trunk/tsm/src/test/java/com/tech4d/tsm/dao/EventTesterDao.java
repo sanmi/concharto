@@ -6,7 +6,7 @@ import java.util.Set;
 import org.hibernate.SessionFactory;
 
 import com.tech4d.tsm.model.Event;
-import com.tech4d.tsm.model.Role;
+import com.tech4d.tsm.model.user.Role;
 
 public interface EventTesterDao {
 

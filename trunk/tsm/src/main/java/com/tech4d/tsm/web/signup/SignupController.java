@@ -13,8 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.tech4d.tsm.dao.UserDao;
-import com.tech4d.tsm.model.Role;
-import com.tech4d.tsm.model.User;
+import com.tech4d.tsm.model.user.Role;
+import com.tech4d.tsm.model.user.User;
 import com.tech4d.tsm.service.EmailService;
 import com.tech4d.tsm.util.PasswordUtil;
 import com.tech4d.tsm.web.util.ConfirmationEmail;

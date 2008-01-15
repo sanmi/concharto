@@ -16,7 +16,7 @@ import com.tech4d.tsm.dao.FlagDao;
 import com.tech4d.tsm.dao.UserDao;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.Flag;
-import com.tech4d.tsm.model.User;
+import com.tech4d.tsm.model.user.User;
 import com.tech4d.tsm.web.changehistory.ChangeHistoryControllerHelper;
 import com.tech4d.tsm.web.eventsearch.SearchSessionUtil;
 

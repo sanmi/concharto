@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tech4d.tsm.model.EventSearchText;
 import com.tech4d.tsm.model.Event;
-import com.tech4d.tsm.model.Role;
+import com.tech4d.tsm.model.user.Role;
 
 @Transactional
 public class EventTesterDaoHib implements EventTesterDao {

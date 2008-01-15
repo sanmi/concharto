@@ -3,8 +3,8 @@ package com.tech4d.tsm.dao;
 import java.io.Serializable;
 import java.util.List;
 
-import com.tech4d.tsm.model.Role;
-import com.tech4d.tsm.model.User;
+import com.tech4d.tsm.model.user.Role;
+import com.tech4d.tsm.model.user.User;
 
 public interface UserDao {
     public Serializable save(Object obj);

@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.ForeignKey;
+
+import com.tech4d.tsm.model.user.User;
 /**
  * Allows the user to flag an event to be moved or deleted
  * @author frank
