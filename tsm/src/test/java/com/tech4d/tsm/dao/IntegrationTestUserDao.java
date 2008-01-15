@@ -16,6 +16,7 @@ import org.springframework.orm.hibernate3.SessionFactoryUtils;
 
 import com.tech4d.tsm.model.Role;
 import com.tech4d.tsm.model.User;
+import com.tech4d.tsm.model.user.UserNote;
 import com.tech4d.tsm.util.ContextUtil;
 
 /**
@@ -95,6 +96,16 @@ public class IntegrationTestUserDao {
         } catch (ConstraintViolationException e) {
             //expected
         }
+    }
+    
+    @Test public void userNote() {
+    	String username = "marina";
+    	String retrievalKey = "sdfsdfsdf";
+    	User user = new User(username,"place","jon@tsm.com");
+    	user.setUserNote(new UserNote(retrievalKey));
+    	userDao.save(user);
+    	User retreived = userDao.getUserFromPasswordRetrievalKey(retrievalKey);
+    	assertEquals(username, retreived.getUsername());
     }
     
     private void setupRoles() {

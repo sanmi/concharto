@@ -9,26 +9,29 @@ public class AuthFormValidatorHelper {
 
 	public static void validate(AuthForm authForm, Errors errors) {
     	validateEmail(authForm, errors);
-    	validatePasswordFields(authForm, errors);
+    	validateUsernamePasswordFields(authForm, errors);
     }
     
     public static void validateEmail(AuthForm authForm, Errors errors) {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "empty.authForm.email");
     }
 
-    public static void validatePasswordFields(AuthForm authForm, Errors errors) {
+    public static void validateUsernamePasswordFields(AuthForm authForm, Errors errors) {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "empty.authForm.username");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "empty.authForm.password");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordConfirm", "empty.authForm.passwordConfirm");
-        if (!StringUtils.isEmpty(authForm.getPassword()) && !StringUtils.isEmpty(authForm.getPasswordConfirm())) {
-            if (!authForm.getPassword().equals(authForm.getPasswordConfirm())) {
-                errors.rejectValue("password", "notSame.authForm.password");
-            }
-        }
-        if (authForm.getPassword().length() < MIN_PASSWORD_SIZE) {
-        	errors.rejectValue("password", "tooSmall.authForm.password");
-        }
-    	
+        validatePasswordFields(authForm, errors);
+    }
+    
+    public static void validatePasswordFields(AuthForm authForm, Errors errors) {
+    	ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "empty.authForm.password");
+    	ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordConfirm", "empty.authForm.passwordConfirm");
+    	if (!StringUtils.isEmpty(authForm.getPassword()) && !StringUtils.isEmpty(authForm.getPasswordConfirm())) {
+    		if (!authForm.getPassword().equals(authForm.getPasswordConfirm())) {
+    			errors.rejectValue("password", "notSame.authForm.password");
+    		}
+        	if (authForm.getPassword().length() < MIN_PASSWORD_SIZE) {
+        		errors.rejectValue("password", "tooSmall.authForm.password");
+        	}
+    	}
     }
     
 }

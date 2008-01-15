@@ -9,79 +9,23 @@
 	<jsp:attribute name="stylesheet">simpleform.css,header.css</jsp:attribute>
 
 	<jsp:body>
-	  <form:form name="settings" commandName="settings" > 
+	  <form:form name="settings" commandName="reset" > 
 	  	<form:hidden path="username"/>
 	  	<div class="memberForm">
-				<h2>Your Account Settings</h2>
-				
-		  	<table class="infoBox">
-					<colgroup span="2">
-						<col class="col1"></col>
-						<col class="col2"></col>
-					</colgroup>
-					<tr>
-		  			<td>Username</td>
-		  			<td>
-		  				${user.username}
-		  			</td>
-		  		</tr>
-		  		<tr>
-		  			<td>Email</td>
-		  			<td>
-		  				${user.email}
-		  			</td>
-		  		</tr>
-		  		<tr>
-		  			<td>Roles</td>
-		  			<td>
-		  				<c:forEach items="${user.roles}" var="role" varStatus="status">
-			  				${role.name}<c:if test="${status.count < (fn:length(user.roles))}">, </c:if>
-		  				</c:forEach>
-		  			</td>
-		  		</tr>
-		  	</table>
-
-  			<h2>Change Settings</h2>
+				<h2>Reset your password</h2>
 				<form:errors path="*" cssClass="errorBox" element="div"/>
+				
   			<c:if test="${success}">
 		  		<div class="successMessage" colspan="2">Your changes were successful</div>
 				</c:if>
 
+		  	
 		  	<table class="infoBox">
 					<colgroup span="2">
 						<col class="col1"></col>
 						<col class="col2"></col>
 					</colgroup>
-					
-		  		<tr>
-		  			<td>
-		  				<form:errors path="email"><span class="errorLabel"></form:errors>
-		  				Email
-		  				<form:errors path="email"></span></form:errors>
-		  			</td>
-		  			<td>
-		  				<form:input path="email"/>
-		  			</td>
-		  		</tr>
-		  	</table>
-
-		  	<table class="infoBox">
-					<colgroup span="2">
-						<col class="col1"></col>
-						<col class="col2"></col>
-					</colgroup>
-		  		<tr>
-		  		</tr>
-		  		<tr>
-		  			<td>
-		  				<form:errors path="existingPassword"><span class="errorLabel"></form:errors>
-		  				Verify Existing Password
-		  				<form:errors path="existingPassword"></span></form:errors>
-		  			</td>
-		  			<td>
-		  				<form:password path="existingPassword"/>
-		  			</td>
-		  		</tr>
+		  		
 		  		<tr>
 		  			<td>
 		  				<form:errors path="password"><span class="errorLabel"></form:errors>
@@ -111,4 +55,3 @@
 	  
 	</jsp:body>
 </tsm:page>
-

@@ -8,6 +8,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.tech4d.tsm.model.User;
 
@@ -16,6 +18,10 @@ import com.tech4d.tsm.model.User;
  * TODO internationalize the text here.
  */
 public class ConfirmationEmail {
+	private static final Log log = LogFactory.getLog(ConfirmationEmail.class);
+
+    private static final String FROM_NAME = "Time Space Map Notifications";
+	private static final String FROM_ADDRESS = "notify@timespacemap.com";
 	private static final String WELCOME_SUBJECT = "Welcome to Time Space Map";
 	private static String PARAM_NAME = ":name";
 	private static String  WELCOME_MESSAGE = "Hello " + PARAM_NAME + ",\n\n" + 
@@ -28,26 +34,41 @@ public class ConfirmationEmail {
 	"You can find out more about us at http://wiki.timespacemap.com/About.\n\n"; 
 //  "If you were not expecting this email, just ignore it, no further action is required to terminate the request.\n"
 	;
-	
-	
 	public static MimeMessage makeNewAccountConfirmationMessage(MimeMessage message, User user) {
+    	String messageText = StringUtils.replace(WELCOME_MESSAGE, PARAM_NAME, user.getUsername());
+    	return makeMessage(message, user, WELCOME_SUBJECT, messageText);
+	}
+	
+	private static final String FORGOT_SUBJECT = "Change password on Time Space Map";
+	private static final String PARAM_FORGOT_RESET_LINK = ":resetlink";
+	private static final String FORGOT_MESSAGE = 
+		"Hello " + PARAM_NAME + ",\n\n" + 
+		"We are sorry you are having trouble logging in.  Please visit the following link " +
+		"to reset your password\n\n " + PARAM_FORGOT_RESET_LINK;
+	
+	public static MimeMessage makeForgotPassowrdMessage(
+			MimeMessage message, User user, String resetLink) {
+    	String messageText = StringUtils.replace(FORGOT_MESSAGE, PARAM_NAME, user.getUsername());
+    	messageText = StringUtils.replace(messageText, PARAM_FORGOT_RESET_LINK, resetLink);
+    	return makeMessage(message, user, FORGOT_SUBJECT, messageText);
+	}
+	
+	public static MimeMessage makeMessage(MimeMessage message, User user, 
+			String subject, String messageText) {
     	InternetAddress from = new InternetAddress();
-    	from.setAddress("notify@timespacemap.com");
+    	from.setAddress(FROM_ADDRESS);
     	InternetAddress to = new InternetAddress();
     	to.setAddress(user.getEmail());
     	try {
-			from.setPersonal("Time Space Map Notifications");
+			from.setPersonal(FROM_NAME);
 			message.addRecipient(Message.RecipientType.TO, to);
-			message.setSubject(WELCOME_SUBJECT);
-	    	String messageText = StringUtils.replace(WELCOME_MESSAGE, PARAM_NAME, user.getUsername());
+			message.setSubject(subject);
 			message.setText(messageText);
 			message.setFrom(from);
     	} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		}
 		return message;
 	}

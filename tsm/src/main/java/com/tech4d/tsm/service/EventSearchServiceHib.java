@@ -25,8 +25,7 @@ import com.vividsolutions.jts.geom.Geometry;
 public class EventSearchServiceHib implements EventSearchService {
 	
     private SessionFactory sessionFactory;
-    /** Logger that is available to subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log log = LogFactory.getLog(getClass());
 
     private static final String SQL_PREFIX_GET_COUNT = "SELECT count(*) "; 
     private static final String SQL_PREFIX_SEARCH = "SELECT * "; 
@@ -125,7 +124,7 @@ public class EventSearchServiceHib implements EventSearchService {
      */
     @SuppressWarnings("unchecked")
 	private Long getCountInternal(Geometry boundingBox, SearchParams params) {
-        LapTimer timer = new LapTimer(this.logger);
+        LapTimer timer = new LapTimer(this.log);
         SQLQuery sqlQuery = createQuery(SQL_PREFIX_GET_COUNT, boundingBox, params);
         List result = sqlQuery.addScalar("count(*)", Hibernate.LONG).list();
         timer.timeIt("count").logDebugTime();
@@ -142,8 +141,8 @@ public class EventSearchServiceHib implements EventSearchService {
         	Set<Geometry> boxes = ProximityHelper.getBoundingBoxes(bounds.getSouthWest(), bounds.getNorthEast());
             //There are 1 or 2 bounding boxes (see comment above)
             for (Geometry boundingBox : boxes) {
-            	if (logger.isDebugEnabled()) {
-            		logger.debug(boundingBox.toText());
+            	if (log.isDebugEnabled()) {
+            		log.debug(boundingBox.toText());
             	}
                 List<Event> results = searchInternal(maxResults, firstResult, 
                 		boundingBox, params);
@@ -189,7 +188,7 @@ public class EventSearchServiceHib implements EventSearchService {
     @SuppressWarnings("unchecked")
     private List<Event> searchInternal(int maxResults, int firstResult, 
             Geometry boundingBox, SearchParams params) {
-        LapTimer timer = new LapTimer(this.logger);
+        LapTimer timer = new LapTimer(this.log);
         SQLQuery sqlQuery = createQuery(SQL_PREFIX_SEARCH, boundingBox, params);
                
         List<Event> events = sqlQuery

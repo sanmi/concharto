@@ -15,7 +15,7 @@
 				<p>We are currently privately testing our service.  If you are interested in becoming a beta tester, 
 				please <a href="mailto:betatest@timespacemap.com"> contact us!</a>
 				<h2>Please Login</h2>
-				<form:errors path="*" cssClass="errorLabel" element="div"/>
+				<form:errors path="*" cssClass="errorBox" element="div"/>
 		  	<table>
 		  		<tr>
 		  			<td>Username</td>
@@ -29,16 +29,18 @@
 		  				<form:password path="password"/>
 		  			</td>
 		  		</tr>
-		  		<%--  
 		  		<tr>
-		  			<td colspan="2">
+		  			<td></td>
+		  			<td>
 		  				<form:checkbox path="rememberMe"/>
   						Remember me next time
 		  			</td>
 		  		</tr>
-		  		--%>
 		  	</table>
 			  <input type="submit" value="Login"/>
+			  <p>
+			  	<a href="${basePath}forgot.htm">Lost your password?</a>
+			  </p>
 		  </div>
 	  </form:form>
 	  

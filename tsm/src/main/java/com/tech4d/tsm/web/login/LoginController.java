@@ -1,7 +1,5 @@
 package com.tech4d.tsm.web.login;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,8 +14,8 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.auth.AuthConstants;
+import com.tech4d.tsm.auth.AuthHelper;
 import com.tech4d.tsm.dao.UserDao;
-import com.tech4d.tsm.model.Role;
 import com.tech4d.tsm.model.User;
 import com.tech4d.tsm.util.PasswordUtil;
 
@@ -51,9 +49,10 @@ public class LoginController extends SimpleFormController {
             (PasswordUtil.isPasswordValid(loginForm.getPassword(), user.getPassword()))) {
             //matched username and password, ok to proceed
             log.info("user " + loginForm.getUsername() + " signed in");
+
             //first save the username and roles in the session            
-            WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME, loginForm.getUsername());
-            WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_ROLES, makeRoles(user.getRoles()));
+            AuthHelper.setUserInSession(request, user);
+            
             //now go where we were originally heading
             String view = (String) WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_TARGET_URI);
             //now erase the target so we don't use it another time
@@ -64,19 +63,13 @@ public class LoginController extends SimpleFormController {
                 return new ModelAndView("redirect:/");
             }
         } else {
+        	/* NOTE we are doing validation here instead of the validator so that we don't have to 
+        	 * go to the database twice to get the user object.
+        	 */
             //tell the user there was a problem and let the default form handle the rest
             errors.rejectValue("username", "invalidUserPasswd.authForm.username");
             return new ModelAndView(getFormView(), errors.getModel());
         }
     }
 
-    private String makeRoles(List<Role> roles) {
-        StringBuffer roleStr = new StringBuffer();
-        if (roles != null) {
-            for (Role role : roles) {
-                roleStr.append(role.getName()).append(" ");
-            }
-        }
-        return roleStr.toString();
-    }
 }

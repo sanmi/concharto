@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tech4d.tsm.model.Role;
 import com.tech4d.tsm.model.User;
+import com.tech4d.tsm.model.user.UserNote;
 
 @Transactional
 public class UserDaoHib implements UserDao {
@@ -17,8 +18,8 @@ public class UserDaoHib implements UserDao {
         this.sessionFactory = sessionFactory;
     }
 
-    public Serializable save(User user) {
-        return this.sessionFactory.getCurrentSession().save(user);
+    public Serializable save(Object obj) {
+        return this.sessionFactory.getCurrentSession().save(obj);
     }
 
     public void delete(User user) {
@@ -56,17 +57,30 @@ public class UserDaoHib implements UserDao {
     public Role getRole(String role) {
         List<Role> roles = this.sessionFactory.getCurrentSession().createQuery(
         "select role from Role role where role.name = ?").setParameter(0, role).list();
-        if (roles.size() == 1) {
+        return (Role) getOnlyFirst(roles);
+    }
+
+	private Object getOnlyFirst(List<?> roles) {
+		if (roles.size() == 1) {
             return roles.get(0);
         } else {
             return null;
         }
-    }
-
+	}
+    
     @SuppressWarnings("unchecked")
     public List<Role> getRoles() {
         return this.sessionFactory.getCurrentSession().createQuery(
         "select role from Role role").list();
     }
+
+	@SuppressWarnings("unchecked")
+	public User getUserFromPasswordRetrievalKey(String key) {
+		List<UserNote> userNotes = this.sessionFactory.getCurrentSession().createQuery(
+		"select user from User user where user.userNote.passwordRetrievalKey = ?")
+		.setParameter(0, key)
+		.list();
+		return (User) getOnlyFirst(userNotes);
+	}
     
 }

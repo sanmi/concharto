@@ -52,6 +52,9 @@ public class EventTesterDaoHib implements EventTesterDao {
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from TsGeometry").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from Event_UserTag").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from UserTag").executeUpdate();
+        this.sessionFactory.getCurrentSession().createSQLQuery("delete from User_Role").executeUpdate();
+        this.sessionFactory.getCurrentSession().createSQLQuery("delete from User").executeUpdate();
+        this.sessionFactory.getCurrentSession().createSQLQuery("delete from UserNote").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from Flag").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from Event").executeUpdate();
         this.sessionFactory.getCurrentSession().createSQLQuery("delete from EventSearchText").executeUpdate();
@@ -92,7 +95,7 @@ public class EventTesterDaoHib implements EventTesterDao {
                 //flush a batch of inserts and release memory:
                 session.flush();
                 session.clear();
-                //logger.debug("saving " + i);
+                //log.debug("saving " + i);
             }
         }
         tx.commit();
