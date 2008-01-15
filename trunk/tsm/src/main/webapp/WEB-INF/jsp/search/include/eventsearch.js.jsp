@@ -75,13 +75,19 @@
 		var urltext = getLinkHereUrl();
 		embedUrltext = urltext.gsub('eventsearch.htm','embeddedsearch.htm');
 		embedUrltext = append(embedUrltext, '_embed', 'true');
-		
-		return '<iframe src="' + 
+		embedUrltext = cleanUrl(embedUrltext);
+		return '<iframe src=\'' + 
 			embedUrltext +
-			'" height="330" width="450" frameborder="0" scrolling="no"></iframe> <br/>' + 
-			'<small><a href="' + 
-			urltext + 
-			'">View A Larger Map</a></small>';
+			'\' height="330" width="450" frameborder="0" scrolling="no"></iframe> <br/>' + 
+			'<small><a href=\'' + 
+			cleanUrl(urltext) + 
+			'\'>View A Larger Map</a></small>';
+	}
+	
+	function cleanUrl(url) {
+		url = url.gsub('\'',' ');  <%-- mysql free text doesn't pay attention to this anyway! --%> 
+		url = url.escapeHTML();
+		return url;
 	}
 	
 	var hasQuery;
