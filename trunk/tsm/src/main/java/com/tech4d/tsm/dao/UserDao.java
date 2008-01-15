@@ -7,7 +7,7 @@ import com.tech4d.tsm.model.Role;
 import com.tech4d.tsm.model.User;
 
 public interface UserDao {
-    public Serializable save(User user);
+    public Serializable save(Object obj);
     public User find(Long id);
     public User find(String username);
     public List<Role> getRolesForUser(Long id);
@@ -15,4 +15,5 @@ public interface UserDao {
     public void delete(Long id);
     public List<Role> getRoles();
     public Role getRole(String role);
+	public User getUserFromPasswordRetrievalKey(String retrievalKey);
 }

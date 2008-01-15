@@ -19,7 +19,7 @@ public class SettingsFormValidator implements Validator {
         //the user can choose to fill out none or all of the password fields
         if (!allPasswordFieldsAreEmpty(settingsForm)) {
 	        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "existingPassword", "empty.settingsForm.existingPassword");
-	        AuthFormValidatorHelper.validatePasswordFields(settingsForm, errors);
+	        AuthFormValidatorHelper.validateUsernamePasswordFields(settingsForm, errors);
         }
     }
     

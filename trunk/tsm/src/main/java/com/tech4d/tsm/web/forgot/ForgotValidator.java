@@ -1,20 +1,17 @@
-package com.tech4d.tsm.web.login;
+package com.tech4d.tsm.web.forgot;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-public class LoginFormValidator implements Validator {
-	
+public class ForgotValidator implements Validator {
 
     @SuppressWarnings("unchecked")
 	public boolean supports(Class clazz) {
-        return LoginForm.class.equals(clazz);
+        return ForgotForm.class.equals(clazz);
     }
 
     public void validate(Object target, Errors errors) {
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "empty.authForm.password");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "empty.authForm.username");
-        
     }
 }

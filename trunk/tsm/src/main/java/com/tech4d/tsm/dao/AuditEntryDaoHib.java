@@ -24,7 +24,7 @@ public class AuditEntryDaoHib implements AuditEntryDao {
     private static final String FIELD_ID = "id";
     private static final String FIELD_USER = "user";
     private static final String FIELD_CLASS_NAME = "className";
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log log = LogFactory.getLog(getClass());
     private SessionFactory sessionFactory;
 
     private static final String SUB_AUDIT_ENTRIES_HQL = 
@@ -71,7 +71,7 @@ public class AuditEntryDaoHib implements AuditEntryDao {
      */
     @SuppressWarnings("unchecked")
     public List<AuditEntry> getAuditEntries(Auditable auditable, int firstResult, int maxResults) {
-        LapTimer timer = new LapTimer(this.logger);
+        LapTimer timer = new LapTimer(this.log);
         String className = ClassName.getClassName(auditable);
         List auditEntries = this.sessionFactory.getCurrentSession()
             .createQuery(AUDIT_ENTRIES_HQL)
@@ -90,7 +90,7 @@ public class AuditEntryDaoHib implements AuditEntryDao {
      */
 	@SuppressWarnings("unchecked")
 	public List<AuditUserChange> getAuditEntries(String user, Class<?> clazz, int firstResult, int maxResults) {
-        LapTimer timer = new LapTimer(this.logger);
+        LapTimer timer = new LapTimer(this.log);
         
         //The auditable table could join with a number of entities, based on the entity Class
         //so we have to do some substitution in the select clause in order to set up the query
@@ -122,7 +122,7 @@ public class AuditEntryDaoHib implements AuditEntryDao {
 	 */
 	@SuppressWarnings("unchecked")
 	public Long getAuditEntriesCount(Auditable auditable) {
-        LapTimer timer = new LapTimer(this.logger);
+        LapTimer timer = new LapTimer(this.log);
         String className = ClassName.getClassName(auditable);
         List auditEntries = this.sessionFactory.getCurrentSession()
             .createQuery(getCountHQL(SUB_AUDIT_ENTRIES_HQL))
@@ -141,7 +141,7 @@ public class AuditEntryDaoHib implements AuditEntryDao {
 	 */
 	@SuppressWarnings("unchecked")
 	public Long getAuditEntriesCount(String user, Class<?> clazz) {
-        LapTimer timer = new LapTimer(this.logger);
+        LapTimer timer = new LapTimer(this.log);
         List auditEntries = this.sessionFactory.getCurrentSession()
             .createQuery(getCountHQL(SUB_USER_AUDIT_ENTRIES_HQL))
             .setString(FIELD_CLASS_NAME, clazz.getSimpleName())

@@ -133,9 +133,15 @@ img {
 	border:1px solid #999999;
 	
 }
-.memberForm .errorLabel{
-	padding-left: 0;
+.memberForm .errorLabel, .memberForm .errorBox{
+	padding: 1em 1em 1em 0;
 	color:red;
+}
+.memberForm .errorBox {
+	padding: 1em;
+	margin: 1em 0;
+	border:1px solid #999999;
+	width: 34.5em;
 }
 .memberForm h2 {
 	margin-bottom: .2em;
@@ -155,7 +161,9 @@ img {
 .memberForm .col2 {
 	width: 20em;
 }
-
+.memberForm .forgot {
+	margin-top: 1em;
+}
 .simpleTable table {
 	border: 1px solid #e0e0e0;
 	padding:.1em;

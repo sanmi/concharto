@@ -7,21 +7,24 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.ForeignKey;
+
+import com.tech4d.tsm.model.user.UserNote;
 
 @Entity
 public class User extends BaseAuditableEntity {
 
+    public static final int SZ_USERNAME = 32;
+    public static final int SZ_PASSWORD = 64;
+    
     private String username;
-
     private String password;
-
     private String email;
-
     private List<EventSummary> eventSummaries;
-
     private List<Role> roles;
+    private UserNote userNote;
 
     public User(String username, String password, String email) {
         super();
@@ -52,6 +55,7 @@ public class User extends BaseAuditableEntity {
         this.eventSummaries = eventSummaries;
     }
 
+    @Column(length=SZ_PASSWORD)
     public String getPassword() {
         return password;
     }
@@ -59,7 +63,8 @@ public class User extends BaseAuditableEntity {
     public void setPassword(String password) {
         this.password = password;
     }
-    @Column (unique=true)
+    
+    @Column (unique=true, length=SZ_USERNAME)
     public String getUsername() {
         return username;
     }
@@ -77,5 +82,17 @@ public class User extends BaseAuditableEntity {
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
+
+	@OneToOne (cascade = CascadeType.ALL)
+    @ForeignKey(name="FK_USER_USERNOTE")
+	public UserNote getUserNote() {
+		return userNote;
+	}
+
+	public void setUserNote(UserNote userNote) {
+		this.userNote = userNote;
+	}
+    
+    
 
 }

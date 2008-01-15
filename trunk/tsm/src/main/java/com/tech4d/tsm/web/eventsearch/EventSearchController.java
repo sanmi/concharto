@@ -148,8 +148,8 @@ public class EventSearchController extends AbstractFormController {
         eventSearchForm.setZoomOverride(false);
         ModelAndView returnModelAndView;
         if (errors.hasErrors()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Data binding errors: " + errors.getErrorCount());
+            if (log.isDebugEnabled()) {
+                log.debug("Data binding errors: " + errors.getErrorCount());
             }
             //clear out the search results
             eventSearchForm.setSearchResults(null);
@@ -163,7 +163,7 @@ public class EventSearchController extends AbstractFormController {
             eventSearchForm = new EventSearchForm();
         	returnModelAndView = handleGet(request, eventSearchForm);
         } else {
-            logger.debug("No errors -> processing submit");
+            log.debug("No errors -> processing submit");
             if ((eventSearchForm.getIsAddEvent() != null) && (eventSearchForm.getIsAddEvent())) {
                 //we are creating a new event
             	eventSearchForm.setIsAddEvent(false);
