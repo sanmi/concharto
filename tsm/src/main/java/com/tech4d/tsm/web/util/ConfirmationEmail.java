@@ -11,7 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.tech4d.tsm.model.User;
+import com.tech4d.tsm.model.user.User;
 
 /**
  * Create an new account confirmation email.

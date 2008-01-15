@@ -19,10 +19,10 @@
         <mapping class="com.tech4d.tsm.model.kml.StyleSelector"/>
         <mapping class="com.tech4d.tsm.model.kml.Style"/>
         <mapping class="com.tech4d.tsm.model.kml.StyleMap"/>
-        <mapping class="com.tech4d.tsm.model.User"/>
-        <mapping class="com.tech4d.tsm.model.Role"/>
-        <mapping class="com.tech4d.tsm.model.UserTag"/>
+        <mapping class="com.tech4d.tsm.model.user.User"/>
+        <mapping class="com.tech4d.tsm.model.user.Role"/>
         <mapping class="com.tech4d.tsm.model.user.UserNote"/>
+        <mapping class="com.tech4d.tsm.model.UserTag"/>
         <mapping class="com.tech4d.tsm.model.EventSummary"/>
         <mapping class="com.tech4d.tsm.model.Flag"/>
         <mapping class="com.tech4d.tsm.model.EventSearchText"/>

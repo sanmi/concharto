@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.util.WebUtils;
 
-import com.tech4d.tsm.model.Role;
-import com.tech4d.tsm.model.User;
+import com.tech4d.tsm.model.user.Role;
+import com.tech4d.tsm.model.user.User;
 
 public class AuthHelper {
 

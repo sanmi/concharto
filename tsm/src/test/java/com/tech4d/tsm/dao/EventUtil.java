@@ -11,11 +11,11 @@ import java.util.List;
 import org.hibernate.SessionFactory;
 
 import com.tech4d.tsm.model.Event;
-import com.tech4d.tsm.model.User;
 import com.tech4d.tsm.model.UserTag;
 import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.tech4d.tsm.model.kml.Style;
 import com.tech4d.tsm.model.time.TimeRange;
+import com.tech4d.tsm.model.user.User;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;

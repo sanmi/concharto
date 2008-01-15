@@ -1,6 +1,8 @@
-package com.tech4d.tsm.model;
+package com.tech4d.tsm.model.user;
 
 import javax.persistence.Entity;
+
+import com.tech4d.tsm.model.BaseAuditableEntity;
 
 @Entity
 public class Role extends BaseAuditableEntity {

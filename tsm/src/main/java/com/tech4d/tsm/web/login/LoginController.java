@@ -16,7 +16,7 @@ import org.springframework.web.util.WebUtils;
 import com.tech4d.tsm.auth.AuthConstants;
 import com.tech4d.tsm.auth.AuthHelper;
 import com.tech4d.tsm.dao.UserDao;
-import com.tech4d.tsm.model.User;
+import com.tech4d.tsm.model.user.User;
 import com.tech4d.tsm.util.PasswordUtil;
 
 /**

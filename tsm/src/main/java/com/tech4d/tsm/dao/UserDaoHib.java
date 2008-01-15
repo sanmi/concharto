@@ -6,8 +6,8 @@ import java.util.List;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tech4d.tsm.model.Role;
-import com.tech4d.tsm.model.User;
+import com.tech4d.tsm.model.user.Role;
+import com.tech4d.tsm.model.user.User;
 import com.tech4d.tsm.model.user.UserNote;
 
 @Transactional
