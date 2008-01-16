@@ -14,7 +14,6 @@ import org.springframework.beans.propertyeditors.CustomBooleanEditor;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.view.RedirectView;
@@ -36,6 +35,7 @@ import com.tech4d.tsm.util.PasswordUtil;
 public class LoginController extends SimpleFormController {
     private static final Log log = LogFactory.getLog(LoginController.class);
 	private static final String COOKIE_USERNAME = "username";
+	private static final int MAX_COOKIE_AGE = 3600*24*356;  //1 year
     private UserDao userDao;
     
     public void setUserDao(UserDao userDao) {
@@ -78,6 +78,7 @@ public class LoginController extends SimpleFormController {
             //if they checked "remember me" we set a cookie
             if (BooleanUtils.isTrue(loginForm.getRememberMe())) {
                 Cookie cookie = new Cookie(COOKIE_USERNAME, user.getUsername());
+                cookie.setMaxAge(MAX_COOKIE_AGE);
                 response.addCookie(cookie);
             } else {
                 Cookie cookie = new Cookie(COOKIE_USERNAME, "");
