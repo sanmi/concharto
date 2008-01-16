@@ -109,8 +109,8 @@
 	<bean id="forgotController" class="com.tech4d.tsm.web.forgot.ForgotController">
 		<property name="commandName" value="forgot"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.forgot.ForgotForm"/>
-		<property name="formView" value="forgot" />
-		<property name="successView" value="forgotsent" />
+		<property name="formView" value="public/forgot" />
+		<property name="successView" value="public/forgotsent" />
 		<property name="validator" ref="forgotValidator"/>
 		<property name="userDao" ref="userDao"/>
 		<property name="emailService" ref="emailService"/>
@@ -119,8 +119,8 @@
 	<bean id="resetController" class="com.tech4d.tsm.web.forgot.ResetController">
 		<property name="commandName" value="reset"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.util.AuthForm"/>
-		<property name="formView" value="reset" />
-		<property name="successView" value="resetsuccess" />
+		<property name="formView" value="public/reset" />
+		<property name="successView" value="public/resetsuccess" />
 		<property name="userDao" ref="userDao"/>
 	</bean>
 	
