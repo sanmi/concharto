@@ -13,12 +13,12 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 %>
 
 <tsm:page title="Change History">
-	<jsp:attribute name="stylesheet">contributions.css,header.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">textpanel.css,contributions.css,header.css</jsp:attribute>
 	<jsp:attribute name="bodyattr"></jsp:attribute>
 	
 	<jsp:body>
 		
-		<div class="memberForm">			
+		<div class="textpanel">			
 			<h2>Member Contributions for ${param.user}</h2>
 			
 			<display:table id="auditEntryTable" 

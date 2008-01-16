@@ -5,10 +5,10 @@
 
 
 <tsm:page title="Signup">
-	<jsp:attribute name="stylesheet">header.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">textpanel.css,header.css</jsp:attribute>
 	<jsp:body>
 		<form:form id="signupForm" name="signup" commandName="signup"> 
-	  	<div class="memberForm">
+	  	<div class="textpanel">
 	  		<h2>Sign Up</h2>
 	  		<form:errors path="*" cssClass="errorLabel" element="div"/>
 		  	<table>

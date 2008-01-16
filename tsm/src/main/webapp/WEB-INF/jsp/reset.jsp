@@ -6,12 +6,12 @@
 
 
 <tsm:page title="Settings">
-	<jsp:attribute name="stylesheet">simpleform.css,header.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">textpanel.css,header.css</jsp:attribute>
 
 	<jsp:body>
 	  <form:form name="settings" commandName="reset" > 
 	  	<form:hidden path="username"/>
-	  	<div class="memberForm">
+	  	<div class="textpanel">
 				<h2>Reset your password</h2>
 				<form:errors path="*" cssClass="errorBox" element="div"/>
 				

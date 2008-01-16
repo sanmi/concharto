@@ -126,53 +126,6 @@ a.errorlinks:link, a.errorlinks:visited {
 img {
 	border:none;
 }
-.memberForm {
-	padding:40px 0 60px 60px;
-	background-color: white;
-	margin: .2em;
-	border:1px solid #999999;
-	
-}
-.memberForm .errorLabel, .memberForm .errorBox{
-	padding: 1em 1em 1em 0;
-	color:red;
-}
-.memberForm .errorBox {
-	padding: 1em;
-	margin: 1em 0;
-	border:1px solid #999999;
-	width: 34.5em;
-}
-.memberForm h2 {
-	margin-bottom: .2em;
-}
-
-.memberForm .successMessage {
-  border:1px solid #999999;
-  padding: .5em 1em .5em 1em;
- 	margin-bottom: 1em;
-  background-color:#009900;
-	color:#FFFFFF;
-	width: 34.5em;
-}
-.memberForm .col1 {
-	width: 14em;
-}
-.memberForm .col2 {
-	width: 20em;
-}
-.memberForm .forgot {
-	margin-top: 1em;
-}
-.memberForm .inputcell {
-	margin: 1em .2em 1em .2em;
-}
-.memberForm .textInput {
-	width: 20em;
-}
-.memberForm .textArea {
-	width: 25em;
-}
 
 .simpleTable table {
 	border: 1px solid #e0e0e0;
