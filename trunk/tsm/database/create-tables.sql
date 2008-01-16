@@ -37,10 +37,10 @@
         _where varchar(512),
         zoomLevel integer,
         discussion_id bigint,
+        when_id bigint,
+        tsGeometry_id bigint,
         styleSelector_id bigint,
         eventSearchText_id bigint,
-        tsGeometry_id bigint,
-        when_id bigint,
         positionalAccuracy_id bigint,
         primary key (id)
     );
@@ -82,8 +82,8 @@
         dispositionComment varchar(512),
         reason varchar(32),
         state varchar(255),
-        event_id bigint,
         user_id bigint,
+        event_id bigint,
         primary key (id)
     );
 
@@ -158,8 +158,16 @@
         lastModified datetime,
         version bigint,
         email varchar(255),
-        password varchar(255),
-        username varchar(255) unique,
+        password varchar(64),
+        username varchar(32) unique,
+        userNote_id bigint,
+        primary key (id)
+    );
+
+    create table UserNote (
+        id bigint not null auto_increment,
+        passwordRetrievalKey varchar(128),
+        rememberMeKey varchar(128),
         primary key (id)
     );
 
@@ -202,16 +210,16 @@
         references EventSearchText (id);
 
     alter table Event 
-        add index FK_EVENT_GEOM (tsGeometry_id), 
-        add constraint FK_EVENT_GEOM 
-        foreign key (tsGeometry_id) 
-        references TsGeometry (id);
-
-    alter table Event 
         add index FK_EVENT_STYLE (styleSelector_id), 
         add constraint FK_EVENT_STYLE 
         foreign key (styleSelector_id) 
         references StyleSelector (id);
+
+    alter table Event 
+        add index FK_EVENT_GEOM (tsGeometry_id), 
+        add constraint FK_EVENT_GEOM 
+        foreign key (tsGeometry_id) 
+        references TsGeometry (id);
 
     alter table Event 
         add index FK_EVENT_TIMEPR (when_id), 
@@ -264,6 +272,12 @@
     create index endindex on TimePrimitive (end);
 
     create index beginindex on TimePrimitive (begin);
+
+    alter table User 
+        add index FK_USER_USERNOTE (userNote_id), 
+        add constraint FK_USER_USERNOTE 
+        foreign key (userNote_id) 
+        references UserNote (id);
 
     alter table User_EventSummary 
         add index FK_USER_EVENTSUMMARY (User_id), 
