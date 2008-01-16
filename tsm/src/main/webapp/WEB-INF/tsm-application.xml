@@ -19,10 +19,11 @@
       <list>
         <value>classpath:jdbc.properties</value>
         <value>classpath:application.properties</value>
+        <value>classpath:server.properties</value>
       </list>
     </property>
 	</bean>
 	<bean id="emailService" class="com.tech4d.tsm.service.EmailService">
-		<property name="smtpHost" value="skipper"/>
+		<property name="smtpHost" value="${local.email.smtp.host}"/>
 	</bean>
 </beans>
