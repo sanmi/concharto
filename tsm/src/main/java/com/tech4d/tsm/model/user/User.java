@@ -19,6 +19,7 @@ public class User extends BaseAuditableEntity {
 
     public static final int SZ_USERNAME = 32;
     public static final int SZ_PASSWORD = 64;
+    public static final int SZ_EMAIL = 128;
     
     private String username;
     private String password;
