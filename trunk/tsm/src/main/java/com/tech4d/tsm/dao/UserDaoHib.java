@@ -82,5 +82,22 @@ public class UserDaoHib implements UserDao {
 		.list();
 		return (User) getOnlyFirst(userNotes);
 	}
+
+	@SuppressWarnings("unchecked")
+	public User getUserFromRememberMeKey(String key) {
+		List<UserNote> userNotes = this.sessionFactory.getCurrentSession().createQuery(
+		"select user from User user where user.userNote.rememberMeKey = ?")
+		.setParameter(0, key)
+		.list();
+		User user = (User) getOnlyFirst(userNotes);
+		//load everything in (kludge for the LoginFilter)
+		if (null != user) {
+			for (Role role : user.getRoles()) {
+				role.getName();
+			}
+			user.getUserNote();
+		}
+		return user;
+	}
     
 }

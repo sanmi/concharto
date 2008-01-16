@@ -23,6 +23,7 @@ import com.tech4d.tsm.auth.AuthConstants;
 import com.tech4d.tsm.auth.AuthHelper;
 import com.tech4d.tsm.dao.UserDao;
 import com.tech4d.tsm.model.user.User;
+import com.tech4d.tsm.model.user.UserNote;
 import com.tech4d.tsm.util.PasswordUtil;
 
 /**
@@ -34,8 +35,6 @@ import com.tech4d.tsm.util.PasswordUtil;
  */
 public class LoginController extends SimpleFormController {
     private static final Log log = LogFactory.getLog(LoginController.class);
-	private static final String COOKIE_USERNAME = "username";
-	private static final int MAX_COOKIE_AGE = 3600*24*356;  //1 year
     private UserDao userDao;
     
     public void setUserDao(UserDao userDao) {
@@ -53,7 +52,7 @@ public class LoginController extends SimpleFormController {
 	protected Map referenceData(HttpServletRequest request, Object command,
 			Errors errors) throws Exception {
 
-		Cookie userCookie = WebUtils.getCookie(request, COOKIE_USERNAME);
+		Cookie userCookie = WebUtils.getCookie(request, AuthHelper.COOKIE_REMEMBER_ME_USERNAME);
 		if ((userCookie != null) && !StringUtils.isEmpty(userCookie.getValue())) {
 			LoginForm loginForm = (LoginForm) command;
 			loginForm.setUsername(userCookie.getValue());
@@ -77,13 +76,9 @@ public class LoginController extends SimpleFormController {
             
             //if they checked "remember me" we set a cookie
             if (BooleanUtils.isTrue(loginForm.getRememberMe())) {
-                Cookie cookie = new Cookie(COOKIE_USERNAME, user.getUsername());
-                cookie.setMaxAge(MAX_COOKIE_AGE);
-                response.addCookie(cookie);
+                setRemeberMeCookie(response, user, AuthHelper.COOKIE_REMEMBER_ME_MAX_AGE);
             } else {
-                Cookie cookie = new Cookie(COOKIE_USERNAME, "");
-            	cookie.setMaxAge(0);
-            	response.addCookie(cookie);
+                setRemeberMeCookie(response, user, 0);
             }
             
             //now go where we were originally heading
@@ -105,5 +100,26 @@ public class LoginController extends SimpleFormController {
             return new ModelAndView(getFormView(), errors.getModel());
         }
     }
+
+	/**
+	 * Remember me cookie allows the user to come back to the site without having to log in again.
+	 * It works for a predetermined amount of time (e.g. 20 days)
+	 * @param response servlet response
+	 * @param user user
+	 * @param maxAge max cookie age
+	 */
+	private void setRemeberMeCookie(HttpServletResponse response, User user, int maxAge) {
+		String rememberMeKey = PasswordUtil.encrypt(user.getUsername() + Long.toString(System.currentTimeMillis()));
+		if (null != user.getUserNote()) {
+			user.getUserNote().setRememberMeKey(rememberMeKey);
+		} else {
+			UserNote userNote = new UserNote();
+			userNote.setRememberMeKey(rememberMeKey);
+			user.setUserNote(userNote);
+		}
+		userDao.save(user);
+		AuthHelper.setCookie(response, AuthHelper.COOKIE_REMEMBER_ME, maxAge, rememberMeKey);
+		AuthHelper.setCookie(response, AuthHelper.COOKIE_REMEMBER_ME_USERNAME, maxAge, user.getUsername());
+	}
 
 }

@@ -1,5 +1,17 @@
 package com.tech4d.tsm.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
+
+import com.tech4d.tsm.auth.AuthHelper;
 import com.tech4d.tsm.dao.AuditEntryDao;
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.model.Event;
@@ -8,17 +20,6 @@ import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.tech4d.tsm.util.JSONFormat;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
-import org.springframework.web.util.WebUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The central switchboard
@@ -47,16 +48,8 @@ public class SwitchBoardController extends MultiActionController {
         return new ModelAndView().addObject(this.eventDao.findRecent(MAX_RESULTS));
     }
     
-    @SuppressWarnings("unchecked")
 	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    	//clear out the session
-        Enumeration attrNames = request.getSession().getAttributeNames();
-        while (attrNames.hasMoreElements()) {
-        	String name = (String) attrNames.nextElement();
-        	WebUtils.setSessionAttribute(request, name, null);
-        	//free all session data
-        	request.getSession().invalidate();
-        }
+    	AuthHelper.clearCredentials(request, response);
         return new ModelAndView("redirect:/");
     }
     

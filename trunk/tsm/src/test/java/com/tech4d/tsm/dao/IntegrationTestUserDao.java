@@ -100,11 +100,14 @@ public class IntegrationTestUserDao {
     
     @Test public void userNote() {
     	String username = "marina";
-    	String retrievalKey = "sdfsdfsdf";
+    	String retrievalKey = "retrievalKey";
+    	String rememberMeKey = "rememberMeKey";
     	User user = new User(username,"place","jon@tsm.com");
-    	user.setUserNote(new UserNote(retrievalKey));
+    	user.setUserNote(new UserNote(retrievalKey, rememberMeKey));
     	userDao.save(user);
     	User retreived = userDao.getUserFromPasswordRetrievalKey(retrievalKey);
+    	assertEquals(username, retreived.getUsername());
+    	retreived = userDao.getUserFromRememberMeKey(rememberMeKey);
     	assertEquals(username, retreived.getUsername());
     }
     

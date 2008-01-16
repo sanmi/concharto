@@ -5,9 +5,11 @@ import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -15,6 +17,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.util.WebUtils;
+
+import com.tech4d.tsm.dao.UserDao;
+import com.tech4d.tsm.model.user.User;
 
 /**
  * Authorization filter.  We don't want to rely on the servlet container to do this because we
@@ -27,8 +35,12 @@ public class LoginFilter implements Filter{
     private static final String REDIRECT_LOGIN = "/login.htm";
     //TODO search requires authentication only during the private pilot
     private static final Log log = LogFactory.getLog(LoginFilter.class);
-    
+    private UserDao userDao; 
+
     public void init(FilterConfig filterConfig) throws ServletException {
+    	ServletContext ctx = filterConfig.getServletContext();
+        WebApplicationContext webAppContext = WebApplicationContextUtils.getWebApplicationContext(ctx);
+        userDao = (UserDao) webAppContext.getBean("userDao");
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -38,7 +50,12 @@ public class LoginFilter implements Filter{
         //Does this page require authentication
         if (requiresAuthentication(httpRequest)) {
             //Has the user signed in?
-            if (!isAuthenticated(httpRequest)) {
+        	if (handleRememberMeCookie(httpRequest)) {
+        		//redirect to get rid of the jsessionid crap on the URL string
+        		//TODO - Ugh! this is the only way I know how to get rid of jsessionid.  
+        		//There is probably another way
+        		httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getContextPath() + httpRequest.getRequestURI()));
+        	} else if (!isAuthenticated(httpRequest)) {
                 httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getContextPath() + REDIRECT_LOGIN));                
             }  
             //ok, is the user authorized for this URL
@@ -103,14 +120,23 @@ public class LoginFilter implements Filter{
         if (log.isDebugEnabled()) {
             log.debug("auth login filter");
         }
+        
         //TODO reliance on session may be a problem for scalability
-        if (null == session.getAttribute(AuthConstants.SESSION_AUTH_USERNAME)) {
+        if (!AuthHelper.isUserInSession(httpRequest)) {
             //save the target so we can get there after authentication
             StringBuffer redirect = new StringBuffer(httpRequest.getRequestURI());
-            if (!StringUtils.isEmpty(httpRequest.getQueryString())) {
-                redirect.append('?').append(httpRequest.getQueryString());
+
+            //check the remember me cookie
+            if (handleRememberMeCookie(httpRequest)) {
+            	//remember me cookie was set properly, redirect to get rid of the jsessionid
+            	session.setAttribute(AuthConstants.SESSION_AUTH_TARGET_URI, redirect.toString() );
+            } else {
+            	//no cookie set, we need to go to the login screen
+                if (!StringUtils.isEmpty(httpRequest.getQueryString())) {
+                    redirect.append('?').append(httpRequest.getQueryString());
+                }
+                session.setAttribute(AuthConstants.SESSION_AUTH_TARGET_URI, redirect.toString() );
             }
-            session.setAttribute(AuthConstants.SESSION_AUTH_TARGET_URI, redirect.toString() );
             return false;
         } else {
             return true;
@@ -139,5 +165,27 @@ public class LoginFilter implements Filter{
         // TODO Auto-generated method stub
         
     }
+
+    /**
+     * Returns true if the user is not in the session but the remember me cookie is correct
+     * Also puts the user in the session 
+     * @param request
+     * @return 
+     */
+	private boolean handleRememberMeCookie(HttpServletRequest request) {
+		if (!AuthHelper.isUserInSession(request)) {
+			Cookie cookie = WebUtils.getCookie(request, AuthHelper.COOKIE_REMEMBER_ME);
+			if (null != cookie) {
+				//if the cookie is there, get the user for that cookie
+				User user = userDao.getUserFromRememberMeKey(cookie.getValue());
+				if (user != null) {
+					//ok, they are authenticated
+					AuthHelper.setUserInSession(request, user);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 }

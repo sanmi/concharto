@@ -58,7 +58,8 @@ public class ForgotController extends SimpleFormController {
 		if (null != user.getUserNote()) {
 			user.getUserNote().setPasswordRetrievalKey(key);
 		} else {
-			UserNote userNote = new UserNote(key);
+			UserNote userNote = new UserNote();
+			userNote.setPasswordRetrievalKey(key);
 			user.setUserNote(userNote);
 		}
 		userDao.save(user);
