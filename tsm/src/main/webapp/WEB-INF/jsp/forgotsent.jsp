@@ -9,7 +9,6 @@
 	  	<div class="memberForm">
 				<h2>Now check your email</h2>
 				<p>You should have received an email with a link in it.  When you click that link, you will be able to reset your password.</p>
-		  	<p>Back to <a href="${basePath}login.htm">Login</a></p>	
 		  	<p>Back to <a href="${basePath}">Home</a></p>	
 		  </div>
 	  
