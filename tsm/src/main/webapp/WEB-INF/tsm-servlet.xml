@@ -77,6 +77,8 @@
 
 	<!-- Controller  -->
 	<bean id="homeController" class="com.tech4d.tsm.web.home.HomeController">
+		<!-- semi-dynamic content - event list and recent, so cache for a few minuites -->
+		<property name="cacheSeconds" value="120"/>  
 		<property name="commandName" value="eventSearch" />
 		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
 		<property name="formView" value="home" />
@@ -97,6 +99,7 @@
 
 	<bean id="loginFormValidator" class="com.tech4d.tsm.web.login.LoginFormValidator"/>
 	<bean id="loginController" class="com.tech4d.tsm.web.login.LoginController" parent="baseEventController">
+		<property name="cacheSeconds" value="86400"/>  
 		<property name="commandName" value="login"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.login.LoginForm"/>
 		<property name="formView" value="login" />
@@ -107,6 +110,7 @@
 	
 	<bean id="forgotValidator" class="com.tech4d.tsm.web.forgot.ForgotValidator"/>
 	<bean id="forgotController" class="com.tech4d.tsm.web.forgot.ForgotController">
+		<property name="cacheSeconds" value="86400"/>  
 		<property name="commandName" value="forgot"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.forgot.ForgotForm"/>
 		<property name="formView" value="public/forgot" />
@@ -117,6 +121,7 @@
 	</bean>
 
 	<bean id="resetController" class="com.tech4d.tsm.web.forgot.ResetController">
+		<property name="cacheSeconds" value="86400"/>  
 		<property name="commandName" value="reset"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.util.AuthForm"/>
 		<property name="formView" value="public/reset" />
@@ -126,6 +131,7 @@
 	
 	<bean id="feedbackValidator" class="com.tech4d.tsm.web.feedback.FeedbackValidator"/>
 	<bean id="feedbackController" class="com.tech4d.tsm.web.feedback.FeedbackController">
+		<property name="cacheSeconds" value="86400"/>  
 		<property name="commandName" value="feedback"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.feedback.FeedbackForm"/>
 		<property name="formView" value="public/feedback" />
@@ -139,6 +145,7 @@
 		<property name="userDao" ref="userDao"/>
 	</bean>
 	<bean id="signupController" class="com.tech4d.tsm.web.signup.SignupController" parent="baseEventController">
+		<property name="cacheSeconds" value="86400"/>  
 		<property name="commandName" value="signup"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.signup.SignupForm"/>
 		<property name="formView" value="admin/signup" />
@@ -204,6 +211,7 @@
 
 	<bean id="settingsFormValidator" class="com.tech4d.tsm.web.member.SettingsFormValidator"/>
 	<bean id="settingsController" class="com.tech4d.tsm.web.member.SettingsController" parent="baseEventController">
+		<property name="cacheSeconds" value="86400"/>  
 		<property name="commandName" value="settings"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.member.SettingsForm"/>
 		<property name="formView" value="member/settings" />
