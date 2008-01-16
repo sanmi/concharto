@@ -164,6 +164,16 @@ img {
 .memberForm .forgot {
 	margin-top: 1em;
 }
+.memberForm .inputcell {
+	margin: 1em .2em 1em .2em;
+}
+.memberForm .textInput {
+	width: 20em;
+}
+.memberForm .textArea {
+	width: 25em;
+}
+
 .simpleTable table {
 	border: 1px solid #e0e0e0;
 	padding:.1em;

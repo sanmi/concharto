@@ -3,6 +3,17 @@
         "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
 <beans>
 
+	<!-- PropertyPlaceholderConfigurer allows text from property files to be injected into beans  -->
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+  	<property name="systemPropertiesMode" value="2"/> <!-- allow system properties to override -->
+    <property name="locations">
+      <list>
+        <value>classpath:application.properties</value>
+        <value>classpath:server.properties</value>
+      </list>
+    </property>
+	</bean>
+
 	<!-- map controllers to URLs -->
 	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="interceptors">
@@ -17,6 +28,7 @@
           <prop key="forgot.htm">forgotController</prop>
           <prop key="reset.htm">resetController</prop>
           <prop key="home.htm">homeController</prop>
+          <prop key="feedback.htm">feedbackController</prop>
           <prop key="edit/event.htm">eventController</prop>
           <prop key="admin/signup.htm">signupController</prop>
           <prop key="member/settings.htm">settingsController</prop>
@@ -103,6 +115,7 @@
 		<property name="userDao" ref="userDao"/>
 		<property name="emailService" ref="emailService"/>
 	</bean>
+
 	<bean id="resetController" class="com.tech4d.tsm.web.forgot.ResetController">
 		<property name="commandName" value="reset"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.util.AuthForm"/>
@@ -111,6 +124,17 @@
 		<property name="userDao" ref="userDao"/>
 	</bean>
 	
+	<bean id="feedbackValidator" class="com.tech4d.tsm.web.feedback.FeedbackValidator"/>
+	<bean id="feedbackController" class="com.tech4d.tsm.web.feedback.FeedbackController">
+		<property name="commandName" value="feedback"/>
+		<property name="commandClass" value="com.tech4d.tsm.web.feedback.FeedbackForm"/>
+		<property name="formView" value="public/feedback" />
+		<property name="successView" value="public/feedbacksuccess" />
+		<property name="validator" ref="feedbackValidator"/>
+		<property name="emailService" ref="emailService"/>
+		<property name="sendFeedbackToAddress" value="${app.sendFeedbackToAddress}"/>
+	</bean>
+
 	<bean id="signupFormValidator" class="com.tech4d.tsm.web.signup.SignupFormValidator">
 		<property name="userDao" ref="userDao"/>
 	</bean>

@@ -3,7 +3,7 @@
 
 
 <tsm:page title="Lost Password">
-	<jsp:attribute name="bodyattr">onload="document.getElementById('loginForm').username.focus()"</jsp:attribute>
+	<jsp:attribute name="bodyattr">onload="document.getElementById('forgotForm').username.focus()"</jsp:attribute>
 	<jsp:attribute name="stylesheet">header.css</jsp:attribute>
 
 	<jsp:body>
