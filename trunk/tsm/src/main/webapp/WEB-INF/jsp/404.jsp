@@ -1,7 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 
-
 <tsm:page title="Page Not Found">
 	<jsp:attribute name="stylesheet">header.css</jsp:attribute>
 
@@ -14,4 +13,3 @@
 </div>	
 	</jsp:body>
 </tsm:page>
-
