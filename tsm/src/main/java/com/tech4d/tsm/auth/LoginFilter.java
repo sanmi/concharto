@@ -53,6 +53,7 @@ public class LoginFilter implements Filter{
         	if (handleRememberMeCookie(httpRequest)) {
         		//redirect to get rid of the jsessionid crap on the URL string
         		//TODO - Ugh! this is the only way I know how to get rid of jsessionid.  
+        		//NOTE this doesn't work when you have a server port other than 80 (e.g. test server).  Not sure why.
         		//There is probably another way
         		httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getContextPath() + httpRequest.getRequestURI()));
         	} else if (!isAuthenticated(httpRequest)) {
