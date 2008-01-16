@@ -16,4 +16,5 @@ public interface UserDao {
     public List<Role> getRoles();
     public Role getRole(String role);
 	public User getUserFromPasswordRetrievalKey(String retrievalKey);
+	public User getUserFromRememberMeKey(String value);
 }
