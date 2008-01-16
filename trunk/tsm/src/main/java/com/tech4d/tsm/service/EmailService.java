@@ -59,9 +59,9 @@ public class EmailService implements ConnectionListener, TransportListener, Init
 			    log.warn("Email not sent, no recipients specified");
 			}
 		} catch (MailException e) {
-			log.error(e);
+			log.error("send mail exception ", e);
 		} catch (MessagingException e) {
-			log.error(e);
+			log.error("messagign exception", e);
 		}
     }
 
