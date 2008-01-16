@@ -1,0 +1,47 @@
+.textpanel {
+	padding:40px 20px 60px 60px;
+	background-color: white;
+	margin: .2em;
+	border:1px solid #999999;
+	
+}
+.textpanel .errorLabel, .textpanel .errorBox{
+	padding: 1em 1em 1em 0;
+	color:red;
+}
+.textpanel .errorBox {
+	padding: 1em;
+	margin: 1em 0;
+	border:1px solid #999999;
+	width: 34.5em;
+}
+.textpanel h2 {
+	margin-bottom: .2em;
+}
+
+.textpanel .successMessage {
+  border:1px solid #999999;
+  padding: .5em 1em .5em 1em;
+ 	margin-bottom: 1em;
+  background-color:#009900;
+	color:#FFFFFF;
+	width: 34.5em;
+}
+.textpanel .col1 {
+	width: 14em;
+}
+.textpanel .col2 {
+	width: 20em;
+}
+.textpanel .forgot {
+	margin-top: 1em;
+}
+.textpanel .inputcell {
+	margin: 1em .2em 1em .2em;
+}
+.textpanel .textInput {
+	width: 20em;
+}
+.textpanel .textArea {
+	width: 25em;
+}
