@@ -20,13 +20,13 @@
 		  		<tr>
 		  			<td>Username</td>
 		  			<td>
-		  				<form:input path="username"/>
+		  				<form:input path="username" cssClass="loginText"/>
 		  			</td>
 		  		</tr>
 		  		<tr>
 		  			<td>Password</td>
 		  			<td>
-		  				<form:password path="password"/>
+		  				<form:password path="password" cssClass="loginText"/>
 		  			</td>
 		  		</tr>
 		  		<tr>

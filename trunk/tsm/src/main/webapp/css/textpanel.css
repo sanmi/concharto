@@ -42,6 +42,9 @@
 .textpanel .textInput {
 	width: 20em;
 }
+.textpanel .loginText {
+	width: 12em;
+}
 .textpanel .textArea {
 	width: 25em;
 }

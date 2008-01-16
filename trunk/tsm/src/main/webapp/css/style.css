@@ -10,6 +10,9 @@ body {
 	background-color: #E1E4D6;
 }
 
+h1 { font-size: 14pt; }
+h2 { font-size: 13.5pt; }
+
 form {
 	margin:0;
 	padding:0;
