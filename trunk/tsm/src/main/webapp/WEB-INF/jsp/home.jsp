@@ -15,20 +15,6 @@
 		setupHelpPanels();
 	}
 	
-	function setHelpPanel2(panelContent, linkContext) {
-		var panel;
-		panel = new YAHOO.widget.Panel(panelContent, { 
-			width:"250px", 
-			visible:false, 
-			context:[linkContext,"tl","br"],
-			effect:{effect:YAHOO.widget.ContainerEffect.FADE,duration:0.25},
-			constraintoviewport:true 
-		});
-		panel.render(document.body);
-		YAHOO.util.Event.addListener(linkContext, "click", panel.show, panel, true);
-		return panel;
-	}
-	
 	function search() {
 			document.getElementById("eventSearchForm").limitWithinMapBounds.value = 'false';
 			document.event.submit();
