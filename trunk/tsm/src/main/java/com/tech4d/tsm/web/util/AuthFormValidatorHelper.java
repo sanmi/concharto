@@ -4,12 +4,15 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
+import com.tech4d.tsm.model.user.User;
+
 public class AuthFormValidatorHelper {
     private static final int MIN_PASSWORD_SIZE = 4;
 
 	public static void validate(AuthForm authForm, Errors errors) {
     	validateEmail(authForm, errors);
     	validateUsernamePasswordFields(authForm, errors);
+        ValidationHelper.rejectIfTooLong(errors, "username", User.SZ_USERNAME, "tooLong.signupForm");
     }
     
     public static void validateEmail(AuthForm authForm, Errors errors) {
@@ -31,6 +34,7 @@ public class AuthFormValidatorHelper {
         	if (authForm.getPassword().length() < MIN_PASSWORD_SIZE) {
         		errors.rejectValue("password", "tooSmall.authForm.password");
         	}
+            ValidationHelper.rejectIfTooLong(errors, "password", User.SZ_PASSWORD, "tooLong.signupForm");
     	}
     }
     
