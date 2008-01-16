@@ -3,10 +3,10 @@
 
 
 <tsm:page title="Server Error">
-	<jsp:attribute name="stylesheet">header.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">textpanel.css,header.css</jsp:attribute>
 
 	<jsp:body>
-		<div class="memberForm">
+		<div class="textpanel">
 			<h2>
 				Sorry, an error has occurred.  
 			</h2>

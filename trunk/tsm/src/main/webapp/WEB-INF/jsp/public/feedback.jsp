@@ -4,11 +4,11 @@
 
 <tsm:page title="Feedback">
 	<jsp:attribute name="bodyattr">onload="document.getElementById('feedbackForm').name.focus()"</jsp:attribute>
-	<jsp:attribute name="stylesheet">header.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">textpanel.css,header.css</jsp:attribute>
 
 	<jsp:body>
 	  <form:form id="feedbackForm" name="feedback" commandName="feedback"> 
-	  	<div class="memberForm">
+	  	<div class="textpanel">
 				<h2>Feedback</h2>
 				<p>Please let us know what you think about Time Space Map.  Use this form to ask a question, report bugs, make suggestions or leave a comment.</p>
 
