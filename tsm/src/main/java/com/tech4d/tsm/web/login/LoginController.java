@@ -1,13 +1,20 @@
 package com.tech4d.tsm.web.login;
 
+import java.util.Map;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.CustomBooleanEditor;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.view.RedirectView;
@@ -28,6 +35,7 @@ import com.tech4d.tsm.util.PasswordUtil;
  */
 public class LoginController extends SimpleFormController {
     private static final Log log = LogFactory.getLog(LoginController.class);
+	private static final String COOKIE_USERNAME = "username";
     private UserDao userDao;
     
     public void setUserDao(UserDao userDao) {
@@ -39,8 +47,22 @@ public class LoginController extends SimpleFormController {
         binder.registerCustomEditor(Boolean.class, new CustomBooleanEditor("true", "false", true));
         super.initBinder(request, binder);
     }
+    
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Map referenceData(HttpServletRequest request, Object command,
+			Errors errors) throws Exception {
 
-    @Override
+		Cookie userCookie = WebUtils.getCookie(request, COOKIE_USERNAME);
+		if ((userCookie != null) && !StringUtils.isEmpty(userCookie.getValue())) {
+			LoginForm loginForm = (LoginForm) command;
+			loginForm.setUsername(userCookie.getValue());
+			loginForm.setRememberMe(true);
+		}
+		return super.referenceData(request, command, errors);
+	}
+
+	@Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         LoginForm loginForm = (LoginForm) command;
         User user = userDao.find(loginForm.getUsername());
@@ -53,8 +75,19 @@ public class LoginController extends SimpleFormController {
             //first save the username and roles in the session            
             AuthHelper.setUserInSession(request, user);
             
+            //if they checked "remember me" we set a cookie
+            if (BooleanUtils.isTrue(loginForm.getRememberMe())) {
+                Cookie cookie = new Cookie(COOKIE_USERNAME, user.getUsername());
+                response.addCookie(cookie);
+            } else {
+                Cookie cookie = new Cookie(COOKIE_USERNAME, "");
+            	cookie.setMaxAge(0);
+            	response.addCookie(cookie);
+            }
+            
             //now go where we were originally heading
             String view = (String) WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_TARGET_URI);
+            
             //now erase the target so we don't use it another time
             WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_TARGET_URI, null);
             if (view != null) {
