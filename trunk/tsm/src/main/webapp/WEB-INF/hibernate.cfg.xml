@@ -30,6 +30,7 @@
         <mapping class="com.tech4d.tsm.model.audit.AuditFieldChange"/>
         <mapping class="com.tech4d.tsm.model.WikiText"/>
         <mapping class="com.tech4d.tsm.model.PositionalAccuracy"/>
+        <mapping class="com.tech4d.tsm.model.Spotlight"/>
     
     </session-factory>
 

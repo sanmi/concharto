@@ -56,6 +56,9 @@
           <prop key="event/discuss.htm">discussController</prop>
           <prop key="edit/discussedit.htm">discussEditController</prop>
 
+          <prop key="admin/spotlightlist.htm">spotlightListController</prop>
+          <prop key="admin/spotlightedit.htm">spotlightEditController</prop>
+
           <prop key="404.htm">urlFilenameViewController</prop>
           <prop key="500.htm">urlFilenameViewController</prop>
       </props>
@@ -78,11 +81,12 @@
 	<!-- Controller  -->
 	<bean id="homeController" class="com.tech4d.tsm.web.home.HomeController">
 		<!-- semi-dynamic content - event list and recent, so cache for a few minuites -->
-		<property name="cacheSeconds" value="120"/>  
 		<property name="commandName" value="eventSearch" />
 		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
 		<property name="formView" value="home" />
 		<property name="eventDao" ref="eventDao" />
+		<property name="spotlightService" ref="spotlightService" />
+		
 	</bean>
 
 	<bean id="urlFilenameViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController"/>
@@ -258,4 +262,23 @@
 		<property name="revertEventService" ref="revertEventService" />
 		<property name="auditableClass" value="com.tech4d.tsm.model.WikiText" />
 	</bean>
+	
+	<bean id="spotlightListController" class="com.tech4d.tsm.web.spotlight.SpotlightListController">
+		<property name="formView" value="admin/spotlightlist" />
+		<property name="spotlightDao" ref="spotlightDao" />
+		<property name="spotlightService" ref="spotlightService" />
+	</bean>
+
+	<bean id="spotlightValidator" class="com.tech4d.tsm.web.spotlight.SpotlightValidator"/>
+	<bean id="spotlightEditController" class="com.tech4d.tsm.web.spotlight.SpotlightEditController">
+		<property name="commandName" value="spotlight"/>
+		<property name="commandClass" value="com.tech4d.tsm.model.Spotlight"/>
+		<property name="formView" value="admin/spotlightedit" />
+		<property name="successView" value="redirect:/admin/spotlightlist.htm" />
+		<property name="validator" ref="spotlightValidator"/>
+		<property name="spotlightDao" ref="spotlightDao" />
+		<property name="userDao" ref="userDao" />
+		<property name="spotlightService" ref="spotlightService" />
+	</bean>
+	
 </beans>

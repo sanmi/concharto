@@ -21,7 +21,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 		<div class="textpanel">			
 			<h2>Member Contributions for ${param.user}</h2>
 			
-			<display:table id="auditEntryTable" 
+			<display:table id="simpleTable" 
 								name="userChanges" 
 								sort="list" 
 								requestURI="${basePath}${requestURI}.htm"
@@ -31,7 +31,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 								>
 				<display:setProperty name="basic.msg.empty_list">There have been no edits</display:setProperty>
 				<display:setProperty name="paging.banner.placement">both</display:setProperty>
-				<display:setProperty name="paging.banner.item_name">Edits</display:setProperty>
+				<display:setProperty name="paging.banner.item_name">Edit</display:setProperty>
 				<display:setProperty name="paging.banner.items_name">Edits</display:setProperty>
 				<display:setProperty name="paging.banner.onepage">&nbsp;</display:setProperty>
 				<display:setProperty name="paging.banner.no_items_found">&nbsp;</display:setProperty>
@@ -43,21 +43,21 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 					<span class="pagebanner"><b>{0}</b> {1} found.</span>
 				</display:setProperty>
 				<display:column >
-					<fmt:formatDate value="${auditEntryTable.auditEntry.dateCreated}" pattern="MMM dd, yyyy hh:mm a z"/>,
-					<c:if test="${auditEntryTable.auditable.summary != null}">  <%-- todo this is a kludge - fix it --%>
-						(<a href="${basePath}edit/event.htm?id=${auditEntryTable.auditEntry.entityId}">edit</a> | 
-						<a href="${basePath}event/changehistory.htm?id=${auditEntryTable.auditEntry.entityId}">changes</a>),
+					<fmt:formatDate value="${simpleTable.auditEntry.dateCreated}" pattern="MMM dd, yyyy hh:mm a z"/>,
+					<c:if test="${simpleTable.auditable.summary != null}">  <%-- todo this is a kludge - fix it --%>
+						(<a href="${basePath}edit/event.htm?id=${simpleTable.auditEntry.entityId}">edit</a> | 
+						<a href="${basePath}event/changehistory.htm?id=${simpleTable.auditEntry.entityId}">changes</a>),
 					</c:if>
-					(<spring:message code="audit.action.field.${auditEntryTable.auditEntry.action}"/>
-					r${auditEntryTable.auditEntry.version}), 						
+					(<spring:message code="audit.action.field.${simpleTable.auditEntry.action}"/>
+					r${simpleTable.auditEntry.version}), 						
 					<c:choose>
-						<c:when test="${auditEntryTable.auditable.summary == null}">
+						<c:when test="${simpleTable.auditable.summary == null}">
 							<em>event has been deleted</em> 
 						</c:when>
 						<c:otherwise>
-							<a href='${basePath}search/eventsearch.htm?_id=${auditEntryTable.auditEntry.entityId}'>${auditEntryTable.auditable.summary}</a>
-							${auditEntryTable.auditable.when.asText} &nbsp; <%-- IE6 hack --%>
-							${auditEntryTable.auditable.where} &nbsp; <%-- IE6 hack --%>
+							<a href='${basePath}search/eventsearch.htm?_id=${simpleTable.auditEntry.entityId}'>${simpleTable.auditable.summary}</a>
+							${simpleTable.auditable.when.asText} &nbsp; <%-- IE6 hack --%>
+							${simpleTable.auditable.where} &nbsp; <%-- IE6 hack --%>
 						</c:otherwise>
 					</c:choose> 
 				</display:column>

@@ -15,7 +15,7 @@ request.setAttribute("discussField", discussField);
 request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 %>
 	
-	<display:table id="auditEntryTable" 
+	<display:table id="simpleTable" 
 						name="auditEntries" 
 						sort="list" 
 						requestURI="${basePath}${requestURI}.htm"
@@ -41,15 +41,15 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 		<%-- TODO make it so we don't show empty changes or we record something for empty changes (e.g. added a flag) --%>
 		<div class="changeEntry">
 		
-				Revision <c:out value="${auditEntryTable.version}"/>, 
-				<spring:message code="audit.action.field.${auditEntryTable.action}"/> by
-				<a  href="${basePath}member/contributions.htm?user=${auditEntryTable.user}" >${auditEntryTable.user}</a> 
-	 		<fmt:formatDate value="${auditEntryTable.dateCreated}" pattern="MMM dd, yyyy hh:mm a"/>
+				Revision <c:out value="${simpleTable.version}"/>, 
+				<spring:message code="audit.action.field.${simpleTable.action}"/> by
+				<a  href="${basePath}member/contributions.htm?user=${simpleTable.user}" >${simpleTable.user}</a> 
+	 		<fmt:formatDate value="${simpleTable.dateCreated}" pattern="MMM dd, yyyy hh:mm a"/>
 	 		
 	 		<c:choose>
-		 		<c:when test="${fn:length(auditEntryTable.auditEntryFieldChange) > 0}">
+		 		<c:when test="${fn:length(simpleTable.auditEntryFieldChange) > 0}">
 			 		<div class="simpleTable">
-						<display:table name="${auditEntryTable.auditEntryFieldChange}" id="dt" >
+						<display:table name="${simpleTable.auditEntryFieldChange}" id="dt" >
 							<display:column style="width:12em" title="Field">
 								<spring:message code="audit.event.field.${dt.propertyName}"/>
 							</display:column>
@@ -91,7 +91,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 						</display:table> 
 					</div>
 					<c:if test="${dt.id > 0}">
-						<a  href="${basePath}edit/undoevent.htm?id=${auditEntryTable.entityId}&toRev=${auditEntryTable.version-1}">
+						<a  href="${basePath}edit/undoevent.htm?id=${simpleTable.entityId}&toRev=${simpleTable.version-1}">
 							Undo this revision
 						</a>
 					</c:if>

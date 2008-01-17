@@ -99,12 +99,10 @@
 		    <td id="right" >
 			    <div id="spotlightbox">
 		        <img src="images/spotlight.png" />
-		        <p>What happened at <a  href='${basePath}search/eventsearch.htm?_where=london, england&_what="kensington palace"&_zoom=17&_maptype=1'>
-		        	Kensington Palace</a>
-		        </p>    
+		        <p>${spotlightLabel}</p>
 		        <div id="borderbox">
 		          <iframe id="embeddedmap" 
-		          	src='${basePath}search/embeddedsearch.htm?_where=london, england&_what="kensington palace"&_zoom=17&_maptype=1'
+		          	src='${spotlightEmbedLink}'
 		            height="330" width="450" frameborder="0" scrolling="no">
 		           	This browser doesn't support embedding a map.
 		          </iframe>

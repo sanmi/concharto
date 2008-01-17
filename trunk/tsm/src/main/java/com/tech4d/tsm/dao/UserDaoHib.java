@@ -57,17 +57,9 @@ public class UserDaoHib implements UserDao {
     public Role getRole(String role) {
         List<Role> roles = this.sessionFactory.getCurrentSession().createQuery(
         "select role from Role role where role.name = ?").setParameter(0, role).list();
-        return (Role) getOnlyFirst(roles);
+        return (Role) DaoHelper.getOnlyFirst(roles);
     }
 
-	private Object getOnlyFirst(List<?> roles) {
-		if (roles.size() == 1) {
-            return roles.get(0);
-        } else {
-            return null;
-        }
-	}
-    
     @SuppressWarnings("unchecked")
     public List<Role> getRoles() {
         return this.sessionFactory.getCurrentSession().createQuery(
@@ -80,7 +72,7 @@ public class UserDaoHib implements UserDao {
 		"select user from User user where user.userNote.passwordRetrievalKey = ?")
 		.setParameter(0, key)
 		.list();
-		return (User) getOnlyFirst(userNotes);
+		return (User) DaoHelper.getOnlyFirst(userNotes);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -89,7 +81,7 @@ public class UserDaoHib implements UserDao {
 		"select user from User user where user.userNote.rememberMeKey = ?")
 		.setParameter(0, key)
 		.list();
-		User user = (User) getOnlyFirst(userNotes);
+		User user = (User) DaoHelper.getOnlyFirst(userNotes);
 		//load everything in (kludge for the LoginFilter)
 		if (null != user) {
 			for (Role role : user.getRoles()) {
