@@ -36,11 +36,11 @@
         positive integer,
         _where varchar(512),
         zoomLevel integer,
-        discussion_id bigint,
         when_id bigint,
-        tsGeometry_id bigint,
-        styleSelector_id bigint,
         eventSearchText_id bigint,
+        styleSelector_id bigint,
+        discussion_id bigint,
+        tsGeometry_id bigint,
         positionalAccuracy_id bigint,
         primary key (id)
     );
@@ -100,6 +100,18 @@
         lastModified datetime,
         version bigint,
         name varchar(255),
+        primary key (id)
+    );
+
+    create table Spotlight (
+        id bigint not null auto_increment,
+        created datetime,
+        lastModified datetime,
+        version bigint,
+        label varchar(255),
+        link varchar(255),
+        visible bit,
+        addedByUser_id bigint,
         primary key (id)
     );
 
@@ -210,28 +222,28 @@
         references EventSearchText (id);
 
     alter table Event 
-        add index FK_EVENT_STYLE (styleSelector_id), 
-        add constraint FK_EVENT_STYLE 
-        foreign key (styleSelector_id) 
-        references StyleSelector (id);
-
-    alter table Event 
         add index FK_EVENT_GEOM (tsGeometry_id), 
         add constraint FK_EVENT_GEOM 
         foreign key (tsGeometry_id) 
         references TsGeometry (id);
 
     alter table Event 
-        add index FK_EVENT_TIMEPR (when_id), 
-        add constraint FK_EVENT_TIMEPR 
-        foreign key (when_id) 
-        references TimePrimitive (id);
+        add index FK_EVENT_STYLE (styleSelector_id), 
+        add constraint FK_EVENT_STYLE 
+        foreign key (styleSelector_id) 
+        references StyleSelector (id);
 
     alter table Event 
         add index FK_EVENT_DISCUSS (discussion_id), 
         add constraint FK_EVENT_DISCUSS 
         foreign key (discussion_id) 
         references WikiText (id);
+
+    alter table Event 
+        add index FK_EVENT_TIMEPR (when_id), 
+        add constraint FK_EVENT_TIMEPR 
+        foreign key (when_id) 
+        references TimePrimitive (id);
 
     alter table Event 
         add index FK_EVENT_POSACCURACY (positionalAccuracy_id), 
@@ -262,6 +274,12 @@
         add constraint FK_FLAG_EVENT 
         foreign key (event_id) 
         references Event (id);
+
+    alter table Spotlight 
+        add index FK_SPOTLIGHT_USER (addedByUser_id), 
+        add constraint FK_SPOTLIGHT_USER 
+        foreign key (addedByUser_id) 
+        references User (id);
 
     alter table StyleSelector_map 
         add index FK_STYLEMAP (StyleSelector_id), 
