@@ -30,8 +30,12 @@ public class SpotlightService {
 	 * @return the next spotlight
 	 */
 	public Spotlight getNext() {
-		current = (++current % spotlights.size());
-		return spotlights.get(current);
+		if (spotlights.size() > 0) {
+			current = (++current % spotlights.size());
+			return spotlights.get(current);
+		} else {
+			return null;
+		}
 	}
 	
 }
