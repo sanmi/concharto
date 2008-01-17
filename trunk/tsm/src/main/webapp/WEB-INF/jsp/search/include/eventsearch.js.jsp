@@ -109,9 +109,11 @@
 				urltext = append(urltext, '_ne',  formatLL(boundingBox.getNorthEast()));
 			}
 		}
+		
 		<%-- Only override zoom and center if the user has
-     changed the map since the page was rendered (e.g. initialize() was called) --%>
-		if (hasChangedMap()) {
+     changed the map since the page was rendered (e.g. initialize() was called) 
+     OR we are limiting the map within the given bounds --%>
+		if ( $('limitWithinMapBounds1').checked || hasChangedMap()) {
 			urltext = append(urltext, '_zoom', map.getZoom());
 			urltext = append(urltext, '_ll', formatLL(map.getCenter()) );
 		}
