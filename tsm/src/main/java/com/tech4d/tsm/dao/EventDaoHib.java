@@ -97,7 +97,7 @@ public class EventDaoHib implements EventDao {
     /*
      * (non-Javadoc)
      * 
-     * @see com.tech4d.tsm.lab.EventDao#findAll()
+     * @see com.tech4d.tsm.lab.EventDao#findRecent()
      */
     @SuppressWarnings("unchecked")
     public List<Event> findRecent(int maxResults) {

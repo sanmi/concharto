@@ -26,7 +26,7 @@ public class ChangeHistoryControllerHelper {
     private static final String MODEL_USER = "user";
     private static final String MODEL_AUDIT_ENTRIES = "auditEntries";
 	private static final String MODEL_USER_CHANGES = "userChanges";
-    private static final String DISPLAYTAG_TABLE_ID = "auditEntryTable";
+    private static final String DISPLAYTAG_TABLE_ID = "simpleTable";
 	private static final String MODEL_EVENT_ID = "eventId";
 	private static final String MODEL_EVENT = "event";
     private AuditEntryDao auditEntryDao;

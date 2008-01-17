@@ -44,6 +44,11 @@
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
+	<bean id="spotlightDao" class="com.tech4d.tsm.dao.SpotlightDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
 	<!-- End Daos -->  
 	
 	<!-- enable the configuration of transactional behavior based on annotations 
@@ -68,9 +73,11 @@
   		</set>
   	</property>
   </bean>
+	<!-- End Transaction config -->
+
+	<!--  begin services -->
   <bean id="revertEventService" class="com.tech4d.tsm.service.RevertEventServiceHib">
 		<property name="sessionFactory" ref="mySessionFactory"/>
-<!-- -->
   	<property name="eventDao" ref="eventDao"/>
   	<property name="auditEntryDao" ref="auditEntryDao"/>
   	<property name="auditFieldChangeFormatters">
@@ -81,6 +88,10 @@
   	</property>
   	 
   </bean>
-	<!-- End Transaction config -->
+  
+  <bean id="spotlightService" class="com.tech4d.tsm.service.SpotlightService">
+  	<property name="spotlightDao" ref="spotlightDao"/>
+  </bean>
+	<!-- end services -->
 	
 </beans>
