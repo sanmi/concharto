@@ -1,8 +1,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="display" uri="http://displaytag.sf.net" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 
@@ -52,7 +50,14 @@
 				<display:column title="Action" class="action">
 					<a href="${basePath}admin/spotlightedit.htm?id=${simpleTable.id}">edit</a> | 
 					<a href="#" onclick="confirmAndSubmit('${basePath}admin/spotlightlist.htm?del=${simpleTable.id}')">delete</a> |
-					<a href="#" onclick="document.location='${basePath}admin/spotlightlist.htm?hide=${simpleTable.id}'">hide</a>
+					<c:choose>
+						<c:when test="${simpleTable.visible == true}">
+							<a href="#" onclick="document.location='${basePath}admin/spotlightlist.htm?hide=${simpleTable.id}'">hide</a>
+						</c:when>
+						<c:otherwise>
+							<a href="#" onclick="document.location='${basePath}admin/spotlightlist.htm?show=${simpleTable.id}'">show</a>
+						</c:otherwise>
+					</c:choose>
 				</display:column>
 				<display:column title="visible">
 					<c:if test="${simpleTable.visible == true}">
