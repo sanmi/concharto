@@ -30,6 +30,7 @@
 					
 				<div class="inputcell">
 				  <input type="submit" value="Submit" />
+				  <input type="button" value="Cancel" onclick="document.location='spotlightlist.htm'"/>
 				</div>
 		  </div>
 	  </form:form>

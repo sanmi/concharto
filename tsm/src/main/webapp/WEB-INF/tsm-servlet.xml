@@ -59,6 +59,7 @@
           <prop key="admin/spotlightlist.htm">spotlightListController</prop>
           <prop key="admin/spotlightedit.htm">spotlightEditController</prop>
 
+          <prop key="admin/adminlinks.htm">urlFilenameViewController</prop>
           <prop key="404.htm">urlFilenameViewController</prop>
           <prop key="500.htm">urlFilenameViewController</prop>
       </props>

@@ -19,6 +19,12 @@
 				<li> 
 					<a href="${basePath}member/contributions.htm?user=${username}">Contributions</a>
 				</li>
+				<c:if test="${fn:contains(roles, 'admin')}">
+				<li>|</li>
+				<li> 
+					<a href="${basePath}admin/adminlinks.htm">Admin</a>
+				</li>
+				</c:if>
 				<li>|</li>
 				<li><a href="${basePath}logout.htm">Sign out</a></li>
 				</c:if></ul>
