@@ -109,16 +109,14 @@ public class LoginController extends SimpleFormController {
 	 * @param maxAge max cookie age
 	 */
 	private void setRemeberMeCookie(HttpServletResponse response, User user, int maxAge) {
-		String rememberMeKey = PasswordUtil.encrypt(user.getUsername() + Long.toString(System.currentTimeMillis()));
-		if (null != user.getUserNote()) {
-			user.getUserNote().setRememberMeKey(rememberMeKey);
-		} else {
+		if ((null == user.getUserNote()) && (null == user.getUserNote().getRememberMeKey())) {
+			String rememberMeKey = PasswordUtil.encrypt(user.getUsername() + Long.toString(System.currentTimeMillis()));
 			UserNote userNote = new UserNote();
 			userNote.setRememberMeKey(rememberMeKey);
 			user.setUserNote(userNote);
+			userDao.save(user);
 		}
-		userDao.save(user);
-		AuthHelper.setCookie(response, AuthHelper.COOKIE_REMEMBER_ME, maxAge, rememberMeKey);
+		AuthHelper.setCookie(response, AuthHelper.COOKIE_REMEMBER_ME, maxAge, user.getUserNote().getRememberMeKey());
 		AuthHelper.setCookie(response, AuthHelper.COOKIE_REMEMBER_ME_USERNAME, maxAge, user.getUsername());
 	}
 

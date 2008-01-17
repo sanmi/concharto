@@ -55,7 +55,12 @@ public class LoginFilter implements Filter{
         		//TODO - Ugh! this is the only way I know how to get rid of jsessionid.  
         		//NOTE this doesn't work when you have a server port other than 80 (e.g. test server).  Not sure why.
         		//There is probably another way
-        		httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getContextPath() + httpRequest.getRequestURI()));
+        		//However it doesn't work for URLs that will be redirected (e.g. our "link to here" urls
+        		//that contain get strings.  For those ones, we will have to leave the jsessionid
+        		//shouldn't normally show up, since "link to here" urls don't require authentication
+        		if (StringUtils.isEmpty(httpRequest.getQueryString())) {
+            		httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getRequestURL().toString()));
+        		}
         	} else if (!isAuthenticated(httpRequest)) {
                 httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getContextPath() + REDIRECT_LOGIN));                
             }  

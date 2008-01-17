@@ -60,7 +60,7 @@
 		  				<form:errors path="email"></span></form:errors>
 		  			</td>
 		  			<td>
-		  				<form:input path="email"/>
+		  				<form:input path="email" cssClass="loginText"/>
 		  			</td>
 		  		</tr>
 		  	</table>
@@ -79,7 +79,7 @@
 		  				<form:errors path="existingPassword"></span></form:errors>
 		  			</td>
 		  			<td>
-		  				<form:password path="existingPassword"/>
+		  				<form:password path="existingPassword" cssClass="loginText"/>
 		  			</td>
 		  		</tr>
 		  		<tr>
@@ -89,7 +89,7 @@
 		  				<form:errors path="password"></span></form:errors>
 		  			</td>
 		  			<td>
-		  				<form:password path="password"/>
+		  				<form:password path="password" cssClass="loginText"/>
 		  			</td>
 		  		</tr>
 		  		<tr>
@@ -99,7 +99,7 @@
 		  				<form:errors path="passwordConfirm"></span></form:errors>
 		  			</td>
 		  			<td>
-		  				<form:password path="passwordConfirm"/>
+		  				<form:password path="passwordConfirm" cssClass="loginText"/>
 		  			</td>
 		  		</tr>
 		  	</table>
