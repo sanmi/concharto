@@ -21,10 +21,10 @@
 		        <span class="inputlabel">Link</span> 
 		        <span class="errorLabel"><form:errors path="link" element="div"/></span>
 		        <br/>
-		        <form:input cssClass="textInput" path="link"/>
+		        <form:input cssClass="textInput" path="link" htmlEscape="true"/>
    		   </div>
 				<div class="inputcell">
-		        <form:checkbox path="visible" /> 
+		        <form:checkbox path="visible" htmlEscape="true"/> 
 		        <span class="inputlabel">Visible</span>
    		   </div>
 					
