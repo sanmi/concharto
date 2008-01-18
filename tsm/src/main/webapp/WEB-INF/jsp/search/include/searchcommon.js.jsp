@@ -94,7 +94,7 @@
 	
 	function fitToResults() {
 		var boundsPoly = new GPolyline(_fitToPolygon);
-		var zoom = 12; //city level
+		var zoom; 
 		if (_fitToPolygon.length >= 2){							
 			zoom = map.getBoundsZoomLevel(boundsPoly.getBounds());
 			<%-- if they specified a place name, then we only want to zoom out to fit,
@@ -103,13 +103,17 @@
 			if (!isEmpty($('where').value) && (zoom > map.getZoom())) {
 				zoom = map.getZoom();
 			}
+		} else if (_fitToPolygon.length == 1) {
+			zoom=12; //city level
 		}
-		map.setZoom(zoom);
-		map.setCenter(getBoundsCenter(boundsPoly));
+		if (_fitToPolygon.length >0) {
+			map.setZoom(zoom);
+			map.setCenter(getBoundsCenter(boundsPoly));
+		}
 	}
 	
 	function getBoundsCenter(boundsPoly) {
-		<%-- if there is only one point, we don't do a fit, we just zoom to the point --%>
+		<%-- if there is only one point, we don't do a fit, we just zoom to the point --%>		
 		if (_fitToPolygon == 1) {
 			return _fitToPolygon[0];
 		} else {

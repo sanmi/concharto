@@ -31,8 +31,8 @@
 	}
 	function showDefault() {		
 		diagonal = new GPolyline([
-  		new GLatLng(53,-127),
-  		new GLatLng(-23,25)
+  		new GLatLng(86,-180),
+  		new GLatLng(-86,180)
 		]);
 		var bounds = diagonal.getBounds();
 		map.setCenter(bounds.getCenter());  
