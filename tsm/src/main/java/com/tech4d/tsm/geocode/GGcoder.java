@@ -30,6 +30,13 @@ public class GGcoder {
     public static final int ACCURACY_INTERSECTION = 7;
     public static final int ACCURACY_ADDRESS = 8;
 
+    /**
+     * Geocode an address
+     * @param address
+     * @param key
+     * @return GAddress object
+     * @throws IOException
+     */
     public static GAddress geocode(String address, String key) throws IOException  {
         //TODO fix the throws exception
         URL url = new URL(URLstr + "&q=" + URLEncoder.encode(address, "UTF-8")

@@ -422,11 +422,20 @@
 	  if (!response || response.Status.code != 200) {
 	    alert("Sorry, we can't find that location, " + response.Status.code);
 	  } else {
+	  	
 	    place = response.Placemark[0];
 	    point = new GLatLng(place.Point.coordinates[1],
 	                        place.Point.coordinates[0]);
+			var accuracy = place.AddressDetails.Accuracy;
+			if (null != accuracy) {
+				map.setZoom(ACCURACY_TO_ZOOM[place.AddressDetails.Accuracy]);
+			} else {
+				map.setZoom(ZOOM_BOX_THRESHOLD); 
+			}
 			map.setCenter(point);
-			_editableMarker.setLatLng(point);
+			if (null != _editableMarker) {
+				_editableMarker.setLatLng(point);
+			}
 	  }
 	}
 	
