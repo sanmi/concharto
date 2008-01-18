@@ -54,7 +54,12 @@
 		          </tr>
 				  	</c:when>
 				  	<c:otherwise>
-				 		<form:hidden path="limitWithinMapBounds"/> 
+				  		<tr>
+		            <td>
+				 					<span class="options">All fields are optional</span>
+				 				</td>
+				 			</tr>
+					 		<form:hidden path="limitWithinMapBounds"/> 
 				  	</c:otherwise>
 				  </c:choose>
         </table>
