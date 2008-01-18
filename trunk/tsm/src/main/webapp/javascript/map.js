@@ -2,6 +2,11 @@
 	//some of the globals
 	var map;
 	var geocoder = null;
+	var ACCURACY_TO_ZOOM = [4, 5, 7, 10, 11, 12, 13, 14, 15];
+	var ZOOM_BOX_THRESHOLD = 10;
+	var ZOOM_COUNTRY = 5;
+	var ZOOM_USA = 4;
+	var ZOOM_WORLD = 2;
 	
 	function initializeMap(control) {
 	
