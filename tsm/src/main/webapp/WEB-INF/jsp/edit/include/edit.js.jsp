@@ -31,7 +31,7 @@
 	<%-- the main initialize function --%>
 	function initialize() {
 		initializeMap();
-		
+
 		var mapType = document.getElementById("eventForm").mapType.value;
 		<%-- set map type from the event --%>			
 		if (mapType != '') {
@@ -59,8 +59,7 @@
 		if (!isEmpty(_editablePoly) && _editablePoly.getVertexCount() >0) {
 			fitToPoly(_editablePoly, true);
 		} 
-		/*
-		*/
+		
 	}
 	
 	function removeClickListener() {
@@ -128,7 +127,7 @@
 	function addClickListener() {
 		<%-- only add if it is missing --%>
 		if (_clickListener == null) {
-			_clickListener = GEvent.addListener(map,"click", function(overlay, point) {     
+			_clickListener = GEvent.addListener(map,"click", function(overlay, point) {
 				addMarker(point);
 				drawPoly();
 			});
