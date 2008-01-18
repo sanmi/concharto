@@ -109,7 +109,7 @@ public class LoginController extends SimpleFormController {
 	 * @param maxAge max cookie age
 	 */
 	private void setRemeberMeCookie(HttpServletResponse response, User user, int maxAge) {
-		if ((null == user.getUserNote()) && (null == user.getUserNote().getRememberMeKey())) {
+		if ((null == user.getUserNote()) || (null == user.getUserNote().getRememberMeKey())) {
 			String rememberMeKey = PasswordUtil.encrypt(user.getUsername() + Long.toString(System.currentTimeMillis()));
 			UserNote userNote = new UserNote();
 			userNote.setRememberMeKey(rememberMeKey);
