@@ -10,35 +10,35 @@
  %>
 
 <tsm:page title="Signup">
-	<jsp:attribute name="stylesheet">textpanel.css,header.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">textpanel.css,simpleform.css,header.css</jsp:attribute>
 	<jsp:body>
 		<form:form id="signupForm" name="signup" commandName="signup"> 
 	  	<div class="textpanel">
 	  		<h2>Sign Up</h2>
 	  		<form:errors path="*" cssClass="errorBox" element="div"/>
-		  	<table>
+		  	<table class="infoBox">
 		  		<tr>
 		  			<td>Username</td>
 		  			<td>
-		  				<form:input path="username" maxlength="${SZ_USERNAME}" />
+		  				<form:input path="username" maxlength="${SZ_USERNAME}" cssClass="loginText"/>
 		  			</td>
 		  		</tr>
 		  		<tr>
 		  			<td>Password</td>
 		  			<td>
-		  				<form:password path="password" maxlength="${SZ_PASSWORD}"/>
+		  				<form:password path="password" maxlength="${SZ_PASSWORD}" cssClass="loginText"/>
 		  			</td>
 		  		</tr>
 		  		<tr>
 		  			<td>Password (confirm)</td>
 		  			<td>
-		  				<form:password path="passwordConfirm" maxlength="${SZ_PASSWORD}"/>
+		  				<form:password path="passwordConfirm" maxlength="${SZ_PASSWORD}" cssClass="loginText"/>
 		  			</td>
 		  		</tr>
 		  		<tr>
 		  			<td>Email address</td>
 		  			<td>
-		  				<form:input path="email" maxlength="${SZ_EMAIL}"/>
+		  				<form:input path="email" maxlength="${SZ_EMAIL}" cssClass="loginText"/>
 		  			</td>
 		  		</tr>
 		  		<tr>
