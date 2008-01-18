@@ -100,7 +100,7 @@
 		var geometryType = getGeometryType();
 		var geom = getEventFormGeom();
 		var marker;
-		if ((document.getElementById("eventForm").addEvent.value == 'true')) {
+		if (isEmpty($('geometry').value)) {
 			<%-- this means we are adding to the map.  Default is "point" --%>
 			var center = getEventFormCenter();
 			marker = createEditableMarker(new GLatLng(center.lat,center.lng));
@@ -184,7 +184,7 @@
 			
 			drawPoly();
 		}
-		showPolyMessage();
+		showPolyMessage(poly);
 		
 	}
 	
@@ -196,7 +196,7 @@
 		}
 	}
 	
-	function showPolyMessage() {
+	function showPolyMessage(poly) {
 		var html;
 		if ((document.getElementById("eventForm").showPreview.value == 'true') &&
 		     (_polyMarkers.length >0)) {
@@ -204,7 +204,12 @@
 		} else {
 			html = " <b>Click anywhere</b> on the map to add a point<br/><b>Drag a point </b> to edit the line.<br/><b>Click a point</b> to delete it.";
 		}
-    map.openInfoWindowHtml(map.getCenter(), html);
+		if (null == poly) {
+	    map.openInfoWindowHtml(map.getCenter(), html);
+		} else {
+			var point = findClosestVertex(map.getCenter(), poly)
+	    map.openInfoWindowHtml(point, html);
+		}
 	
 	}
 

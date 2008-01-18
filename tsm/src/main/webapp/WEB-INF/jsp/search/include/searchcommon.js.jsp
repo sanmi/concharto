@@ -219,19 +219,6 @@
 		}
 	}
 	
-	function findClosestVertex(point, overlay) {
-		var minDistance = 9999999;
-		var closest = 0;
-		for (var i=0; i<overlay.getVertexCount(); i++) {
-			distance = point.distanceFrom(overlay.getVertex(i));
-			if (distance < minDistance) {
-				closest = i;
-				minDistance = distance;
-			}
-		}
-		return overlay.getVertex(closest);
-	}
-		
   function isEmpty(value) {
 		return ((null == value) || ('' == value));
 	}
