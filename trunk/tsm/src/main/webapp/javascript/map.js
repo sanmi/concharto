@@ -163,7 +163,15 @@
 	function newPoly(points, geometryType) {
 		if (points.length > 0) {
 			if ((geometryType == 'line')){
-				return new GPolyline(points,'#FF0000', 4, .5, {geodesic:true});
+				var encodedPolyline = new GPolyline.fromEncoded({
+				    color: "#FF0000",
+				    weight: 4,
+				    points: encodePoly(points).points,
+				    levels: encodePoly(points).levels,
+				    zoomFactor: 32,
+				    numLevels: 4
+				});
+				return encodedPolyline;
 			} else if (geometryType == 'polygon') {
 				return new GPolygon(points,"#f33f00", 4, .8, '#FF0000', .25);
 			}
@@ -199,5 +207,53 @@
   function isEmpty(value) {
 		return ((null == value) || ('' == value));
 	}
-	
+
+/* was GooglePack - from  http://www.polyarc.us/google/packer.js */ 	
+function encodePoly(poly)
+{
+	var i,j,k,l,u,v,w,z;
+
+	w=[];
+	z=[];
+
+	u={x:0,y:0};
+	v={x:0,y:0};
+
+	for (i=0;poly[i];i++)
+	{
+		w[i]="B";
+
+		u.x=(poly[i].x*1e5)<<1;
+		u.y=(poly[i].y*1e5)<<1;
+
+		v.x=u.x-v.x;
+		v.y=u.y-v.y;
+
+		v.x^=v.x>>31;
+		v.y^=v.y>>31;
+
+		z.push(v.y.toString(32));
+		z.push(v.x.toString(32));
+
+		v.x=u.x;
+		v.y=u.y;
+	}
+
+	for (i=0;z[i];i++)
+	{
+		k=[];
+
+		for (j=0;z[i].charAt(j);j++)
+		{
+		k[j]=String.fromCharCode(parseInt(z[i].charAt(j),32)+(j ? 95 : 63));
+		}
+
+		z[i]=k.reverse().join("");
+	}
+
+	w=w.join("");
+	z=z.join("");
+
+	return {levels:w,points:z};
+}
   
