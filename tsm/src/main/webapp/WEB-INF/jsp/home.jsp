@@ -75,7 +75,7 @@
 		    <td id="left" >
 		      <h1>An Atlas of History and Happenings</h1>
 		      <p>Time Space Map is an encyclopedic, online atlas of history and happenings that anyone can edit; a geographic wiki. You
-		      can search, add or edit, view or undo changes, discuss, watch, tag, or flag for removal.</p>
+		      can search, add or edit, view or undo changes, discuss, tag, or flag for removal.</p>
 		      <ul>
 						<li><a href="http://wiki.timespacemap.com/Tour">Take a tour</a></li>
 						<li><a href="http://wiki.timespacemap.com/Guidelines">Policies and guidelines</a></li>
@@ -98,7 +98,6 @@
 		    </td>
 		    <td id="right" >
 			    <div id="spotlightbox">
-		        <img src="images/spotlight.png" />
 		        <p>${spotlightLabel}</p>
 		        <div id="borderbox">
 		          <iframe id="embeddedmap" 

@@ -51,10 +51,13 @@
 	#main td {
 	vertical-align: top;
 	}
-	#main #spotlightbox {
+	#spotlightbox {
 	background: url(../images/spotlight-backg.png) repeat-x;
 	height:496px;
 	width:491px;
+	padding: 6px 0;
+	}
+	#spotlightbox .label{
 	}
 	#main #borderbox {
 	text-align:center
