@@ -6,7 +6,7 @@
 
 
 <tsm:page title="Settings">
-	<jsp:attribute name="stylesheet">textpanel.css,header.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">textpanel.css,simpleform.css,header.css</jsp:attribute>
 
 	<jsp:body>
 	  <form:form name="settings" commandName="settings" > 
