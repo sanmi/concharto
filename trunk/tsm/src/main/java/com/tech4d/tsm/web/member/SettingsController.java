@@ -68,10 +68,10 @@ public class SettingsController extends SimpleFormController {
         	//ok we have to validate the original password
         	if (!PasswordUtil.isPasswordValid(settingsForm.getExistingPassword(), user.getPassword())) {
                 //tell the user there was a problem and let the default form handle the rest
-                errors.rejectValue("password", "invalidUserPasswd.authForm.username");
+                errors.rejectValue("existingPassword", "invalidUserPasswd.authForm.existingPassword");
                 model.put(MODEL_USER, safeUser(user));
                 model.put(MODEL_SUCCESS, false);
-                return super.onSubmit(request, response, command, errors);
+                return new ModelAndView(getFormView(),model);
         	} 
         }
         if (user != null) {
