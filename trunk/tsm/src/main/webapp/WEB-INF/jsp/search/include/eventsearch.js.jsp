@@ -93,7 +93,14 @@
 	var hasQuery;
 	function getLinkHereUrl() {
 		hasQuery = false;
-		var urltext = window.top.location;
+		var url = window.top.location;
+		<%-- strip the out query string --%>
+		var urltext = new String(url);
+		var idx = urltext.indexOf('?');
+		if (-1 != (idx)) {
+			urltext = urltext.substring(0, idx);
+		}
+		<%-- construct the url --%>
 		if (!isEmpty($('linkHereEventId').value)) {
 			urltext = append(urltext, '_id', $('linkHereEventId').value);
 		} else {
