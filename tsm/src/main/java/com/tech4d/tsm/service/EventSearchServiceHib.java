@@ -196,7 +196,7 @@ public class EventSearchServiceHib implements EventSearchService {
             .setMaxResults(maxResults)
             .setFirstResult(firstResult)
             .list(); 
-        timer.timeIt("search").logDebugTime();
+        timer.timeIt("search").logInfoTime();
         return events;
     }
 

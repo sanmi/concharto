@@ -39,6 +39,10 @@ public class LapTimer {
     public void logDebugTime() {
         log.debug(this);
     }
+    
+    public void logInfoTime() {
+    	log.info(this);
+    }
 
     public void logDebugTime(String msg) {
         log.debug("," + msg + this);
