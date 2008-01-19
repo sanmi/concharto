@@ -156,12 +156,6 @@ public class EventSearchController extends AbstractFormController {
             Map model = errors.getModel();
             model.put(SearchHelper.MODEL_TOTAL_RESULTS, 0);
             returnModelAndView = new ModelAndView(getFormView(), model);
-        } else if ((!StringUtils.isEmpty(request.getQueryString()) && 
-        		(null == DisplayTagHelper.getPageParameterId(request, SearchHelper.DISPLAYTAG_TABLE_ID)))) {
-        	//if this is a form submission via query params (except for the displaytag query params), 
-        	//we will have to geocode first then do a redirect
-            eventSearchForm = new EventSearchForm();
-        	returnModelAndView = handleGet(request, eventSearchForm);
         } else {
             log.debug("No errors -> processing submit");
             if ((eventSearchForm.getIsAddEvent() != null) && (eventSearchForm.getIsAddEvent())) {
@@ -176,18 +170,23 @@ public class EventSearchController extends AbstractFormController {
                 //todo may want to inject the view here
                 returnModelAndView = new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm?id=" + id));
             } else {
-            	//we are doing a regular search
-            	long time = System.currentTimeMillis(); 
-                Map model = doSearch(request, errors, eventSearchForm);
-            	//fit the map to the search results if they specified a place name
-                if (!StringUtils.isEmpty(eventSearchForm.getWhere())) {
-                	eventSearchForm.setLimitWithinMapBounds(false);
-                }
-    			// needed so the displaytag paging can work
-    	        displayTagModelElements(model);
+            	//This is a normal search
+            	
+            	//if this is a GET search, we must first process the query parameters
+            	if ((!StringUtils.isEmpty(request.getQueryString()) && 
+                		(null == DisplayTagHelper.getPageParameterId(request, SearchHelper.DISPLAYTAG_TABLE_ID)))) {
+            		handleGet(request, eventSearchForm);
+            	}
+            	//now search
+        		Map model = doSearch(request, errors, eventSearchForm);
+        		//fit the map to the search results if they specified a place name
+        		if (!StringUtils.isEmpty(eventSearchForm.getWhere())) {
+        			eventSearchForm.setLimitWithinMapBounds(false);
+        		}
+        		// needed so the displaytag paging can work
+        		displayTagModelElements(model);
 
-            	returnModelAndView = new ModelAndView(getSuccessView(), model);
-                logSearchQuery(eventSearchForm, System.currentTimeMillis()-time);
+        		returnModelAndView = new ModelAndView(getSuccessView(), model);
             }
         }
         //put the data into the session in case we are leaving to edit, and then want to come back
@@ -195,7 +194,6 @@ public class EventSearchController extends AbstractFormController {
         return returnModelAndView;
     }
 
-	
 	@SuppressWarnings("unchecked")
 	private void displayTagModelElements( Map model) {
 		model.put(DisplayTagHelper.MODEL_PAGESIZE, SearchHelper.DISPLAYTAG_PAGESIZE);
@@ -223,7 +221,7 @@ public class EventSearchController extends AbstractFormController {
      * @return ModelAndView a new ModelAndView
      * @throws Exception exception
      */
-    private ModelAndView handleGet(HttpServletRequest request, EventSearchForm eventSearchForm) throws Exception {
+    private void handleGet(HttpServletRequest request, EventSearchForm eventSearchForm) throws Exception {
     	//this request contains enough information to do a search right now
     	//use the same binder to get params of the query string as we were using for the POST
         //populate the form with parameters off the URL query string
@@ -234,11 +232,6 @@ public class EventSearchController extends AbstractFormController {
 			String mapKey = makeMapKey(request);
 	    	searchHelper.geocode(mapKey, request, eventSearchForm);
 		}
-    	
-    	//save the form for redirect
-    	//WebUtils.setSessionAttribute(request, SESSION_EVENT_SEARCH_FORM, eventSearchForm);
-    	
-    	return new ModelAndView(new RedirectView(request.getContextPath() + "/" + getSuccessView() + ".htm"));
     }
 
 	private String makeMapKey(HttpServletRequest request) {
@@ -247,11 +240,13 @@ public class EventSearchController extends AbstractFormController {
     
     @SuppressWarnings("unchecked")
 	private Map doSearch( HttpServletRequest request, BindException errors, EventSearchForm eventSearchForm) {
+		long time = System.currentTimeMillis(); 
     	Map model = errors.getModel();
 		String mapKey = makeMapKey(request);
     	List<Event> events = searchHelper.doSearch(mapKey, request, model, eventSearchForm);
     	//save the results for later "show forms", e.g. in the event we click edit but then hit 'cancel' 
         WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_RESULTS, events);        
+		logSearchQuery(eventSearchForm, System.currentTimeMillis()-time);
     	return model;
     }
 
