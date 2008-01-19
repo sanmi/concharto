@@ -10,6 +10,7 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
@@ -57,8 +58,11 @@ public class FeedbackController extends SimpleFormController {
 		Enumeration headerNames = request.getHeaderNames();
 		while (headerNames.hasMoreElements()) {
 			String headerName = (String) headerNames.nextElement();
-			userRequestInfo.append(headerName).append(": ")
+			//don't email cookies for security reasons
+			if (!"cookie".equals(headerName)) {
+				userRequestInfo.append(headerName).append(": ")
 				.append(request.getHeader(headerName)).append("\n");
+			}
 			
 		}
 		return userRequestInfo.toString();
