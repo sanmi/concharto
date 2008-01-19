@@ -64,6 +64,7 @@ public class LoginFilter implements Filter{
         			url += "?" + httpRequest.getQueryString();
         			httpResponse.sendRedirect(url);
         		}
+        		log.info("user " + AuthHelper.getUsername() + " signed in via cookie");
         	} else if (!isAuthenticated(httpRequest)) {
                 httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getContextPath() + REDIRECT_LOGIN));                
             }  
