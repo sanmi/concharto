@@ -78,7 +78,7 @@
 							<td>${simpleTable.label}</td>
 						</tr>
 						<tr>
-							<td class="label"><a href="${simpleTable.link}">Link</a></td>
+							<td class="label"><a href="<c:out value="${simpleTable.link}" escapeXml="true"/>">Link</a></td>
 							<td></td>
 						</tr>
 					</table>
