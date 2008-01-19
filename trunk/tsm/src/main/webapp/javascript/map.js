@@ -7,6 +7,13 @@
 	var ZOOM_COUNTRY = 5;
 	var ZOOM_USA = 4;
 	var ZOOM_WORLD = 2;
+	var LINE_COLOR = '#FF0000';
+	var POLY_COLOR = '#f33f00';
+	var LINE_WEIGHT = 4;
+	var LINE_WEIGHT_HIGHLIGHT = 4;
+	var POLY_COLOR_HIGHLIGHT = '#17ACFD';
+	var LINE_COLOR_HIGHLIGHT = '#0000FF';
+	 
 	
 	function initializeMap(control) {
 	
@@ -165,12 +172,22 @@
 		}
 	}
 	
-	function newPoly(points, geometryType) {
+	function newPoly(points, geometryType, weight /* optional */, 
+										lineColor /* optional */, polyColor /* optional */) {
+		if (weight == undefined) {
+			weight = LINE_WEIGHT;
+		}
+		if (lineColor == undefined) {
+			lineColor = LINE_COLOR;
+		}
+		if (polyColor == undefined) {
+			polyColor = POLY_COLOR;
+		}
 		if (points.length > 0) {
 			if ((geometryType == 'line')){
 				var encodedPolyline = new GPolyline.fromEncoded({
-				    color: "#FF0000",
-				    weight: 4,
+				    color: lineColor,
+				    weight: weight,
 				    points: encodePoly(points).points,
 				    levels: encodePoly(points).levels,
 				    zoomFactor: 32,
@@ -178,7 +195,7 @@
 				});
 				return encodedPolyline;
 			} else if (geometryType == 'polygon') {
-				return new GPolygon(points,"#f33f00", 4, .8, '#FF0000', .25);
+				return new GPolygon(points, polyColor, weight, .8, lineColor, .25);
 			}
 		}
 		return null;

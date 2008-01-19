@@ -30,6 +30,7 @@
   	this.html = html;
   	this.type = type;
   	this.id = id;
+  	this.isHighlighted = false;
   }
   <%-- END OBJECT DEFINITIONS ============================= --%>
   <%-- BEGIN PRE FUNCTIONS (initialization) ============================= --%>
@@ -81,6 +82,11 @@
 		     changed the map since the page was rendered (e.g. initialize() was called) --%>
 		_initialZoom = map.getZoom();
 		_initialCenter = map.getCenter();
+		
+		<%-- to unhighlight polygons if there are any --%>
+		GEvent.addListener(map, "infowindowclose", function() {
+		  unhighlightOverlay();
+		});
 	}
 	
 	function getMapCenterFromJSON() {
@@ -163,16 +169,20 @@
 		}
 		var poly = newPoly(points, event.geom.gtype);
 		if (poly) {
+			<%-- record so the user can click on the sidebar and see a popup in the map --%>
 			var html = makeOverlayHtml(event);
-			GEvent.addListener(poly, "click", function(point) {		    
-		    map.openInfoWindowHtml(point, html);
-		  });
+			var overlayItem = recordOverlay(poly, html, event.gtype, event.id)
+			addOverlayClickListener(overlayItem);
 		  
 			map.addOverlay(poly);
-	
-			<%-- record so the user can click on the sidebar and see a popup in the map --%>
-			recordOverlay(poly, html, "line", event.id)
 		}
+	}
+	
+	function addOverlayClickListener(overlayItem) {
+			GEvent.addListener(overlayItem.overlay, "click", function(point) {
+		    map.openInfoWindowHtml(point, overlayItem.html);
+		    highlightOverlay(overlayItem);
+		  });
 	}
 	
 	<%-- record overlay and html so we can pop up a window when the user clicks
@@ -181,6 +191,7 @@
 		var item = new overlayItem(overlay, html, type, id);
 		_overlays[_overlayIndex] = item;
 		_overlayIndex++;
+		return item;
 	}
 
 
@@ -191,9 +202,40 @@
 		if (_overlays[index].type == "point")	{
 			_overlays[index].overlay.openInfoWindowHtml(_overlays[index].html);
 		} else {
-			overlay = _overlays[index].overlay;
+			var overlay = _overlays[index].overlay;
+			unhighlightOverlay();
 			var point = findClosestVertex(map.getCenter(), overlay);
 			map.openInfoWindow(point, _overlays[index].html);
+			highlightOverlay(_overlays[index]);
+		}
+	}
+	
+	function highlightOverlay(overlayItem) {
+		var newOverlay = redrawOverlay(overlayItem, LINE_WEIGHT_HIGHLIGHT, LINE_COLOR_HIGHLIGHT, POLY_COLOR_HIGHLIGHT);
+		overlayItem.isHighlighted = true;
+		overlayItem.overlay = newOverlay;
+		addOverlayClickListener(overlayItem);
+	}
+	
+	function redrawOverlay(overlayItem, weight /* optional */, lineColor /* optional */, polyColor /* optional */) {
+		var overlay = overlayItem.overlay;
+		map.removeOverlay(overlay);
+		var points = new Array();
+		for (var i=0; i<overlay.getVertexCount(); i++) {
+			points[i] = overlay.getVertex(i);
+		}
+		overlay = newPoly(points, overlayItem.type, weight, lineColor, polyColor);
+		map.addOverlay(overlay);
+		return overlay;
+	}
+	
+	function unhighlightOverlay() {
+		for (var ov=0; ov<_overlays.length; ov++) {
+			if (_overlays[ov].isHighlighted == true) {
+				_overlays[ov].overlay = redrawOverlay(_overlays[ov], LINE_WEIGHT, LINE_COLOR, POLY_COLOR);
+				_overlays[ov].isHighlighted = false;
+				addOverlayClickListener(_overlays[ov]);
+			} 
 		}
 	}
 	
