@@ -13,12 +13,16 @@
 		//<![CDATA[
 
 	<%-- the main initialize function --%>
-	function initialize() {
+	function initialize_embedded() {
 		initializeMap(new GSmallMapControl());
 		addEvent();
    	var height = getHeight();
-   	document.getElementById("map").style.height=height+"px";		
+   	document.getElementById("map").style.height=height+"px";
 	}		
+
+	<%-- override this function to do nothing --%>
+	function adjustSidebarIE() {
+	}
 	
 	function addEvent() {
 		var eventJSON = document.getElementById("mapForm").event.value;
@@ -63,8 +67,8 @@
 			}
 		</style>
 	</jsp:attribute>
-	<jsp:attribute name="script">map.js,json.js</jsp:attribute>
-	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="setMapExtent();"</jsp:attribute>
+	<jsp:attribute name="script">prototype.js,map.js,json.js</jsp:attribute>
+	<jsp:attribute name="bodyattr">onload="initialize_embedded()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 	<jsp:attribute name="stripped">true</jsp:attribute>
 
 	<jsp:body>
