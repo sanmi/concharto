@@ -318,13 +318,15 @@ public class SearchHelper {
 			return null;
 		}
 
+		//if we already have bounds
 		if (hasBounds(eventSearchForm)) {
-			//we already have bounds
-			if (!zoomedInTooLow(eventSearchForm)) {
+			//if there are no bounds or the user explicitly said to use those bounds
+			if ((!zoomedInTooLow(eventSearchForm) ||(BooleanUtils.isTrue(eventSearchForm.getLimitWithinMapBounds())))) {
 				bounds = new LatLngBounds(eventSearchForm.getBoundingBoxSW(), eventSearchForm.getBoundingBoxNE());
-			} else  {
-				//when we are zoomed in real low we want to search more than just the visible map, instead
-				//use the a wider search radius
+			} 
+			//when we are zoomed in real low we want to search more than just the visible map, instead
+			//use the a wider search radius
+			else  {
 				bounds = searchBoxBounds(eventSearchForm);
 			}
 		} else if (null != eventSearchForm.getWhere()){
