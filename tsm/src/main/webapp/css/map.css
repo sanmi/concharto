@@ -143,6 +143,13 @@
 	color: gray;
 	margin: .1em 0;
 }
+.result .source p {
+	padding-left: .4em;
+	margin: 0;
+}
+.result .source a {
+	font-weight: normal;
+}
 .result .links {
 }
 .wikitext ul, .mapedit .wikitext ol  {
@@ -156,8 +163,8 @@
 	text-indent: -2.2em;
 }
 .wikitext p {
-	margin:.4em 0;
-	paddding:0;
+	margin: .4em 0;
+	paddding: 0;
 }
 .wikitext h1,
 .wikitext h2,
