@@ -1,39 +1,39 @@
-<script type="text/javascript">
-		//<![CDATA[
-		
-	<%-- Create a base icon for all of our markers that specifies the
-	     shadow, icon dimensions, etc. --%>
+	/* Create a base icon for all of our markers that specifies the
+	     shadow, icon dimensions, etc. */
 	var _markerIcon = new GIcon();
-	_markerIcon.image = "${basePath}images/icons/mm_20_red.png";
-	_markerIcon.shadow = "${basePath}images/icons/mm_20_shadow.png";
-	_markerIcon.iconSize = new GSize(12, 20);
-	_markerIcon.shadowSize = new GSize(22, 20);
-	_markerIcon.iconAnchor = new GPoint(6, 20);
-	_markerIcon.infoWindowAnchor = new GPoint(6, 2);
-	_markerIcon.infoShadowAnchor = new GPoint(18, 18);
-	
-	_entPointIcon = new GIcon();
-	_entPointIcon.image = "${basePath}images/icons/square.png";
-	_entPointIcon.shadow = "${basePath}images/icons/square_shadow.png";
-	_entPointIcon.iconSize = new GSize(10, 10);
-	_entPointIcon.shadowSize = new GSize(12, 12);
-	_entPointIcon.iconAnchor = new GPoint(5, 5);
-	_entPointIcon.infoWindowAnchor = new GPoint(0, 0);
-	_entPointIcon.infoShadowAnchor = new GPoint(12, 12);
-	
 	var _editableMarker;
 	var _editablePoly;
 	var _polyMarkers = [];
 	var _currMarker = 0;
 	var _clickListener;
+
+	function initializeVars() {
+		var basePath = $('basePath').value;
+		_markerIcon.image = basePath+"images/icons/mm_20_red.png";
+		_markerIcon.shadow = basePath+"images/icons/mm_20_shadow.png";
+		_markerIcon.iconSize = new GSize(12, 20);
+		_markerIcon.shadowSize = new GSize(22, 20);
+		_markerIcon.iconAnchor = new GPoint(6, 20);
+		_markerIcon.infoWindowAnchor = new GPoint(6, 2);
+		_markerIcon.infoShadowAnchor = new GPoint(18, 18);
 		
-  <%-- BEGIN PRE FUNCTIONS (initialization) ============================= --%>
-	<%-- the main initialize function --%>
+		_entPointIcon = new GIcon();
+		_entPointIcon.image = basePath+"images/icons/square.png";
+		_entPointIcon.shadow = basePath+"images/icons/square_shadow.png";
+		_entPointIcon.iconSize = new GSize(10, 10);
+		_entPointIcon.shadowSize = new GSize(12, 12);
+		_entPointIcon.iconAnchor = new GPoint(5, 5);
+		_entPointIcon.infoWindowAnchor = new GPoint(0, 0);
+		_entPointIcon.infoShadowAnchor = new GPoint(12, 12);
+	}	
+  /* BEGIN PRE FUNCTIONS (initialization) ============================= */
+	/* the main initialize function */
 	function initialize() {
+		initializeVars();
 		initializeMap();
 
 		var mapType = document.getElementById("eventForm").mapType.value;
-		<%-- set map type from the event --%>			
+		/* set map type from the event */			
 		if (mapType != '') {
 			map.setMapType(G_DEFAULT_MAP_TYPES[mapType]);				
 		}
@@ -45,17 +45,17 @@
 		}
 		createEditableOverlay();
 
-		<%-- this is to fix render time rearranging on IE and firefox--%>		
+		/* this is to fix render time rearranging on IE and firefox*/		
 		$('smaller').hide();
 		$('smaller').removeClassName('hidden');
 		$('larger').removeClassName('hidden');
 		
 		setupHelpPanels();
 		
-		<%-- if it is a polyline or a point, automatically fit it to the window 
+		/* if it is a polyline or a point, automatically fit it to the window 
 				 no matter what, otherwise it can be confusing to the user.  For example, 
 				 the centroid of the polyline may be nowhere near the border in which 
-				 case you won't see the line at all.--%>
+				 case you won't see the line at all.*/
 		if (!isEmpty(_editablePoly) && _editablePoly.getVertexCount() >0) {
 			fitToPoly(_editablePoly, true);
 		} 
@@ -67,7 +67,7 @@
 		_clickListener = null;		
 	}
 	
-	<%-- create a non-editable poly from an event --%>
+	/* create a non-editable poly from an event */
 	function createPoly(event) {
 		var points = [];
 		var line = event.geom.line;
@@ -86,7 +86,7 @@
 	  }
 	}
 	
-	<%-- create a non-editable marker from an event --%>
+	/* create a non-editable marker from an event */
 	function createMarker(event) {
 		var point = new GLatLng(event.geom.lat, event.geom.lng);
 		var marker = new GMarker(point, {icon:_markerIcon});  
@@ -94,25 +94,25 @@
 		map.addOverlay(marker);
 	}
 	
-	<%-- create and draw the editable overlay --%>
+	/* create and draw the editable overlay */
 	function createEditableOverlay() {
 		var geometryType = getGeometryType();
 		var geom = getEventFormGeom();
 		var marker;
 		if (isEmpty($('geometry').value)) {
-			<%-- this means we are adding to the map.  Default is "point" --%>
+			/* this means we are adding to the map.  Default is "point" */
 			var center = getEventFormCenter();
 			marker = createEditableMarker(new GLatLng(center.lat,center.lng));
 			
 		} else {
 			if (geometryType == "point") {
-				<%-- if we are switcing from one geometry type to the other, the geometry may not
-				match.  TODO make this simpler --%>
+				/* if we are switcing from one geometry type to the other, the geometry may not
+				match.  TODO make this simpler */
 				var point;
 				if (geom.gtype == 'point') {
 					point = new GLatLng(geom.lat, geom.lng);
 				} else {
-					<%-- we switched from a line or poly to a point - just use the map center --%>
+					/* we switched from a line or poly to a point - just use the map center */
 					point = map.getCenter();
 				}
 				marker = createEditableMarker(point);
@@ -123,9 +123,9 @@
 		}
 	}
 	
-	<%-- If we are editing a poly, add listener for clicking on the map --%>
+	/* If we are editing a poly, add listener for clicking on the map */
 	function addClickListener() {
-		<%-- only add if it is missing --%>
+		/* only add if it is missing */
 		if (_clickListener == null) {
 			_clickListener = GEvent.addListener(map,"click", function(overlay, point) {
 				addMarker(point);
@@ -134,7 +134,7 @@
 		}
 	}
 
-	<%-- create an editable marker from a json point object --%>
+	/* create an editable marker from a json point object */
 	function createEditableMarker(point) {
 		var marker = new GMarker(point, {draggable: true});
 		marker.enableDragging();
@@ -158,17 +158,17 @@
 			return createInfoWindowHtml(event);
 	}
 	
-	<%-- create an editable poly from a json poly object --%>
+	/* create an editable poly from a json poly object */
 	function createEditablePoly(jsonLine) {
 		var points = [];
 		var marker;
 		if (jsonLine != null) {
 			var line = jsonLine.line;
-			<%-- if we are adding, then line will be null --%>
+			/* if we are adding, then line will be null */
 			if (line) {
 				for (var i=0; i<line.length; i++) {
-					<%-- If this marker is a polygon clusure, i.e. it is the same as element 0, 
-					then we don't want to drag it --%>
+					/* If this marker is a polygon clusure, i.e. it is the same as element 0, 
+					then we don't want to drag it */
 					if (!((i!=0) && (line[0].lat == line[i].lat) && (line[0].lng == line[i].lng))) {
 						var vertex = new GLatLng(line[i].lat, line[i].lng);
 						points.push(vertex);
@@ -176,7 +176,7 @@
 					}			
 				}
 		
-				<%-- we create a poly here just so we can find the centroid --%>
+				/* we create a poly here just so we can find the centroid */
 				var poly = newPoly(points, getGeometryType());
 				goToPoly(poly);
 			}
@@ -184,13 +184,12 @@
 			drawPoly();
 		}
 		showPolyMessage(poly);
-		
 	}
 	
 	function goToPoly(poly) {
 		if (poly) {
 			map.setCenter(poly.getBounds().getCenter(), getZoom());
-			<%-- if the map is too zoomed in, we should zoom out to fit the line --%>
+			/* if the map is too zoomed in, we should zoom out to fit the line */
 			fitToPoly(poly);
 		}
 	}
@@ -212,10 +211,10 @@
 	
 	}
 
-	<%-- add a marker to the poly --%>
+	/* add a marker to the poly */
 	function addMarker(point) {
-		<%-- When the user clicks on an overlay, not the map, then the point is null 
-				 In that case, we don't want to add apoint --%>
+		/* When the user clicks on an overlay, not the map, then the point is null 
+				 In that case, we don't want to add apoint */
 		if (point != null) {
 			_polyMarkers[_currMarker] = new GMarker(point, {icon:_entPointIcon, draggable: true});
 			drawMarker(_polyMarkers[_currMarker], _currMarker);
@@ -223,7 +222,7 @@
 		}
 	}
 	
-	<%-- draw the marker, add drag listener, add infoWindow --%>
+	/* draw the marker, add drag listener, add infoWindow */
 	function drawMarker(marker, index) {
 		map.addOverlay(marker);
 		marker.enableDragging();
@@ -235,7 +234,7 @@
 		marker.bindInfoWindowHtml(html);
 	}
 
-	<%-- delete an overlay marker --%>
+	/* delete an overlay marker */
 	function deleteMarker(index) {
 		var marker = _polyMarkers[index];
 		map.removeOverlay(marker);
@@ -247,7 +246,7 @@
 		drawPoly();
 	}
 	
-	<%-- redraw the overlay vertex markers --%>
+	/* redraw the overlay vertex markers */
 	function redrawOverlayMarkers() {
 		for (var i=0; i<_polyMarkers.length; i++) {
 			map.removeOverlay(_polyMarkers[i]);
@@ -255,12 +254,12 @@
 		}
 	}
 
-	<%-- remove item from an array and shift everything down --%>
+	/* remove item from an array and shift everything down */
 	function removeFromArray(array, index) {
 	  array.splice(index, 1);
 	}
 
-	<%-- redraw the line --%>
+	/* redraw the line */
 	function drawPoly() {
 		if (_editablePoly) {
 			map.removeOverlay(_editablePoly);
@@ -278,17 +277,17 @@
 	}
 	
 	
-	<%-- END PRE FUNCTIONS (initialization) ============================= --%>
+	/* END PRE FUNCTIONS (initialization) ============================= */
 
-	<%-- BEGIN WHILE FUNCTIONS (initialization) ============================= --%>
-	<%-- user is creating a point --%>
+	/* BEGIN WHILE FUNCTIONS (initialization) ============================= */
+	/* user is creating a point */
 	function setupNewPoint() {
 		removeEditableOverlay();
 		createEditableOverlay();
 		removeClickListener();
 	}
 	
-	<%-- user is creating a poly --%>
+	/* user is creating a poly */
 	function setupNewPoly() {
 		removeEditableOverlay();
 		for (var i=0; i<_polyMarkers.length; i++) {
@@ -300,7 +299,7 @@
 		addClickListener();
 	}
 	
-	<%-- remove point AND poly overlay --%>
+	/* remove point AND poly overlay */
 	function removeEditableOverlay() {
 		document.getElementById("eventForm").showPreview.value = 'false';
 		if (_editableMarker) {
@@ -331,9 +330,9 @@
 		$('larger').hide();
 		$('smaller').show();
 	}
-	<%-- END WHILE FUNCTIONS (initialization) ============================= --%>
+	/* END WHILE FUNCTIONS (initialization) ============================= */
 	
-  <%-- BEGIN MISC FUNCTIONS ============================= --%>
+  /* BEGIN MISC FUNCTIONS ============================= */
 	function getEventFormGeom() {
 			var geomJSON = document.getElementById("eventForm").geometry.value;
 			if (geomJSON != '') {
@@ -374,7 +373,7 @@
   }
   
   function getZoom() {
-		<%-- set zoom level from the event --%>
+		/* set zoom level from the event */
 		var zoomStr = document.getElementById("eventForm").zoomLevel.value;
 		var zoom;
 		if (zoomStr == '') {
@@ -384,10 +383,10 @@
 		}
 		return zoom;
 	}
-  <%-- END MISC FUNCTIONS ============================= --%>
+  /* END MISC FUNCTIONS ============================= */
   
-  <%-- BEGIN POST FUNCTIONS ============================= --%>
-	<%-- called on form submit --%>	
+  /* BEGIN POST FUNCTIONS ============================= */
+	/* called on form submit */	
 	function saveEvent() {
 		document.getElementById("eventForm").showPreview.value = 'false';
 		submitEvent();
@@ -407,7 +406,7 @@
 	}
 	
 	
-	<%-- saves either point or line or poly depending on edit mode --%>
+	/* saves either point or line or poly depending on edit mode */
 	function saveGeometry() {
 		var geometryType = getGeometryType();
 		if (geometryType == "point") {
@@ -417,7 +416,7 @@
 		}
 	}
 
-	<%-- addAddressToMap() is called when the geocoder returns an answer.  --%>
+	/* addAddressToMap() is called when the geocoder returns an answer.  */
 	function addAddressToMap(response) {
 	  if (!response || response.Status.code != 200) {
 	    alert("Sorry, we can't find that location, " + response.Status.code);
@@ -439,9 +438,9 @@
 	  }
 	}
 	
-	<%-- showAddress() is called when you click on the Search button
+	/* showAddress() is called when you click on the Search button
 	     in the form.  It geocodes the address entered into the form
-	     and adds a marker to the map at that location. --%>
+	     and adds a marker to the map at that location. */
 	function showAddress(address) {
 	    geocoder.getLocations(address, addAddressToMap);
 	}
@@ -458,7 +457,5 @@
 			document.location="$/event/discuss.htm?id=" + id;
 		}
 	}
-  <%-- END POST FUNCTIONS ============================= --%>
+  /* END POST FUNCTIONS ============================= */
 		
-		//]]>
-		</script>

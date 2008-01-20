@@ -10,10 +10,9 @@
 <tsm:page title="Event">
 	<jsp:attribute name="head">
 		<jsp:include page="../include/mapkey.js.jsp"/>
-		<jsp:include page="include/edit.js.jsp"/>		
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">map.css,header.css</jsp:attribute>
-	<jsp:attribute name="script">prototype.js,map.js,json.js,control.modal.js,help.js</jsp:attribute>
+	<jsp:attribute name="script">prototype.js,map.js,json.js,control.modal.js,help.js,edit.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="setMapExtent();"</jsp:attribute>
 
 	<jsp:body>
@@ -29,6 +28,8 @@
 					<form:hidden path="showPreview"/>
 					<form:hidden path="previewEvent" htmlEscape="true"/>
 					<form:hidden path="addEvent"/>
+					<%-- for javascript --%>
+					<input type="hidden" id="basePath" value="${basePath}"/>
 					
 	    		<c:if test="${param.id != null}">
 	   		    <div class="miniTabBar">

@@ -57,5 +57,20 @@
       </sql>
     </sequential>
   </macrodef>
-	
+
+	<macrodef name="are-you-sure">
+	  <sequential>
+	    <input
+	        message="Are you sure?"
+	        validargs="y,n"
+	        addproperty="answer"
+	        />
+	    <condition property="do.abort">
+	      <equals arg1="n" arg2="${answer}"/>
+	    </condition>
+	    <fail if="do.abort">aborted by user.</fail>	
+	  </sequential>
+	</macrodef>
+
+
 </project>

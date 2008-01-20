@@ -15,11 +15,9 @@
 	<jsp:attribute name="head">
 		<%-- we use includes so we can comment the javascript --%>
 		<jsp:include page="../include/mapkey.js.jsp"/>
-		<jsp:include page="include/searchcommon.js.jsp"/>
-		<jsp:include page="include/eventsearch.js.jsp"/>
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">map.css,header.css,search.css</jsp:attribute>
-	<jsp:attribute name="script">prototype.js,map.js,json.js,control.modal.js,help.js</jsp:attribute>
+	<jsp:attribute name="script">prototype.js,map.js,json.js,control.modal.js,help.js,searchcommon.js,eventsearch.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="init()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 	<jsp:attribute name="nohead">true</jsp:attribute>
 
@@ -39,6 +37,8 @@
 			<form:hidden path="displayEventId"/>
 			<form:hidden path="linkHereEventId"/>
 			<form:hidden path="embed"/>
+			<%-- for javascript --%>
+			<input type="hidden" id="basePath" value="${basePath}"/>
 	  	
 	  	<jsp:include page="include/searchbar.jsp">
 	  		<jsp:param name="showSearchOptions" value="true"/>
