@@ -98,16 +98,16 @@
 			height = 'height:' + height + 'px;'
 		}
 	  var html = '<div class="result inforesult wikitext" style="width:' + width +'px;'+ height +'margin-bottom:10px">' +
-	  		'<b>' + event.summary.escapeHTML() +'</b><br/>' + 
-	   		'<b>' + event.when + '</b><br/>' + 
-				'<em>' + event.where.escapeHTML();
+	  		'<span class="summary">' + event.summary.escapeHTML() +'</span><br/>' + 
+	   		'<span class="when">' + event.when + '</span><br/>' + 
+				'<span class="where">' + event.where.escapeHTML();
 				if (event.accuracy != "") {
 					 html += ' (Accuracy: ' + event.accuracy + ')'; 
 				}
-				html += '</em><br/>' + event.description  +
-				'<b>Tags: </b>' + event.tags.escapeHTML() + '<br/>' + 
-				'<b>Source: </b>';
-				html += event.source + '</div>';
+				html += '</span><br/>' + event.description  +
+				'<span class="source"><b>Source: </b>' + event.source + '</span>' +
+				'<span class="usertags"><b>Tags: </b>' + event.tags.escapeHTML() + '</span>' +   
+				'</div>';
 				
 	   return html;
 	}	

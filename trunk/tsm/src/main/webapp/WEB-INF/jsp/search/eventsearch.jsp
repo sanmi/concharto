@@ -127,17 +127,17 @@
 						          </c:otherwise> 
 					          </c:choose>
 					          <wiki:render wikiText="${description}${more}"/>
-					          <c:if test="${fn:length(event.userTagsAsString) > 0}">
-						          <div class="usertags">
-						          	<b>Tags:</b>
-							          ${fn:substring(event.userTagsAsString,0,300)}
-						          </div>
-					          </c:if>
 					          <c:if test="${fn:length(event.source) > 0}">
 						          <div class="source">
 						          	<b>Source:</b>
 							          <c:set var="source" value="${fn:substring(event.source,0,300)}"/>
 							          <wiki:render wikiText="${source}"/>
+						          </div>
+					          </c:if>
+					          <c:if test="${fn:length(event.userTagsAsString) > 0}">
+						          <div class="usertags">
+						          	<b>Tags:</b>
+							          ${fn:substring(event.userTagsAsString,0,300)}
 						          </div>
 					          </c:if>
 										<div class="linkbar">
