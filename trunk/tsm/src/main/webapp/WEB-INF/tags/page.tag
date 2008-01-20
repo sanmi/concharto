@@ -27,24 +27,23 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd" >
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
-<title>Time Space Map - ${title}  </title>
-<style type="text/css">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Pragma" content="no-cache">
+	<title>Time Space Map - ${title}  </title>
+	<style type="text/css">
 
   @import url("<c:url value="/css/style.css"/>");
 
 	<c:forTokens var="item" items="${stylesheet}" delims=",">
     @import url("<c:url value="/css/"/>${item}");
 	</c:forTokens>    
-</style>
+	</style>
 
-<c:forTokens var="item" items="${script}" delims=",">
-<script type="text/javascript" src="<c:url value="/javascript/"/>${item}">
-</script>
-</c:forTokens>    
-
-<jsp:invoke fragment="head" />
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta http-equiv="Pragma" content="no-cache">
+	<jsp:invoke fragment="head" />
+	
+	<c:forTokens var="item" items="${script}" delims=",">
+		<script type="text/javascript" src="<c:url value="/javascript/"/>${item}"></script>
+	</c:forTokens>    
 </head>
 
 <body ${bodyattr}>

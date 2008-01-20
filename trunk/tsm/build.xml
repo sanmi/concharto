@@ -36,6 +36,10 @@
 	<property name="lib.lab.dir" value="lib/lab" />
 	<property name="lib.deploy.dir" value="lib/deploy" />
 
+	<property name="js-min.dir" value="${target.dir}/js-min"/>
+	<property name="js.dir" value="${webroot.dir}/javascript"/>
+	<property name="lib.localtools.dir" value="lib/localtools"/>
+
 
 	<!-- Begin Classpaths -->
 	<path id="master-classpath">
@@ -93,8 +97,6 @@
 		"ant gen-schema" you sometimes get an error: "Unable to load class declared as"
 		but if you repeat, it will work the second time
 	-->
-
-
 	<macrodef name="create-db">
 	  <attribute name="dbmode"/> <!-- test or dev -->
 		<sequential>
@@ -128,12 +130,11 @@
 					<include name="create-tables.sql" />
 				</fileset>
 			</copy>
-</sequential>
-		
-
+		</sequential>
 	</macrodef>
 
 	<target name="create-db-test" depends="gen-schema">
+		<are-you-sure/>
 		<create-db dbmode="test"/>
 	</target>
 	
@@ -177,16 +178,48 @@
 		</javac>
 	</target>
 
+	<path id="yuicompressor.classpath">
+		<fileset dir="${lib.localtools.dir}">
+			<include name="**.jar"/>
+			<!-- include name="**/rhino*.jar" -->
+		</fileset>
+	</path>
 
-	<target name="build" depends="compile">
+	<target name="minify-js" description="Minifiy a set of files">
+		<taskdef name="yuicompress"
+			classname="com.yahoo.platform.yui.compressor.YUICompressTask">
+			<classpath>
+				<path refid="yuicompressor.classpath" />
+			</classpath>
+		</taskdef>
 
+		<delete dir="${js-min.dir}" />
+		<mkdir dir="${js-min.dir}" />
+		<yuicompress linebreak="300" warn="false" munge="yes"
+			preserveallsemicolons="true" outputfolder="${js-min.dir}">
+			<fileset dir="${js.dir}">
+				<include name="**/*.js" />
+			</fileset>
+		</yuicompress>
+	</target>
+	
+	<target name="build" depends="compile, minify-js">
 		<copy todir="${target.webapp.dir}"
 			preservelastmodified="true">
 			<fileset dir="${webroot.dir}">
 				<exclude name="**/classes/**" />
+				<exclude name="**/javascript/**" />
 				<include name="**/*" />
 			</fileset>
 		</copy>
+
+		<copy todir="${target.webapp.dir}/javascript"
+			preservelastmodified="true">
+			<fileset dir="${js-min.dir}">
+				<include name="**/*.js" />
+			</fileset>
+		</copy>
+		
 		<copy todir="${target.webapp.dir}/WEB-INF/classes"
 			preservelastmodified="true">
 			<fileset dir="${target.classes.dir}">
@@ -210,7 +243,7 @@
 	<!-- End Build Targets -->
 
 	
-		<!-- begin test targets -->
+	<!-- begin test targets -->
 	<target name="compile-tests" depends="compile, setup">
 		<javac destdir="${target.test.classes.dir}" debug="true"
 			failonerror="true">
@@ -294,10 +327,23 @@
 		</war>
 	</target>
 
-	<target name="deploy" depends="build">
-		<copy todir="${deploy.dir}">
-			<fileset dir="${target.webapp.dir}"/>
-		</copy>
+
+	<macrodef name="do-deploy">
+	  <attribute name="deploydir"/> 
+	  <sequential>
+			<copy todir="@{deploydir}">
+				<fileset dir="${target.webapp.dir}"/>
+			</copy>
+	  </sequential>
+	</macrodef>
+
+	<target name="deploy-test" depends="build">
+		<do-deploy deploydir="${deploy.test.dir}"/>
+	</target>
+
+	<target name="deploy-prod" depends="build">
+		<are-you-sure/>
+		<do-deploy deploydir="${deploy.prod.dir}"/>
 	</target>
 
 
@@ -306,4 +352,5 @@
 
 	<!-- End deploy Targets -->
 
+	
 </project>

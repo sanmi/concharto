@@ -8,7 +8,7 @@
 
 <tsm:page title="embedded search">
 	<jsp:attribute name="stylesheet">map.css</jsp:attribute>
-	<jsp:attribute name="script">prototype.js,map.js,json.js</jsp:attribute>
+	<jsp:attribute name="script">prototype.js,map.js,json.js,searchcommon.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize_embedded()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 	<jsp:attribute name="stripped">true</jsp:attribute>
 	<jsp:attribute name="head">
@@ -40,7 +40,6 @@
 				background-image: none;
 			}
 		</style>
-		<jsp:include page="include/searchcommon.js.jsp"/>
 	</jsp:attribute>
 
 	<jsp:body>
@@ -64,6 +63,8 @@
 			<form:hidden path="where"/>
 			<form:hidden path="when"/>
 			<form:hidden path="what"/>
+			<%-- for javascript --%>
+			<input type="hidden" id="basePath" value="${basePath}"/>
 	  
 					<div id="map">
 					  <br/><br/>Map coming...

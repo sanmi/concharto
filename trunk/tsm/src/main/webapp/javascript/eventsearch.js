@@ -1,8 +1,4 @@
-
-<script type="text/javascript">
-//<![CDATA[
-
-  <%-- BEGIN PRE FUNCTIONS (initialization) ============================= --%>
+  /* BEGIN PRE FUNCTIONS (initialization) ============================= */
 
 	function init() {
 		initialize();
@@ -16,34 +12,34 @@
         });
 	}
 
-	<%-- create html for info bubbles --%>	
+	/* create html for info bubbles */	
 	function makeOverlayHtml(event) {
 		var html = createInfoWindowHtml(event) +  
 			'<div class="infolinkbar linkbar"><a class="links" href="#" onclick="editEvent(' + event.id + ')">edit</a>' +  
-	    '<a class="links" href="/event/discuss.htm?id=' + event.id + '">discuss</a>'; 
+	    '<a class="links" href="'+ _basePath + 'event/discuss.htm?id=' + event.id + '">discuss</a>'; 
 		if (event.hasUnresolvedFlags == 'true') {
-			html += '<span class="errorLabel"><em>This event has been <a class="errorlinks" href="${basePath}event/changehistory.htm?id=' + event.id + '">flagged!</a></em></span>';
+			html += '<span class="errorLabel"><em>This event has been <a class="errorlinks" href="'+ _basePath + 'event/changehistory.htm?id=' + event.id + '">flagged!</a></em></span>';
 		} else {
-			html += '<a class="links" href="${basePath}event/changehistory.htm?id=' + event.id + '">changes</a>';
+			html += '<a class="links" href="' + _basePath + 'event/changehistory.htm?id=' + event.id + '">changes</a>';
 		}
-		html += '<a class="links" href="/edit/flagevent.htm?id=' + event.id + '">flag</a>' +
+		html += '<a class="links" href="' + _basePath + 'edit/flagevent.htm?id=' + event.id + '">flag</a>' +
 			'<a class="links" href="#" onclick="zoomTo(' + event.id + ')">zoom in</a>';
 		html += '<br/></div>';
 		return html;
 	}
 	
 	
-  <%-- END PRE FUNCTIONS (initialization) ============================= --%>
+  /* END PRE FUNCTIONS (initialization) ============================= */
 
-  <%-- BEGIN WHILE FUNCTIONS  ============================= --%>
+  /* BEGIN WHILE FUNCTIONS  ============================= */
 	
 	function adjustSidebarIE() {
-		<%-- adjust the map --%>
+		/* adjust the map */
 		setMapExtent();
    	var top = document.getElementById("map").offsetTop;
    	var height = getHeight() - top - 44;
    	document.getElementById("results").style.height=height+"px";
-   	<%-- DEBUG the following is a Kludge! for an IE 6 rendering problem argh!--%>
+   	/* DEBUG the following is a Kludge! for an IE 6 rendering problem argh!*/
    	document.getElementById("results").style.width = "320px"; 
 	}
 	
@@ -58,7 +54,7 @@
 	}
 	
 	function getEmbedMapHtml() {
-		<%--
+		/*
 		<iframe id="embeddedmap" 
 			src='${basePath}search/embeddedsearch.htm?_where=london, england&_what="kensington palace"&_zoom=17&_maptype=1'
 		  height="330" width="450" frameborder="0" scrolling="no">
@@ -70,8 +66,8 @@
 		<br />
 		<small><a href="http://maps.google.com/maps?f=l&amp;hl=en&amp;geocode=&amp;time=&amp;date=&amp;ttype=&amp;q=auto&amp;near=Landenberg,+PA+19350&amp;ie=UTF8&amp;ll=39.769005,-75.799818&amp;spn=0.086441,0.323157&amp;om=1&amp;source=embed" style="color:#0000FF;text-align:left">View Larger Map</a></small>
 		
-		--%>
-		<%-- substituted 'embeddedsearch.htm' for 'eventsearch.htm' --%>
+		*/
+		/* substituted 'embeddedsearch.htm' for 'eventsearch.htm' */
 		var urltext = getLinkHereUrl();
 		embedUrltext = urltext.gsub('eventsearch.htm','embeddedsearch.htm');
 		embedUrltext = append(embedUrltext, '_embed', 'true');
@@ -85,7 +81,7 @@
 	}
 	
 	function cleanUrl(url) {
-		url = url.gsub('\'',' ');  <%-- mysql free text doesn't pay attention to this anyway! --%> 
+		url = url.gsub('\'',' ');  /* mysql free text doesn't pay attention to this anyway! */ 
 		url = url.escapeHTML();
 		return url;
 	}
@@ -94,13 +90,13 @@
 	function getLinkHereUrl() {
 		hasQuery = false;
 		var url = window.top.location;
-		<%-- strip the out query string --%>
+		/* strip the out query string */
 		var urltext = new String(url);
 		var idx = urltext.indexOf('?');
 		if (-1 != (idx)) {
 			urltext = urltext.substring(0, idx);
 		}
-		<%-- construct the url --%>
+		/* construct the url */
 		if (!isEmpty($('linkHereEventId').value)) {
 			urltext = append(urltext, '_id', $('linkHereEventId').value);
 		} else {
@@ -117,16 +113,16 @@
 			}
 		}
 		
-		<%-- Only override zoom and center if the user has
+		/* Only override zoom and center if the user has
      changed the map since the page was rendered (e.g. initialize() was called) 
-     OR we are limiting the map within the given bounds --%>
+     OR we are limiting the map within the given bounds */
 		if ( $('limitWithinMapBounds1').checked || hasChangedMap()) {
 			urltext = append(urltext, '_zoom', map.getZoom());
 			urltext = append(urltext, '_ll', formatLL(map.getCenter()) );
 		}
 		urltext = append(urltext, '_maptype', getMapTypeIndex());			
 			
-		<%-- get rid of spaces and '#' --%>
+		/* get rid of spaces and '#' */
 		urltext = urltext.gsub('#','');
 		urltext = urltext.gsub(' ','+');
 		return urltext;
@@ -169,8 +165,4 @@
 		return urltext;
 	}
 	
-  <%-- END WHILEFUNCTIONS  ============================= --%>
-
-  
-//]]>
-</script>
+  /* END WHILEFUNCTIONS  ============================= */
