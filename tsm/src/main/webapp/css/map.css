@@ -139,6 +139,10 @@
 .result .more {
 	font-style: italic;
 }
+.result .source, .result .usertags {
+	color: gray;
+	margin: .1em 0;
+}
 .result .links {
 }
 .wikitext ul, .mapedit .wikitext ol  {

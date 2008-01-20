@@ -116,10 +116,30 @@
 					          <span class="where"><c:out value="${event.where}"/></span> <br/>
 					           <%-- We want to keep any line breaks but escape all other html --%>
 					          <c:set var="description" value="${fn:substring(event.description,0,300)}"/>
-					          <wiki:render wikiText="${description}"/>
-					          <c:if test="${fn:length(event.description) > 300}">
-					          	<a class="more" href="#" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"> ... more</a>
-					          </c:if> 
+					          <c:choose>
+						          <c:when test="${fn:length(event.description) > 300}">
+							          <c:set var="more" >
+							          	<a class="more" href="#" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"> ... more</a>
+							          </c:set>
+						          </c:when>
+						          <c:otherwise>
+							          <c:set var="more" value=""/>
+						          </c:otherwise> 
+					          </c:choose>
+					          <wiki:render wikiText="${description}${more}"/>
+					          <c:if test="${fn:length(event.userTagsAsString) > 0}">
+						          <div class="usertags">
+						          	<b>Tags:</b>
+							          ${fn:substring(event.userTagsAsString,0,300)}
+						          </div>
+					          </c:if>
+					          <c:if test="${fn:length(event.source) > 0}">
+						          <div class="source">
+						          	<b>Source:</b>
+							          <c:set var="source" value="${fn:substring(event.source,0,300)}"/>
+							          <wiki:render wikiText="${source}"/>
+						          </div>
+					          </c:if>
 										<div class="linkbar">
 						          <a class="links" href="#" onclick="editEvent(<c:out value='${event.id}'/>)">edit</a>
 						          <a class="links" href="${basePath}event/discuss.htm?id=${event.id}" >discuss</a>
