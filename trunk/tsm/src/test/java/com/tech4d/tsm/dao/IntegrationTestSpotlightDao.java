@@ -74,7 +74,7 @@ public class IntegrationTestSpotlightDao {
 		assertEquals(5, spotlightDao.find(5, 5).size());
 		assertEquals(4, spotlightDao.find(5, total-4).size());
 		
-		assertEquals(numVisible, spotlightDao.getTotalVisible());
+		assertEquals(new Integer(numVisible), spotlightDao.getTotalVisible());
 		assertEquals(numVisible, spotlightDao.findVisible().size());
 		
 		for (int i=0; i<numVisible-1; i++) {

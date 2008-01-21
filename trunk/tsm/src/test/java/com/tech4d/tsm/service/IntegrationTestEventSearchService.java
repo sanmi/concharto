@@ -76,7 +76,7 @@ public class IntegrationTestEventSearchService {
         "D.C. with capital T; Dutch: Image:Ltspkr.pngDen Haag, officially also Image:Ltspkr." ,
         "png's-Gravenhage (literally The Count's Hedge)) is the third-largest city in the Netherlands " ,
         "after Amsterdam and Rotterdam, with a population of 475,580 (as of January 1, 2006) " ,
-        "(population of agglomeration: 600.000) and an area of approximately 100 km². It is " ,
+        "(population of agglomeration: 600.000) and an area of approximately 100 km. It is " ,
         "located in the west of the country, in the province of South Holland, of which it is " ,
         "also the provincial capital. The Hague is like Amsterdam, Rotterdam and Utrecht, part " 
         };
