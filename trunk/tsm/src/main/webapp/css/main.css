@@ -57,7 +57,13 @@
 	width:491px;
 	padding: 6px 0;
 	}
-	#spotlightbox .label{
+	#spotlightbox .next{
+	float:right;
+	margin:0; 
+	padding: 0 .4em
+	}
+	#spotlightbox .next a{
+	font-size: 8pt;
 	}
 	#main #borderbox {
 	text-align:center
