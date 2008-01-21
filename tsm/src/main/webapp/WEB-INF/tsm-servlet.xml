@@ -128,7 +128,6 @@
 	</bean>
 
 	<bean id="resetController" class="com.tech4d.tsm.web.forgot.ResetController">
-		<property name="cacheSeconds" value="86400"/>  
 		<property name="commandName" value="reset"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.util.AuthForm"/>
 		<property name="formView" value="public/reset" />
