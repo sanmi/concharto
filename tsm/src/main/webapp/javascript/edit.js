@@ -2,6 +2,7 @@
 	     shadow, icon dimensions, etc. */
 	var _markerIcon = new GIcon();
 	var _editableMarker;
+	var _editableMarkerHtml;
 	var _editablePoly;
 	var _polyMarkers = [];
 	var _currMarker = 0;
@@ -143,14 +144,16 @@
 		GEvent.addListener(marker, "dragstart", function() {
 			map.closeInfoWindow();
 		});	
-		map.setCenter(point, getZoom()); 
+		map.setCenter(point, getZoom());
+		var html; 
 	  if (document.getElementById("eventForm").showPreview.value == 'true') {
-			marker.openInfoWindow(makePreviewHtml());
+			html = makePreviewHtml();
 		} else {
-			var html = "<b>Drag me</b> <br/>anywhere on the map";
-			marker.openInfoWindow(html);
+			html = "<b>Drag me</b> <br/>anywhere on the map";
 		}
+		marker.openInfoWindow(html);
 		_editableMarker = marker;
+		_editableMarkerHtml = html;
 	}
 	
 	function makePreviewHtml() {
@@ -434,6 +437,7 @@
 			map.setCenter(point);
 			if (null != _editableMarker) {
 				_editableMarker.setLatLng(point);
+				_editableMarker.openInfoWindow(_editableMarkerHtml);
 			}
 	  }
 	}
