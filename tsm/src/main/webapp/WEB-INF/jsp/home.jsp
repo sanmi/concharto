@@ -98,7 +98,9 @@
 		    </td>
 		    <td id="right" >
 			    <div id="spotlightbox">
+		        <div class="next"><a href="${basePath}">next</a></div>
 		        <p>${spotlightLabel}</p>
+		        <div class="clearfloat"></div>
 		        <div id="borderbox">
 		          <iframe id="embeddedmap" 
 		          	src='${spotlightEmbedLink}'

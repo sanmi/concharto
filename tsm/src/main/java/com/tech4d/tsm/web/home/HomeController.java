@@ -26,6 +26,8 @@ public class HomeController extends SimpleFormController {
 	public static final String MODEL_RECENT_EVENTS = "recentEvents";
 	private static final Object MODEL_SPOTLIGHT_LABEL = "spotlightLabel";
 	private static final Object MODEL_SPOTLIGHT_EMBED_LINK = "spotlightEmbedLink";
+
+	private static final String SESSION_SPOTLIGHT_INDEX = "spotlightIndex";
 	
 	private EventDao eventDao;
 	private SpotlightService spotlightService;
@@ -45,16 +47,34 @@ public class HomeController extends SimpleFormController {
 		Map model = errors.getModel();
 		model.put(MODEL_RECENT_EVENTS, eventDao.findRecent(MAX_RECENT_EVENTS));
 		model.put(MODEL_TOTAL_EVENTS, eventDao.getTotalCount());
-		Spotlight spotlight = spotlightService.getNext();
+		setupSpotlight(request, model);
+		//clear out the eventSearchForm session if there is one
+		WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_FORM, null);
+		return new ModelAndView(getFormView(), model);
+	}
+	
+	/**
+	 * Find the next spotlight, add it to the model and save the index in the session so
+	 * we can show the next one next time.
+	 * 
+	 * @param request
+	 * @param model
+	 */
+	@SuppressWarnings("unchecked")
+	private void setupSpotlight(HttpServletRequest request, Map model) {
+		Integer spotlightIndex = (Integer) WebUtils.getSessionAttribute(request, SESSION_SPOTLIGHT_INDEX);
+		if (spotlightIndex == null) {
+			spotlightIndex = new Integer(0);
+		}
+		Spotlight spotlight = spotlightService.getSpotlight(spotlightIndex);
+		spotlightIndex++;
+		WebUtils.setSessionAttribute(request, SESSION_SPOTLIGHT_INDEX, spotlightIndex);
 		if (null != spotlight) {
 			model.put(MODEL_SPOTLIGHT_LABEL, formatLabel(spotlight));
 			model.put(MODEL_SPOTLIGHT_EMBED_LINK, formatEmbedLabel(spotlight));
 		} else {
 			log.error("no spotlight");
 		}
-		//clear out the eventSearchForm session if there is one
-		WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_FORM, null);
-		return new ModelAndView(getFormView(), model);
 	}
 	private String formatLabel(Spotlight spotlight) {
 		String label = StringUtils.replace(spotlight.getLabel(),"[[","<a href='" + spotlight.getLink() + "'>");
