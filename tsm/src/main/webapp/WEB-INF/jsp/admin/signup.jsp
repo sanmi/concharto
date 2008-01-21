@@ -16,44 +16,49 @@
 	  	<div class="textpanel">
 	  		<h2>Sign Up</h2>
 	  		<form:errors path="*" cssClass="errorBox" element="div"/>
-		  	<table class="infoBox">
-		  		<tr>
-		  			<td>Username</td>
-		  			<td>
-		  				<form:input path="username" maxlength="${SZ_USERNAME}" cssClass="loginText"/>
-		  			</td>
-		  		</tr>
-		  		<tr>
-		  			<td>Password</td>
-		  			<td>
-		  				<form:password path="password" maxlength="${SZ_PASSWORD}" cssClass="loginText"/>
-		  			</td>
-		  		</tr>
-		  		<tr>
-		  			<td>Password (confirm)</td>
-		  			<td>
-		  				<form:password path="passwordConfirm" maxlength="${SZ_PASSWORD}" cssClass="loginText"/>
-		  			</td>
-		  		</tr>
-		  		<tr>
-		  			<td>Email address</td>
-		  			<td>
-		  				<form:input path="email" maxlength="${SZ_EMAIL}" cssClass="loginText"/>
-		  			</td>
-		  		</tr>
-		  		<tr>
-		  			<td colspan="2">
-		  				<form:checkbox path="agreeToTermsOfService"/>
-  						I agree with the Time Space Map <a href="${basePath}info/legal.htm">Terms of Service</a>
-		  			</td>
-		  		</tr>
-		  		<tr>
-		  			<td colspan="2">
-		  				<form:checkbox path="rememberMe"/>
-  						Remember me next time
-		  			</td>
-		  		</tr>
-		  	</table>
+				<%--  IE Hack - tables don't support padding in IE6 or 7--%>
+				<table><tr><td>
+					<div class="infoBox">
+				  	<table>
+				  		<tr>
+				  			<td>Username</td>
+				  			<td>
+				  				<form:input path="username" maxlength="${SZ_USERNAME}" cssClass="loginText"/>
+				  			</td>
+				  		</tr>
+				  		<tr>
+				  			<td>Password</td>
+				  			<td>
+				  				<form:password path="password" maxlength="${SZ_PASSWORD}" cssClass="loginText"/>
+				  			</td>
+				  		</tr>
+				  		<tr>
+				  			<td>Password (confirm)</td>
+				  			<td>
+				  				<form:password path="passwordConfirm" maxlength="${SZ_PASSWORD}" cssClass="loginText"/>
+				  			</td>
+				  		</tr>
+				  		<tr>
+				  			<td>Email address</td>
+				  			<td>
+				  				<form:input path="email" maxlength="${SZ_EMAIL}" cssClass="loginText"/>
+				  			</td>
+				  		</tr>
+				  		<tr>
+				  			<td colspan="2">
+				  				<form:checkbox path="agreeToTermsOfService"/>
+		  						I agree with the Time Space Map <a href="${basePath}info/legal.htm">Terms of Service</a>
+				  			</td>
+				  		</tr>
+				  		<tr>
+				  			<td colspan="2">
+				  				<form:checkbox path="rememberMe"/>
+		  						Remember me next time
+				  			</td>
+				  		</tr>
+				  	</table>
+			  	</div>
+		  	</td></tr></table>
 			  <input type="submit" value="Signup"/>
 		  </div>
 	  </form:form>
