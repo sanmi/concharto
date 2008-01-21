@@ -18,7 +18,7 @@ public class Flag extends BaseAuditableEntity {
 	public static final int SZ_REASON = 32;
 	public static final int SZ_COMMENT = 512;
 	public static final String[] REASON_CODES = {
-		"toPersonal", "toFiction","isFake","isCopyrighted"
+		"isDuplicate", "toPersonal", "toFiction","isFake","isCopyrighted"
 	};
 	public static final String DISPOSITION_DELETED = "deleted";
 	public static final String DISPOSITION_REMOVED = "removed";
