@@ -65,14 +65,18 @@ public class LoginFilter implements Filter{
         			httpResponse.sendRedirect(url);
         		}
         		if (AuthHelper.isUserInSession(httpRequest)) {
-            		log.info("user " + AuthHelper.getUsername() + " signed in via cookie");
+            		log.info("user " + 
+            				httpRequest.getSession().getAttribute(AuthConstants.SESSION_AUTH_USERNAME) + 
+            				" signed in via cookie");
         		}
         	} else if (!isAuthenticated(httpRequest)) {
-                httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getContextPath() + REDIRECT_LOGIN));                
+                httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getContextPath() + 
+                		REDIRECT_LOGIN));                
             }  
             //ok, is the user authorized for this URL
             else if (!isAuthorized(httpRequest)) {
-                httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getContextPath() + REDIRECT_NOTAUTHORIZED));
+                httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getContextPath() + 
+                		REDIRECT_NOTAUTHORIZED));
             }
         }
         //setup the user context for those who can't get user and role data from
@@ -180,7 +184,7 @@ public class LoginFilter implements Filter{
 
     /**
      * Returns true if the user is not in the session but the remember me cookie is correct
-     * Also puts the user in the session 
+     * Also puts the user in the session.  
      * @param request
      * @return 
      */
