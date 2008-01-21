@@ -60,7 +60,7 @@
 	#spotlightbox .next{
 	float:right;
 	margin:0; 
-	padding: 0 1.2em 0 .4em;
+	padding: 0 .4em 0 1.2em;
 	}
 	#spotlightbox .next a{
 	font-size: 8pt;
