@@ -84,7 +84,7 @@
 	 	</span>
  		<span class="adminAction">
  			<form:radiobutton value="hidden" path="show"/>
- 			<span class="label">Removed </span>
+ 			<span class="label">Hidden </span>
  		</span>
  		<span class="adminAction">
  			<form:radiobutton value="flagged" path="show"/>
