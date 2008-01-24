@@ -23,7 +23,7 @@
 				<div>
 					<h2>Thank you, this event has been flagged</h2>
 					<div>
-						To find out what happens next, read the <a href="http://wiki.timespacemap.com/Deletion_Policy">deletion policy</a>
+						To find out what happens next, read the <a href="http://wiki.timespacemap.com/wiki/Deletion_Policy">deletion policy</a>
 					</div>
 					<br/>
 			  	<input type="submit" value="Return to Search" onclick="document.location='${basePath}search/eventsearch.htm'"/>

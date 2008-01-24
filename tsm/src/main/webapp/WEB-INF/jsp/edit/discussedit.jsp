@@ -43,7 +43,7 @@
 		  	
 		  		<div class="infoBox">
 			  		This is a discussion page.  Please respect the 
-			  		<a href="http://wiki.timespacemap.com/Discussion_Guidelines">discussion guidelines</a>, 
+			  		<a href="http://wiki.timespacemap.com/wiki/Discussion_Guidelines">discussion guidelines</a>, 
 			  		and remember to sign your posts by typing four tildes (~~~~).
 		  		</div>
 		  		
@@ -75,7 +75,7 @@
 		  			<p>
 							Please note that all contributions to Time Space Map are considered to be released under the 
 							Creative Commons Attribution-Share Alike 3.0 United States License (see  
-							<a href="http://wiki.timespacemap.com/Legal#User_Submissions.">User Submissions Policy</a> for details). 
+							<a href="http://wiki.timespacemap.com/wiki/Legal#User_Submissions.">User Submissions Policy</a> for details). 
 							If you don't want your writing to be edited mercilessly and redistributed at will, then don't 
 							submit it here.
 						</p>

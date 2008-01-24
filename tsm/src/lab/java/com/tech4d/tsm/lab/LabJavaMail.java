@@ -24,7 +24,7 @@ public class LabJavaMail {
 	"Welcome to the Time Space Map community! \n\n" +
 	"Please click on this link to confirm your registration: \n" +
 	"http://www.timespacemap.com/member/confirm.htm?id=" + PARAM_CONFIRMATION + " \n\n" + 
-	"You can find out more about us at http://wiki.timespacemap.com/About.\n\n" +
+	"You can find out more about us at http://wiki.timespacemap.com/wiki/About.\n\n" +
 	"If you were not expecting this email, just ignore it, no further action is required to terminate the request.\n";
 	
 	@Test public void confirmation() {
@@ -76,7 +76,7 @@ Welcome to the Time Space Map community!
 
 Please click on this link to confirm your registration: http://www.timespacemap.com/member/confirm.htm?id=:confirmation 
 
-You can find out more about us at http://wiki.timespacemap.com/About.
+You can find out more about us at http://wiki.timespacemap.com/wiki/About.
 
 If you were not expecting this email, just ignore it, no further action is required to terminate the request.
     	 */

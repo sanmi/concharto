@@ -33,7 +33,7 @@ public class ConfirmationEmail {
 //	"Please click on this link to confirm your registration: \n" +
 //	"http://www.timespacemap.com/member/confirm.htm?id=" + PARAM_CONFIRMATION + " \n\n" +
 //	"If the above link is not clickable, you will need to manually copy it into your browser.\n\n" +
-	"You can find out more about us at http://wiki.timespacemap.com/About.\n\n" + 
+	"You can find out more about us at http://wiki.timespacemap.com/wiki/About.\n\n" + 
 	CONTACT_US;
 //  "If you were not expecting this email, just ignore it, no further action is required to terminate the request.\n"
 	;
