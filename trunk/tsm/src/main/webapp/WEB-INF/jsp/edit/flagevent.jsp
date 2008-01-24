@@ -29,8 +29,8 @@
 						<div>Before flagging a item, please check the <a href="#flagHistory">flag history</a> 
 							and the <a href="#changeHistory">change history</a> 
 			  			to be sure you can't simple revert a recent change.  Also, please review the 
-			  			<a href="http://wiki.timespacemap.com/Deletion_Policy" >deletion policy</a>.  For instance, if
-			  			an event violates the <a href="http://wiki.timespacemap.com/Guidelines" >Neutral Point of View Policy</a>, it may be better to fix it than delete it.
+			  			<a href="http://wiki.timespacemap.com/wiki/Deletion_Policy" >deletion policy</a>.  For instance, if
+			  			an event violates the <a href="http://wiki.timespacemap.com/wiki/Guidelines" >Neutral Point of View Policy</a>, it may be better to fix it than delete it.
 				  	</div>
 				  </div>
 					<div class="infoBox">
