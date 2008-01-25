@@ -24,7 +24,7 @@ public class SubstitutionMacro {
 		StringBuffer replaceWith = new StringBuffer()
 			.append("<a href='")
 			.append(basePath)
-			.append("member/contributions.htm?user=")
+			.append("contributions.htm?user=")
 			.append(username).append("'>").append(username).append("</a> ")
 			.append(sdf.format(new Date()));
 		rendered = StringUtils.replace(rendered, USER_TAGS, replaceWith.toString());

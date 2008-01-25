@@ -12,6 +12,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import com.tech4d.tsm.auth.AuthHelper;
 import com.tech4d.tsm.dao.UserDao;
 import com.tech4d.tsm.model.user.Role;
 import com.tech4d.tsm.model.user.User;
@@ -38,11 +39,17 @@ public class SignupController extends SimpleFormController {
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         SignupForm form = (SignupForm) command;
         
-        saveUser(form);
-        return super.onSubmit(request, response, command, errors);
+        User user = saveUser(form);
+
+        //now log them in
+        AuthHelper.setUserInSession(request, user);
+
+        //now go where we were originally heading
+        return LoginSignupHelper.continueToRequestedUrl(request);
     }
 
-    private void saveUser(SignupForm form) throws NoSuchAlgorithmException {
+
+    private User saveUser(SignupForm form) throws NoSuchAlgorithmException {
         String hashedPassword = PasswordUtil.encrypt(form.getPassword());
         User user = new User(form.getUsername(), hashedPassword, form.getEmail());
         //give them the default 'edit' role
@@ -53,6 +60,8 @@ public class SignupController extends SimpleFormController {
         userDao.save(user);
         
         sendConfirmation(user);
+        
+        return user;
     }
 
 	private void sendConfirmation(User user) {

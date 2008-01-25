@@ -15,7 +15,10 @@
 	border:1px solid #999999;
 	width: 34.5em;
 }
-.textpanel h2 {
+.textpanel .errorText {
+	color:red;
+}
+.textpanel h2, .textpanel h1 {
 	margin-bottom: .2em;
 }
 
@@ -39,6 +42,12 @@
 .textpanel .inputcell {
 	margin: 1em .2em 1em .2em;
 }
+.textpanel .inputlabel {
+	margin: .1em;
+}
+.textpanel .inputlabel input{
+	margin-left: 0;
+}
 .textpanel .textInput {
 	width: 20em;
 }
@@ -47,4 +56,14 @@
 }
 .textpanel .textArea {
 	width: 25em;
+}
+.textpanel .title {
+	margin-left: 3px;
+}
+.textpanel .infoMessage {
+	margin:4px 2px;
+	padding:4px 10px;
+	background-color: #F5F5F5;
+	font-size: 14pt;
+	float: left;
 }

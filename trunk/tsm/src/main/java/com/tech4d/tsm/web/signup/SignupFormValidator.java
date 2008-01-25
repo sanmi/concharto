@@ -20,6 +20,7 @@ public class SignupFormValidator implements Validator {
 
     public void validate(Object target, Errors errors) {
         SignupForm signupForm = (SignupForm) target;
+        signupForm.setFromController(SignupForm.FORM_SIGNUP);
         AuthFormValidatorHelper.validate(signupForm, errors);
         
         if (!signupForm.getAgreeToTermsOfService()) {

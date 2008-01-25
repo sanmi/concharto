@@ -69,7 +69,7 @@
 						<tr>
 							<td class="label">Added:</td>
 							<td >
-								<a  href="${basePath}member/contributions.htm?user=${simpleTable.addedByUser.username}" >${simpleTable.addedByUser.username}</a>
+								<a  href="${basePath}contributions.htm?user=${simpleTable.addedByUser.username}" >${simpleTable.addedByUser.username}</a>
 								, <fmt:formatDate value="${simpleTable.created}" pattern="MMM dd, yyyy hh:mm a"/>
 							</td>
 						</tr>
