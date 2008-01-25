@@ -82,7 +82,7 @@
 	</bean>
 
 	<!-- Controller  -->
-	<bean id="homeController" class="com.tech4d.tsm.web.home.HomeController">
+	<bean id="homeController" class="com.tech4d.tsm.web.home.HomeController" parent="baseEventController">
 		<!-- semi-dynamic content - event list and recent, so cache for a few minuites -->
 		<property name="commandName" value="eventSearch" />
 		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
@@ -93,8 +93,7 @@
 		
 	</bean>
 
-	<bean id="urlFilenameViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController">
-		<property name="cacheSeconds" value="3600"/>  
+	<bean id="urlFilenameViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" parent="baseEventController">
 	</bean>
 	<bean id="switchBoardController" class="com.tech4d.tsm.web.SwitchBoardController" parent="baseEventController" >
 		<property name="eventDao" ref="eventDao" />
