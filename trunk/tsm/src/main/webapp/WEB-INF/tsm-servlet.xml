@@ -85,6 +85,7 @@
 		<property name="commandName" value="eventSearch" />
 		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
 		<property name="formView" value="home" />
+		<property name="successView" value="home" />
 		<property name="eventDao" ref="eventDao" />
 		<property name="spotlightService" ref="spotlightService" />
 		

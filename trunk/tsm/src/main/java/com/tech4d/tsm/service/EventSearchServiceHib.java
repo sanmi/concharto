@@ -127,7 +127,7 @@ public class EventSearchServiceHib implements EventSearchService {
         LapTimer timer = new LapTimer(this.log);
         SQLQuery sqlQuery = createQuery(SQL_PREFIX_GET_COUNT, boundingBox, params);
         List result = sqlQuery.addScalar("count(*)", Hibernate.LONG).list();
-        timer.timeIt("count").logDebugTime();
+        timer.timeIt("count").logInfoTime();
         return (Long) result.get(0);
     }
 

@@ -16,7 +16,6 @@ import org.springframework.web.servlet.mvc.AbstractFormController;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
-import com.tech4d.tsm.auth.AuthConstants;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.service.EventSearchService;
 import com.tech4d.tsm.web.util.DisplayTagHelper;
@@ -135,12 +134,6 @@ public class EventSearchController extends AbstractFormController {
     @Override
     protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response,
                                                  Object command, BindException errors) throws Exception {
-		//TODO DEBUG don't do anything if the user isn't logged in.  Remove this kludge after we go live.  It is because
-		//of redirects causing havoc with our LoginFilter - I can't figure out a better way at the moment
-		//fsm 11-13-07
-		if (null == WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME)) {
-			return showForm(request, response, errors);
-		}
 		
         EventSearchForm eventSearchForm = (EventSearchForm) command;
         //reset zoom and map center overrides, they are only used for get strings
@@ -204,7 +197,7 @@ public class EventSearchController extends AbstractFormController {
 		if (log.isInfoEnabled()) {
         	StringBuffer msg = new StringBuffer("search,");
         	msg.append("where,\"").append(eventSearchForm.getWhere());
-        	msg.append("\",when,");
+        	msg.append("\",when,\"");
         	if (eventSearchForm.getWhen() != null) {
         		msg.append(eventSearchForm.getWhen().getAsText());
         	}

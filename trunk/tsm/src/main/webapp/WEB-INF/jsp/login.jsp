@@ -11,9 +11,8 @@
 	<jsp:body>
 	  <form:form id="loginForm" name="login" commandName="login"> 
 	  	<div class="textpanel">
-				<h2>Welcome to the Time Space Map </h2>
-				<p>We are currently privately testing our service.  If you are interested in becoming a beta tester, 
-				please <a href="mailto:betatest@timespacemap.com"> contact us!</a>
+				<h2>Sign in to the Time Space Map </h2>
+				<p>If you aren't already a member, please create an account.  It's easy and it's free.</a>
 				<h2>Please Login</h2>
 				<form:errors path="*" cssClass="errorBox" element="div"/>
 		  	<table>

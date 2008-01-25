@@ -50,8 +50,9 @@ public class AuthHelper {
         	//free all session data
         	request.getSession().invalidate();
         }
-        //clear the remember me cookie
+        //clear the remember me cookies
 		AuthHelper.setCookie(response, AuthHelper.COOKIE_REMEMBER_ME, 0, "");
+		AuthHelper.setCookie(response, AuthHelper.COOKIE_REMEMBER_ME_USERNAME, 0, "");
 		
 	}
 	

@@ -9,9 +9,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
-import org.springframework.web.util.WebUtils;
 
-import com.tech4d.tsm.auth.AuthConstants;
 import com.tech4d.tsm.service.EventSearchService;
 
 /**
@@ -46,13 +44,7 @@ public class EmbeddedSearchController extends SimpleFormController {
 	protected ModelAndView processFormSubmission(HttpServletRequest request,
 			HttpServletResponse response, Object command, BindException errors)
 			throws Exception {
-		//TODO DEBUG don't do anything if the user isn't logged in.  Remove this kludge after we go live.  It is because
-		//of redirects causing havoc with our LoginFilter - I can't figure out a better way at the moment
-		//fsm 11-13-07
-		if (null == WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME)) {
-			return showForm(request, response, errors);
-		}
-		
+
 		EventSearchForm eventSearchForm = (EventSearchForm) command;
     	//this request contains enough information to do a search right now
     	//use the same binder to get params of the query string as we were using for the POST

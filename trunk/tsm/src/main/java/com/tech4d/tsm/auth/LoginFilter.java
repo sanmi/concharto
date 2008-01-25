@@ -35,9 +35,11 @@ public class LoginFilter implements Filter{
     private static final String REDIRECT_LOGIN = "/login.htm";
     //TODO search requires authentication only during the private pilot
     private static final Log log = LogFactory.getLog(LoginFilter.class);
-    private UserDao userDao; 
+    private UserDao userDao;
+//    private FilterConfig filterConfig;
 
     public void init(FilterConfig filterConfig) throws ServletException {
+//    	this.filterConfig = filterConfig; 
     	ServletContext ctx = filterConfig.getServletContext();
         WebApplicationContext webAppContext = WebApplicationContextUtils.getWebApplicationContext(ctx);
         userDao = (UserDao) webAppContext.getBean("userDao");
@@ -46,32 +48,36 @@ public class LoginFilter implements Filter{
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        
+
+        //Has the user signed in?
+    	if (handleRememberMeCookie(httpRequest)) {
+    		//redirect to get rid of the jsessionid crap on the URL string
+    		//TODO - Ugh! this is the only way I know how to get rid of jsessionid.  
+    		//NOTE this doesn't work when you have a server port other than 80 (e.g. test server).  Not sure why.
+    		//There is probably another way
+    		//NOTE: this doesn't work for URLs that will be redirected (e.g. our "link to here" urls
+    		//that contain get strings.  This all incoming links with remember me cookies must not redirect.  UGH!
+    		if (StringUtils.isEmpty(httpRequest.getQueryString())) {
+        		httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getRequestURL().toString()));
+    		} else {
+    			String url = httpRequest.getRequestURL().toString();
+    			url += "?" + httpRequest.getQueryString();
+    			httpResponse.sendRedirect(url);
+    		}
+    		if (AuthHelper.isUserInSession(httpRequest)) {
+        		log.info("user " + 
+        				httpRequest.getSession().getAttribute(AuthConstants.SESSION_AUTH_USERNAME) + 
+        				" signed in via cookie");
+    		}
+    	} 
+    	
         //Does this page require authentication
         if (requiresAuthentication(httpRequest)) {
-            //Has the user signed in?
-        	if (handleRememberMeCookie(httpRequest)) {
-        		//redirect to get rid of the jsessionid crap on the URL string
-        		//TODO - Ugh! this is the only way I know how to get rid of jsessionid.  
-        		//NOTE this doesn't work when you have a server port other than 80 (e.g. test server).  Not sure why.
-        		//There is probably another way
-        		//NOTE: this doesn't work for URLs that will be redirected (e.g. our "link to here" urls
-        		//that contain get strings.  This all incoming links with remember me cookies must not redirect.  UGH!
-        		if (StringUtils.isEmpty(httpRequest.getQueryString())) {
-            		httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getRequestURL().toString()));
-        		} else {
-        			String url = httpRequest.getRequestURL().toString();
-        			url += "?" + httpRequest.getQueryString();
-        			httpResponse.sendRedirect(url);
-        		}
-        		if (AuthHelper.isUserInSession(httpRequest)) {
-            		log.info("user " + 
-            				httpRequest.getSession().getAttribute(AuthConstants.SESSION_AUTH_USERNAME) + 
-            				" signed in via cookie");
-        		}
-        	} else if (!isAuthenticated(httpRequest)) {
+            if (!isAuthenticated(httpRequest)) {
+//        		filterConfig.getServletContext().getRequestDispatcher(httpRequest.getContextPath() + 
+//                		REDIRECT_LOGIN).forward(request, response);
                 httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getContextPath() + 
-                		REDIRECT_LOGIN));                
+                		REDIRECT_LOGIN));
             }  
             //ok, is the user authorized for this URL
             else if (!isAuthorized(httpRequest)) {
@@ -142,17 +148,11 @@ public class LoginFilter implements Filter{
             //save the target so we can get there after authentication
             StringBuffer redirect = new StringBuffer(httpRequest.getRequestURI());
 
-            //check the remember me cookie
-            if (handleRememberMeCookie(httpRequest)) {
-            	//remember me cookie was set properly, redirect to get rid of the jsessionid
-            	session.setAttribute(AuthConstants.SESSION_AUTH_TARGET_URI, redirect.toString() );
-            } else {
-            	//no cookie set, we need to go to the login screen
-                if (!StringUtils.isEmpty(httpRequest.getQueryString())) {
-                    redirect.append('?').append(httpRequest.getQueryString());
-                }
-                session.setAttribute(AuthConstants.SESSION_AUTH_TARGET_URI, redirect.toString() );
+        	//no cookie set, we need to go to the login screen
+            if (!StringUtils.isEmpty(httpRequest.getQueryString())) {
+                redirect.append('?').append(httpRequest.getQueryString());
             }
+            session.setAttribute(AuthConstants.SESSION_AUTH_TARGET_URI, redirect.toString() );
             return false;
         } else {
             return true;
