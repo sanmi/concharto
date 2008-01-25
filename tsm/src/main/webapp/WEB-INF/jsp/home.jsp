@@ -4,8 +4,14 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ page import="java.util.Random" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 
+<%
+	//for defeating browser caches of iframes
+	Random rand = new Random();
+	request.setAttribute("rand", rand.nextInt());
+ %>
 <tsm:page title="Home">
 		<jsp:attribute name="head">
 			<script type="text/javascript">
@@ -103,7 +109,7 @@
 		        <div class="clearfloat"></div>
 		        <div id="borderbox">
 		          <iframe id="embeddedmap" 
-		          	src='${spotlightEmbedLink}'
+		          	src='${spotlightEmbedLink}&r=${rand}'
 		            height="330" width="450" frameborder="0" scrolling="no">
 		           	This browser doesn't support embedding a map.
 		          </iframe>
