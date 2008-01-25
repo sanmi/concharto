@@ -2,7 +2,10 @@
 {\colortbl ;\red0\green0\blue255;\red32\green32\blue32;}
 {\*\generator Msftedit 5.41.15.1507;}\viewkind4\uc1\pard\f0\fs24 Time Space Map Test Plan\par
 \lang1023\par
-\pard\keepn\sb240\sa120\tx0\tx0\lang1033\b\f1\fs32 Login\par
+\pard\keepn\sb240\sa120\tx0\tx0\lang1033\b\f1\fs32 General things to look for\par
+\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720\f0\fs24 ;jsessionid=\b0  in any URL\lang1023\f1\par
+\lang1033\f0{\pntext\f7\'B7\tab}overlapping tables\lang1023\f1\par
+\pard\keepn\sb240\sa120\tx0\tx0\lang1033\b\fs32 Login\par
 \pard\sa120\lang1023\b0\f0\fs24 NV.1 Sign in, Sign out\f1\par
 \pard\keepn\sa120\tx0\tx0\lang1033\b\fs32 Home\par
 \pard\tx720\b0\f0\fs24 H1. Click on a recent event that is a POINT, verify it shows the search page properly (maptype and zoom).\f1\par
@@ -56,7 +59,7 @@
 \lang255\f2\fs18 l\f3\tab\lang1033\f0\fs24 verify validation works (summary, when and polygon)\f1\par
 \lang255\f2\fs18 l\f3\tab\lang1033\f0\fs24 click on cancel - verify map view goes back to the original\f1\par
 \pard\keepn\sb240\sa120\tx0\tx0\b\fs32 Change History \par
-\pard\fi-360\li720\tx720\tx720\lang255\b0\f2\fs18 l\f3\tab\lang1033\f0\fs24 Edit an event that has more than 10 changes (where= 'Florida' ), click on change history\f1\par
+\pard\fi-360\li720\tx720\tx720\lang255\b0\f2\fs18 l\f3\tab\lang1033\f0\fs24 Edit an event that has more than 10 changes (what= 'Florida keys' ), click on change history\f1\par
 \lang255\f2\fs18 l\f3\tab\lang1033\f0\fs24 verify paging on flags\f1\par
 \lang255\f2\fs18 l\f3\tab\lang1033\f0\fs24 verify paging on change history\f1\par
 \pard\keepn\sb240\sa120\tx0\tx0\b\fs32 Discuss\par
@@ -96,7 +99,7 @@
 \pard\keepn\sa120\tx0\tx0\b\fs32 Error Pages\par
 \pard\fi-360\li720\tx720\tx720\lang255\b0\f2\fs18 l\f3\tab\lang1033\f0\fs24 404 page: Login, Enter a bogus page \endash  verify the page looks correct\f1\par
 \f2\fs18 l\f3\tab\f0\fs24 500 page: Logout, then go to \lang1023{\field{\*\fldinst{HYPERLINK "http://test.timespacemap.com:8080/home.htmsdfsdf" }}{\fldrslt{\cf1\lang1033\ul http://test.timespacemap.com:8080/search/eventsearch.htm?_maptype=sdfsdf}}}\cf0\lang1023\ulnone\f1\fs24\par
-\f2\fs18 l\f3\tab\lang1033\f0\fs24 Not authorized page: log in as marina and go to http://test.timespacemap.com:8080/admin/signup.htm \lang1023\f1\par
+\f2\fs18 l\f3\tab\lang1033\f0\fs24 Not authorized page: log in as marina and go to http://test.timespacemap.com:8080/admin/adminlinks.htm \lang1023\f1\par
 \pard\li720\tx1440\lang1033\par
 \pard\keepn\sa120\tx0\tx0\b\fs32 Browser compatibility (IE, Safari)\par
 \pard\fi-360\li720\tx720\tx720\lang255\b0\f2\fs18 l\f3\tab\lang1033\f0\fs24 Map resizing\f1\par
@@ -105,12 +108,20 @@
 \lang255\f2\fs18 l\f3\tab\lang1033\f0\fs24 popups\f1\par
 \lang255\f2\fs18 l\f3\tab\lang1033\f0\fs24 changes\f1\par
 \lang255\f2\fs18 l\f3\tab\lang1033\f0\fs24 page layouts\f1\par
-\pard\keepn\sb240\sa120\tx0\tx0\lang1023\b\fs32 Signup\par
-\pard\fi-360\li720\tx720\tx720\b0\f2\fs18 l\f3\tab\lang1033\f0\fs24 http://test.timespacemap.com:8080/admin/signup.htm\lang1023\f1\par
-\lang255\f2\fs18 l\f3\tab\lang1033\f0\fs24 Create a new user with the email frank@fsanmiguel.com\f1\par
+\pard\keepn\sb240\sa120\tx0\tx0\lang1023\b\fs32 Signup\b0\f2\fs18\par
+\pard\sa120\lang255\f0\fs24 SU1. Normal Signup\lang1023\f1\par
+\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720\lang1033\f0 Click login/create account\lang1023\f1\par
+\pard\fi-360\li720\tx720\tx720\lang255\f2\fs18 l\f3\tab\lang1033\f0\fs24 Create a new user with the email frank@fsanmiguel.com\f1\par
 \lang255\f2\fs18 l\f3\tab\lang1033\f0\fs24 Verify validation\f1\par
-\lang255\f2\fs18 l\f3\tab\lang1033\f0\fs24 Verify the email was sent and reads correctly\f1\par
-\pard\keepn\sb240\sa120\tx0\tx0\lang1023\b\fs32 Link To Here\par
+\lang255\f2\fs18 l\f3\tab\lang1033\f0\fs24 Verify the email was sent and reads correctly\par
+\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720 Verify the user was signed in\par
+\pard\sa120\lang255 SU2. Signup while adding\lang1023\f1\par
+\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720\lang1033\f0 logout, then click "add to the map"\lang1023\f1\par
+\lang1033\f0{\pntext\f7\'B7\tab}create a new account\lang1023\f1\par
+\lang1033\f0{\pntext\f7\'B7\tab}verify you get put to the correct add to the map view\lang1023\f1\par
+\pard\sa120\lang255\f0 SU3. Signup while editing\lang1023\f1\par
+\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720\lang1033\f0 Repeat test SU.2 but edit an event instead of  "add to the map"\lang1023\f1\par
+\pard\keepn\sb240\sa120\tx0\tx0\b\fs32 Link To Here\par
 \pard\sa120\lang255\b0\f0\fs24 LK1. Wide area with zoom in\lang1023\f1\par
 \pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720\lang1033\f0 Open a new browser window (BR1) and make it smaller than the first one (BR2)\f1\par
 \f0{\pntext\f7\'B7\tab}BR1 \endash  search on everything, click \ldblquote link to here\rdblquote  and copy the link\f1\par
@@ -126,7 +137,7 @@
 \pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720\lang1033\f0 Repeat LK1 with search terms \ldblquote new york city\rdblquote , \ldblquote 1863\rdblquote , \ldblquote draft\rdblquote\f1\par
 \pard\lang1023\par
 \f0 LK3. Link with search parameters 2\f1\par
-\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720\lang1033\f0 Repeat LK1 with search terms \ldblquote 1863\rdblquote , and check \ldblquote\cf2\f4 Find events that occurred only \i\fs16 within\i0\fs24  the time frame specified.\rdblquote\cf0\lang1023\f1\par
+\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720\lang1033\f0 Repeat LK1 with \i only \i0 search terms \ldblquote 1863\rdblquote , and check \ldblquote\cf2\f4 Find events that occurred only \i\fs16 within\i0\fs24  the time frame specified.\rdblquote\cf0\lang1023\f1\par
 \pard\f0 LK4. Link with search parameters 3\f1\par
 \pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720\lang1033\f0 BR1- navigate to view the USA\f1\par
 \f0{\pntext\f7\'B7\tab}Repeat LK1 with no search terms and check \ldblquote\cf2\f4 Search current map shown\rdblquote\cf0\lang1023\f1\par
@@ -213,6 +224,10 @@
 {\pntext\f7\'B7\tab}submit the form with new password info \par
 {\pntext\f7\'B7\tab}go back to the email - verify you get an error on the new password form \par
 \pard\fi-360\li720\tx720\tx720\f1\par
+\pard\keepn\sb240\sa120\tx0\tx0\b\fs32 Browser Back\par
+\pard\tx720\b0\f0\fs24 BB1. Home page - verify desitnation spotlight image and captions are identical\par
+BB2. Search page\par
+BB3. Edit page\f1\par
 \pard\f6\fs20\par
 }
  
