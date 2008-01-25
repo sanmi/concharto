@@ -32,17 +32,17 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 	<title>Time Space Map - ${title}  </title>
 	<style type="text/css">
 
-  @import url("<c:url value="/css/style.css"/>");
+  @import url("${basePath}css/style.css");
 
 	<c:forTokens var="item" items="${stylesheet}" delims=",">
-    @import url("<c:url value="/css/"/>${item}");
+    @import url("${basePath}css/${item}");
 	</c:forTokens>    
 	</style>
 
 	<jsp:invoke fragment="head" />
 	
 	<c:forTokens var="item" items="${script}" delims=",">
-		<script type="text/javascript" src="<c:url value="/javascript/"/>${item}"></script>
+		<script type="text/javascript" src="${basePath}javascript/${item}"></script>
 	</c:forTokens>    
 </head>
 

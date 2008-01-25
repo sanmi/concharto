@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -112,7 +113,7 @@ public class EventController extends SimpleFormController {
         EventForm eventForm = (EventForm)command;
 
     	Map model = errors.getModel();
-        if (eventForm.getShowPreview()) {
+        if (BooleanUtils.isTrue(eventForm.getShowPreview())) {
         	Event event = EventFormFactory.createEvent(eventForm);
         	EventFormFactory.renderWiki(event, request);
         	//for processing the drop down selector for positional accuracies
