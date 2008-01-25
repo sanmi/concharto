@@ -5,7 +5,9 @@
 	<jsp:body>
 	  	<div class="textpanel">
 				<h2>Sorry, you are not authorized to use this page</h2>
-				<a href="${pageContext.request.contextPath}/">Return</a>
+
+				<br/><br/>
+				Return <a class="links" href="${basePath}">home</a>
 			</div>	  
 	</jsp:body>
 </tsm:page>
