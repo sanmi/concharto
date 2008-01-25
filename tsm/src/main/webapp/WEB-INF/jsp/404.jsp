@@ -5,11 +5,12 @@
 	<jsp:attribute name="stylesheet">textpanel.css,header.css</jsp:attribute>
 
 	<jsp:body>
-<div class="textpanel">
-	<h2>
-		Sorry, we can't find the page you are looking for.  
-	</h2>
-	Return <a class="links" href="${basePath}">home</a>
-</div>	
+		<div class="textpanel">
+			<h2>
+				Sorry, we can't find the page you are looking for.  
+			</h2>
+			<br/><br/>
+			Return <a class="links" href="${basePath}">home</a>
+		</div>	
 	</jsp:body>
 </tsm:page>
