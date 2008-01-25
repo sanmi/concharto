@@ -16,15 +16,15 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
-import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
-import com.tech4d.tsm.auth.AuthConstants;
 import com.tech4d.tsm.auth.AuthHelper;
 import com.tech4d.tsm.dao.UserDao;
 import com.tech4d.tsm.model.user.User;
 import com.tech4d.tsm.model.user.UserNote;
 import com.tech4d.tsm.util.PasswordUtil;
+import com.tech4d.tsm.web.signup.LoginSignupHelper;
+import com.tech4d.tsm.web.signup.SignupForm;
 
 /**
  * For authentication.  We aren't using the standard j2ee authentaction mechanisms because there
@@ -54,43 +54,35 @@ public class LoginController extends SimpleFormController {
 
 		Cookie userCookie = WebUtils.getCookie(request, AuthHelper.COOKIE_REMEMBER_ME_USERNAME);
 		if ((userCookie != null) && !StringUtils.isEmpty(userCookie.getValue())) {
-			LoginForm loginForm = (LoginForm) command;
-			loginForm.setUsername(userCookie.getValue());
-			loginForm.setRememberMe(true);
+			SignupForm signupForm = (SignupForm) command;
+			signupForm.setUsername(userCookie.getValue());
+			signupForm.setRememberMe(true);
 		}
 		return super.referenceData(request, command, errors);
 	}
 
 	@Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        LoginForm loginForm = (LoginForm) command;
-        User user = userDao.find(loginForm.getUsername());
+        SignupForm signupForm = (SignupForm) command;
+        User user = userDao.find(signupForm.getUsername());
         
         if ((user != null) && 
-            (PasswordUtil.isPasswordValid(loginForm.getPassword(), user.getPassword()))) {
+            (PasswordUtil.isPasswordValid(signupForm.getPassword(), user.getPassword()))) {
             //matched username and password, ok to proceed
-            log.info("user " + loginForm.getUsername() + " signed in");
+            log.info("user " + signupForm.getUsername() + " signed in");
 
             //first save the username and roles in the session            
             AuthHelper.setUserInSession(request, user);
             
             //if they checked "remember me" we set a cookie
-            if (BooleanUtils.isTrue(loginForm.getRememberMe())) {
+            if (BooleanUtils.isTrue(signupForm.getRememberMe())) {
                 setRemeberMeCookie(response, user, AuthHelper.COOKIE_REMEMBER_ME_MAX_AGE);
             } else {
                 setRemeberMeCookie(response, user, 0);
             }
             
             //now go where we were originally heading
-            String view = (String) WebUtils.getSessionAttribute(request, AuthConstants.SESSION_AUTH_TARGET_URI);
-            
-            //now erase the target so we don't use it another time
-            WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_TARGET_URI, null);
-            if (view != null) {
-                return new ModelAndView(new RedirectView(view));
-            } else {
-                return new ModelAndView("redirect:/");
-            }
+            return LoginSignupHelper.continueToRequestedUrl(request);
         } else {
         	/* NOTE we are doing validation here instead of the validator so that we don't have to 
         	 * go to the database twice to get the user object.

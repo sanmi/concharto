@@ -30,11 +30,11 @@
           <prop key="home.htm">homeController</prop>
           <prop key="feedback.htm">feedbackController</prop>
           <prop key="edit/event.htm">eventController</prop>
-          <prop key="admin/signup.htm">signupController</prop>
+          <prop key="signup.htm">signupController</prop>
           <prop key="member/settings.htm">settingsController</prop>
           
           <prop key="event/changehistory.htm">eventHistoryController</prop>
-          <prop key="member/contributions.htm">contributionsController</prop>
+          <prop key="contributions.htm">contributionsController</prop>
           <prop key="event/discusshistory.htm">wikiTextHistoryController</prop>
 
           <prop key="edit/flagevent.htm">flagEventController</prop>
@@ -92,7 +92,7 @@
 	</bean>
 
 	<bean id="urlFilenameViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController">
-		<property name="cacheSeconds" value="86400"/>  
+		<property name="cacheSeconds" value="3600"/>  
 	</bean>
 	<bean id="switchBoardController" class="com.tech4d.tsm.web.SwitchBoardController" parent="baseEventController" >
 		<property name="eventDao" ref="eventDao" />
@@ -107,9 +107,9 @@
 
 	<bean id="loginFormValidator" class="com.tech4d.tsm.web.login.LoginFormValidator"/>
 	<bean id="loginController" class="com.tech4d.tsm.web.login.LoginController" parent="baseEventController">
-		<property name="cacheSeconds" value="86400"/>  
+		<property name="cacheSeconds" value="3600"/>  
 		<property name="commandName" value="login"/>
-		<property name="commandClass" value="com.tech4d.tsm.web.login.LoginForm"/>
+		<property name="commandClass" value="com.tech4d.tsm.web.signup.SignupForm"/>
 		<property name="formView" value="login" />
 		<property name="successView" value="redirect:/" />
 		<property name="validator" ref="loginFormValidator"/>
@@ -118,7 +118,7 @@
 	
 	<bean id="forgotValidator" class="com.tech4d.tsm.web.forgot.ForgotValidator"/>
 	<bean id="forgotController" class="com.tech4d.tsm.web.forgot.ForgotController">
-		<property name="cacheSeconds" value="86400"/>  
+		<property name="cacheSeconds" value="3600"/>  
 		<property name="commandName" value="forgot"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.forgot.ForgotForm"/>
 		<property name="formView" value="public/forgot" />
@@ -138,7 +138,7 @@
 	
 	<bean id="feedbackValidator" class="com.tech4d.tsm.web.feedback.FeedbackValidator"/>
 	<bean id="feedbackController" class="com.tech4d.tsm.web.feedback.FeedbackController">
-		<property name="cacheSeconds" value="86400"/>  
+		<property name="cacheSeconds" value="3600"/>  
 		<property name="commandName" value="feedback"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.feedback.FeedbackForm"/>
 		<property name="formView" value="public/feedback" />
@@ -152,10 +152,10 @@
 		<property name="userDao" ref="userDao"/>
 	</bean>
 	<bean id="signupController" class="com.tech4d.tsm.web.signup.SignupController" parent="baseEventController">
-		<property name="cacheSeconds" value="86400"/>  
-		<property name="commandName" value="signup"/>
+		<property name="cacheSeconds" value="3600"/> 
+		<property name="commandName" value="login"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.signup.SignupForm"/>
-		<property name="formView" value="admin/signup" />
+		<property name="formView" value="login" />
 		<property name="successView" value="redirect:/" />
 		<property name="userDao" ref="userDao"/>
 		<property name="emailService" ref="emailService"/>
@@ -178,7 +178,7 @@
 		<property name="eventDao" ref="eventDao" />
 	</bean>
 	<bean id="contributionsController" class="com.tech4d.tsm.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
-		<property name="formView" value="member/contributions" />
+		<property name="formView" value="contributions" />
 		<property name="pageSize" value="25"/>
 		<property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
 		<property name="auditableClass" value="com.tech4d.tsm.model.Event" />
@@ -218,7 +218,7 @@
 
 	<bean id="settingsFormValidator" class="com.tech4d.tsm.web.member.SettingsFormValidator"/>
 	<bean id="settingsController" class="com.tech4d.tsm.web.member.SettingsController" parent="baseEventController">
-		<property name="cacheSeconds" value="86400"/>  
+		<property name="cacheSeconds" value="3600"/>  
 		<property name="commandName" value="settings"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.member.SettingsForm"/>
 		<property name="formView" value="member/settings" />
