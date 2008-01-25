@@ -77,7 +77,9 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 
-	<bean id="baseEventController" abstract="true"></bean>
+	<bean id="baseEventController" abstract="true">
+		<property name="cacheSeconds" value="3600"/>  
+	</bean>
 
 	<!-- Controller  -->
 	<bean id="homeController" class="com.tech4d.tsm.web.home.HomeController">
@@ -107,7 +109,6 @@
 
 	<bean id="loginFormValidator" class="com.tech4d.tsm.web.login.LoginFormValidator"/>
 	<bean id="loginController" class="com.tech4d.tsm.web.login.LoginController" parent="baseEventController">
-		<property name="cacheSeconds" value="3600"/>  
 		<property name="commandName" value="login"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.signup.SignupForm"/>
 		<property name="formView" value="login" />
@@ -117,8 +118,7 @@
 	</bean>
 	
 	<bean id="forgotValidator" class="com.tech4d.tsm.web.forgot.ForgotValidator"/>
-	<bean id="forgotController" class="com.tech4d.tsm.web.forgot.ForgotController">
-		<property name="cacheSeconds" value="3600"/>  
+	<bean id="forgotController" class="com.tech4d.tsm.web.forgot.ForgotController" parent="baseEventController">
 		<property name="commandName" value="forgot"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.forgot.ForgotForm"/>
 		<property name="formView" value="public/forgot" />
@@ -128,7 +128,7 @@
 		<property name="emailService" ref="emailService"/>
 	</bean>
 
-	<bean id="resetController" class="com.tech4d.tsm.web.forgot.ResetController">
+	<bean id="resetController" class="com.tech4d.tsm.web.forgot.ResetController" parent="baseEventController">
 		<property name="commandName" value="reset"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.util.AuthForm"/>
 		<property name="formView" value="public/reset" />
@@ -137,7 +137,7 @@
 	</bean>
 	
 	<bean id="feedbackValidator" class="com.tech4d.tsm.web.feedback.FeedbackValidator"/>
-	<bean id="feedbackController" class="com.tech4d.tsm.web.feedback.FeedbackController">
+	<bean id="feedbackController" class="com.tech4d.tsm.web.feedback.FeedbackController" parent="baseEventController">
 		<property name="cacheSeconds" value="3600"/>  
 		<property name="commandName" value="feedback"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.feedback.FeedbackForm"/>
@@ -152,7 +152,6 @@
 		<property name="userDao" ref="userDao"/>
 	</bean>
 	<bean id="signupController" class="com.tech4d.tsm.web.signup.SignupController" parent="baseEventController">
-		<property name="cacheSeconds" value="3600"/> 
 		<property name="commandName" value="login"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.signup.SignupForm"/>
 		<property name="formView" value="login" />
@@ -218,7 +217,6 @@
 
 	<bean id="settingsFormValidator" class="com.tech4d.tsm.web.member.SettingsFormValidator"/>
 	<bean id="settingsController" class="com.tech4d.tsm.web.member.SettingsController" parent="baseEventController">
-		<property name="cacheSeconds" value="3600"/>  
 		<property name="commandName" value="settings"/>
 		<property name="commandClass" value="com.tech4d.tsm.web.member.SettingsForm"/>
 		<property name="formView" value="member/settings" />
@@ -240,22 +238,20 @@
 		<property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
 	</bean>
 
-	<bean id="discussControllerBase" class="com.tech4d.tsm.web.discuss.DiscussController">
+	<bean id="discussControllerBase" class="com.tech4d.tsm.web.discuss.DiscussController" parent="baseEventController">
 		<property name="commandName" value="discussForm" />
 		<property name="commandClass" value="com.tech4d.tsm.web.discuss.WikiTextForm" />
 		<property name="eventDao" ref="eventDao" />
 	</bean>
-	<bean id="discussController" class="com.tech4d.tsm.web.discuss.DiscussController" 
-		parent="discussControllerBase">
+	<bean id="discussController" class="com.tech4d.tsm.web.discuss.DiscussController" parent="discussControllerBase">
 		<property name="formView" value="event/discuss" />
 	</bean>
-	<bean id="discussEditController" class="com.tech4d.tsm.web.discuss.DiscussController" 
-		parent="discussControllerBase">
+	<bean id="discussEditController" class="com.tech4d.tsm.web.discuss.DiscussController" parent="discussControllerBase">
 		<property name="formView" value="edit/discussedit" />
 		<property name="successView" value="event/discuss" />
 	</bean>
 	
-	<bean id="eventUndoController" class="com.tech4d.tsm.web.changehistory.AuditableUndoController">
+	<bean id="eventUndoController" class="com.tech4d.tsm.web.changehistory.AuditableUndoController" >
 		<property name="successView" value="event/changehistory" />
 		<property name="revertEventService" ref="revertEventService" />
 		<property name="auditableClass" value="com.tech4d.tsm.model.Event" />
@@ -266,14 +262,14 @@
 		<property name="auditableClass" value="com.tech4d.tsm.model.WikiText" />
 	</bean>
 	
-	<bean id="spotlightListController" class="com.tech4d.tsm.web.spotlight.SpotlightListController">
+	<bean id="spotlightListController" class="com.tech4d.tsm.web.spotlight.SpotlightListController" parent="baseEventController">
 		<property name="formView" value="admin/spotlightlist" />
 		<property name="spotlightDao" ref="spotlightDao" />
 		<property name="spotlightService" ref="spotlightService" />
 	</bean>
 
 	<bean id="spotlightValidator" class="com.tech4d.tsm.web.spotlight.SpotlightValidator"/>
-	<bean id="spotlightEditController" class="com.tech4d.tsm.web.spotlight.SpotlightEditController">
+	<bean id="spotlightEditController" class="com.tech4d.tsm.web.spotlight.SpotlightEditController" parent="baseEventController">
 		<property name="commandName" value="spotlight"/>
 		<property name="commandClass" value="com.tech4d.tsm.model.Spotlight"/>
 		<property name="formView" value="admin/spotlightedit" />
