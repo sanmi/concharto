@@ -68,13 +68,14 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 			<a class="linkleft links" href="http://wiki.timespacemap.com/wiki/Legal" >Legal</a>
 			<a class="linkleft links" class="linkleft" href="http://wiki.timespacemap.com/wiki/About" >About</a>
 			<a class="links linkleft" href="${basePath}feedback.htm">Feedback</a>
-	  	<span class="links linkleft">Version <spring:message code="app.version"/></span>
+	  	
 			<a class="links linkleftright" href="http://creativecommons.org/licenses/by-sa/3.0/us" >
 				<img src="http://i.creativecommons.org/l/by-sa/3.0/us/80x15.png"/>
 			</a>
 	  </div>
   </c:if>
 
+	<!--  <spring:message code="app.version"/> -->
 	<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
 	</script>
 	<script type="text/javascript">
