@@ -48,7 +48,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 	 		
 	 		<c:choose>
 		 		<c:when test="${fn:length(simpleTable.auditEntryFieldChange) > 0}">
-			 		<div class="simpleTable">
+			 		<div class="cleanTable">
 						<display:table name="${simpleTable.auditEntryFieldChange}" id="dt" >
 							<display:column style="width:12em" title="Field">
 								<spring:message code="audit.event.field.${dt.propertyName}"/>

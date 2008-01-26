@@ -21,7 +21,7 @@ import com.tech4d.tsm.web.eventsearch.SearchHelper;
 public class HomeController extends SimpleFormController {
     protected final Log log = LogFactory.getLog(getClass());
 
-	private static final int MAX_RECENT_EVENTS = 10;
+	private static final int MAX_RECENT_EVENTS = 6;
 	public static final String MODEL_TOTAL_EVENTS = "totalEvents";
 	public static final String MODEL_RECENT_EVENTS = "recentEvents";
 	private static final Object MODEL_SPOTLIGHT_LABEL = "spotlightLabel";
@@ -45,7 +45,7 @@ public class HomeController extends SimpleFormController {
 			HttpServletResponse response, BindException errors, Map controlModel)
 			throws Exception {
 		Map model = errors.getModel();
-		model.put(MODEL_RECENT_EVENTS, eventDao.findRecent(MAX_RECENT_EVENTS));
+		model.put(MODEL_RECENT_EVENTS, eventDao.findRecent(MAX_RECENT_EVENTS, 0));
 		model.put(MODEL_TOTAL_EVENTS, eventDao.getTotalCount());
 		setupSpotlight(request, model);
 		//clear out the eventSearchForm session if there is one

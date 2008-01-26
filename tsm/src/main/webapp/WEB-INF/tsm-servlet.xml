@@ -43,9 +43,11 @@
           <prop key="search/eventsearch.htm">eventSearchController</prop>
           <prop key="search/embeddedsearch.htm">embeddedSearchController</prop>
 
+          <prop key="list/recent.htm">recentController</prop>
+          <prop key="list/event.htm">eventSearchController</prop>
+
           <prop key="logout.htm">switchBoardController</prop>
           <prop key="notauthorized.htm">switchBoardController</prop>
-          <prop key="admin/listEvents.htm">switchBoardController</prop>
           <prop key="search/mapthumbnail.htm">switchBoardController</prop>
           <prop key="search/auditmapthumbnail.htm">switchBoardController</prop>
 
@@ -83,14 +85,12 @@
 
 	<!-- Controller  -->
 	<bean id="homeController" class="com.tech4d.tsm.web.home.HomeController" parent="baseEventController">
-		<!-- semi-dynamic content - event list and recent, so cache for a few minuites -->
 		<property name="commandName" value="eventSearch" />
 		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
 		<property name="formView" value="home" />
 		<property name="successView" value="home" />
 		<property name="eventDao" ref="eventDao" />
-		<property name="spotlightService" ref="spotlightService" />
-		
+		<property name="spotlightService" ref="spotlightService" />	
 	</bean>
 
 	<bean id="urlFilenameViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" parent="baseEventController">
@@ -277,6 +277,11 @@
 		<property name="spotlightDao" ref="spotlightDao" />
 		<property name="userDao" ref="userDao" />
 		<property name="spotlightService" ref="spotlightService" />
+	</bean>
+
+	<bean id="recentController" class="com.tech4d.tsm.web.list.RecentController" parent="baseEventController">
+		<property name="formView" value="list/recent" />
+		<property name="eventDao" ref="eventDao" />
 	</bean>
 	
 </beans>

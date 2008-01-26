@@ -20,7 +20,7 @@ public interface EventDao {
 
     public abstract void delete(Long id);
 
-    public abstract List<Event> findRecent(int maxResults);
+    public abstract List<Event> findRecent(int maxResults, int firstResult);
 
     public abstract Event findById(Long id);
     

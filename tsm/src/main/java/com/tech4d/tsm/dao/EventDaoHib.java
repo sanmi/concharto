@@ -100,9 +100,12 @@ public class EventDaoHib implements EventDao {
      * @see com.tech4d.tsm.lab.EventDao#findRecent()
      */
     @SuppressWarnings("unchecked")
-    public List<Event> findRecent(int maxResults) {
+    public List<Event> findRecent(int maxResults, int firstResult) {
         return this.sessionFactory.getCurrentSession().createQuery(
-                "select event from Event event " + HQL_VISIBLE_CLAUSE + "order by created desc").setMaxResults(maxResults).list();
+                "select event from Event event " + HQL_VISIBLE_CLAUSE + "order by created desc")
+                .setMaxResults(maxResults)
+                .setFirstResult(firstResult)
+                .list();
     }
 
     public Event findById(Long id) {
