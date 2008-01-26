@@ -127,20 +127,20 @@ img {
 	border:none;
 }
 
-.simpleTable table {
+.cleanTable table {
 	border: 1px solid #e0e0e0;
 	padding:.1em;
 	margin:.1em;
 	text-align: left;	
 }
 
-.simpleTable tr, .simpleTable td, .simpleTable th {
+.cleanTable tr, .cleanTable td, .cleanTable th {
 	border: 1px solid #e0e0e0;
 	padding: .2em;
 	margin: 0;
 }
 
-.simpleTable th{
+.cleanTable th{
 	background-color:#EFEFEF;
 }
 
@@ -248,4 +248,10 @@ img {
 	}
 	#modal_overlay {
 	background-color:#000;
+	}	
+	.infoBox {
+	padding: 1em;
+	border: 1px solid #e0e0e0;
+	margin-bottom: .2em;
+	background-color: white;
 	}	

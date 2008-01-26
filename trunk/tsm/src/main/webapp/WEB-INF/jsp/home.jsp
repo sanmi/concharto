@@ -96,7 +96,10 @@
 			            <em><c:if test="${event.where != null && event.where != ''}"><c:out value="${event.where}" escapeXml="true"/></c:if></em>
 			            <hr/>
 			          </li>
-		  				</c:forEach>	  					
+		  				</c:forEach>
+	  					<li>
+	  						<em><a href="${basePath}list/recent.htm">More recently added ...</a></em>
+	  					</li>	  					
 						</ul>        
 		      </div>
 		      <div class="rightwidth"></div>
@@ -112,6 +115,7 @@
 		            height="330" width="450" frameborder="0" scrolling="no">
 		           	This browser doesn't support embedding a map.
 		          </iframe>
+		         </div>
 		      </div>
 		    </td>
 		    </tr>

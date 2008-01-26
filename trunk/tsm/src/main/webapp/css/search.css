@@ -19,7 +19,7 @@
   padding-right: 20px;
 }
 
-.mapedit .linkbar a {
+.linkbar a {
 	margin: 0;
 	padding: 0 .6em 0 0;
 }
@@ -32,5 +32,29 @@
 .mapedit .resultcount, .errorLabel, .errorHint, .pagelinks {
 	padding-left: 5px;
 }
-
+.result .when {
+    font-weight:bold;
+}
+.result .summary {
+	font-weight: bold;
+}
+.result .where {
+	font-style: italic;
+}
+.result .more {
+	font-style: italic;
+}
+.result .source, .result .usertags {
+	color: gray;
+	margin: .1em 0;
+}
+.result .source p {
+	padding-left: .4em;
+	margin: 0;
+}
+.result .source a {
+	font-weight: normal;
+}
+.result .links {
+}
 	

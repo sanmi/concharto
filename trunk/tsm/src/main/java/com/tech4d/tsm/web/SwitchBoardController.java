@@ -44,10 +44,6 @@ public class SwitchBoardController extends MultiActionController {
 		this.auditEntryDao = auditEntryDao;
 	}
 
-	public ModelAndView listEvents(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return new ModelAndView().addObject(this.eventDao.findRecent(MAX_RESULTS));
-    }
-    
 	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
     	AuthHelper.clearCredentials(request, response);
         return new ModelAndView("redirect:/");

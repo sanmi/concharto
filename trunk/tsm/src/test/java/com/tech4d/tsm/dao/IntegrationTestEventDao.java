@@ -68,7 +68,7 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
     @Test
     public void testInitFindAll() {
         eventTesterDao.deleteAll();
-        Collection<Event> events = eventDao.findRecent(MAX_RESULTS);
+        Collection<Event> events = eventDao.findRecent(MAX_RESULTS,0);
         assertEquals(0, events.size());
     }
 
@@ -120,7 +120,7 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
         eventDao.save(eventUtil.createEvent());
         Thread.sleep(1000);
         eventDao.save(eventUtil.createEvent());
-        List<Event> events = eventDao.findRecent(MAX_RESULTS);
+        List<Event> events = eventDao.findRecent(MAX_RESULTS,0);
         assertEquals(2, events.size());
         //ensure they are sorted in date order, newest first
         Event earlier = events.get(0);

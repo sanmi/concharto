@@ -3,7 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="display" uri="http://displaytag.sf.net" %>
-<div class="simpleTable">
+<div class="cleanTable">
 	<display:table id="dt" 
 		name="event.flags" 
 		sort="list" 
