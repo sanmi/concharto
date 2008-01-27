@@ -66,7 +66,7 @@
 				          </div>
 			          </c:if>
 								<div class="linkbar">
-				          <a class="links" href="#" onclick="editEvent(<c:out value='${event.id}'/>)">edit</a>
+				          <a class="links" href="${basePath}edit/event.htm?id=${event.id}" />edit</a>
 				          <a class="links" href="${basePath}event/discuss.htm?id=${event.id}" >discuss</a>
 				          <c:choose>
 				          	<c:when test="${event.hasUnresolvedFlag}">
