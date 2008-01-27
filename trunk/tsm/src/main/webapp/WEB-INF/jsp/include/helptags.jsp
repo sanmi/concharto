@@ -1,4 +1,4 @@
-<div id="help_tags" class="helpbox">
+<div id="help_tags" >
 	<div class="hd">
 		<jsp:include page="helpclose.jsp"/>
 		Tags

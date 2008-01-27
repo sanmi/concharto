@@ -124,7 +124,6 @@
 		  </table>
 		</div>
 		
-		<jsp:include page="include/helpsearch.jsp"/>
 	</jsp:body>
 </tsm:page>
 

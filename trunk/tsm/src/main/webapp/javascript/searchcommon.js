@@ -61,7 +61,7 @@
 
 			var eventsJSON = $('searchResults').value;
 			if (eventsJSON != '') {
-				var events = eventsJSON.parseJSON();
+				var events = eventsJSON.evalJSON();
 				createOverlays(events);
 			}
 		}
@@ -96,7 +96,7 @@
 	function getMapCenterFromJSON() {
 		var mapCenterJSON = $('mapCenter').value;
 		if (mapCenterJSON != "") {
-			return mapCenterJSON.parseJSON();
+			return mapCenterJSON.evalJSON();
 		} else {
 			return null;
 		} 			

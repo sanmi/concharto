@@ -26,7 +26,7 @@
 	
 	function addEvent() {
 		var eventJSON = document.getElementById("mapForm").event.value;
-		var event = eventJSON.parseJSON();
+		var event = eventJSON.evalJSON();
 		if (event.gtype == 'point') {
 		  createMarker(event);
 		} else if ((event.gtype == 'line') || (event.gtype == 'polygon')) {
@@ -67,7 +67,7 @@
 			}
 		</style>
 	</jsp:attribute>
-	<jsp:attribute name="script">prototype.js,map.js,json.js</jsp:attribute>
+	<jsp:attribute name="script">prototype.js,map.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize_embedded()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 	<jsp:attribute name="stripped">true</jsp:attribute>
 

@@ -1,4 +1,4 @@
-<div id="help_wikimarkup" class="helpbox">
+<div id="help_wikimarkup" >
 	<div class="hd">
 		<jsp:include page="helpclose.jsp"/>
 		Wiki Markup

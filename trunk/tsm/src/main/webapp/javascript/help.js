@@ -1,6 +1,6 @@
   function setupHelpPanels() {
     document.getElementsByClassName('link_help').each(function(link){
-        new Control.Modal(link, {
+        var modal = new Control.Modal(link, {
 				containerClassName: 'helpbox',
         opacity: 0.2,
         position: 'relative', 

@@ -1,7 +1,5 @@
-<%-- help text --%>
-<jsp:include page="helpwhen.jsp"/>
 
-<div id="help_what" class="helpbox">
+<div id="help_what">
 	<div class="hd">
 		<jsp:include page="helpclose.jsp"/>
 		Search Terms
