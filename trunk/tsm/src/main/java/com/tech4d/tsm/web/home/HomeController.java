@@ -1,6 +1,7 @@
 package com.tech4d.tsm.web.home;
 
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -64,7 +65,8 @@ public class HomeController extends SimpleFormController {
 	private void setupSpotlight(HttpServletRequest request, Map model) {
 		Integer spotlightIndex = (Integer) WebUtils.getSessionAttribute(request, SESSION_SPOTLIGHT_INDEX);
 		if (spotlightIndex == null) {
-			spotlightIndex = new Integer(0);
+			//setup the new counter.  Any old integer will do.
+			spotlightIndex = Math.abs((new Random()).nextInt());
 		}
 		Spotlight spotlight = spotlightService.getSpotlight(spotlightIndex);
 		spotlightIndex++;
