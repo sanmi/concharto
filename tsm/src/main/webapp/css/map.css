@@ -9,7 +9,7 @@
 }
 
 #map {
-    height:400px;
+    height:1000px;
     border:1px solid #999999; 
     margin:-1px;
 }
@@ -139,7 +139,7 @@
 }
 .wikitext p {
 	margin: .4em 0;
-	paddding: 0;
+	padding: 0;
 }
 .wikitext h1,
 .wikitext h2,

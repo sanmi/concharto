@@ -17,7 +17,7 @@
 		<jsp:include page="../include/mapkey.js.jsp"/>
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">map.css,header.css,search.css</jsp:attribute>
-	<jsp:attribute name="script">prototype.js,map.js,json.js,control.modal.js,help.js,searchcommon.js,eventsearch.js</jsp:attribute>
+	<jsp:attribute name="script">prototype.js,map.js,control.modal.js,help.js,searchcommon.js,eventsearch.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="init()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 	<jsp:attribute name="nohead">true</jsp:attribute>
 
@@ -173,7 +173,7 @@
 		
 		</form:form>	
 
-		<div id="linkhere" class="linkbox">
+		<div id="linkhere" class="linkbox" style="visibility: hidden">
 		    <div class='bd' style="margin:0; padding:0;">
 		    	<div class="tl"><a href="#" onClick="Control.Modal.close(); return false;"><img src="../images/12xclose.gif"></img></a></div>
 		    	<div class="label">Paste this text to link back to this map</div>		    	
@@ -182,8 +182,6 @@
 		      <input id="embedmap_html" type="text" class="textinput" onclick="selectThis(this);" />
 		    </div>
 		</div>		
-		<jsp:include page="../include/helpsearch.jsp"/>
-		
 
 	</jsp:body>
 </tsm:page>

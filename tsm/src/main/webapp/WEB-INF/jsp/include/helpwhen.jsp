@@ -1,4 +1,4 @@
-<div id="help_when" class="helpbox">
+<div id="help_when">
 	<div class="hd">
 		<jsp:include page="helpclose.jsp"/>
 		When

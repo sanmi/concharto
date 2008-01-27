@@ -12,7 +12,7 @@
 		<jsp:include page="../include/mapkey.js.jsp"/>
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">map.css,header.css</jsp:attribute>
-	<jsp:attribute name="script">prototype.js,map.js,json.js,control.modal.js,help.js,edit.js</jsp:attribute>
+	<jsp:attribute name="script">prototype.js,map.js,control.modal.js,help.js,edit.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="setMapExtent();"</jsp:attribute>
 
 	<jsp:body>
@@ -65,7 +65,7 @@
 		        <span class="errorlabel"><form:errors path="when" element="div"/></span>
 		        <span class="inputlabel">When</span> 
 	          <small>
-	            e.g. "1962" or "March, 1064" or "1880 - 1886" <a href="#help_when" class="link_help">hint</a>
+	            e.g. "1962" or "March, 1064" or "1880 - 1886" <a href="${basePath}help.htm?name=when" class="link_help">hint</a>
 	          </small><br/>
 		        <form:input cssClass="textInput expando" path="when" />
    		    </div>
@@ -87,16 +87,16 @@
 		          	</c:forEach>
 		          </select>
 	          </spring:bind>
-   		    	<small><a href="#help_accuracy" class="link_help">hint</a></small>
+   		    	<small><a href="${basePath}help.htm?name=accuracy" class="link_help">hint</a></small>
    		    </div>
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="description" element="div"/></span>
-	   		    <span class="inputlabel">Description</span> <small>(wiki markup) <a href="#help_wikimarkup" class="link_help">hint</a></small><br/>
+	   		    <span class="inputlabel">Description</span> <small>(wiki markup) <a href="${basePath}help.htm?name=wikimarkup" class="link_help">hint</a></small><br/>
 						<form:textarea cssClass="textInput expando" rows="5" path="description"/>
    		    </div>
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="tags" element="div"/></span>
-   		    	<span class="inputlabel">Tags</span> <small>(comma separated) <a href="#help_tags" class="link_help">hint</a></small> <br/>
+   		    	<span class="inputlabel">Tags</span> <small>(comma separated) <a href="${basePath}help.htm?name=tags" class="link_help">hint</a></small> <br/>
 		        <form:input cssClass="textInput expando" path="tags" maxlength="${event.SZ_TAGS}" htmlEscape="true"/>
   		    </div>
    		    <div class="inputcell">
@@ -131,11 +131,6 @@
 			</td>
 	 	</tr></table>
 
-		<jsp:include page="../include/helpwhen.jsp"/>
-		<jsp:include page="../include/helptags.jsp"/>
-		<jsp:include page="../include/helpaccuracy.jsp"/>
-		<jsp:include page="../include/helpwikimarkup.jsp"/>
-	
 	</jsp:body>
 </tsm:page>
 

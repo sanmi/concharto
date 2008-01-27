@@ -1,15 +1,16 @@
   /* BEGIN PRE FUNCTIONS (initialization) ============================= */
 
 	function init() {
+		setupHelpPanels();
 		initialize();
 		
-		setupHelpPanels();
-		
+
 		new Control.Modal('link_linkhere',{
 				containerClassName: 'linkbox',
         opacity: 0.2,
         afterOpen: getLinkUrls
         });
+
 	}
 
 	/* create html for info bubbles */	

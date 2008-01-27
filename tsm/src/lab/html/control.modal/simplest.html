@@ -78,22 +78,31 @@
         offsetLeft: -400, 
         offsetTop: 20
         });
+		new Control.Modal('span_example',{
+				position: 'relative',
+				offsetLeft: 120,
+				contents: '<div id="help_time" class="helpbox">Control.Modal can attach to any element.</div>'
+		});
 	}
 	
 	function selectThis(element) {
 		element.focus();
 		element.select();
 	}
+	
+		
 	</script>
 </head>
   
 <body onLoad="init()">
 
 	<a href="#modal_contents" class="link_help">Simple Modal Link</a> | 
-	<a href="#help_time" class="link_help">When hint</a> 
+	<a href="#help_time" class="link_help">When hint</a> | 
+	<span id="span_example">&lt;span&gt; Hoverbox</span>
 	<div style="float:right">
 	<a href="#linkhere" id="link_linkhere">link here</a>  
 	</div>
+
 
 <div id="linkhere" class="linkbox">
     <div class='bd' style="margin:0; padding:0;">

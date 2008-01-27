@@ -41,7 +41,7 @@
 		var eventsJSON = document.getElementById("eventForm").searchResults.value;
 		if (eventsJSON != '') {
 			var excludeEventId = document.getElementById("eventForm").eventId.value;
-			var events = eventsJSON.parseJSON();
+			var events = eventsJSON.evalJSON();
 			createOverlays(events, excludeEventId);
 		}
 		createEditableOverlay();
@@ -339,7 +339,7 @@
 	function getEventFormGeom() {
 			var geomJSON = document.getElementById("eventForm").geometry.value;
 			if (geomJSON != '') {
-				return geomJSON.parseJSON();			
+				return geomJSON.evalJSON();			
 			} else {
 				return null;
 			}
@@ -348,7 +348,7 @@
 	function getEventFormCenter() {
 			var centerJSON = document.getElementById("eventForm").mapCenter.value;
 			if (centerJSON != '') {
-				return centerJSON.parseJSON();			
+				return centerJSON.evalJSON();		
 			} else {
 				return null;
 			}
@@ -357,7 +357,7 @@
 	function getPreviewEvent() {
 			var eventJSON = document.getElementById("eventForm").previewEvent.value;
 			if (eventJSON != '') {
-				return eventJSON.parseJSON();			
+				return eventJSON.evalJSON();			
 			} else {
 				return null;
 			}

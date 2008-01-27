@@ -1,4 +1,4 @@
-<div id="help_accuracy" class="helpbox">
+<div id="help_accuracy" >
 	<div class="hd">
 		<jsp:include page="helpclose.jsp"/>
 		Accuracy of Position
