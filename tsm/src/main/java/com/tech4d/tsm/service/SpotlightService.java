@@ -41,12 +41,12 @@ public class SpotlightService {
 	/**
 	 * Round robin iterator.  Returns the Spotlight at position
 	 * curr modulo the number of spotlight events.
-	 * @param curr any integer
+	 * @param curr any positive integer
 	 * @return the spotlight event
 	 */
 	public Spotlight getSpotlight(int curr) {
 		if (spotlights.size() > 0) {
-			int index = (curr %  spotlights.size());
+			int index = curr % spotlights.size();
 			return spotlights.get(index);
 		} else {
 			return null;
