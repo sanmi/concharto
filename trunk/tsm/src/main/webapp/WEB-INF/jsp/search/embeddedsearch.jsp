@@ -7,7 +7,7 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 
 <tsm:page title="embedded search">
-	<jsp:attribute name="stylesheet">map.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">map.css,search.css</jsp:attribute>
 	<jsp:attribute name="script">prototype.js,map.js,json.js,searchcommon.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize_embedded()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 	<jsp:attribute name="stripped">true</jsp:attribute>
