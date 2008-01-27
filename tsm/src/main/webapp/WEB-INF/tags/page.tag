@@ -76,12 +76,15 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
   </c:if>
 
 	<!--  <spring:message code="app.version"/> -->
-	<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
-	</script>
-	<script type="text/javascript">
-		_uacct = "UA-1809442-6";
-		urchinTracker();
-	</script>
+	<%-- the parameter 'nc', short for nocount is a private signal to not count the page hits to embedded iframes --%>
+	<c:if test="${param.nc == null}">
+		<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+		</script>
+		<script type="text/javascript">
+			_uacct = "UA-1809442-6";
+			urchinTracker();
+		</script>
+	</c:if>
 
   </body>
 </html>

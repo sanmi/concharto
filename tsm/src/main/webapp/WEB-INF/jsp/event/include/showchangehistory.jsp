@@ -56,7 +56,8 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 							<display:column style="width:355px" title="Old Value">
 								<c:choose>
 				   				<c:when test="${dt.propertyName == geometryField}">
-										<iframe src="${basePath}search/auditmapthumbnail.htm?id=${dt.id}&change=oldValue"
+				          	<%-- &nc means don't count this as a page hit in google analytics --%>
+										<iframe src="${basePath}search/auditmapthumbnail.htm?id=${dt.id}&change=oldValue&nc"
 						  						height="150" width="350" frameborder="0" scrolling="no">
 										   This browser doesn't support embedding a map.
 						 				</iframe>
@@ -72,7 +73,8 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 							<display:column title="New Value">
 								<c:choose>
 				   				<c:when test="${dt.propertyName == geometryField}">
-										<iframe src="${basePath}search/auditmapthumbnail.htm?id=${dt.id}&change=newValue"
+				          	<%-- &nc means don't count this as a page hit in google analytics --%>
+										<iframe src="${basePath}search/auditmapthumbnail.htm?id=${dt.id}&change=newValue&nc"
 						  						height="150" width="350" frameborder="0" scrolling="no">
 										   This browser doesn't support embedding a map.
 						 				</iframe>

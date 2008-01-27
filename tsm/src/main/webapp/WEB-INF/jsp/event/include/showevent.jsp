@@ -4,7 +4,8 @@
 			<div >
 	  		<table class="infoBox wikitext"><tr>
 					<td>
-						<iframe src="${basePath}search/mapthumbnail.htm?id=${event.id}"
+          	<%-- &nc means don't count this as a page hit in google analytics --%>
+						<iframe src="${basePath}search/mapthumbnail.htm?id=${event.id}&nc"
 	   						height="250" width="400" frameborder="0" scrolling="no">
 						   This browser doesn't support embedding a map.
 	  				</iframe>

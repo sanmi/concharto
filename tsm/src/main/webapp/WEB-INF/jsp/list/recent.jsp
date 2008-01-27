@@ -35,7 +35,8 @@
 					<display:column class="result">
 		        <div style="float:right">
 		          <iframe id="embeddedmap" 
-		          	src='${basePath}search/embeddedsearch.htm?_id=${event.id}'
+		          	<%-- &nc means don't count this as a page hit in google analytics--%>
+		          	src='${basePath}search/embeddedsearch.htm?_id=${event.id}&nc' 
 		            height="150" width="350" frameborder="0" scrolling="no">
 		           	This browser doesn't support embedding a map.
 		          </iframe>
