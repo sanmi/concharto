@@ -111,7 +111,9 @@
 		        <div class="clearfloat"></div>
 		        <div id="borderbox">
 		          <iframe id="embeddedmap" 
-		          	src='${spotlightEmbedLink}&r=${rand}'
+		          	<%-- &nc means don't count this as a page hit in google analytics 
+		          			 &r is to defeat certain types of browser iframe page caching --%>
+		          	src='${spotlightEmbedLink}&r=${rand}&nc'
 		            height="330" width="450" frameborder="0" scrolling="no">
 		           	This browser doesn't support embedding a map.
 		          </iframe>
