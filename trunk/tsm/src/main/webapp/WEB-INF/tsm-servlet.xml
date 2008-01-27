@@ -85,6 +85,7 @@
 
 	<!-- Controller  -->
 	<bean id="homeController" class="com.tech4d.tsm.web.home.HomeController" parent="baseEventController">
+		<property name="cacheSeconds" value="0"/>  
 		<property name="commandName" value="eventSearch" />
 		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
 		<property name="formView" value="home" />
