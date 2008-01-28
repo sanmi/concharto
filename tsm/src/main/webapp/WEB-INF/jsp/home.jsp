@@ -105,8 +105,14 @@
 		      <div class="rightwidth"></div>
 		    </td>
 		    <td id="right" >
+		    	<%-- this form is a hack to defeat the browser cache on home.htm.  We need the cache for 
+		    	     properly handling back buttons to the home page (otherwise the spotlight iframe won't match the page
+		    	     content), but we want to be able to click next and see a new spotlight.  This problem
+		    	     is most obvious on MacOS Safari, and intermittently so on IE 6, Windows --%>
+		    	<form name="nextForm" method="post" action="${basePath}home.htm"></form>
+		    	
 			    <div id="spotlightbox">
-		        <div class="next"><a href="${basePath}">next</a></div>
+		        <div class="next"><a href="#" onclick="document.nextForm.submit();">next</a></div>
 		        <p>${spotlightLabel}</p>
 		        <div class="clearfloat"></div>
 		        <div id="borderbox">
