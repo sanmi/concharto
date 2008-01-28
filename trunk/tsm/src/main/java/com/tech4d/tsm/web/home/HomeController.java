@@ -40,6 +40,15 @@ public class HomeController extends SimpleFormController {
 		this.spotlightService = spotlightService;
 	}
 
+	/**
+	 * Some requests are submitted via POST to defeat the browser cache of certain browsers (Safari 2, IE 6) 
+	 */
+	@Override
+	protected boolean isFormSubmission(HttpServletRequest request) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	protected ModelAndView showForm(HttpServletRequest request,
