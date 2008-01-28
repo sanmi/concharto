@@ -64,10 +64,11 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 	</div>
 	<c:if test="${stripped != 'true'}">
 	  <div id="footer">
-			&copy 2007, Time Space Map
+			<span class="links linkleft">&copy 2007, Time Space Map</span>
 			<a class="linkleft links" href="http://wiki.timespacemap.com/wiki/Legal" >Legal</a>
 			<a class="linkleft links" class="linkleft" href="http://wiki.timespacemap.com/wiki/About" >About</a>
 			<a class="links linkleft" href="${basePath}feedback.htm">Feedback</a>
+			<a class="links linkleft" href="http://blog.timespacemap.com">Blog</a>
 	  	
 			<a class="links linkleftright" href="http://creativecommons.org/licenses/by-sa/3.0/us" >
 				<img src="http://i.creativecommons.org/l/by-sa/3.0/us/80x15.png"/>
@@ -78,14 +79,11 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 	<!--  <spring:message code="app.version"/> -->
 	<%-- the parameter 'nc', short for nocount is a private signal to not count the page hits to embedded iframes --%>
 	<c:if test="${param.nc == null}">
-		<script type="text/javascript">
-		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-		document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+		<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
 		</script>
 		<script type="text/javascript">
-		var pageTracker = _gat._getTracker("UA-1809442-6");
-		pageTracker._initData();
-		pageTracker._trackPageview();
+			_uacct = "UA-1809442-6";
+			urchinTracker();
 		</script>
 	</c:if>
 
