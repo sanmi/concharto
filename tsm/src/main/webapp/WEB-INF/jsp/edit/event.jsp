@@ -11,7 +11,7 @@
 	<jsp:attribute name="head">
 		<jsp:include page="../include/mapkey.js.jsp"/>
 	</jsp:attribute>
-	<jsp:attribute name="stylesheet">map.css,header.css,search.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">map.css,header.css</jsp:attribute>
 	<jsp:attribute name="script">prototype.js,map.js,control.modal.js,help.js,edit.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="setMapExtent();"</jsp:attribute>
 
