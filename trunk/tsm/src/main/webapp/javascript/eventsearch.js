@@ -87,30 +87,32 @@
 		return url;
 	}
 	
+	
 	var hasQuery;
 	function getLinkHereUrl() {
 		hasQuery = false;
 		var url = window.top.location;
 		/* strip the out query string */
-		var urltext = new String(url);
-		var idx = urltext.indexOf('?');
+		var urlbase = new String(url);
+		var idx = urlbase.indexOf('?');
 		if (-1 != (idx)) {
-			urltext = urltext.substring(0, idx);
+			urlbase = urlbase.substring(0, idx);
 		}
+		var querystring = "";
 		/* construct the url */
 		if (!isEmpty($('linkHereEventId').value)) {
-			urltext = append(urltext, '_id', $('linkHereEventId').value);
+			querystring = append(querystring, '_id', $('linkHereEventId').value);
 		} else {
-			urltext = appendIfNotEmpty(urltext, '_where', $('where').value);
-			urltext = appendIfNotEmpty(urltext, '_when', $('when').value);
-			urltext = appendIfNotEmpty(urltext, '_what', $('what').value);
-			urltext = appendIfTrue(urltext, '_timeoverlaps', $('excludeTimeRangeOverlaps1').checked);
+			querystring = appendIfNotEmpty(querystring, '_where', $('where').value);
+			querystring = appendIfNotEmpty(querystring, '_when', $('when').value);
+			querystring = appendIfNotEmpty(querystring, '_what', $('what').value);
+			querystring = appendIfTrue(querystring, '_timeoverlaps', $('excludeTimeRangeOverlaps1').checked);
 
 			if (	$('limitWithinMapBounds1').checked || !isEmpty($('where').value) ) {
-				urltext = append(urltext, '_withinMap', 'true');
+				querystring = append(querystring, '_withinMap', 'true');
 				var boundingBox = map.getBounds();
-				urltext = append(urltext, '_sw',  formatLL(boundingBox.getSouthWest()));
-				urltext = append(urltext, '_ne',  formatLL(boundingBox.getNorthEast()));
+				querystring = append(querystring, '_sw',  formatLL(boundingBox.getSouthWest()));
+				querystring = append(querystring, '_ne',  formatLL(boundingBox.getNorthEast()));
 			}
 		}
 		
@@ -118,15 +120,37 @@
      changed the map since the page was rendered (e.g. initialize() was called) 
      OR we are limiting the map within the given bounds */
 		if ( $('limitWithinMapBounds1').checked || hasChangedMap()) {
-			urltext = append(urltext, '_zoom', map.getZoom());
-			urltext = append(urltext, '_ll', formatLL(map.getCenter()) );
+			querystring = append(querystring, '_zoom', map.getZoom());
+			querystring = append(querystring, '_ll', formatLL(map.getCenter()) );
 		}
-		urltext = append(urltext, '_maptype', getMapTypeIndex());			
+		querystring = append(querystring, '_maptype', getMapTypeIndex());			
 			
-		/* get rid of spaces and '#' */
-		urltext = urltext.gsub('#','');
-		urltext = urltext.gsub(' ','+');
-		return urltext;
+		return urlbase + querystring;
+	}
+	
+	// Copied from http://cass-hacks.com/articles/code/js_url_encode_decode/
+	function URLEncode (clearString) {
+	  var output = '';
+	  var x = 0;
+	  clearString = clearString.toString();
+	  var regex = /(^[a-zA-Z0-9_.]*)/;
+	  while (x < clearString.length) {
+	    var match = regex.exec(clearString.substr(x));
+	    if (match != null && match.length > 1 && match[1] != '') {
+	    	output += match[1];
+	      x += match[1].length;
+	    } else {
+	      if (clearString[x] == ' ')
+	        output += '+';
+	      else {
+	        var charCode = clearString.charCodeAt(x);
+	        var hexVal = charCode.toString(16);
+	        output += '%' + ( hexVal.length < 2 ? '0' : '' ) + hexVal.toUpperCase();
+	      }
+	      x++;
+	    }
+	  }
+	  return output;
 	}
 	
 	function hasChangedMap() {
@@ -162,7 +186,7 @@
 		} else {
 			urltext += '&';
 		}
-		urltext += query + '=' + value;
+		urltext += query + '=' + URLEncode(value);
 		return urltext;
 	}
 	
