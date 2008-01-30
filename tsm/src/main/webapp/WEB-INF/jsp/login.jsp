@@ -88,7 +88,7 @@
 						<div class="inputcell">
 							<div class="inputlabel">
 								<form:checkbox path="agreeToTermsOfService"/>
-				  			I agree with the Time Space Map <a href="${basePath}info/legal.htm">Terms of Service</a>								
+				  			I agree with the Time Space Map <a href="http://wiki.timespacemap.com/wiki/Legal">Terms of Service</a>								
 							</div>
 							<c:if test="${login.fromController == 'signup'}">
 								<form:errors path="agreeToTermsOfService" cssClass="errorText" element="div"/>
