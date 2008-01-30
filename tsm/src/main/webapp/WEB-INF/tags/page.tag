@@ -64,7 +64,7 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 	</div>
 	<c:if test="${stripped != 'true'}">
 	  <div id="footer">
-			<span class="links linkleft">&copy 2007, Time Space Map</span>
+			<span class="links linkleft">&copy 2008, Time Space Map, LLC</span>
 			<a class="linkleft links" href="http://wiki.timespacemap.com/wiki/Legal" >Legal</a>
 			<a class="linkleft links" class="linkleft" href="http://wiki.timespacemap.com/wiki/About" >About</a>
 			<a class="links linkleft" href="${basePath}feedback.htm">Feedback</a>
