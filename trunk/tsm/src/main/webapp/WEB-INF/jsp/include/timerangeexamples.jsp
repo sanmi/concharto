@@ -6,5 +6,5 @@ Some examples of valid times are:
   <li>Feb 1884 - Jan 1886</li>
   <li>June 22, 1992 12am - June 30, 1992</li>
   <li>October 1992</li>
-  <li>Oct 12, 1992, 12:23:05 am</li>
+  <li>Oct 12, 1992, 12:23:05AM</li>
 </ul>
