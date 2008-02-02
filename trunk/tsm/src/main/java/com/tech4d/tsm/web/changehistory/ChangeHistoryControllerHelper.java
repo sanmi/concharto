@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 
@@ -74,10 +75,15 @@ public class ChangeHistoryControllerHelper {
 	            totalResults = auditEntryDao.getAuditEntriesCount(auditable);        	
 	            model.put(MODEL_AUDIT_ENTRIES, auditEntries);
             }
-        } else {
+        } else if (!StringUtils.isEmpty(user)){
         	//we are doing history for a user
         	List<AuditUserChange> userChanges = auditEntryDao.getAuditEntries(user, clazz, firstRecord, pageSize);
             totalResults = auditEntryDao.getAuditEntriesCount(user, clazz);
+            model.put(MODEL_USER_CHANGES, userChanges);
+        } else {
+        	//just get everything
+        	List<AuditUserChange> userChanges = auditEntryDao.getLatestAuditEntries(clazz, firstRecord, pageSize);
+            totalResults = auditEntryDao.getAuditEntriesCount(Event.class);
             model.put(MODEL_USER_CHANGES, userChanges);
         }
         

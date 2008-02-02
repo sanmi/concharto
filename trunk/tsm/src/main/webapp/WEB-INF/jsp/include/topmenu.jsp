@@ -17,7 +17,7 @@
 				</li>
 				<li>|</li>
 				<li> 
-					<a href="${basePath}contributions.htm?user=${username}">Contributions</a>
+					<a href="${basePath}event/contributions.htm?user=${username}">Contributions</a>
 				</li>
 				<c:if test="${fn:contains(roles, 'admin')}">
 				<li>|</li>

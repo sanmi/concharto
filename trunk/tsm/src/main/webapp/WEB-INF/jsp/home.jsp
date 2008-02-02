@@ -81,11 +81,20 @@
 		    <td id="left" >
 		      <h1>An Atlas of History and Happenings</h1>
 		      <p>Time Space Map is an encyclopedic, online atlas of history and happenings that anyone can edit.  It is a geographic wiki. </p>
-		      <ul>
-						<li><a href="http://wiki.timespacemap.com/wiki/Tour">Take a tour</a></li>
-						<li><a href="http://wiki.timespacemap.com/wiki/Guidelines">Policies and guidelines</a></li>
-						<li><a href="http://wiki.timespacemap.com/wiki/About">About Time Space Map</a></li>
-		      </ul>
+		      <table><tr>
+		      	<td>
+				      <ul>
+								<li><a href="http://wiki.timespacemap.com/wiki/Tour">Take a tour</a></li>
+								<li><a href="http://wiki.timespacemap.com/wiki/Guidelines">Policies and guidelines</a></li>
+								<li><a href="http://wiki.timespacemap.com/wiki/About">About Time Space Map</a></li>
+				      </ul>
+		      	</td>
+		      	<td>
+				      <ul>
+								<li><a href="${basePath}event/latestchanges.htm">Latest changes <em>(NEW)</em></a></li>
+				      </ul>
+		      	</td>
+		      </tr></table>
 		      <h1>Recently Added</h1>
 		      <div class="recent" >
 		      	<ul>

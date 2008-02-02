@@ -38,6 +38,15 @@ public interface AuditEntryDao {
     public List<AuditUserChange> getAuditEntries(String user, Class<?> clazz, int firstResult, int maxResults);
 
     /**
+     * Get the latest changes
+     * @param clazz class of auditable object (e.g. Event.class)
+     * @param firstResult record to start the results at 
+     * @param maxResults max results to return
+     * @return list of AuditEntry objects ordered by most recent version
+     */
+    public List<AuditUserChange> getLatestAuditEntries(Class<?> clazz, int firstResult, int maxResults);
+
+    /**
      * Get the total number of AuditEntry objects available for a given Auditable
      * @param auditable Auditable object - must have at a minimum the id present
      * @return total number of available AuditEntry objects 
@@ -52,7 +61,14 @@ public interface AuditEntryDao {
      */
     public Long getAuditEntriesCount(String user, Class<?> clazz);
 
-	public AuditFieldChange getAuditFieldChange(Long id);
+    /**
+     * Get the total number of AuditEntry objects available for a given user, Auditable
+     * @param clazz class of auditable object (e.g. Event.class)
+     * @return total number of available AuditEntry objects 
+     */
+    public Long getAuditEntriesCount(Class<?> clazz);
+
+    public AuditFieldChange getAuditFieldChange(Long id);
 
 	public void update(AuditEntry auditEntry);
 

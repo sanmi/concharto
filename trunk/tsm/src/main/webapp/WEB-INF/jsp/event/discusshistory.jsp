@@ -55,7 +55,7 @@
 							
 									Revision <c:out value="${simpleTable.version}"/>, 
 									<spring:message code="audit.action.field.${simpleTable.action}"/> by
-									<a  href="${basePath}contributions.htm?user=${simpleTable.user}" >${simpleTable.user}</a> 
+									<a  href="${basePath}event/contributions.htm?user=${simpleTable.user}" >${simpleTable.user}</a> 
 						 		<fmt:formatDate value="${simpleTable.dateCreated}" pattern="MMM dd, yyyy hh:mm a"/>
 						 		
 						 		<c:choose>
