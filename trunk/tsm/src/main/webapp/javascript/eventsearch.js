@@ -18,11 +18,7 @@
 		var html = createInfoWindowHtml(event) +  
 			'<div class="infolinkbar linkbar"><a class="links" href="#" onclick="editEvent(' + event.id + ')">edit</a>' +  
 	    '<a class="links" href="'+ _basePath + 'event/discuss.htm?id=' + event.id + '">discuss</a>'; 
-		if (event.hasUnresolvedFlags == 'true') {
-			html += '<span class="errorLabel"><em>This event has been <a class="errorlinks" href="'+ _basePath + 'event/changehistory.htm?id=' + event.id + '">flagged!</a></em></span>';
-		} else {
 			html += '<a class="links" href="' + _basePath + 'event/changehistory.htm?id=' + event.id + '">changes</a>';
-		}
 		html += '<a class="links" href="' + _basePath + 'edit/flagevent.htm?id=' + event.id + '">flag</a>' +
 			'<a class="links" href="#" onclick="zoomTo(' + event.id + ')">zoom in</a>';
 		html += '<br/></div>';

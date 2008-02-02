@@ -31,6 +31,7 @@ public class JSONFormat {
     public static final String FIELD_WHEN = "when";
     public static final String FIELD_TAGS = "tags";
     public static final String FIELD_SOURCE = "source";
+    public static final String FIELD_FLAGGED = "flagged";
     public static final String FIELD_GEOMETRYTYPE="gtype";
     public static final String FIELD_LNG = "lng";
     public static final String FIELD_LAT = "lat";
@@ -61,6 +62,7 @@ public class JSONFormat {
         jsonEvent.put(FIELD_WHEN, TimeRangeFormat.format(event.getWhen()));
         jsonEvent.put(FIELD_TAGS, event.getUserTagsAsString());
         jsonEvent.put(FIELD_SOURCE, event.getSource());
+        jsonEvent.put(FIELD_FLAGGED, event.getHasUnresolvedFlag());
         Geometry geom = event.getTsGeometry().getGeometry();
         jsonEvent.put(FIELD_GEOMETRYTYPE, GeometryType.getGeometryType(geom));
         jsonEvent.put(FIELD_GEOMETRY, toJSON(geom));

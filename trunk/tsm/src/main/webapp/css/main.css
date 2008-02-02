@@ -159,3 +159,8 @@
 	font-family: "Arial Black", Arial, Helvetica, sans-serif;
 	font-size:10pt;
 	}
+	.recent .errorLabel{
+  padding-left: 0;
+	color:red;
+	}
+	

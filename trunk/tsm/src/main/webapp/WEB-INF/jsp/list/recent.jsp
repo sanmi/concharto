@@ -44,6 +44,9 @@
 						
             Added: <fmt:formatDate value="${event.created}" pattern="MMM dd, yyyy hh:mm a"/> 
             <br/>
+          	<c:if test="${event.hasUnresolvedFlag}">
+	          	<a class="errorLabel" href="${basePath}event/changehistory.htm?id=${event.id}">Flagged! </a>
+          	</c:if>
             <a class="summary"  href='${basePath}list/event.htm?_id=${event.id}'><c:out value="${event.summary}" escapeXml="true"/></a> <br/>
             <div class="when"><c:out value="${event.when.asText}"/></div>
 						<c:if test="${fn:length(event.where) > 0}">
@@ -68,14 +71,7 @@
 								<div class="linkbar">
 				          <a class="links" href="${basePath}edit/event.htm?id=${event.id}" />edit</a>
 				          <a class="links" href="${basePath}event/discuss.htm?id=${event.id}" >discuss</a>
-				          <c:choose>
-				          	<c:when test="${event.hasUnresolvedFlag}">
-					          	<span class="errorLabel"><em><a class="errorlinks" href="${basePath}event/changehistory.htm?id=${event.id}">changes</a></em></span>
-				          	</c:when>
-				          	<c:otherwise>
-					          	<a class="links" href="${basePath}event/changehistory.htm?id=${event.id}">changes</a>
-				          	</c:otherwise>
-				          </c:choose>
+				          <a class="links" href="${basePath}event/changehistory.htm?id=${event.id}">changes</a>
 				          <a class="links" href="${basePath}edit/flagevent.htm?id=${event.id}">flag</a>
 			          </div>
 	          </c:if>

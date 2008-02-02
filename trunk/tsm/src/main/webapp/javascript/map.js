@@ -97,8 +97,11 @@
 		} else {
 			height = 'height:' + height + 'px;'
 		}
-	  var html = '<div class="result inforesult wikitext" style="width:' + width +'px;'+ height +'margin-bottom:10px">' +
-	  		'<span class="summary">' + event.summary.escapeHTML() +'</span><br/>' + 
+	  var html = '<div class="result inforesult wikitext" style="width:' + width +'px;'+ height +'margin-bottom:10px">';
+				if (event.flagged) {
+					html += '<a class="errorLabel" href="' + _basePath + 'event/changehistory.htm?id=' + event.id +'">Flagged! </a>'; 
+				}
+	  		html += '<span class="summary">' + event.summary.escapeHTML() +'</span><br/>' + 
 	   		'<span class="when">' + event.when + '</span><br/>' + 
 				'<span class="where">' + event.where.escapeHTML();
 				if (event.accuracy != "") {
