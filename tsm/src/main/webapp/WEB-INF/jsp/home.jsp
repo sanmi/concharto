@@ -100,6 +100,9 @@
 		      	<ul>
 							<c:forEach items="${recentEvents}" var="event" varStatus="status">
 		  					<li> 
+			          	<c:if test="${event.hasUnresolvedFlag}">
+				          	<a class="errorLabel" href="${basePath}event/changehistory.htm?id=${event.id}">Flagged! </a>
+			          	</c:if>
 			            <a  href='${basePath}search/eventsearch.htm?_id=${event.id}'><c:out value="${event.summary}" escapeXml="true"/></a> <br/>
 			            ${event.when.asText} <br/>
 			            <em><c:if test="${event.where != null && event.where != ''}"><c:out value="${event.where}" escapeXml="true"/></c:if></em>

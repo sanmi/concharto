@@ -111,6 +111,9 @@
 								<display:column autolink="true">
 									<div class="result wikitext">
 			            	<div>					           
+				          	<c:if test="${event.hasUnresolvedFlag}">
+					          	<a class="errorLabel" href="${basePath}event/changehistory.htm?id=${event.id}">Flagged! </a>
+				          	</c:if>
 					          <a class="summary" href="#" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"><c:out value="${event.summary}"/></a></div>
 					          <div class="when"><c:out value="${event.when.asText}"/></div>
 					          <span class="where"><c:out value="${event.where}"/></span> <br/>
@@ -143,15 +146,9 @@
 										<div class="linkbar">
 						          <a class="links" href="#" onclick="editEvent(<c:out value='${event.id}'/>)">edit</a>
 						          <a class="links" href="${basePath}event/discuss.htm?id=${event.id}" >discuss</a>
-						          <c:choose>
-						          	<c:when test="${event.hasUnresolvedFlag}">
-							          	<span class="errorLabel"><em><a class="errorlinks" href="${basePath}event/changehistory.htm?id=${event.id}">changes</a></em></span>
-						          	</c:when>
-						          	<c:otherwise>
-							          	<a class="links" href="${basePath}event/changehistory.htm?id=${event.id}">changes</a>
-						          	</c:otherwise>
-						          </c:choose>
+						          <a class="links" href="${basePath}event/changehistory.htm?id=${event.id}">changes</a>
 						          <a class="links" href="${basePath}edit/flagevent.htm?id=${event.id}">flag</a>
+						          
 					          </div>
 									</div>
 								</display:column>
