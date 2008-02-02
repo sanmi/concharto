@@ -36,12 +36,8 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 				<display:setProperty name="paging.banner.onepage">&nbsp;</display:setProperty>
 				<display:setProperty name="paging.banner.no_items_found">&nbsp;</display:setProperty>
 				<display:setProperty name="paging.banner.one_item_found">&nbsp;</display:setProperty>
-				<display:setProperty name="paging.banner.all_items_found">
-					<span class="pagebanner"><b>{0}</b> {1} found.</span>
-				</display:setProperty>
-				<display:setProperty name="paging.banner.some_items_found">
-					<span class="pagebanner"><b>{0}</b> {1} found.</span>
-				</display:setProperty>
+				<display:setProperty name="paging.banner.all_items_found">&nbsp;</display:setProperty>
+				<display:setProperty name="paging.banner.some_items_found">&nbsp;</display:setProperty>
 				<display:column >
 					<fmt:formatDate value="${simpleTable.auditEntry.dateCreated}" pattern="MMM dd, yyyy hh:mm a z"/>,
 					<a href="${basePath}event/contributions.htm?user=${simpleTable.auditEntry.user}">${simpleTable.auditEntry.user}</a>, 
