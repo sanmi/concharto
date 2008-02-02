@@ -69,6 +69,7 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 			<a class="linkleft links" class="linkleft" href="http://wiki.timespacemap.com/wiki/About" >About</a>
 			<a class="links linkleft" href="${basePath}feedback.htm">Feedback</a>
 			<a class="links linkleft" href="http://blog.timespacemap.com">Blog</a>
+			<a class="links linkleft" href="http://wiki.timespacemap.com">Community Wiki</a>
 	  	
 			<a class="links linkleftright" href="http://creativecommons.org/licenses/by-sa/3.0/us" >
 				<img src="http://i.creativecommons.org/l/by-sa/3.0/us/80x15.png"/>
