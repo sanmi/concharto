@@ -72,7 +72,7 @@
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="where" element="div"/></span>
    		    	<span class="inputlabel">Where</span>
-	          <small>e.g., "gettysburg, pa" </small><br/>
+	          <small>e.g., "gettysburg, pa" <a href="${basePath}help.htm?name=where" class="link_help">hint</a></small><br/>
 	          <form:input cssClass="textInput expando" path="where" maxlength="${event.SZ_WHERE}" htmlEscape="true"/>
 	          <input  type="button" name="Find" value="Go to Location" onclick="showAddress(document.event.where.value); return false"/>             
 	          <small id="tip"><b>Tip:</b> drag and drop the lollypop!</small>
@@ -101,7 +101,7 @@
   		    </div>
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="source" element="div"/></span>
-   		    	<span class="inputlabel">Source</span> <small>(wiki markup)</small><br/>
+   		    	<span class="inputlabel">Source</span> <small>(wiki markup) <a href="${basePath}help.htm?name=wikimarkup" class="link_help">hint</a></small><br/>
 			      <form:textarea cssClass="textInput expando" path="source" rows="3" htmlEscape="true"/>
    		    </div>
 					<div class="inputcell">				
