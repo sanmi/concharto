@@ -261,6 +261,28 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
         revertAndAssertWikiText(rev0, 0);
     }
 
+    @Test public void testGetRecent() throws ParseException {
+    	makeEvents(3);
+    	assertEquals(3, auditEntryDao.getLatestAuditEntries(Event.class, 0, 10).size());
+    	Event event = eventUtil.createEvent(begin, end);
+    	eventDao.save(event);
+    	event.setDescription("some new text here");
+    	eventDao.saveOrUpdate(event);
+    	assertEquals(5, auditEntryDao.getLatestAuditEntries(Event.class, 0, 10).size());
+    	assertEquals(5, auditEntryDao.getAuditEntriesCount(Event.class));
+    	
+    	
+    	//now add some wikitext
+    	WikiText text = new WikiText();
+    	text.setText("==header== some stuff here");
+        eventDao.saveAuditable(text);
+        text.setText("==header== some extra stuff here");
+        eventDao.saveOrUpdateAuditable(text);
+    	assertEquals(2, auditEntryDao.getLatestAuditEntries(WikiText.class, 0, 10).size());
+    	assertEquals(2, auditEntryDao.getAuditEntriesCount(WikiText.class));
+    	
+    }
+    
     private void makeEvents(int numEvents) throws ParseException {
     	for (int i=0; i<numEvents; i++) {
         	eventDao.save(eventUtil.createEvent("summary " + i));
