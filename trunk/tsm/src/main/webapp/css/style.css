@@ -211,9 +211,14 @@ img {
 	margin: 0;
 	padding:1em 0 .2em 0;
 	}
- .helpbox {
+ 	#help_source { width: 500px; }
+ 	#help_tags { width: 300px; }
+ 	#help_wikimarkup { width: 300px; }
+ 	#help_accuracy { width: 450px; }
+ 	#help_where { width: 300px; }
+ 	#help_when { width: 300px; }
+	.helpbox {
  	background-color: white;
-	width: 300px;
 	border: thick solid #e0e0e0;
 	}
 	.helpbox .hd {
