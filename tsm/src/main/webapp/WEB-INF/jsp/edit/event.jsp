@@ -101,7 +101,7 @@
   		    </div>
    		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="source" element="div"/></span>
-   		    	<span class="inputlabel">Source</span> <small>(wiki markup) <a href="${basePath}help.htm?name=wikimarkup" class="link_help">hint</a></small><br/>
+   		    	<span class="inputlabel">Source</span> <small>e.g. URL, Book or Publication <a href="${basePath}help.htm?name=source" class="link_help">hint</a></small><br/>
 			      <form:textarea cssClass="textInput expando" path="source" rows="3" htmlEscape="true"/>
    		    </div>
 					<div class="inputcell">				

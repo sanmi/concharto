@@ -37,11 +37,11 @@
         _where varchar(512),
         zoomLevel integer,
         styleSelector_id bigint,
-        discussion_id bigint,
-        eventSearchText_id bigint,
-        when_id bigint,
-        positionalAccuracy_id bigint,
         tsGeometry_id bigint,
+        discussion_id bigint,
+        when_id bigint,
+        eventSearchText_id bigint,
+        positionalAccuracy_id bigint,
         primary key (id)
     );
 
@@ -82,8 +82,8 @@
         dispositionComment varchar(512),
         reason varchar(32),
         state varchar(255),
-        event_id bigint,
         user_id bigint,
+        event_id bigint,
         primary key (id)
     );
 
