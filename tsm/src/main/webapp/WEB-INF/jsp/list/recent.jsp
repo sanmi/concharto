@@ -7,6 +7,25 @@
 
 <tsm:page title="Recent Events">
 	<jsp:attribute name="stylesheet">textpanel.css,header.css,recent.css,search.css,map.css</jsp:attribute>
+	<jsp:attribute name="script">prototype.js,control.modal.js</jsp:attribute>
+	<jsp:attribute name="bodyattr">onload="init()"</jsp:attribute>
+	<jsp:attribute name="head">
+		<script type="text/javascript">
+		//<![CDATA[
+			function init() {
+		    document.getElementsByClassName('link_map').each(function(link){
+		        var modal = new Control.Modal(link, {
+		        opacity: 0.2,
+		        iframe: true, 
+						containerClassName: 'helpbox',
+		        width: 500,
+		        height: 400
+		        });
+		    });
+			}
+		//]]>
+		</script>
+	</jsp:attribute>
 
 	<jsp:body>
 		<div class="textpanel">
@@ -33,16 +52,8 @@
 					</display:setProperty>
 											
 					<display:column class="result">
-		        <div style="float:right">
-		          <iframe id="embeddedmap" 
-		          	<%-- &nc means don't count this as a page hit in google analytics--%>
-		          	src='${basePath}search/embeddedsearch.htm?_id=${event.id}&nc' 
-		            height="150" width="350" frameborder="0" scrolling="no">
-		           	This browser doesn't support embedding a map.
-		          </iframe>
-		        </div>
-						
-            Added: <fmt:formatDate value="${event.created}" pattern="MMM dd, yyyy hh:mm a"/> 
+            Added: <fmt:formatDate value="${event.created}" pattern="MMM dd, yyyy hh:mm a"/>
+            <small><a href="${basePath}search/embeddedsearch.htm?_id=${event.id}&nc" class="link_map">(quick map)</a></small> 
             <br/>
           	<c:if test="${event.hasUnresolvedFlag}">
 	          	<a class="errorLabel" href="${basePath}event/changehistory.htm?id=${event.id}">Flagged! </a>
@@ -52,7 +63,9 @@
 						<c:if test="${fn:length(event.where) > 0}">
 	            <span class="where"><c:out value="${event.where}"/></span> <br/>
 						</c:if>
+						
 						<c:if test="${fn:contains(roles, 'admin')}">
+							<div class="infoBox">
 								<div class="adminBox" style="width: 10em">ADMIN VIEW</div>
 			          <wiki:render wikiText="${event.description}"/>
 			          <c:if test="${fn:length(event.source) > 0}">
@@ -74,6 +87,7 @@
 				          <a class="links" href="${basePath}event/changehistory.htm?id=${event.id}">changes</a>
 				          <a class="links" href="${basePath}edit/flagevent.htm?id=${event.id}">flag</a>
 			          </div>
+			        </div>
 	          </c:if>
 	          <div class="clearfloat"></div>
 					</display:column>
