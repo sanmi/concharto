@@ -127,6 +127,9 @@
 		        <div class="next"><a href="#" onclick="document.nextForm.submit();">next</a></div>
 		        <p>${spotlightLabel}</p>
 		        <div class="clearfloat"></div>
+		        <small style="float:right;padding-right:18px">Click on red icons, lines or areas</a></small>
+		        <small>View a <a href="${spotlightLink}">larger map</a></small>
+		        <div class="clearfloat"></div>
 		        <div id="borderbox">
 		          <iframe id="embeddedmap" 
 		          	<%-- &nc means don't count this as a page hit in google analytics 
