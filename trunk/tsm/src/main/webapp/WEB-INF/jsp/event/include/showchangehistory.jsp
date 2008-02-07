@@ -92,7 +92,8 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 							</display:column>
 						</display:table> 
 					</div>
-					<c:if test="${dt.id > 0}">
+					<%-- Only a user can undo an event.  And we can't undo the first revision --%>
+					<c:if test="${(dt.id > 0) && (fn:contains(roles, 'edit'))}">
 						<a  href="${basePath}edit/undoevent.htm?id=${simpleTable.entityId}&toRev=${simpleTable.version-1}">
 							Undo this revision
 						</a>
