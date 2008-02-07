@@ -269,7 +269,7 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
     	event.setDescription("some new text here");
     	eventDao.saveOrUpdate(event);
     	assertEquals(5, auditEntryDao.getLatestAuditEntries(Event.class, 0, 10).size());
-    	assertEquals(5, auditEntryDao.getAuditEntriesCount(Event.class));
+    	assertEquals(5L, (long)auditEntryDao.getAuditEntriesCount(Event.class));
     	
     	
     	//now add some wikitext
@@ -279,7 +279,7 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
         text.setText("==header== some extra stuff here");
         eventDao.saveOrUpdateAuditable(text);
     	assertEquals(2, auditEntryDao.getLatestAuditEntries(WikiText.class, 0, 10).size());
-    	assertEquals(2, auditEntryDao.getAuditEntriesCount(WikiText.class));
+    	assertEquals(2L, (long)auditEntryDao.getAuditEntriesCount(WikiText.class));
     	
     }
     
