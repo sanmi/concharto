@@ -26,6 +26,7 @@ public class HomeController extends SimpleFormController {
 	public static final String MODEL_TOTAL_EVENTS = "totalEvents";
 	public static final String MODEL_RECENT_EVENTS = "recentEvents";
 	private static final Object MODEL_SPOTLIGHT_LABEL = "spotlightLabel";
+	private static final Object MODEL_SPOTLIGHT_LINK = "spotlightLink";
 	private static final Object MODEL_SPOTLIGHT_EMBED_LINK = "spotlightEmbedLink";
 
 	private static final String SESSION_SPOTLIGHT_INDEX = "spotlightIndex";
@@ -82,6 +83,7 @@ public class HomeController extends SimpleFormController {
 		WebUtils.setSessionAttribute(request, SESSION_SPOTLIGHT_INDEX, spotlightIndex);
 		if (null != spotlight) {
 			model.put(MODEL_SPOTLIGHT_LABEL, formatLabel(spotlight));
+			model.put(MODEL_SPOTLIGHT_LINK, spotlight.getLink());
 			model.put(MODEL_SPOTLIGHT_EMBED_LINK, formatEmbedLabel(spotlight));
 		} else {
 			log.error("no spotlight");
