@@ -6,6 +6,8 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,42 +98,61 @@ public class AuditEntryDaoHib implements AuditEntryDao {
     
 
 	/**
-	 * Anonymous inner class for processing the sql query 
-	 */
-	interface AuditEntryQueryHandler {
-		public List<Object[]> getAuditEntries(String user, Class<?> clazz, int firstResult, int maxResults,
-				SessionFactory sessionFactory, String sql);
-	}
-
-	/**
+	 * Inner class for processing the sql query 
+	 *
 	 * Search method uses a query handler for providing the exact query params
 	 * @param handler an implementation of AuditEntryQueryHandler
-	 * @param sql query sql to use, including some substitution text
      * @param user username
      * @param clazz class of auditable object (e.g. Event.class)
      * @param firstResult record to start the results at 
      * @param maxResults max results to return
 	 * @return list of AuditEntry objects ordered by most recent version
 	 */
-	@SuppressWarnings("unchecked")
-	private List<AuditUserChange> getAuditEntries(
-			AuditEntryQueryHandler handler, String sql, String user, Class<?> clazz, int firstResult, int maxResults) {
-		LapTimer timer = new LapTimer(this.log);
-		
-		//The auditable table could join with a number of entities, based on the entity Class
-		//so we have to do some substitution in the select clause in order to set up the query
-		sql = StringUtils.replace(sql, ENTITY_TABLE, clazz.getSimpleName());
-		
-		List<Object[]> results = handler.getAuditEntries(user, clazz, firstResult, maxResults, sessionFactory, sql);
-		
-		List<AuditUserChange> auditUserChanges = new ArrayList();
-		for (Object[] pair : results) {
-			AuditUserChange auditUserChange = 
-				new AuditUserChange((AuditEntry)pair[0],(Auditable)pair[1]);
-			auditUserChanges.add(auditUserChange);
+	abstract class AuditEntryQueryHandler {
+		SessionFactory session;
+		String user;
+		Class<?> clazz;
+		int firstResult, maxResults;
+
+		public AuditEntryQueryHandler(SessionFactory sessionFactory, String user, Class<?> clazz, int firstResult, int maxResults){
+			this.session = sessionFactory;
+			this.user = user;
+			this.clazz = clazz;
+			this.firstResult = firstResult;
+			this.maxResults = maxResults;
 		}
-		timer.timeIt("changes").logDebugTime();
-		return auditUserChanges;
+
+		/**
+		 * Template method which does the work
+		 * 
+		 * @param sql query sql to use, including some substitution text
+		 * @return
+		 */
+		@SuppressWarnings("unchecked")
+		public List<AuditUserChange> getAuditEntriesAndLogTimingInfo(String sql){
+			LapTimer timer = new LapTimer(log);
+			
+			//The auditable table could join with a number of entities, based on the entity Class
+			//so we have to do some substitution in the select clause in order to set up the query
+			sql = StringUtils.replace(sql, ENTITY_TABLE, clazz.getSimpleName());
+			
+			List<Object[]> results = getAuditEntriesQuery(sessionFactory.getCurrentSession(), sql).list();
+			
+			List<AuditUserChange> auditUserChanges = new ArrayList<AuditUserChange>();
+			for (Object[] pair : results) {
+				AuditUserChange auditUserChange = 
+					new AuditUserChange((AuditEntry)pair[0],(Auditable)pair[1]);
+				auditUserChanges.add(auditUserChange);
+			}
+			timer.timeIt("changes").logDebugTime();
+			return auditUserChanges;
+		}
+
+		/**
+		 * Method to be implemented by anonymous inner class the does the specifics
+		 * @return List of audit records
+		 */
+		abstract protected Query getAuditEntriesQuery(Session session, String sql);
 	}
 	
 	/*
@@ -140,26 +161,20 @@ public class AuditEntryDaoHib implements AuditEntryDao {
 	public List<AuditUserChange> getAuditEntries(
 			String user, Class<?> clazz, int firstResult, int maxResults ) {
 
-		return getAuditEntries(
-				//anonymous inner class
-				new AuditEntryQueryHandler() {
-					@SuppressWarnings("unchecked")
-					public List<Object[]> getAuditEntries(String user, Class<?> clazz, int firstResult, 
-							int maxResults, SessionFactory sessionFactory, String sql) {
-						
-						return sessionFactory.getCurrentSession()
-			        	.createSQLQuery(sql)
-			        	.addEntity("a", AuditEntry.class)
-			        	.addEntity("e", Event.class)
-			        	.setString(FIELD_CLASS_NAME, clazz.getSimpleName())
-			            .setString(FIELD_USER, user)
-			            .setFirstResult(firstResult)
-			            .setMaxResults(maxResults)
-			        	.list();
-					}
-					
-				}
-				,RECENT_AUDIT_ENTRIES_BY_USER_SQL, user, clazz, firstResult, maxResults);
+		AuditEntryQueryHandler handler = new AuditEntryQueryHandler(sessionFactory, user, clazz, firstResult, maxResults) {
+			@SuppressWarnings("unchecked")
+			public Query getAuditEntriesQuery(Session session, String sql) {
+				return session.createSQLQuery(sql)
+	        	.addEntity("a", AuditEntry.class)
+	        	.addEntity("e", Event.class)
+	        	.setString(FIELD_CLASS_NAME, clazz.getSimpleName())
+	            .setString(FIELD_USER, user)
+	            .setFirstResult(firstResult)
+	            .setMaxResults(maxResults);
+			}
+		};
+		
+		return handler.getAuditEntriesAndLogTimingInfo(RECENT_AUDIT_ENTRIES_BY_USER_SQL);
 	}
 
 	/*
@@ -167,25 +182,20 @@ public class AuditEntryDaoHib implements AuditEntryDao {
 	 */
 	public List<AuditUserChange> getLatestAuditEntries(Class<?> clazz,
 			int firstResult, int maxResults) {
-		return getAuditEntries(
-				//anonymous inner class
-				new AuditEntryQueryHandler() {
-					@SuppressWarnings("unchecked")
-					public List<Object[]> getAuditEntries(String user, Class<?> clazz, int firstResult, 
-							int maxResults, SessionFactory sessionFactory, String sql) {
-						
-						return sessionFactory.getCurrentSession()
-			        	.createSQLQuery(sql)
-			        	.addEntity("a", AuditEntry.class)
-			        	.addEntity("e", clazz)
-			        	.setString(FIELD_CLASS_NAME, clazz.getSimpleName())
-			            .setFirstResult(firstResult)
-			            .setMaxResults(maxResults)
-			        	.list();
-					}
-					
-				}
-				,RECENT_AUDIT_ENTRIES_SQL, null, clazz, firstResult, maxResults);
+
+		AuditEntryQueryHandler handler = new AuditEntryQueryHandler(sessionFactory, null, clazz, firstResult, maxResults) {
+			@SuppressWarnings("unchecked")
+			public Query getAuditEntriesQuery(Session session, String sql) {		
+				return session.createSQLQuery(sql)
+	        	.addEntity("a", AuditEntry.class)
+	        	.addEntity("e", clazz)
+	        	.setString(FIELD_CLASS_NAME, clazz.getSimpleName())
+	            .setFirstResult(firstResult)
+	            .setMaxResults(maxResults);
+			}
+		};
+			
+		return handler.getAuditEntriesAndLogTimingInfo(RECENT_AUDIT_ENTRIES_SQL);
 	}
 
 	/*
