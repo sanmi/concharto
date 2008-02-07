@@ -80,7 +80,7 @@
 		    <tr>
 		    <td id="left" >
 		      <h1>An Atlas of History and Happenings</h1>
-		      <p>Time Space Map is an encyclopedic, online atlas of history and happenings that anyone can edit.  It is a geographic wiki. </p>
+		      <p>Time Space Map is an encyclopedic atlas of history and happenings that anyone can edit.  It is a geographic wiki. </p>
 		      <table><tr>
 		      	<td>
 				      <ul>
