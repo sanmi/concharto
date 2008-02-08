@@ -14,7 +14,6 @@ import com.tech4d.tsm.web.util.DisplayTagHelper;
 
 public class RecentController extends AbstractController {
     private static final int DEFAULT_PAGE_SIZE = 20;
-    private static final int MAX_RECENT_EVENTS = 10;
 	private static final String MODEL_RECENT_EVENTS = "recentEvents";
     private static final String DISPLAYTAG_TABLE_ID = "event";
 
@@ -41,7 +40,7 @@ public class RecentController extends AbstractController {
 
         Integer firstResult = DisplayTagHelper.getFirstRecord(request, DISPLAYTAG_TABLE_ID, pageSize);
 
-		model.put(MODEL_RECENT_EVENTS, eventDao.findRecent(MAX_RECENT_EVENTS, firstResult));
+		model.put(MODEL_RECENT_EVENTS, eventDao.findRecent(pageSize, firstResult));
         model.put(DisplayTagHelper.MODEL_PAGESIZE, pageSize);
         model.put(DisplayTagHelper.MODEL_REQUEST_URI, request.getContextPath() + formView);
         model.put(DisplayTagHelper.MODEL_TOTAL_RESULTS, Math.round(eventDao.getTotalCount()));
