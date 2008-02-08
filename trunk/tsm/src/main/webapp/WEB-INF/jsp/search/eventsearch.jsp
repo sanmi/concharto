@@ -22,7 +22,7 @@
 	<jsp:attribute name="nohead">true</jsp:attribute>
 
 	<jsp:body>
-		<form:form name="event" id="eventSearchForm" commandName="eventSearch" action="eventsearch.htm" onsubmit="search(); return false">
+		<form:form name="event" id="eventSearchForm" commandName="eventSearch" action="${basePath}search/eventsearch.htm" onsubmit="search(); return false">
 			<form:hidden path="boundingBoxSW" htmlEscape="true"/>
 			<form:hidden path="boundingBoxNE" htmlEscape="true"/>
 			<form:hidden path="mapCenter" htmlEscape="true"/>
