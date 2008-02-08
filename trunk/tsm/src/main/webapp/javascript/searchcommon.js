@@ -37,6 +37,8 @@
   }
   /* END OBJECT DEFINITIONS ============================= */
   /* BEGIN PRE FUNCTIONS (initialization) ============================= */
+  
+  /* Main initialization function */
 	function initialize(mapControl) {
 		initializeVars();
 		adjustSidebarIE();
@@ -93,6 +95,7 @@
 		});
 	}
 	
+	/* Get the map center from the html form, return null if none was provided */
 	function getMapCenterFromJSON() {
 		var mapCenterJSON = $('mapCenter').value;
 		if (mapCenterJSON != "") {
@@ -102,6 +105,7 @@
 		} 			
 	}
 	
+	/* Fit the map center and zoom level to the search results */
 	function fitToResults() {
 		var boundsPoly = new GPolyline(_fitToPolygon);
 		var zoom; 
@@ -122,8 +126,10 @@
 		}
 	}
 	
+	/* return the center of the given GOverlay object */
 	function getBoundsCenter(boundsPoly) {
-		/* if there is only one point, we don't do a fit, we just zoom to the point */		
+		/* if there is only one point, we don't do a fit, we just zoom to the point 
+		   TODO - fix this hack */		
 		if (_fitToPolygon == 1) {
 			return _fitToPolygon[0];
 		} else {
@@ -151,12 +157,10 @@
 		recordOverlay( marker, html, "point", event.id)
 	}
 	
+	/* Add to a global polygon object that is used to fit the map to the
+	 * search results.	 */
 	function updateFitToPolygon(gll) {
 		if ((limitWithinMapBounds() == false) ) {
-			/* if we are trying to fit the map to the events, we will add 
-			     all events to a large poly.  We only do this for events because
-			     polygons and lines can span large areas (e.g. an ocean crossing that 
-			     ends at Baltimore ) */
 			_fitToPolygon[_fitToPolygonIndex] = gll;
 			_fitToPolygonIndex++;
 		}
@@ -169,7 +173,14 @@
 		for (i=0; i<line.length; i++) {
 			var vertex = new GLatLng(line[i].lat, line[i].lng);
 			points.push(vertex);
-			updateFitToPolygon(vertex);
+			/*if the user specified "where", then we should not try to fit the map to all
+			  polygons or lines in the search results, otherwise very large polys or lines could force
+			  the map to be zoomed way out (e.g. an explorer path that crosses the ocean, but passes 
+			  nearby New York City)
+			*/ 
+			if (isEmpty($('where').value)) {
+				updateFitToPolygon(vertex);
+			} 
 		}
 		var poly = newPoly(points, event.geom.gtype);
 		if (poly) {
@@ -182,6 +193,7 @@
 		}
 	}
 	
+	/* Listener for polys and lines */
 	function addOverlayClickListener(overlayItem) {
 			GEvent.addListener(overlayItem.overlay, "click", function(point) {
 		    map.openInfoWindowHtml(point, overlayItem.html);
