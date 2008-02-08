@@ -1,5 +1,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="display" uri="http://displaytag.sf.net" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
@@ -7,20 +8,34 @@
 
 <tsm:page title="Spotlight List">
 	<jsp:attribute name="stylesheet">textpanel.css,contributions.css,spotlight.css,header.css</jsp:attribute>
+	<jsp:attribute name="script">prototype.js,control.modal.js</jsp:attribute>
+	<jsp:attribute name="bodyattr">onload="init()"</jsp:attribute>
 	<jsp:attribute name="head">
 		<script type="text/javascript">
 		//<![CDATA[
 
-	function confirmAndSubmit(location) {
-		if (confirm("Deleting is permanent. Are you sure?")) {
-			document.location = location;
-		}
-	}
+			function confirmAndSubmit(location) {
+				if (confirm("Deleting is permanent. Are you sure?")) {
+					document.location = location;
+				}
+			}
+
+			function init() {
+		    document.getElementsByClassName('link_map').each(function(link){
+		        var modal = new Control.Modal(link, {
+		        opacity: 0.2,
+		        iframe: true, 
+						containerClassName: 'helpbox',
+		        width: 500,
+		        height: 400
+		        });
+		    });
+			}
 
 		//]]>
-		</script>
-				
+		</script>				
 	</jsp:attribute>
+	
 	<jsp:body>
 	  	<div class="textpanel">
 				<h2>Destination Spotlight Administration</h2>
@@ -78,7 +93,10 @@
 							<td>${simpleTable.label}</td>
 						</tr>
 						<tr>
-							<td class="label"><a href="<c:out value="${simpleTable.link}" escapeXml="true"/>">Link</a></td>
+							<td class="label">
+								<c:set var="embeddedlink" value="${fn:replace(simpleTable.link, 'eventsearch.htm', 'embeddedsearch.htm')}"/>
+								<small><a href="<c:out value="${embeddedlink}" escapeXml="true"/>&nc" class="link_map">(preview)</a></small>
+							</td>
 							<td></td>
 						</tr>
 					</table>
