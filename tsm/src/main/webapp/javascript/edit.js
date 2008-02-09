@@ -27,6 +27,7 @@
 		_entPointIcon.infoWindowAnchor = new GPoint(0, 0);
 		_entPointIcon.infoShadowAnchor = new GPoint(12, 12);
 	}	
+	
   /* BEGIN PRE FUNCTIONS (initialization) ============================= */
 	/* the main initialize function */
 	function initialize() {
@@ -38,12 +39,16 @@
 		if (mapType != '') {
 			map.setMapType(G_DEFAULT_MAP_TYPES[mapType]);				
 		}
+		
+		//The current search results
 		var eventsJSON = document.getElementById("eventForm").searchResults.value;
 		if (eventsJSON != '') {
 			var excludeEventId = document.getElementById("eventForm").eventId.value;
 			var events = eventsJSON.evalJSON();
 			createOverlays(events, excludeEventId);
 		}
+		
+		//The editable overlay
 		createEditableOverlay();
 
 		/* this is to fix render time rearranging on IE and firefox*/		

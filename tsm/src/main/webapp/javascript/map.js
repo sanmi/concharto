@@ -14,7 +14,21 @@
 	var POLY_COLOR_HIGHLIGHT = '#17ACFD';
 	var LINE_COLOR_HIGHLIGHT = '#0000FF';
 	 
+
+	/** Objects ---------------- */
+  function Point2D(x, y) {
+  	this.x = x;
+  	this.y = y;
+  }
+
+	function Intersection(status) {
+    this.status = status;
+    this.points = new Array();
+ 	}
 	
+	
+	/* Main map initialization. Set up controls, scrolling and size
+	 */
 	function initializeMap(control) {
 	
 		if (GBrowserIsCompatible()) {
@@ -41,6 +55,8 @@
 			showDefault(); 
 		}
 	}
+	
+	/* default map coordinates */
 	function showDefault() {		
 		diagonal = new GPolyline([
   		new GLatLng(86,-180),
@@ -281,4 +297,40 @@ function encodePoly(poly)
 
 	return {levels:w,points:z};
 }
+
+/*****
+*   intersectLineLine.  From http://www.kevlindev.com/gui/math/intersection/
+*****/
+function intersectLineLine(a1, a2, b1, b2) {
+    var result;
+    
+    var ua_t = (b2.x - b1.x) * (a1.y - b1.y) - (b2.y - b1.y) * (a1.x - b1.x);
+    var ub_t = (a2.x - a1.x) * (a1.y - b1.y) - (a2.y - a1.y) * (a1.x - b1.x);
+    var u_b  = (b2.y - b1.y) * (a2.x - a1.x) - (b2.x - b1.x) * (a2.y - a1.y);
+
+    if ( u_b != 0 ) {
+        var ua = ua_t / u_b;
+        var ub = ub_t / u_b;
+
+        if ( 0 <= ua && ua <= 1 && 0 <= ub && ub <= 1 ) {
+            result = new Intersection("Intersection");
+            result.points.push(
+                new Point2D(
+                    a1.x + ua * (a2.x - a1.x),
+                    a1.y + ua * (a2.y - a1.y)
+                )
+            );
+        } else {
+            result = new Intersection("No Intersection");
+        }
+    } else {
+        if ( ua_t == 0 || ub_t == 0 ) {
+            result = new Intersection("Coincident");
+        } else {
+            result = new Intersection("Parallel");
+        }
+    }
+
+    return result;
+};	
   
