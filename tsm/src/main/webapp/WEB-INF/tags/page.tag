@@ -27,8 +27,10 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd" >
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="Pragma" content="no-cache"/>
+	<meta name="description" content="an encyclopedic atlas of history and happenings that anyone can edit. It is a geographic wiki" />
+	<meta name="keywords" lang="en" content="history, historical maps, historical events, geographic wiki, happenings, atlas, places, maps, locations, sharing, biography, neogeography, geospatial, collective mapping, collaborative mapping, metadata, tagging, groupmaps, mashups, web2.0, google, tools, geotagging, googlemaps, community, cartography"/>
 	<title>Time Space Map - ${title}  </title>
 	<style type="text/css">
 
