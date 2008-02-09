@@ -51,7 +51,9 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 <body ${bodyattr}>
 
 	<c:if test="${stripped != 'true'}">
-		<jsp:include flush="true" page="/WEB-INF/jsp/include/topmenu.jsp"/>		
+		<jsp:include flush="true" page="/WEB-INF/jsp/include/topmenu.jsp">
+			<jsp:param name="nohomemenu" value="${nohomemenu == true}"/>
+		</jsp:include>		
 		<c:if test="${nohead != 'true'}">
 			<jsp:include flush="true" page="/WEB-INF/jsp/include/head.jsp"/>
 	  </c:if>

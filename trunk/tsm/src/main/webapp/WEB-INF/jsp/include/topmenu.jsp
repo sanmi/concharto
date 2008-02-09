@@ -5,13 +5,17 @@
     <div class="nav_block">
 			<ul>
 			<c:if test="${username == null}">
+				<c:if test="${param.nohomemenu != true}">
+					<li><a href="${basePath}">Home </a></li>
+					<li>|</li>
+				</c:if>
 				<li><a href="${basePath}login.htm">Sign in / create account</a></li>
 				</c:if><c:if test="${username != null}">
 				<li>Hello, <b>${username}</b> &nbsp;</li>
-				<li> 
-					<a href="${basePath}">Home</a>  
-				</li>
-				<li>|</li>
+				<c:if test="${param.nohomemenu != true}">
+					<li><a href="${basePath}">Home </a></li>
+					<li>|</li>
+				</c:if>
 				<li> 
 					<a href="${basePath}member/settings.htm">Settings</a>
 				</li>
