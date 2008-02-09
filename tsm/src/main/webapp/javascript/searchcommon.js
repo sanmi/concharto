@@ -93,6 +93,34 @@
 		GEvent.addListener(map, "infowindowclose", function() {
 		  unhighlightOverlay();
 		});
+
+		//listeners for hiding polygons when you are zoomed way in
+		GEvent.addListener(map, "zoomend", function() {
+		  zoomendListener();
+		});
+		GEvent.addListener(map, "moveend", function() {
+		  zoomendListener();
+		});
+		
+	}
+	
+	/* Don't show polygons when we are zoomed so far in that we can't see them */
+	function zoomendListener() { 
+		_overlays.each( function(item, index){
+			if (item.type != 'point') {
+				//alert('The item in the position #' + index + ' is:' + item.type);
+				var overlay = item.overlay;
+				for (var i=0; i<overlay.getVertexCount(); i++) {
+					var vertex = overlay.getVertex(i);
+					if (map.getBounds().contains(vertex)) {
+						overlay.show();
+						break;
+					}
+					//ok, there are no vertexes within the map, so we should hide this overlay
+					overlay.hide();
+				}
+			}
+		});
 	}
 	
 	/* Get the map center from the html form, return null if none was provided */
