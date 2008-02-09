@@ -35,6 +35,13 @@
   	this.id = id;
   	this.isHighlighted = false;
   }
+  
+  /* line object */
+  function Line(vertex0, vertex1) {
+	  this.v0 = vertex0;
+	  this.v1 = vertex1;
+  } 
+  
   /* END OBJECT DEFINITIONS ============================= */
   /* BEGIN PRE FUNCTIONS (initialization) ============================= */
   
@@ -107,21 +114,55 @@
 	/* Don't show polygons when we are zoomed so far in that we can't see them */
 	function zoomendListener() { 
 		_overlays.each( function(item, index){
-			if (item.type != 'point') {
+			if (item.type == 'polygon') {
 				//alert('The item in the position #' + index + ' is:' + item.type);
 				var overlay = item.overlay;
 				for (var i=0; i<overlay.getVertexCount(); i++) {
 					var vertex = overlay.getVertex(i);
-					if (map.getBounds().contains(vertex)) {
+					//if vertex within the map OR
+					//if a line between this vertex and the last intersects the map
+					if ((map.getBounds().contains(vertex)) ||
+							((i+1 < overlay.getVertexCount()) && intersectsMap(vertex, overlay.getVertex(i+1)))) 
+					{
 						overlay.show();
 						break;
-					}
+					} 
 					//ok, there are no vertexes within the map, so we should hide this overlay
 					overlay.hide();
 				}
 			}
 		});
 	}
+	
+	/* returns true if a line from v1 to v2 intersects the current map bounds at any point */
+	function intersectsMap(v0, v1) {
+		var testLine = new Line(v0, v1);
+		var bounds = map.getBounds();
+		
+		var sw = bounds.getSouthWest();
+		var ne = bounds.getNorthEast()
+		var nw = new GLatLng(ne.lat(), sw.lng());
+		var se = new GLatLng(sw.lat(), ne.lng());
+		var diag1 = new Line(sw, ne);
+		var diag2 = new Line(nw, se);
+		//if the line intersects either diagonal line, then it intersects the rectangle
+		return intersectsLine(testLine, diag1) || intersectsLine(testLine, diag2);  
+	}
+	
+	/* returns true if line1 intersects line2 
+	 * from: http://en.wikipedia.org/wiki/Line-line_intersection */
+	function intersectsLine(l0, l1) {
+		
+		var a1 = new Point2D(l0.v0.lng(), l0.v0.lat());  
+		var a2 = new Point2D(l0.v1.lng(), l0.v1.lat());  
+		var b1 = new Point2D(l1.v0.lng(), l1.v0.lat());  
+		var b2 = new Point2D(l1.v1.lng(), l1.v1.lat());  
+
+		var intersection = intersectLineLine(a1, a2, b1, b2);		
+
+		return intersection.status == 'Intersection';
+	}
+
 	
 	/* Get the map center from the html form, return null if none was provided */
 	function getMapCenterFromJSON() {
