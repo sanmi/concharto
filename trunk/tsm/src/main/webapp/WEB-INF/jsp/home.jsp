@@ -91,7 +91,7 @@
 		      	</td>
 		      	<td>
 				      <ul>
-								<li><a href="${basePath}event/latestchanges.htm">Latest changes</a> <em>NEW</em></li>
+								<li><a href="${basePath}event/latestchanges.htm">Latest changes</a></li>
 				      </ul>
 		      	</td>
 		      </tr></table>
