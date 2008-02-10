@@ -103,16 +103,17 @@
 
 		//listeners for hiding polygons when you are zoomed way in
 		GEvent.addListener(map, "zoomend", function() {
-		  zoomendListener();
+		  hideZoomedPolygons();
 		});
 		GEvent.addListener(map, "moveend", function() {
-		  zoomendListener();
+		  hideZoomedPolygons();
 		});
-		
+		//first time, let's make the adjustment
+		hideZoomedPolygons();
 	}
 	
 	/* Don't show polygons when we are zoomed so far in that we can't see them */
-	function zoomendListener() { 
+	function hideZoomedPolygons() { 
 		_overlays.each( function(item, index){
 			if (item.type == 'polygon') {
 				//alert('The item in the position #' + index + ' is:' + item.type);
