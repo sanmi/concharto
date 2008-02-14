@@ -6,6 +6,16 @@
 	#addbox {
 	top: 48px;
 	}
+	#search_tagline {
+	color: #4D4D4D;
+	font:italic 700 8pt Georgia, "Times New Roman", Times, serif;
+	text-align:left;
+	position:relative;
+	top: 5px;
+	left: 288px;
+	width: 42em;
+	padding: 0;
+	}
   #headerbar {
 	height:147px;
 	width:100%;
