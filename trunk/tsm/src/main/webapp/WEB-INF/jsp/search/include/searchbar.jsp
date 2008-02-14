@@ -7,7 +7,12 @@
    	<td>
 	    <div id="addbox">
         <span class="biglink"><a href="#" onclick="editEvent('')">Add to the Map...</a></span>
-      </div>      
+      </div>
+      <c:if test="${param.showSearchOptions == 'true'}">
+	      <div id="search_tagline">
+	      	An encyclopedic atlas of history and happenings <br/>that anyone can edit.
+	      </div>      
+      </c:if>
       <div id="searchbox">
         <table>
           <col id="left"/>
