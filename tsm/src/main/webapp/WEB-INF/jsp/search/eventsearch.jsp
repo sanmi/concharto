@@ -126,7 +126,13 @@
 				          	</c:if>
 					          <a class="summary" href="#" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"><c:out value="${event.summary}"/></a></div>
 					          <div class="when"><c:out value="${event.when.asText}"/></div>
-					          <span class="where"><c:out value="${event.where}"/></span> <br/>
+					          <span class="where">
+					          	<c:out value="${event.where}"/>
+					          	<c:if test="${null != event.positionalAccuracy.name}">
+						          	(Accuracy: ${event.positionalAccuracy.name})
+					          	</c:if> 
+					          </span> 
+					          <br/>
 					           <%-- We want to keep any line breaks but escape all other html --%>
 					          <c:set var="description" value="${fn:substring(event.description,0,300)}"/>
 					          <c:choose>
