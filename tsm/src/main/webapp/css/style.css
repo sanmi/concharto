@@ -119,6 +119,10 @@ a {
 .links {
 	font-weight:normal;
 }
+.new_links a:link, .new_links a:visited{
+	color: #CC2200;
+	font-weight:normal;
+}
 a.errorlinks:link, a.errorlinks:visited {
   color: red;
 	text-decoration: underline;

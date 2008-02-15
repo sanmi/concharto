@@ -15,6 +15,16 @@
 	<jsp:attribute name="head">
 		<%-- we use includes so we can comment the javascript --%>
 		<jsp:include page="../include/mapkey.js.jsp"/>
+		<script type="text/javascript">
+		//<![CDATA[
+			<%-- The javascript popup windows also need these localized strings --%>
+			var msg_newdiscuss = "<spring:message code='searchresults.linktitle.newdiscuss'/>";
+			var msg_discuss = "<spring:message code='searchresults.linktitle.discuss'/>";
+			var msg_edit = "<spring:message code='searchresults.linktitle.edit'/>";
+			var msg_changes = "<spring:message code='searchresults.linktitle.changes'/>";
+			var msg_flag = "<spring:message code='searchresults.linktitle.flag'/>";
+		//]]>
+		</script>			
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">map.css,header.css,search.css</jsp:attribute>
 	<jsp:attribute name="script">prototype.js,map.js,control.modal.js,help.js,searchcommon.js,eventsearch.js</jsp:attribute>
@@ -144,10 +154,25 @@
 						          </div>
 					          </c:if>
 										<div class="linkbar">
-						          <a class="links" href="#" onclick="editEvent(<c:out value='${event.id}'/>)">edit</a>
-						          <a class="links" href="${basePath}event/discuss.htm?id=${event.id}" >discuss</a>
-						          <a class="links" href="${basePath}event/changehistory.htm?id=${event.id}">changes</a>
-						          <a class="links" href="${basePath}edit/flagevent.htm?id=${event.id}">flag</a>
+						          <a class="links" href="#" onclick="editEvent(<c:out value='${event.id}'/>)" 
+						             title="<spring:message code='searchresults.linktitle.edit'/>" >edit</a>
+											<c:choose>
+												<c:when test="${event.discussion == null}">
+								         	<span class="new_links">
+								          	<a href="${basePath}event/discuss.htm?id=${event.id}" 
+								          	   title="<spring:message code='searchresults.linktitle.newdiscuss'/>" >discuss</a>
+								          </span>
+												</c:when>
+												<c:otherwise>
+													<a class="links" href="${basePath}event/discuss.htm?id=${event.id}" 
+													   title="<spring:message code='searchresults.linktitle.discuss'/>" >discuss</a>													
+												</c:otherwise>
+											</c:choose>
+						         
+						          <a class="links" href="${basePath}event/changehistory.htm?id=${event.id}" 
+						             title="<spring:message code='searchresults.linktitle.changes'/>" >changes</a>
+						          <a class="links" href="${basePath}edit/flagevent.htm?id=${event.id}" 
+						             title="<spring:message code='searchresults.linktitle.flag'/>" >flag</a>
 						          
 					          </div>
 									</div>
@@ -182,4 +207,3 @@
 
 	</jsp:body>
 </tsm:page>
-
