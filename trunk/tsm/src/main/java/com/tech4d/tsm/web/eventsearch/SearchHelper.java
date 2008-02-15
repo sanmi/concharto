@@ -24,6 +24,7 @@ import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.auth.AuthHelper;
+import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.geocode.GAddress;
 import com.tech4d.tsm.geocode.GGcoder;
 import com.tech4d.tsm.model.Event;
@@ -73,14 +74,21 @@ public class SearchHelper {
     public static final String DISPLAYTAG_TABLE_ID = "event";
     public static final int DISPLAYTAG_PAGESIZE = 25;
 
-	private EventSearchService eventSearchService;
+	private static final Object MODEL_POSITIONAL_ACCURACIES = "positionalAccuracies";
 	private static final Log log = LogFactory.getLog(SearchHelper.class);
+	private EventSearchService eventSearchService;
+	private EventDao eventDao;
 
-    public SearchHelper(EventSearchService eventSearchService) {
-    	this.eventSearchService = eventSearchService;
+    public void setEventSearchService(EventSearchService eventSearchService) {
+		this.eventSearchService = eventSearchService;
 	}
 
-    public void initBinder(HttpServletRequest request, ServletRequestDataBinder binder)
+	public void setEventDao(EventDao eventDao) {
+		this.eventDao = eventDao;
+	}
+
+
+	public void initBinder(HttpServletRequest request, ServletRequestDataBinder binder)
             throws Exception {
         binder.registerCustomEditor(TimeRange.class, new TimeRangePropertyEditor());
         binder.registerCustomEditor(Geometry.class, new GeometryPropertyEditor());
@@ -300,6 +308,8 @@ public class SearchHelper {
 		model.put(MODEL_CURRENT_RECORD, currentRecord);
 		model.put(MODEL_TOTAL_RESULTS, Math.round(totalResults));
     	model.put(MODEL_EVENTS, events);
+		model.put(MODEL_POSITIONAL_ACCURACIES, eventDao.getPositionalAccuracies());
+
 	}
     
 

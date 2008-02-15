@@ -10,6 +10,8 @@
 <tsm:page title="Event">
 	<jsp:attribute name="head">
 		<jsp:include page="../include/mapkey.js.jsp"/>
+		<%-- localized messages for javascript --%>
+		<jsp:include page="../search/include/messages.jsp"/>
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">map.css,header.css</jsp:attribute>
 	<jsp:attribute name="script">prototype.js,map.js,control.modal.js,help.js,edit.js</jsp:attribute>

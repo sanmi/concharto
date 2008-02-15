@@ -17,7 +17,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.model.Event;
-import com.tech4d.tsm.service.EventSearchService;
 import com.tech4d.tsm.web.util.DisplayTagHelper;
 
 public class EventSearchController extends AbstractFormController {
@@ -44,10 +43,10 @@ public class EventSearchController extends AbstractFormController {
         this.successView = successView;
     }
 
-    public void setEventSearchService(EventSearchService eventSearchService) {
-        this.searchHelper = new SearchHelper(eventSearchService);
-    }
-    
+	public void setSearchHelper(SearchHelper searchHelper) {
+		this.searchHelper = searchHelper;
+	}
+
 	@Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder)
             throws Exception {
@@ -172,6 +171,7 @@ public class EventSearchController extends AbstractFormController {
             	}
             	//now search
         		Map model = doSearch(request, errors, eventSearchForm);
+        		
         		//fit the map to the search results if they specified a place name
         		if (!StringUtils.isEmpty(eventSearchForm.getWhere())) {
         			eventSearchForm.setLimitWithinMapBounds(false);

@@ -10,8 +10,6 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.tech4d.tsm.service.EventSearchService;
-
 /**
  * Web controller for displaying the results of a search embedded in an iframe. 
  * @author frank
@@ -20,10 +18,10 @@ import com.tech4d.tsm.service.EventSearchService;
 public class EmbeddedSearchController extends SimpleFormController {
 	SearchHelper searchHelper;
 	
-	public void setEventSearchService(EventSearchService eventSearchService) {
-		searchHelper = new SearchHelper(eventSearchService);
+	public void setSearchHelper(SearchHelper searchHelper) {
+		this.searchHelper = searchHelper;
 	}
-	
+
 	@Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder)
             throws Exception {

@@ -27,6 +27,7 @@ import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
 import com.vividsolutions.jts.geom.Geometry;
 
 public class EventController extends SimpleFormController {
+	private static final String MODEL_POSITIONAL_ACCURACIES = "positionalAccuracies";
 	public static final String SESSION_EVENT = "EVENT";
 	private static final String PARAM_ID = "id";
     EventDao eventDao;
@@ -101,8 +102,7 @@ public class EventController extends SimpleFormController {
 
 	@SuppressWarnings("unchecked")
 	private void addAccuracies(Map model) {
-        model.put("positionalAccuracies", eventDao.getPositionalAccuracies());
-		
+        model.put(MODEL_POSITIONAL_ACCURACIES, eventDao.getPositionalAccuracies());
 	}
 
 	@SuppressWarnings("unchecked")
