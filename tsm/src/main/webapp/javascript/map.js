@@ -120,8 +120,8 @@
 	  		html += '<span class="summary">' + event.summary.escapeHTML() +'</span><br/>' + 
 	   		'<span class="when">' + event.when + '</span><br/>' + 
 				'<span class="where">' + event.where.escapeHTML();
-				if (event.accuracy != "") {
-					 html += ' (Accuracy: ' + event.accuracy + ')'; 
+				if (!isEmpty(event.accy)) {
+					 html += ' (Accuracy: ' + _msg_accy[event.accy] + ')'; 
 				}
 				html += '</span><br/>' + event.description  +
 				'<span class="source"><b>Source: </b>' + event.source + '</span>' +

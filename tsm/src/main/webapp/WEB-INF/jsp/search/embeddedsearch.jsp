@@ -12,8 +12,9 @@
 	<jsp:attribute name="bodyattr">onload="initialize_embedded()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 	<jsp:attribute name="stripped">true</jsp:attribute>
 	<jsp:attribute name="head">
-		<%-- we use includes so we can comment the javascript --%>
 		<jsp:include page="../include/mapkey.js.jsp"/>
+		<%-- localized messages for javascript --%>
+		<jsp:include page="../search/include/messages.jsp"/>
 		<script type="text/javascript">
 		//<![CDATA[
 		<%-- the main initialize function --%>

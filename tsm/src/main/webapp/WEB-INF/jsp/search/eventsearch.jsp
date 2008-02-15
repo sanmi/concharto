@@ -13,18 +13,9 @@
 
 <tsm:page title="Event">
 	<jsp:attribute name="head">
-		<%-- we use includes so we can comment the javascript --%>
 		<jsp:include page="../include/mapkey.js.jsp"/>
-		<script type="text/javascript">
-		//<![CDATA[
-			<%-- The javascript popup windows also need these localized strings --%>
-			var msg_newdiscuss = "<spring:message code='searchresults.linktitle.newdiscuss'/>";
-			var msg_discuss = "<spring:message code='searchresults.linktitle.discuss'/>";
-			var msg_edit = "<spring:message code='searchresults.linktitle.edit'/>";
-			var msg_changes = "<spring:message code='searchresults.linktitle.changes'/>";
-			var msg_flag = "<spring:message code='searchresults.linktitle.flag'/>";
-		//]]>
-		</script>			
+		<%-- localized messages for javascript --%>
+		<jsp:include page="include/messages.jsp"/>
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">map.css,header.css,search.css</jsp:attribute>
 	<jsp:attribute name="script">prototype.js,map.js,control.modal.js,help.js,searchcommon.js,eventsearch.js</jsp:attribute>
@@ -129,7 +120,7 @@
 					          <span class="where">
 					          	<c:out value="${event.where}"/>
 					          	<c:if test="${null != event.positionalAccuracy.name}">
-						          	(Accuracy: ${event.positionalAccuracy.name})
+						          	(Accuracy: <spring:message code="event.positionalAccuracy.${event.positionalAccuracy.id}"/>)
 					          	</c:if> 
 					          </span> 
 					          <br/>

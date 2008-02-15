@@ -92,6 +92,8 @@
   <bean id="spotlightService" class="com.tech4d.tsm.service.SpotlightService">
   	<property name="spotlightDao" ref="spotlightDao"/>
   </bean>
+
+  
 	<!-- end services -->
 	
 </beans>
