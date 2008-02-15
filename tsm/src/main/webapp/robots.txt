@@ -133,7 +133,6 @@ Disallow: /
 # instruction, please let us know.
 #
 User-agent: *
-Disallow: /search/
 Disallow: /event/
 Disallow: /member/
 Disallow: /edit/
