@@ -8,10 +8,23 @@
 <%@ taglib prefix="display" uri="http://displaytag.sf.net" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 <%@ taglib prefix="wiki" uri="wikiRender" %>
+<%@ page import="java.util.*, com.tech4d.tsm.model.Event" %>
 <% pageContext.setAttribute("linefeed", "\n"); %>
 
-
-<tsm:page title="Event">
+<% 
+	// if the request contains an id= parameter, it means this is a one-at-a-time listing.
+	// Both users and search engines will see this so we need to show the event summary in
+	// the title 
+	
+	if (null != request.getParameter("_id")) {
+		@SuppressWarnings("unchecked")
+		ArrayList<Event> events = (ArrayList<Event>)request.getAttribute("events");
+		request.setAttribute("title", events.get(0).getSummary());
+	} else {
+		request.setAttribute("title", "Event");
+	}
+ %>
+<tsm:page title="${title}">
 	<jsp:attribute name="head">
 		<jsp:include page="../include/mapkey.js.jsp"/>
 		<%-- localized messages for javascript --%>
