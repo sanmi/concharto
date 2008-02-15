@@ -159,7 +159,7 @@
 											<c:choose>
 												<c:when test="${event.discussion == null}">
 								         	<span class="new_links">
-								          	<a href="${basePath}event/discuss.htm?id=${event.id}" 
+								          	<a href="${basePath}edit/discussedit.htm?id=${event.id}" 
 								          	   title="<spring:message code='searchresults.linktitle.newdiscuss'/>" >discuss</a>
 								          </span>
 												</c:when>
