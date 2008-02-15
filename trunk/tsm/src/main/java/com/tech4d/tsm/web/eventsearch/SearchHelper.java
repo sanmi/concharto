@@ -53,6 +53,7 @@ import com.vividsolutions.jts.geom.Point;
  *
  */
 public class SearchHelper {
+	private static final String MODEL_TITLE = "title";
 	public static final String QUERY_ZOOM = "_zoom";
 	public static final String QUERY_WHAT = "_what";
 	public static final String QUERY_WHEN = "_when";
@@ -278,8 +279,59 @@ public class SearchHelper {
         //functions can properly display them using google's mapping API
     	List<Event> renderedEvents = renderWiki(events, request);
         eventSearchForm.setSearchResults(JSONFormat.toJSON(renderedEvents));
+        
+        setupPageTitle(request, eventSearchForm, model, events);
         return events;
     }
+
+    /**
+     * Creates a string to be displayed in the browser title based on
+     * search terms or event id
+     * @param request
+     * @param eventSearchForm
+     * @param model
+     * @param events
+     */
+	@SuppressWarnings("unchecked")
+	private void setupPageTitle(HttpServletRequest request, 
+				 	EventSearchForm eventSearchForm, Map model, List<Event> events) {
+		// if the request contains an id= parameter, it means this is a one-at-a-time listing.
+		// Both users and search engines will see this so we need to show the event summary in
+		// the title
+		String title;
+		if (null != request.getParameter("_id")) {
+			title = events.get(0).getSummary();
+		} else {
+			//summary of the search terms
+			List<String> terms = new ArrayList<String>();
+			addIfNotEmpty(terms, "where: ", eventSearchForm.getWhere());
+			if (null != eventSearchForm.getWhen()) {
+				addIfNotEmpty(terms, "when: ", eventSearchForm.getWhen().getAsText());
+			}
+			addIfNotEmpty(terms, "what: ", eventSearchForm.getWhat());
+			StringBuffer searchTerms = new StringBuffer();
+			for (int i=0; i<terms.size(); i++) {
+				searchTerms.append(terms.get(i));
+				if (i < terms.size()-1) {
+					searchTerms.append(", ");
+				}
+			}
+			title = searchTerms.toString();
+		}
+		model.put(MODEL_TITLE, title);
+	}
+
+	/**
+	 * Utility for natural language processing - adding commas between a list of search terms
+	 * @param list
+	 * @param prefix
+	 * @param str
+	 */
+	private void addIfNotEmpty(List<String> list, String prefix, String str) {
+		if (!StringUtils.isEmpty(str)) {
+			list.add(prefix + str);
+		}
+	}
 
 	private List<Event> renderWiki(List<Event> events, HttpServletRequest request) {
 		List<Event> renderedEvents = new ArrayList<Event>();
@@ -309,7 +361,6 @@ public class SearchHelper {
 		model.put(MODEL_TOTAL_RESULTS, Math.round(totalResults));
     	model.put(MODEL_EVENTS, events);
 		model.put(MODEL_POSITIONAL_ACCURACIES, eventDao.getPositionalAccuracies());
-
 	}
     
 
