@@ -16,10 +16,14 @@
 	/* create html for info bubbles */	
 	function makeOverlayHtml(event) {
 		var html = createInfoWindowHtml(event) +  
-			'<div class="infolinkbar linkbar"><a class="links" href="#" onclick="editEvent(' + event.id + ')">edit</a>' +  
-	    '<a class="links" href="'+ _basePath + 'event/discuss.htm?id=' + event.id + '">discuss</a>'; 
-			html += '<a class="links" href="' + _basePath + 'event/changehistory.htm?id=' + event.id + '">changes</a>';
-		html += '<a class="links" href="' + _basePath + 'edit/flagevent.htm?id=' + event.id + '">flag</a>' +
+			'<div class="infolinkbar linkbar"><a class="links" href="#" onclick="editEvent(' + event.id + ')" title="' + msg_edit + '">edit</a>';  
+	  if (event.hasDiscuss) {
+			html += '<a class="links" href="'+ _basePath + 'event/discuss.htm?id=' + event.id + '" title="' + msg_discuss + '">discuss</a>';
+	  } else {
+	  	html += '<span class="new_links"><a href="'+ _basePath + 'event/discuss.htm?id=' + event.id + '" title="' + msg_newdiscuss + '">discuss</a></span>';
+	  }
+		html += '<a class="links" href="' + _basePath + 'event/changehistory.htm?id=' + event.id + '" title="' + msg_changes + '">changes</a>';
+		html += '<a class="links" href="' + _basePath + 'edit/flagevent.htm?id=' + event.id + '" title="' + msg_flag + '">flag</a>' +
 			'<a class="links" href="#" onclick="zoomTo(' + event.id + ')">zoom in</a>';
 		html += '<br/></div>';
 		return html;

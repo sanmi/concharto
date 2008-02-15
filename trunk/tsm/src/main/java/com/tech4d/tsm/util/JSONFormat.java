@@ -37,6 +37,7 @@ public class JSONFormat {
     public static final String FIELD_LAT = "lat";
     public static final String FIELD_GEOMETRY = "geom";
     public static final String FIELD_LINE = "line";
+    public static final String FIELD_HAS_DISCUSSION = "hasDiscuss";
 
     public static String toJSON(Collection<Event> events) {
         JSONArray jsonEvents = new JSONArray();
@@ -66,6 +67,7 @@ public class JSONFormat {
         Geometry geom = event.getTsGeometry().getGeometry();
         jsonEvent.put(FIELD_GEOMETRYTYPE, GeometryType.getGeometryType(geom));
         jsonEvent.put(FIELD_GEOMETRY, toJSON(geom));
+        jsonEvent.put(FIELD_HAS_DISCUSSION, event.getDiscussion() != null);
         return jsonEvent.toString(); 
     }
     
