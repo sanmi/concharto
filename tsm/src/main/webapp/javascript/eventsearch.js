@@ -20,7 +20,7 @@
 	  if (event.hasDiscuss) {
 			html += '<a class="links" href="'+ _basePath + 'event/discuss.htm?id=' + event.id + '" title="' + msg_discuss + '">discuss</a>';
 	  } else {
-	  	html += '<span class="new_links"><a href="'+ _basePath + 'event/discuss.htm?id=' + event.id + '" title="' + msg_newdiscuss + '">discuss</a></span>';
+	  	html += '<span class="new_links"><a href="'+ _basePath + 'edit/discussedit.htm?id=' + event.id + '" title="' + msg_newdiscuss + '">discuss</a></span>';
 	  }
 		html += '<a class="links" href="' + _basePath + 'event/changehistory.htm?id=' + event.id + '" title="' + msg_changes + '">changes</a>';
 		html += '<a class="links" href="' + _basePath + 'edit/flagevent.htm?id=' + event.id + '" title="' + msg_flag + '">flag</a>' +
