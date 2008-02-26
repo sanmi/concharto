@@ -262,6 +262,10 @@ public class SearchHelper {
                 //note these are opposites.. a value of null or false = false, true=true
                 params.setIncludeTimeRangeOverlaps(!BooleanUtils.isTrue(eventSearchForm.getExcludeTimeRangeOverlaps()));
                 events = eventSearchService.search(DISPLAYTAG_PAGESIZE, firstRecord, bounds, params);
+                
+                //for debugging
+                //addDebugBoundingBox(events, bounds);
+
                 totalResults = eventSearchService.getCount(bounds, params);
     		} else {
     			//failed geocode, no points
@@ -271,8 +275,6 @@ public class SearchHelper {
     		}    		
 
     	} 
-        //for debugging
-        //addDebugBoundingBox(events, bounds);
         
     	prepareModel( model, events, totalResults, firstRecord);
         //NOTE: we are putting the events into the command so that the page javascript
