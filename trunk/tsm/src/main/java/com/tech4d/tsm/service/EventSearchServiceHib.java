@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +17,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tech4d.tsm.model.Event;
+import com.tech4d.tsm.util.GeometryType;
 import com.tech4d.tsm.util.LapTimer;
 import com.tech4d.tsm.util.LatLngBounds;
 import com.tech4d.tsm.util.ProximityHelper;
@@ -146,7 +148,13 @@ public class EventSearchServiceHib implements EventSearchService {
             	}
                 List<Event> results = searchInternal(maxResults, firstResult, 
                 		boundingBox, params);
-                events.addAll(results);
+
+                //to fix mysql spatial search weaknesses
+                removeNonIntersectingPolys(boundingBox, results);
+               
+				//add what is left
+				events.addAll(results);
+               
             }
 
             //if there were two boxes, one on either side of the international date line, we
@@ -162,6 +170,31 @@ public class EventSearchServiceHib implements EventSearchService {
     	}
         return events;
     }
+
+    /**
+     *                 
+     * Mysql doesn't implement polygon/polyline searching to spec.  We only want to show 
+     * objects that have at least one point in the bounding box, but mysql will return 
+     * a result if the bounding box of the line intersects with the bounding box of the 
+     * search, event though the points on the line are not within the bounding box of 
+     * the line.  See issue TSM-323. 
+	 *
+     * @param bounds
+     * @param events
+     */
+	private void removeNonIntersectingPolys(Geometry boundingBox, List<Event> events) {
+
+		Iterator<Event> it = events.iterator(); 
+		while (it.hasNext()) {
+			Event event = it.next();
+			Geometry geom = event.getTsGeometry().getGeometry();
+			if (GeometryType.getGeometryType(geom) != GeometryType.POINT) {
+				if (!(boundingBox.intersects(geom))) {
+					it.remove();
+				}
+			}
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	private void sortByDate(List<Event> events) {
