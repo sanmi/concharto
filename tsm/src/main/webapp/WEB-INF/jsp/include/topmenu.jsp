@@ -33,7 +33,7 @@
 				<li><a href="${basePath}logout.htm">Sign out</a></li>
 				</c:if></ul>
     </div>
-    <div class="nav_left" ><img src="${basePath}images/nav-left.png" /></div>
+    <div class="nav_left" ><img alt="" src="${basePath}images/nav-left.png" /></div>
   </div>
 
 <div class="clearfloat"></div>

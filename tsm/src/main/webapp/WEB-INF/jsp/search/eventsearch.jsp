@@ -106,7 +106,7 @@
 								<display:setProperty name="paging.banner.some_items_found"> </display:setProperty>
 
 								<display:column autolink="true" class="iconcol">
-									<a href="#"><img height='34' width='20' src="${basePath}images/icons/marker<c:out value='${fn:substring(test,event_rowNum-1,event_rowNum)}'/>.gif" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"/></a>
+									<a href="#"><img alt="marker" height='34' width='20' src="${basePath}images/icons/marker<c:out value='${fn:substring(test,event_rowNum-1,event_rowNum)}'/>.gif" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"/></a>
 								</display:column>
 								
 								<display:column autolink="true">
@@ -115,7 +115,8 @@
 				          	<c:if test="${event.hasUnresolvedFlag}">
 					          	<a class="errorLabel" href="${basePath}event/changehistory.htm?id=${event.id}">Flagged! </a>
 				          	</c:if>
-					          <a class="summary" href="#" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"><c:out value="${event.summary}"/></a></div>
+					          <a class="summary" href="#" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)">
+					          	<c:out value="${event.summary}"/></a></div>
 					          <div class="when"><c:out value="${event.when.asText}"/></div>
 					          <span class="where">
 					          	<c:out value="${event.where}"/>
@@ -194,7 +195,7 @@
 
 		<div id="linkhere" class="linkbox" style="visibility: hidden">
 		    <div class='bd' style="margin:0; padding:0;">
-		    	<div class="tl"><a href="#" onClick="Control.Modal.close(); return false;"><img src="../images/12xclose.gif"></img></a></div>
+		    	<div class="tl"><a href="#" onclick="Control.Modal.close(); return false;"><img alt="close" src="../images/12xclose.gif"></img></a></div>
 		    	<div class="label">Paste this text to link back to this map</div>		    	
 		      <input id="linkhere_url" type="text" class="textinput" onclick="selectThis(this);" />
 		    	<div class="label">Paste this text to embed this map into a web page</div>

@@ -24,8 +24,9 @@ request.setAttribute("roles", (String)request.getSession().getAttribute(AuthCons
 request.setAttribute("username", (String)request.getSession().getAttribute(AuthConstants.SESSION_AUTH_USERNAME));
 %>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd" >
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<meta http-equiv="Pragma" content="no-cache"/>
@@ -68,15 +69,15 @@ request.setAttribute("username", (String)request.getSession().getAttribute(AuthC
 	</div>
 	<c:if test="${stripped != 'true'}">
 	  <div id="footer">
-			<span class="links linkleft">&copy 2008, Time Space Map, LLC</span>
+			<span class="links linkleft">&copy; 2008, Time Space Map, LLC</span>
 			<a class="linkleft links" href="http://wiki.timespacemap.com/wiki/Legal" >Legal</a>
-			<a class="linkleft links" class="linkleft" href="http://wiki.timespacemap.com/wiki/About" >About</a>
+			<a class="linkleft links" href="http://wiki.timespacemap.com/wiki/About" >About</a>
 			<a class="links linkleft" href="${basePath}feedback.htm">Feedback</a>
 			<a class="links linkleft" href="http://blog.timespacemap.com">Blog</a>
 			<a class="links linkleft" href="http://wiki.timespacemap.com">Community Wiki</a>
 	  	
 			<a class="links linkleftright" href="http://creativecommons.org/licenses/by-sa/3.0/us" >
-				<img src="http://i.creativecommons.org/l/by-sa/3.0/us/80x15.png"/>
+				<img alt="creative commons" src="http://i.creativecommons.org/l/by-sa/3.0/us/80x15.png"/>
 			</a>
 	  </div>
   </c:if>

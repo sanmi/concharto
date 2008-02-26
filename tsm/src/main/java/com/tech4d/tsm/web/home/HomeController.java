@@ -90,11 +90,26 @@ public class HomeController extends SimpleFormController {
 		}
 	}
 	private String formatLabel(Spotlight spotlight) {
-		String label = StringUtils.replace(spotlight.getLabel(),"[[","<a href='" + spotlight.getLink() + "'>");
+		String link = URLEncode(spotlight.getLink());
+		
+		String label = StringUtils.replace(spotlight.getLabel(),"[[","<a href='" + link + "'>");
 		label = StringUtils.replace(label,"]]","</a>");
 		return label;
 	}
 	private String formatEmbedLabel(Spotlight spotlight) {
-		return StringUtils.replace(spotlight.getLink(),"search/eventsearch.htm","search/embeddedsearch.htm");
+		String label = StringUtils.replace(spotlight.getLink(),"search/eventsearch.htm","search/embeddedsearch.htm");
+		return URLEncode(label);
+	}
+	
+	/**
+	 * A simple URLencoder that doesn't do the bad stuff that the URLEncoder class does (e.g. replace : and / chars)
+	 * NOTE: it doesn't do everything according to the spec. because we don't need it at the moment.  
+	 * @param str
+	 * @return  encoded string
+	 */
+	private String URLEncode(String str) {
+		str = StringUtils.replace(str, "&", "&amp;");
+		str = StringUtils.replace(str, "\"", "%22");
+		return str;
 	}
 }
