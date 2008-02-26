@@ -27,9 +27,8 @@ public interface EventTesterDao {
      * 
      * @see com.tech4d.tsm.lab.EventDao#findAll()
      */
-    @SuppressWarnings("unchecked")
     public List<Event> findAll();
-
+    public List<Event> findRecent(int maxResults, int firstResult);
     public void save(Set<Event> events);
     
     public void save(Role role);

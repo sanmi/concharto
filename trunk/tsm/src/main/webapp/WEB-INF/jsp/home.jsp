@@ -41,7 +41,7 @@
 	<jsp:body>
 
 		<div id="heading" >
-			<img  src="images/title-home.png" />	
+			<img alt="title-home" src="images/title-home.png" />	
 		</div>
 		
 		<form:form name="event" id="eventSearchForm" action="search/eventsearch.htm" commandName="eventSearch" onsubmit="search(); return false">
@@ -128,14 +128,14 @@
 		        <div class="next"><a href="#" onclick="document.nextForm.submit();">next</a></div>
 		        <p>${spotlightLabel}</p>
 		        <div class="clearfloat"></div>
-		        <small style="float:right;padding-right:18px">Click on red icons, lines or areas</a></small>
-		        <small>View a <a href='${spotlightLink}'>larger map</a></small>
+		        <small style="float:right;padding-right:18px">Click on red icons, lines or areas</small>
+		        <small>View a <a href='<c:out value="${spotlightLink}"/>'>larger map</a></small>
 		        <div class="clearfloat"></div>
 		        <div id="borderbox">
 		          <iframe id="embeddedmap" 
 		          	<%-- &nc means don't count this as a page hit in google analytics 
 		          			 &r is to defeat certain types of browser iframe page caching --%>
-		          	src='${spotlightEmbedLink}&r=${rand}&nc'
+		          	src='${spotlightEmbedLink}&amp;r=${rand}&amp;nc'
 		            height="330" width="450" frameborder="0" scrolling="no">
 		           	This browser doesn't support embedding a map.
 		          </iframe>

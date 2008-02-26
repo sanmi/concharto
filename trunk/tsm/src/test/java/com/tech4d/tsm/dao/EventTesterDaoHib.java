@@ -79,6 +79,15 @@ public class EventTesterDaoHib implements EventTesterDao {
                 "select event from Event event").list();
     }
 
+    @SuppressWarnings("unchecked")
+    public List<Event> findRecent(int maxResults, int firstResult) {
+        return this.sessionFactory.getCurrentSession().createQuery(
+                "select event from Event event order by created desc")
+                .setMaxResults(maxResults)
+                .setFirstResult(firstResult)
+                .list();
+    }
+
     /* (non-Javadoc)
      * @see com.tech4d.tsm.lab.EventTesterDao#save(java.util.Set)
      */

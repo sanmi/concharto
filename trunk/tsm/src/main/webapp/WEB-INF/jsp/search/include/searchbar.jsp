@@ -15,8 +15,6 @@
       </c:if>
       <div id="searchbox">
         <table>
-          <col id="left"/>
-          <col id="right"/>
           <tr>
 	          <td>
 			  			<form:errors path="where"><span class="errorLabel"></form:errors>
@@ -62,9 +60,9 @@
 				  		<tr>
 		            <td>
 				 					<span class="options">All fields are optional</span>
+							 		<form:hidden path="limitWithinMapBounds"/> 
 				 				</td>
 				 			</tr>
-					 		<form:hidden path="limitWithinMapBounds"/> 
 				  	</c:otherwise>
 				  </c:choose>
         </table>
