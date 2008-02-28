@@ -13,7 +13,7 @@
 		<%-- localized messages for javascript --%>
 		<jsp:include page="../search/include/messages.jsp"/>
 	</jsp:attribute>
-	<jsp:attribute name="stylesheet">map.css,header.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">map.css,wiki.css,header.css</jsp:attribute>
 	<jsp:attribute name="script">prototype.js,map.js,control.modal.js,help.js,edit.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="setMapExtent();"</jsp:attribute>
 

@@ -7,8 +7,8 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 <% pageContext.setAttribute("linefeed", "\n"); %>
 
-<tsm:page title="Change History">
-	<jsp:attribute name="stylesheet">map.css,simpleform.css,header.css,discuss.css</jsp:attribute>
+<tsm:page title="Discuss Event">
+	<jsp:attribute name="stylesheet">map.css,wiki.css,simpleform.css,header.css</jsp:attribute>
 	<jsp:attribute name="bodyattr">class="mapedit"</jsp:attribute>
 	
 

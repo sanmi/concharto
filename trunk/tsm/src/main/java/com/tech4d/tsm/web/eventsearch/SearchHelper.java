@@ -41,7 +41,7 @@ import com.tech4d.tsm.util.TimeRangeFormat;
 import com.tech4d.tsm.web.util.DisplayTagHelper;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
 import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
-import com.tech4d.tsm.web.wikiText.WikiModelFactory;
+import com.tech4d.tsm.web.wiki.WikiModelFactory;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;

@@ -94,7 +94,4 @@ public class User extends BaseAuditableEntity {
 	public void setUserNote(UserNote userNote) {
 		this.userNote = userNote;
 	}
-    
-    
-
 }

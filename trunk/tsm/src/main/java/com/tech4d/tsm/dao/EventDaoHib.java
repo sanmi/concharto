@@ -10,7 +10,7 @@ import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.Auditable;
 import com.tech4d.tsm.model.EventSearchText;
 import com.tech4d.tsm.model.PositionalAccuracy;
-import com.tech4d.tsm.model.WikiText;
+import com.tech4d.tsm.model.wiki.WikiText;
 
 @Transactional
 public class EventDaoHib implements EventDao {

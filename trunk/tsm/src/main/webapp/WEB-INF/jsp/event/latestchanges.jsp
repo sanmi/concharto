@@ -12,7 +12,7 @@ request.setAttribute("geometryField", geometryField);
 request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 %>
 
-<tsm:page title="Change History">
+<tsm:page title="Latest Changes">
 	<jsp:attribute name="stylesheet">textpanel.css,contributions.css,header.css</jsp:attribute>
 	<jsp:attribute name="bodyattr"></jsp:attribute>
 	

@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tech4d.tsm.OpenSessionInViewIntegrationTest;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.PositionalAccuracy;
-import com.tech4d.tsm.model.WikiText;
+import com.tech4d.tsm.model.wiki.WikiText;
 import com.tech4d.tsm.util.ContextUtil;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;

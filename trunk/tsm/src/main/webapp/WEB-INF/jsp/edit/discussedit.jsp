@@ -8,7 +8,7 @@
 <% pageContext.setAttribute("linefeed", "\n"); %>
 
 <tsm:page title="Change History">
-	<jsp:attribute name="stylesheet">map.css,header.css,discuss.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">map.css,wiki.css,header.css</jsp:attribute>
 	<jsp:attribute name="bodyattr">class="mapedit"</jsp:attribute>	
 	<jsp:attribute name="head">
 		<script type="text/javascript">
@@ -29,62 +29,48 @@
 	</jsp:attribute>
 	
 
-<jsp:body>
-			<div class="pagepanel">
-				<div class="miniTabBar">
-					<a class="miniTabUnselected" href="${basePath}edit/event.htm?id=${param.id}">Event</a>
-					<span class="miniTabSelected" >Discussion</span>
-				  <a class="miniTabUnselected miniTabLSpace" href="${basePath}event/discusshistory.htm?id=${discussForm.event.discussion.id}&eventId=${param.id}">Changes</a>
-				</div>
-				<div class="changeBar"></div>
-
-		  	
-		  	<div id="discuss">
-		  	
-		  		<div class="infoBox">
-			  		This is a discussion page.  Please respect the 
-			  		<a href="http://wiki.timespacemap.com/wiki/Discussion_Guidelines">discussion guidelines</a>, 
-			  		and remember to sign your posts by typing four tildes (~~~~).
-		  		</div>
-		  		
-		  		<div class="infoBox">
-			  		<c:set var="event" scope="request" value="${discussForm.event}"/>
-			  		<jsp:include page="../event/include/showsummary.jsp"/>
-			  	</div>
-		  		
-		  		<c:if test="${discussForm.showPreview == true}">
-			  		<h1>Preview</h1>
-			  		<span class="warning">This is only a preview; changes have not been saved! </span>
-				  	<p>
-				  	<hr/>
-				  	<div class="preview wikitext">
-						<wiki:render wikiText="${discussForm.event.discussion.text}"/> 
-						</div> 	
-		  		</c:if>
-
-					<form:form name="discussion" id="discussForm" commandName="discussForm" >
-						<form:hidden path="showPreview" />
-						<div>
-							<form:textarea path="event.discussion.text"/>
-						</div>
-			  		<input type="button" value="Submit" onclick="submitDiscussion()"  accesskey="s" title="Save your changes [alt+shift+s]"/>
-			  		<input type="button" value="Preview" onclick="preview()" accesskey="p" title="Preview your changes, please use this before saving! [alt+shift+p]"/>
-			  		<input type="button" value="Cancel" onclick="document.location='${basePath}event/discuss.htm?id=${param.id}'"/>
-		  		</form:form>
-		  		<div class="infoBox">
-		  			<p>
-							Please note that all contributions to Time Space Map are considered to be released under the 
-							Creative Commons Attribution-Share Alike 3.0 United States License (see  
-							<a href="http://wiki.timespacemap.com/wiki/Legal#User_Submissions.">User Submissions Policy</a> for details). 
-							If you don't want your writing to be edited mercilessly and redistributed at will, then don't 
-							submit it here.
-						</p>
-						<p>
-							You are also promising us that you wrote this yourself, or copied it from a public domain or 
-							similar free resource. <b>DO NOT SUBMIT COPYRIGHTED WORK WITHOUT PERMISSION!</b>
-						</p>		  		
-		  		</div>
-				</div>
+	<jsp:body>
+		<div class="pagepanel">
+			<div class="miniTabBar">
+				<a class="miniTabUnselected" href="${basePath}edit/event.htm?id=${param.id}">Event</a>
+			  <a class="miniTabUnselected miniTabLSpace" href="${basePath}event/discusshistory.htm?id=${discussForm.event.discussion.id}&eventId=${param.id}">Changes</a>
+				<span class="miniTabSelected" >Discussion</span>
 			</div>
-</jsp:body>
+			<div class="changeBar"></div>
+
+	  	
+	  	<div id="wikiedit">
+	  	
+	  		<jsp:include page="../include/discussguidelines.jsp"/>
+	  		
+	  		<div class="infoBox">
+		  		<c:set var="event" scope="request" value="${discussForm.event}"/>
+		  		<jsp:include page="../event/include/showsummary.jsp"/>
+		  	</div>
+	  		
+	  		<c:if test="${discussForm.showPreview == true}">
+		  		<h1>Preview</h1>
+		  		<span class="warning">This is only a preview; changes have not been saved! </span>
+			  	<p>
+			  	<hr/>
+			  	<div class="preview wikitext">
+					<wiki:render wikiText="${discussForm.event.discussion.text}"/> 
+					</div> 	
+	  		</c:if>
+
+				<form:form name="discussion" id="discussForm" commandName="discussForm" >
+					<form:hidden path="showPreview" />
+					<div>
+						<form:textarea path="event.discussion.text"/>
+					</div>
+		  		<input type="button" value="Submit" onclick="submitDiscussion()"  accesskey="s" title="Save your changes [alt+shift+s]"/>
+		  		<input type="button" value="Preview" onclick="preview()" accesskey="p" title="Preview your changes, please use this before saving! [alt+shift+p]"/>
+		  		<input type="button" value="Cancel" onclick="document.location='${basePath}event/discuss.htm?id=${param.id}'"/>
+	  		</form:form>
+	  		
+	  		<jsp:include page="../include/wikicopyright.jsp"/>
+	  		
+			</div>
+		</div>
+	</jsp:body>
 </tsm:page>
