@@ -8,7 +8,7 @@ import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.PositionalAccuracy;
 import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.tech4d.tsm.util.GeometryType;
-import com.tech4d.tsm.web.wikiText.WikiModelFactory;
+import com.tech4d.tsm.web.wiki.WikiModelFactory;
 import com.vividsolutions.jts.geom.Geometry;
 
 public class EventFormFactory {

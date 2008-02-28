@@ -12,8 +12,8 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.model.Event;
-import com.tech4d.tsm.model.WikiText;
-import com.tech4d.tsm.web.wikiText.SubstitutionMacro;
+import com.tech4d.tsm.model.wiki.WikiText;
+import com.tech4d.tsm.web.wiki.SubstitutionMacro;
 
 public class DiscussController extends SimpleFormController {
 	

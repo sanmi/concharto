@@ -44,13 +44,10 @@ public class UserDaoHib implements UserDao {
 
     @SuppressWarnings("unchecked")
     public User find(String username) {
-        List<User> users = this.sessionFactory.getCurrentSession().createQuery(
-        "select user from User user where user.username = ?").setParameter(0, username).list();
-        if (users.size() == 1) {
-            return users.get(0);
-        } else {
-            return null;
-        }
+        return (User) DaoHelper.getOnlyFirst(
+        		this.sessionFactory.getCurrentSession().createQuery(
+                "select user from User user where user.username = ?").setParameter(0, username).list()
+        );
     }
 
     @SuppressWarnings("unchecked")

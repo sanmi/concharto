@@ -11,11 +11,17 @@
 				</c:if>
 				<li><a href="${basePath}login.htm">Sign in / create account</a></li>
 				</c:if><c:if test="${username != null}">
-				<li>Hello, <b>${username}</b> &nbsp;</li>
+				<li> 
+					Hello, <b><c:out value="${username}"/></b>
+				</li>
 				<c:if test="${param.nohomemenu != true}">
 					<li><a href="${basePath}">Home </a></li>
 					<li>|</li>
 				</c:if>
+				<li><span class="new_links"><a href="${basePath}page.htm?page=User:${username}">My Page</a></span></li>
+				<li>|</li>
+				<li><span class="new_links"><a href="${basePath}page.htm?page=User_talk:${username}">My Talk</a></span></li>
+				<li>|</li>
 				<li> 
 					<a href="${basePath}member/settings.htm">Settings</a>
 				</li>
@@ -33,7 +39,7 @@
 				<li><a href="${basePath}logout.htm">Sign out</a></li>
 				</c:if></ul>
     </div>
-    <div class="nav_left" ><img alt="" src="${basePath}images/nav-left.png" /></div>
+    <div class="nav_left" ><img style="height:20px;width:6px"  alt="" src="${basePath}images/nav-left.png" /></div>
   </div>
 
 <div class="clearfloat"></div>

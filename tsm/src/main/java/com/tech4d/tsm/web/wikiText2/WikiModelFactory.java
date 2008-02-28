@@ -1,4 +1,4 @@
-package com.tech4d.tsm.web.wikiText;
+package com.tech4d.tsm.web.wiki;
 
 import info.bliki.wiki.model.WikiModel;
 

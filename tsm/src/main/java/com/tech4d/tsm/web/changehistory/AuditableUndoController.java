@@ -3,6 +3,7 @@ package com.tech4d.tsm.web.changehistory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -17,6 +18,7 @@ public class AuditableUndoController extends AbstractController {
 	private static final String PARAM_ID = "id";
 	private static final String PARAM_TO_REVISION = "toRev";
 	private static final String PARAM_EVENT_ID = "eventId";
+	private static final String PARAM_PAGE = "page";
     private RevertEventService revertEventService;
 	
 	public void setSuccessView(String formView) {
@@ -38,8 +40,9 @@ public class AuditableUndoController extends AbstractController {
     	if ((id != null) && (revision != null)) {
     		revertEventService.revertToRevision(this.auditableClass, revision, id);
     	}
-        //TODO this is a UI hack : auditables are event or event.discussion
+        //TODO UGH...this is a UI hack : auditables are event or event.discussion or wiki pages
     	Long eventId = ServletRequestUtils.getLongParameter(request, PARAM_EVENT_ID);
+    	String page = ServletRequestUtils.getStringParameter(request, PARAM_PAGE);
     	StringBuffer redirect = new StringBuffer(request.getContextPath())
     		.append('/')
     		.append(this.successView)
@@ -50,6 +53,12 @@ public class AuditableUndoController extends AbstractController {
         	.append(PARAM_EVENT_ID)
         	.append('=')
         	.append(eventId);
+        } 
+        if (!StringUtils.isEmpty(page)) {
+        	redirect.append('&')
+        	.append(PARAM_PAGE)
+        	.append('=')
+        	.append(page);
         } 
 
         //redirect back to the list

@@ -6,7 +6,7 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 
 <tsm:page title="Recent Events">
-	<jsp:attribute name="stylesheet">textpanel.css,header.css,recent.css,search.css,map.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">textpanel.css,header.css,recent.css,search.css,map.css,wiki.css</jsp:attribute>
 	<jsp:attribute name="script">prototype.js,control.modal.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="init()"</jsp:attribute>
 	<jsp:attribute name="head">

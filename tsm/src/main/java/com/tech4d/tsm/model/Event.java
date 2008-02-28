@@ -21,6 +21,7 @@ import org.hibernate.annotations.ForeignKey;
 
 import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.tech4d.tsm.model.time.TimeRange;
+import com.tech4d.tsm.model.wiki.WikiText;
 
 /**
  * Copyright 2007, Time Space Map

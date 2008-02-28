@@ -17,7 +17,7 @@
 		<%-- localized messages for javascript --%>
 		<jsp:include page="include/messages.jsp"/>
 	</jsp:attribute>
-	<jsp:attribute name="stylesheet">map.css,header.css,search.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">map.css,wiki.css,header.css,search.css</jsp:attribute>
 	<jsp:attribute name="script">prototype.js,map.js,control.modal.js,help.js,searchcommon.js,eventsearch.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="init()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
 	<jsp:attribute name="nohead">true</jsp:attribute>

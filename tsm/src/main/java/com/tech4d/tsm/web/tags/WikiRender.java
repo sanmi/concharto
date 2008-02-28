@@ -9,7 +9,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-import com.tech4d.tsm.web.wikiText.WikiModelFactory;
+import com.tech4d.tsm.web.wiki.WikiModelFactory;
 
 /**
  * Custom taglib to render wikitext on a page

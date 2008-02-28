@@ -27,6 +27,7 @@ import com.tech4d.tsm.model.user.User;
 /**
  * Authorization filter.  We don't want to rely on the servlet container to do this because we
  * will have to get fancy in the future.
+ * TODO make a unit test for this!
  * @author frank
  *
  */
@@ -109,15 +110,12 @@ public class LoginFilter implements Filter{
      */
     private boolean isAuthorized(HttpServletRequest httpRequest) {
         HttpSession session = httpRequest.getSession();
-        if (!requiresAuthorization(httpRequest)) {
+        String[] parts = getUrlParts(httpRequest);
+        if (!requiresAuthorization(parts)) {
             return true;
         }
         if (null != session.getAttribute(AuthConstants.SESSION_AUTH_ROLES)) {
             String roles = (String) session.getAttribute(AuthConstants.SESSION_AUTH_ROLES);
-            String uri = httpRequest.getRequestURI();
-            //should like like '/admin/canDelete' or '/admin/findUsers'
-            String path = StringUtils.substringBetween(uri, httpRequest.getContextPath(),".htm");
-            String[] parts = StringUtils.split(path, '/');
             if (parts != null) {
                 if (parts.length == 2) {
                     //one level only e.g. URL was admin/findUsers.htm
@@ -125,7 +123,7 @@ public class LoginFilter implements Filter{
                         //e.g. "admin canDelete canMove" contains "admin"
                         return true;
                     }
-                } else if (parts.length == 3) {
+                } else if (parts.length >= 3) {
                     //two levels e.g. URL was admin/canDelete/deleteUsers.htm
                     if (StringUtils.contains(roles, parts[0]) && StringUtils.contains(roles, parts[1])) {
                         //e.g. "admin canDelete canMove" contains "admin" and "canDelete"
@@ -135,6 +133,19 @@ public class LoginFilter implements Filter{
             }
         }
         return false;
+    }
+    
+    /**
+     * Returns the first part of the URL path: "/member/settings.htm?id=1234" returns "member"
+     * @param httpRequest
+     * @return first part of the URL path
+     */
+    private String[] getUrlParts(HttpServletRequest httpRequest) {
+        String uri = httpRequest.getRequestURI();
+        //should like like '/admin/canDelete' or '/admin/findUsers'
+        String path = StringUtils.substringBetween(uri, httpRequest.getContextPath(),".htm");
+        String[] parts = StringUtils.split(path, '/');
+        return parts;
     }
 
     private boolean isAuthenticated(HttpServletRequest httpRequest) {
@@ -160,7 +171,7 @@ public class LoginFilter implements Filter{
     }
 
     private boolean requiresAuthentication(HttpServletRequest httpRequest) {
-       
+
         for (String pattern : AuthConstants.PATTERN_REQUIRES_AUTHENTICATION) {
             if (StringUtils.contains(httpRequest.getRequestURI(), pattern)) {
                 return true;
@@ -168,12 +179,16 @@ public class LoginFilter implements Filter{
         }
         return false;
     }
-    private boolean requiresAuthorization(HttpServletRequest httpRequest) {
-        for (String pattern : AuthConstants.PATTERN_REQUIRES_AUTHORIZATION) {
-            if (StringUtils.contains(httpRequest.getRequestURI(), pattern)) {
-                return true;
+    
+    private boolean requiresAuthorization(String[] parts) {
+    	//iterate through n-1
+    	for (int part_i=0; part_i<parts.length-1; part_i++) {
+            for (String pattern : AuthConstants.PATTERN_REQUIRES_AUTHORIZATION) {
+                if (StringUtils.contains(parts[part_i], pattern)) {
+                    return true;
+                }
             }
-        }
+    	}
         return false;
     }
 
