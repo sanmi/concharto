@@ -18,10 +18,9 @@
           <tr>
 	          <td>
 			  			<form:errors path="where"><span class="errorLabel"></form:errors>
-			        Where <span class="eg">e.g. Gettysburg, PA</span>
+			        Where <span class="eg">e.g. Gettysburg, PA <a href="${basePath}help.htm?name=where" class="link_help">hint</a></span>
 			  			<form:errors path="where"></span></form:errors>
 		  			</td>
-            <!--  <td>Where <span class="eg">e.g., Gettysburg, PA</span></td>  -->
             <td>
             	<form:errors path="when"><span class="errorLabel"></form:errors>
             	When <span class="eg">e.g. 1962; Oct 14,1066; 1880-1886 <a href="${basePath}help.htm?name=when" class="link_help" >hint</a></span>
