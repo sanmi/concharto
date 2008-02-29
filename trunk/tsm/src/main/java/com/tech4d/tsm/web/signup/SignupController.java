@@ -12,13 +12,13 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.tech4d.tsm.auth.AuthHelper;
 import com.tech4d.tsm.dao.UserDao;
 import com.tech4d.tsm.model.user.Role;
 import com.tech4d.tsm.model.user.User;
 import com.tech4d.tsm.service.EmailService;
 import com.tech4d.tsm.util.PasswordUtil;
 import com.tech4d.tsm.web.util.ConfirmationEmail;
+import com.tech4d.tsm.web.util.SessionHelper;
 /**
  * Signup a new user
  */
@@ -26,6 +26,11 @@ public class SignupController extends SimpleFormController {
     private static final String ROLE_EDIT = "edit";
     private UserDao userDao;
     private EmailService emailService;
+    private SessionHelper sessionHelper;
+    
+    public void setSessionHelper(SessionHelper sessionHelper) {
+		this.sessionHelper = sessionHelper;
+	}
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
@@ -42,7 +47,7 @@ public class SignupController extends SimpleFormController {
         User user = saveUser(form);
 
         //now log them in
-        AuthHelper.setUserInSession(request, user);
+        sessionHelper.setUserInSession(request, user);
 
         //now go where we were originally heading
         return LoginSignupHelper.continueToRequestedUrl(request);

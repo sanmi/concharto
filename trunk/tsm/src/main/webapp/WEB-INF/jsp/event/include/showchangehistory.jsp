@@ -6,19 +6,19 @@
 <%@ page import="com.tech4d.tsm.audit.EventFieldChangeFormatter, com.tech4d.tsm.model.audit.AuditEntry" %>
 <%@ taglib prefix="display" uri="http://displaytag.sf.net" %>
 <%
-int geometryField = EventFieldChangeFormatter.TSGEOMETRY;
-int posAccuracyField = EventFieldChangeFormatter.POSITIONAL_ACCURACY;
-int discussField = EventFieldChangeFormatter.DISCUSSION;
-request.setAttribute("geometryField", geometryField);
-request.setAttribute("posAccuracyField", posAccuracyField);
-request.setAttribute("discussField", discussField);
+pageContext.setAttribute("linefeed", "\n"); //for displaying description and summary fields
+request.setAttribute("geometryField", EventFieldChangeFormatter.TSGEOMETRY);
+request.setAttribute("posAccuracyField", EventFieldChangeFormatter.POSITIONAL_ACCURACY);
+request.setAttribute("discussField", EventFieldChangeFormatter.DISCUSSION);
+request.setAttribute("descriptionField", EventFieldChangeFormatter.DESCRIPTION);
+request.setAttribute("sourceField", EventFieldChangeFormatter.SOURCE);
 request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 %>
 	
 	<display:table id="simpleTable" 
 						name="auditEntries" 
 						sort="list" 
-						requestURI="${basePath}${requestURI}.htm"
+						requestURI="${requestURI}"
 						pagesize="${pagesize}"
 						partialList="true" 
 						size="${totalResults}"						
@@ -62,6 +62,11 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 										   This browser doesn't support embedding a map.
 						 				</iframe>
 				   				</c:when>
+									<%--  Description and Source are wikitext and need to show carriage returns--%>			   				
+				   				<c:when test="${(dt.propertyName == descriptionField) || (dt.propertyName == sourceField)}">
+										<c:set var="withCR" value="${fn:replace(dt.oldValue, linefeed, '<br/>')}" />
+										<c:out value="${withCR}" escapeXml="no"/>
+				   				</c:when>
 				   				<c:when test="${dt.propertyName == posAccuracyField}">
 				   					<spring:message code="event.positionalAccuracy.${dt.oldValue}"/>
 				   				</c:when>
@@ -78,6 +83,11 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 						  						height="150" width="350" frameborder="0" scrolling="no">
 										   This browser doesn't support embedding a map.
 						 				</iframe>
+				   				</c:when>
+									<%--  Description and Source are wikitext and need to show carriage returns--%>			   				
+				   				<c:when test="${(dt.propertyName == descriptionField) || (dt.propertyName == sourceField)}">
+										<c:set var="withCR" value="${fn:replace(dt.newValue, linefeed, '<br/>')}" />
+										<c:out value="${withCR}" escapeXml="no"/>
 				   				</c:when>
 				   				<c:when test="${dt.propertyName == posAccuracyField}">
 				   					<spring:message code="event.positionalAccuracy.${dt.newValue}"/>

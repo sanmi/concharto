@@ -25,6 +25,7 @@ import com.tech4d.tsm.model.user.UserNote;
 import com.tech4d.tsm.util.PasswordUtil;
 import com.tech4d.tsm.web.signup.LoginSignupHelper;
 import com.tech4d.tsm.web.signup.SignupForm;
+import com.tech4d.tsm.web.util.SessionHelper;
 
 /**
  * For authentication.  We aren't using the standard j2ee authentaction mechanisms because there
@@ -34,14 +35,20 @@ import com.tech4d.tsm.web.signup.SignupForm;
  *
  */
 public class LoginController extends SimpleFormController {
-    private static final Log log = LogFactory.getLog(LoginController.class);
+
+	private static final Log log = LogFactory.getLog(LoginController.class);
     private UserDao userDao;
+    private SessionHelper sessionHelper;
     
-    public void setUserDao(UserDao userDao) {
+    public void setSessionHelper(SessionHelper sessionHelper) {
+		this.sessionHelper = sessionHelper;
+	}
+
+	public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
 
-    @Override
+	@Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Boolean.class, new CustomBooleanEditor("true", "false", true));
         super.initBinder(request, binder);
@@ -72,7 +79,7 @@ public class LoginController extends SimpleFormController {
             log.info("user " + signupForm.getUsername() + " signed in");
 
             //first save the username and roles in the session            
-            AuthHelper.setUserInSession(request, user);
+            sessionHelper.setUserInSession(request, user);
             
             //if they checked "remember me" we set a cookie
             if (BooleanUtils.isTrue(signupForm.getRememberMe())) {
@@ -80,7 +87,7 @@ public class LoginController extends SimpleFormController {
             } else {
                 setRemeberMeCookie(response, user, 0);
             }
-            
+            		
             //now go where we were originally heading
             return LoginSignupHelper.continueToRequestedUrl(request);
         } else {

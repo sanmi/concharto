@@ -24,7 +24,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 			<display:table id="simpleTable" 
 								name="userChanges" 
 								sort="list" 
-								requestURI="${basePath}${requestURI}.htm"
+								requestURI="${requestURI}"
 								pagesize="${pagesize}"
 								partialList="true" 
 								size="${totalResults}"						

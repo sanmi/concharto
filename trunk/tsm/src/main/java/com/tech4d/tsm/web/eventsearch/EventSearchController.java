@@ -118,7 +118,7 @@ public class EventSearchController extends AbstractFormController {
 					searchHelper.prepareModel(model, events, (long) events.size(), 0);
 				}
 			}
-			displayTagModelElements( model);
+			displayTagModelElements(model, request);
 
 			return new ModelAndView(getFormView(), model);
 		} else {
@@ -177,7 +177,7 @@ public class EventSearchController extends AbstractFormController {
         			eventSearchForm.setLimitWithinMapBounds(false);
         		}
         		// needed so the displaytag paging can work
-        		displayTagModelElements(model);
+        		displayTagModelElements(model, request);
 
         		returnModelAndView = new ModelAndView(getSuccessView(), model);
             }
@@ -188,9 +188,9 @@ public class EventSearchController extends AbstractFormController {
     }
 
 	@SuppressWarnings("unchecked")
-	private void displayTagModelElements( Map model) {
+	private void displayTagModelElements(Map model, HttpServletRequest request) {
 		model.put(DisplayTagHelper.MODEL_PAGESIZE, SearchHelper.DISPLAYTAG_PAGESIZE);
-		model.put(DisplayTagHelper.MODEL_REQUEST_URI, formView);
+		model.put(DisplayTagHelper.MODEL_REQUEST_URI, request.getRequestURI());
 	}
 
 	private void logSearchQuery(EventSearchForm eventSearchForm, long time) {

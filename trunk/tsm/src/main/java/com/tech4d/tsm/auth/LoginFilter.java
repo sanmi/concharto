@@ -23,6 +23,7 @@ import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.dao.UserDao;
 import com.tech4d.tsm.model.user.User;
+import com.tech4d.tsm.web.util.SessionHelper;
 
 /**
  * Authorization filter.  We don't want to rely on the servlet container to do this because we
@@ -32,18 +33,19 @@ import com.tech4d.tsm.model.user.User;
  *
  */
 public class LoginFilter implements Filter{
-    private static final String REDIRECT_NOTAUTHORIZED = "/notauthorized.htm";
+	private static final String REDIRECT_NOTAUTHORIZED = "/notauthorized.htm";
     private static final String REDIRECT_LOGIN = "/login.htm";
     //TODO search requires authentication only during the private pilot
     private static final Log log = LogFactory.getLog(LoginFilter.class);
     private UserDao userDao;
-//    private FilterConfig filterConfig;
+    private SessionHelper sessionHelper;
 
     public void init(FilterConfig filterConfig) throws ServletException {
 //    	this.filterConfig = filterConfig; 
     	ServletContext ctx = filterConfig.getServletContext();
         WebApplicationContext webAppContext = WebApplicationContextUtils.getWebApplicationContext(ctx);
         userDao = (UserDao) webAppContext.getBean("userDao");
+        sessionHelper = (SessionHelper) webAppContext.getBean("sessionHelper");
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -211,7 +213,8 @@ public class LoginFilter implements Filter{
 				User user = userDao.getUserFromRememberMeKey(cookie.getValue());
 				if (user != null) {
 					//ok, they are authenticated
-					AuthHelper.setUserInSession(request, user);
+					sessionHelper.setUserInSession(request, user);
+					
 					return true;
 				}
 			}

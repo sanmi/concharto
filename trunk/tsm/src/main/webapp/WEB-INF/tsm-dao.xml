@@ -98,6 +98,10 @@
   	<property name="spotlightDao" ref="spotlightDao"/>
   </bean>
 
+  <bean id="sessionHelper" class="com.tech4d.tsm.web.util.SessionHelper">
+  	<property name="wikiTextDao" ref="wikiTextDao"/>
+  </bean>
+
   
 	<!-- end services -->
 	

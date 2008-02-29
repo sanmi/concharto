@@ -7,7 +7,7 @@
 	<display:table id="dt" 
 		name="event.flags" 
 		sort="list" 
-		requestURI="${basePath}${requestURI}.htm"
+		requestURI="${requestURI}"
 		pagesize="5"
 		defaultsort="1"
 		>

@@ -88,7 +88,7 @@ public class ChangeHistoryControllerHelper {
         }
         
         model.put(DisplayTagHelper.MODEL_PAGESIZE, pageSize);
-        model.put(DisplayTagHelper.MODEL_REQUEST_URI, request.getContextPath() + '/' + formView);
+        model.put(DisplayTagHelper.MODEL_REQUEST_URI, request.getRequestURI());
         model.put(DisplayTagHelper.MODEL_TOTAL_RESULTS, Math.round(totalResults));
         model.put(MODEL_ID, id);
 

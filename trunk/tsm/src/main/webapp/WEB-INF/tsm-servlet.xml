@@ -121,6 +121,7 @@
 		<property name="successView" value="redirect:/" />
 		<property name="validator" ref="loginFormValidator"/>
 		<property name="userDao" ref="userDao"/>
+		<property name="sessionHelper" ref="sessionHelper"/>
 	</bean>
 	
 	<bean id="forgotValidator" class="com.tech4d.tsm.web.forgot.ForgotValidator"/>
@@ -140,6 +141,7 @@
 		<property name="formView" value="public/reset" />
 		<property name="successView" value="public/resetsuccess" />
 		<property name="userDao" ref="userDao"/>
+		<property name="sessionHelper" ref="sessionHelper"/>
 	</bean>
 	
 	<bean id="feedbackValidator" class="com.tech4d.tsm.web.feedback.FeedbackValidator"/>
@@ -163,6 +165,7 @@
 		<property name="successView" value="redirect:/" />
 		<property name="userDao" ref="userDao"/>
 		<property name="emailService" ref="emailService"/>
+		<property name="sessionHelper" ref="sessionHelper"/>
 		<property name="validator" ref="signupFormValidator"/>
 	</bean>
 	
@@ -274,6 +277,7 @@
 		<property name="commandClass" value="com.tech4d.tsm.web.wiki.WikiTextForm" />
 		<property name="userDao" ref="userDao" />
 		<property name="wikiTextDao" ref="wikiTextDao" />
+		<property name="sessionHelper" ref="sessionHelper" />
 	</bean>
 	<bean id="wikiPageController" class="com.tech4d.tsm.web.wiki.WikiPageController" parent="wikiPageControllerBase">
 		<property name="formView" value="public/showpage" />
