@@ -15,13 +15,13 @@ import com.tech4d.tsm.util.ContextUtil;
 public class IntegrationTestWikiPageDao {
     private static final String WIKI_PAGE = "lllllls [dfsdf sdf] yo";
     private static final String WIKI_PAGE_TITLE = "User:jon";
-	private static WikiTextDao wikiPageDao;
+	private static WikiTextDao wikiTextDao;
     private static EventTesterDao eventTesterDao;
 
     @BeforeClass
     public static void setupClass() {
         ApplicationContext appCtx = ContextUtil.getCtx();
-        wikiPageDao = (WikiTextDao) appCtx.getBean("wikiPageDao");
+        wikiTextDao = (WikiTextDao) appCtx.getBean("wikiTextDao");
         eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
     }
     
@@ -33,16 +33,18 @@ public class IntegrationTestWikiPageDao {
     	WikiText wikiPage = new WikiText();
     	wikiPage.setText(WIKI_PAGE);
     	wikiPage.setTitle(WIKI_PAGE_TITLE);
-    	Long id = (Long) wikiPageDao.save(wikiPage);
+    	Long id = (Long) wikiTextDao.save(wikiPage);
     	assertNotNull(id);
-    	wikiPage = wikiPageDao.get(id);
+    	wikiPage = wikiTextDao.get(id);
     	assertEquals(WIKI_PAGE, wikiPage.getText());
     	
-    	wikiPage = wikiPageDao.find(WIKI_PAGE_TITLE);
+    	wikiPage = wikiTextDao.find(WIKI_PAGE_TITLE);
     	assertEquals(WIKI_PAGE_TITLE, wikiPage.getTitle());
-    	wikiPageDao.delete(id);
-    	wikiPage = wikiPageDao.get(id);
+    	assertEquals(true, wikiTextDao.exists(WIKI_PAGE_TITLE));
+    	wikiTextDao.delete(id);
+    	wikiPage = wikiTextDao.get(id);
     	assertNull(wikiPage);
+    	assertEquals(false, wikiTextDao.exists(WIKI_PAGE_TITLE));
     }
     
 }

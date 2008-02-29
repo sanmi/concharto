@@ -11,17 +11,22 @@ import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.tech4d.tsm.auth.AuthHelper;
 import com.tech4d.tsm.dao.UserDao;
 import com.tech4d.tsm.model.user.User;
 import com.tech4d.tsm.util.PasswordUtil;
 import com.tech4d.tsm.web.util.AuthForm;
 import com.tech4d.tsm.web.util.AuthFormValidatorHelper;
+import com.tech4d.tsm.web.util.SessionHelper;
 
 public class ResetController extends SimpleFormController{
 	private static final String PARAM_KEY = "key";
     private static final Log log = LogFactory.getLog(ResetController.class);
 	private UserDao userDao;
+    private SessionHelper sessionHelper;
+    
+    public void setSessionHelper(SessionHelper sessionHelper) {
+		this.sessionHelper = sessionHelper;
+	}
 
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
@@ -78,7 +83,7 @@ public class ResetController extends SimpleFormController{
 		log.info("user " + user.getUsername() + " has reset their password");
 		
 		//now log in
-        AuthHelper.setUserInSession(request, user);
+        sessionHelper.setUserInSession(request, user);
 		
 		return super.onSubmit(request, response, command, errors);
 	}

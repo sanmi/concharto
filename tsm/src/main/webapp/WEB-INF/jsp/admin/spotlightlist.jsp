@@ -45,7 +45,7 @@
 				<display:table id="simpleTable" 
 								name="spotlights" 
 								sort="list" 
-								requestURI="${basePath}${requestURI}.htm"
+								requestURI="${requestURI}"
 								pagesize="20"
 								>
 				<display:setProperty name="basic.msg.empty_list">There are no spotlights</display:setProperty>

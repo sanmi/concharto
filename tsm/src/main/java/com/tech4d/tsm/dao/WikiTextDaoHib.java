@@ -1,6 +1,7 @@
 package com.tech4d.tsm.dao;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,19 @@ public class WikiTextDaoHib implements WikiTextDao {
                 .setParameter(0, title)
                 .list()
         );
+	}
+
+	@SuppressWarnings("unchecked")
+	public Boolean exists(String title) {
+		List ids = this.sessionFactory.getCurrentSession().createQuery(
+				"select wikiText.id from WikiText wikiText where wikiText.title = ?")
+                .setParameter(0, title)
+                .list();
+		if (ids.size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public Serializable save(WikiText wikiText) {

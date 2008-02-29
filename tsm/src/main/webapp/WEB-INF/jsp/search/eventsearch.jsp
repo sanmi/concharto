@@ -89,7 +89,7 @@
 						<!--  start -->
 							<display:table id="event" 
 												name="events" 
-												requestURI="${basePath}${requestURI}.htm"
+												requestURI="${requestURI}"
 												pagesize="${pagesize}"
 												partialList="true" 
 												size="${totalResults}"

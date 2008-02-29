@@ -87,3 +87,10 @@
 	margin: .3em 0 0 0;
 	padding: 1em;
 }
+.changeEntry table {
+	width: 100%;
+}
+.changeEntry table td{
+	vertical-align: top;
+	
+}

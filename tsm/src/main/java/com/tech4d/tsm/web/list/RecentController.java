@@ -42,7 +42,7 @@ public class RecentController extends AbstractController {
 
 		model.put(MODEL_RECENT_EVENTS, eventDao.findRecent(pageSize, firstResult));
         model.put(DisplayTagHelper.MODEL_PAGESIZE, pageSize);
-        model.put(DisplayTagHelper.MODEL_REQUEST_URI, request.getContextPath() + formView);
+        model.put(DisplayTagHelper.MODEL_REQUEST_URI, request.getRequestURI());
         model.put(DisplayTagHelper.MODEL_TOTAL_RESULTS, Math.round(eventDao.getTotalCount()));
 
 		return new ModelAndView(this.formView, model);

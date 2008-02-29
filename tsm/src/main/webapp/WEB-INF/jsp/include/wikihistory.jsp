@@ -4,16 +4,17 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="display" uri="http://displaytag.sf.net" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<% pageContext.setAttribute("linefeed", "\n"); %>
 
 		<table><tr><td>
       <div class="simpleForm">
      		
 				<div class="infoBox">
-					<h2>Discussion History</h2>
+					<h2>Change History</h2>
 					<display:table id="simpleTable" 
 										name="auditEntries" 
 										sort="list" 
-										requestURI="${basePath}${requestURI}.htm"
+										requestURI="${requestURI}"
 										pagesize="${pagesize}"
 										partialList="true" 
 										size="${totalResults}"						
@@ -44,13 +45,16 @@
 					 		<c:choose>
 						 		<c:when test="${fn:length(simpleTable.auditEntryFieldChange) > 0}">
 							 		<div class="cleanTable">
-										<display:table name="${simpleTable.auditEntryFieldChange}" id="dt" >
+										<display:table
+											name="${simpleTable.auditEntryFieldChange}" id="dt" >
 											
 											<display:column style="width:50%" title="Old Value">
-						     				<c:out value="${dt.oldValue}"/>
+												<c:set var="withCR" value="${fn:replace(dt.oldValue, linefeed, '<br/>')}" />
+						     				<c:out value="${withCR}" escapeXml="no"/>
 											</display:column>
 											<display:column title="New Value">
-						     				<c:out value="${dt.newValue}"/>
+												<c:set var="withCR" value="${fn:replace(dt.newValue, linefeed, '<br/>')}" />
+						     				<c:out value="${withCR}" escapeXml="no"/>
 											</display:column>
 										</display:table> 
 									</div>

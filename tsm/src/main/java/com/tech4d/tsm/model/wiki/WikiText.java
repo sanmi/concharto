@@ -12,7 +12,8 @@ public class WikiText extends BaseAuditableEntity {
 	private String text;
 	String title;
 
-	@Lob
+	@Lob 
+	@Column( columnDefinition = "mediumtext")
 	public String getText() {
 		return text;
 	}

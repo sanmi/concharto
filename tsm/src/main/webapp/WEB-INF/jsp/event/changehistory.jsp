@@ -6,7 +6,7 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 
 <tsm:page title="Change History">
-	<jsp:attribute name="stylesheet">map.css,simpleform.css,header.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">map.css,simpleform.css,header.css,wiki.css</jsp:attribute>
 	<jsp:attribute name="bodyattr">class="mapedit"</jsp:attribute>
 	<jsp:attribute name="head">
 		<script type="text/javascript">

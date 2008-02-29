@@ -1,6 +1,18 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="com.tech4d.tsm.web.wiki.WikiConstants" %>
+<%
+	Boolean myPageExists = (Boolean)request.getSession().getAttribute(WikiConstants.SESSION_MYPAGE_EXISTS); 
+	if ((null != myPageExists) && (myPageExists == false)) {
+		request.setAttribute("myPageLinkClass", "new_links");
+	}
+	Boolean myTalkExists = (Boolean)request.getSession().getAttribute(WikiConstants.SESSION_MYTALK_EXISTS); 
+	if ((null != myTalkExists) && (myTalkExists == false)) {
+		request.setAttribute("myTalkLinkClass", "new_links");
+	}
+
+ %>
 <div id="nav">
     <div class="nav_block">
 			<ul>
@@ -18,9 +30,9 @@
 					<li><a href="${basePath}">Home </a></li>
 					<li>|</li>
 				</c:if>
-				<li><span class="new_links"><a href="${basePath}page.htm?page=User:${username}">My Page</a></span></li>
+				<li><span class="${myPageLinkClass}"><a href="${basePath}page.htm?page=User:${username}">My Page</a></span></li>
 				<li>|</li>
-				<li><span class="new_links"><a href="${basePath}page.htm?page=User_talk:${username}">My Talk</a></span></li>
+				<li><span class="${myTalkLinkClass}"><a href="${basePath}page.htm?page=User_talk:${username}">My Talk</a></span></li>
 				<li>|</li>
 				<li> 
 					<a href="${basePath}member/settings.htm">Settings</a>
