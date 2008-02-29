@@ -3,8 +3,8 @@ package com.tech4d.tsm.audit;
 import java.util.Map;
 
 import com.tech4d.tsm.model.Auditable;
-import com.tech4d.tsm.model.WikiText;
 import com.tech4d.tsm.model.audit.AuditEntry;
+import com.tech4d.tsm.model.wiki.WikiText;
 
 /**
  * WikiRender change formatter. 
