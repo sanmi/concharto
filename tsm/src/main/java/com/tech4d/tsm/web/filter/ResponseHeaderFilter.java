@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  */
 public class ResponseHeaderFilter implements Filter {
-	FilterConfig fc;
+	private FilterConfig fc;
 
 	public void doFilter(ServletRequest req, ServletResponse res,
 			FilterChain chain) throws IOException, ServletException {

@@ -6,7 +6,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 
-<tsm:page title="embedded search">
+<tsm:page title="Embedded Map">
 	<jsp:attribute name="stylesheet">map.css,wiki.css,search.css</jsp:attribute>
 	<jsp:attribute name="script">prototype.js,map.js,wiki.css,searchcommon.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize_embedded()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>

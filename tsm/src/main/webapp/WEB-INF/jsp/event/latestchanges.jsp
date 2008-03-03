@@ -40,7 +40,10 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 				<display:setProperty name="paging.banner.some_items_found">&nbsp;</display:setProperty>
 				<display:column >
 					<fmt:formatDate value="${simpleTable.auditEntry.dateCreated}" pattern="MMM dd, yyyy hh:mm a z"/>,
-					<a href="${basePath}event/contributions.htm?user=${simpleTable.auditEntry.user}">${simpleTable.auditEntry.user}</a>, 
+					<jsp:include page="include/userlinks.jsp">
+						<jsp:param name="user" value="${simpleTable.auditEntry.user}"/>
+					</jsp:include>
+					, 
 					<c:if test="${simpleTable.auditable.summary != null}">  <%-- todo this is a kludge - fix it --%>
 						(<a href="${basePath}edit/event.htm?id=${simpleTable.auditEntry.entityId}">edit</a> | 
 						<a href="${basePath}event/changehistory.htm?id=${simpleTable.auditEntry.entityId}">changes</a>),

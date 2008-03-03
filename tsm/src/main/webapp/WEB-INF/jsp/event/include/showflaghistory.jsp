@@ -22,12 +22,15 @@
 		<display:setProperty name="paging.banner.some_items_found">
 			<span class="pagebanner"><b>{0}</b> {1} found.</span>
 		</display:setProperty>
-						
+
+		<%-- TODO put col widths in CSS --%>						
 		<display:column defaultorder="descending" sortable="true" sortName="created" style="width:12em" title="Date" >
 		 	<fmt:formatDate value="${dt.created}" pattern="MMM dd, yyyy hh:mm a"/>
 		</display:column>
-		<display:column sortable="true" title="User" >
-		 	<a href="${basePath}event/contributions.htm?user=${dt.user.username}">${dt.user.username}</a>
+		<display:column sortable="true" title="User"  style="width:10.8em" >
+			<jsp:include page="userlinks.jsp">
+				<jsp:param name="user" value="${dt.user.username}"/>
+			</jsp:include>
 		</display:column>
 		<display:column title="Comment">${dt.comment}&nbsp;</display:column>
 		<display:column title="Reason" >

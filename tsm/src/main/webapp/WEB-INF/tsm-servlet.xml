@@ -272,18 +272,19 @@
 		<property name="successView" value="event/discuss" />
 	</bean>
 	
-	<bean id="wikiPageControllerBase" class="com.tech4d.tsm.web.wiki.WikiPageController" parent="baseEventController">
+	<bean id="wikiPageControllerBase" class="com.tech4d.tsm.web.wiki.UserWikiPageController" parent="baseEventController">
 		<property name="commandName" value="wikiTextForm" />
 		<property name="commandClass" value="com.tech4d.tsm.web.wiki.WikiTextForm" />
 		<property name="userDao" ref="userDao" />
 		<property name="wikiTextDao" ref="wikiTextDao" />
+		<property name="notificationService" ref="notificationService" />
 		<property name="sessionHelper" ref="sessionHelper" />
 	</bean>
-	<bean id="wikiPageController" class="com.tech4d.tsm.web.wiki.WikiPageController" parent="wikiPageControllerBase">
+	<bean id="wikiPageController" class="com.tech4d.tsm.web.wiki.UserWikiPageController" parent="wikiPageControllerBase">
 		<property name="formView" value="public/showpage" />
 		<property name="successView" value="public/showpage" />
 	</bean>
-	<bean id="wikiPageEditController" class="com.tech4d.tsm.web.wiki.WikiPageController" parent="wikiPageControllerBase">
+	<bean id="wikiPageEditController" class="com.tech4d.tsm.web.wiki.UserWikiPageController" parent="wikiPageControllerBase">
 		<property name="formView" value="page/editpage" />
 		<property name="successView" value="public/showpage" />
 	</bean>

@@ -41,9 +41,11 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 		<%-- TODO make it so we don't show empty changes or we record something for empty changes (e.g. added a flag) --%>
 		<div class="changeEntry">
 		
-				Revision <c:out value="${simpleTable.version}"/>, 
-				<spring:message code="audit.action.field.${simpleTable.action}"/> by
-				<a  href="${basePath}event/contributions.htm?user=${simpleTable.user}" >${simpleTable.user}</a> 
+			Revision <c:out value="${simpleTable.version}"/>, 
+			<spring:message code="audit.action.field.${simpleTable.action}"/> by
+			<jsp:include page="userlinks.jsp">
+				<jsp:param name="user" value="${simpleTable.user}"/>
+			</jsp:include>
 	 		<fmt:formatDate value="${simpleTable.dateCreated}" pattern="MMM dd, yyyy hh:mm a"/>
 	 		
 	 		<c:choose>

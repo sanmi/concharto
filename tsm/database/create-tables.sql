@@ -37,11 +37,11 @@
         _where varchar(512),
         zoomLevel integer,
         styleSelector_id bigint,
-        tsGeometry_id bigint,
         discussion_id bigint,
-        when_id bigint,
         eventSearchText_id bigint,
+        when_id bigint,
         positionalAccuracy_id bigint,
+        tsGeometry_id bigint,
         primary key (id)
     );
 
@@ -84,6 +84,19 @@
         state varchar(255),
         user_id bigint,
         event_id bigint,
+        primary key (id)
+    );
+
+    create table Notification (
+        id bigint not null auto_increment,
+        created datetime,
+        lastModified datetime,
+        version bigint,
+        description text,
+        title varchar(512),
+        type varchar(255),
+        fromUser_id bigint,
+        toUser_id bigint,
         primary key (id)
     );
 
@@ -205,7 +218,8 @@
         created datetime,
         lastModified datetime,
         version bigint,
-        text text,
+        text mediumtext,
+        title varchar(512),
         primary key (id)
     );
 
@@ -274,6 +288,18 @@
         add constraint FK_FLAG_EVENT 
         foreign key (event_id) 
         references Event (id);
+
+    alter table Notification 
+        add index FK_NOTIF_FROMUSER (fromUser_id), 
+        add constraint FK_NOTIF_FROMUSER 
+        foreign key (fromUser_id) 
+        references User (id);
+
+    alter table Notification 
+        add index FK_NOTIF_TOUSER (toUser_id), 
+        add constraint FK_NOTIF_TOUSER 
+        foreign key (toUser_id) 
+        references User (id);
 
     alter table Spotlight 
         add index FK_SPOTLIGHT_USER (addedByUser_id), 
