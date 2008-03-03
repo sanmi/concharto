@@ -1,4 +1,4 @@
-package com.tech4d.tsm.auth;
+package com.tech4d.tsm.web.filter;
 
 import java.io.IOException;
 
@@ -21,6 +21,10 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.util.WebUtils;
 
+import com.tech4d.tsm.auth.AuthConstants;
+import com.tech4d.tsm.auth.AuthHelper;
+import com.tech4d.tsm.auth.ThreadLocalUserContext;
+import com.tech4d.tsm.auth.UserContext;
 import com.tech4d.tsm.dao.UserDao;
 import com.tech4d.tsm.model.user.User;
 import com.tech4d.tsm.web.util.SessionHelper;

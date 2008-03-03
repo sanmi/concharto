@@ -10,6 +10,7 @@
 <%@attribute name="nohead" required="false" type="java.lang.String"%>
 <%@attribute name="nohomemenu" required="false" type="java.lang.String"%>
 <%@tag import="com.tech4d.tsm.auth.AuthConstants" %>
+<%@tag import="com.tech4d.tsm.web.filter.NotificationFilter" %>
 
 <%
 String path = request.getContextPath();
@@ -22,6 +23,7 @@ basePath += "/";
 request.setAttribute("basePath", basePath);
 request.setAttribute("roles", (String)request.getSession().getAttribute(AuthConstants.SESSION_AUTH_ROLES));
 request.setAttribute("username", (String)request.getSession().getAttribute(AuthConstants.SESSION_AUTH_USERNAME));
+request.setAttribute("hasMessages", (String)request.getSession().getAttribute(NotificationFilter.SESSION_MESSAGES_PENDING));
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

@@ -22,6 +22,7 @@
         <mapping class="com.tech4d.tsm.model.user.User"/>
         <mapping class="com.tech4d.tsm.model.user.Role"/>
         <mapping class="com.tech4d.tsm.model.user.UserNote"/>
+        <mapping class="com.tech4d.tsm.model.user.Notification"/>
         <mapping class="com.tech4d.tsm.model.UserTag"/>
         <mapping class="com.tech4d.tsm.model.EventSummary"/>
         <mapping class="com.tech4d.tsm.model.Flag"/>
