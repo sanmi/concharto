@@ -166,4 +166,11 @@
   padding-left: 0;
 	color:red;
 	}
-	
+	#notification {
+	position:absolute;
+	top:155px;
+	text-align:center;
+	margin: 0 20%;
+	padding:.5em 1em;
+	width: 60%;
+	}

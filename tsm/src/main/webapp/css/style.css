@@ -86,6 +86,12 @@ form {
 .adminAction{
 	border-left:1px solid #e0e0e0;
 }
+.notificationBox{
+	border:1px solid #FFA500;
+	font-weight: bold;
+	background: #FFCE7B;
+}
+
 
 #footer {
 	border-top:1px solid #E1E4D6;

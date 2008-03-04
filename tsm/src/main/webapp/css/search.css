@@ -42,3 +42,8 @@
 .mapedit .resultcount, .errorHint, .pagelinks {
 	padding-left: 5px;
 }
+#notification {
+	margin: 0.2em .2em 0;
+	padding:.5em 1em;
+	text-align: left;
+}

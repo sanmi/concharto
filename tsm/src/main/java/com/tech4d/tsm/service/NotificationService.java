@@ -34,10 +34,12 @@ public class NotificationService {
 		notification.setFromUser(fromUser);
 		notification.setToUser(toUser);
 		notification.setTitle(messageSource.getMessage(
-				MSGKEY_NEW_TALK_TITLE, new Object[]{fromUser.getUsername()}, null));
+				MSGKEY_NEW_TALK_TITLE, new Object[]{fromUser.getUsername(), 
+						toUser.getUsername()}, null));
 		notification.setType(NotificationType.TALK);
 		notificationDao.save(notification);
 	}
+
 
 	/**
 	 * Clear all notifications for a given user/notification type
