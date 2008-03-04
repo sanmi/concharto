@@ -11,8 +11,8 @@
 	if ((null != myTalkExists) && (myTalkExists == false)) {
 		request.setAttribute("myTalkLinkClass", "new_links");
 	}
-
  %>
+
 <div id="nav">
     <div class="nav_block">
 			<ul>

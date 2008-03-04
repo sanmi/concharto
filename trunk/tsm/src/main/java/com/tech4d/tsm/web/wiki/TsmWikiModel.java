@@ -13,8 +13,8 @@ public class TsmWikiModel extends WikiModel {
 	@Override
 	public String render(String rawWikiText) {
 		// TODO Auto-generated method stub
-		String rendered = super.render(rawWikiText);
-		rendered = SubstitutionMacro.postSignature(basePath, rendered);
+		String substituted = SubstitutionMacro.postSignature(basePath, rawWikiText);
+		String rendered = super.render(substituted);
 		return rendered;
 	}
 	

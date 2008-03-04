@@ -12,7 +12,7 @@ public class WikiModelFactory {
 	public static WikiModel newWikiModel(HttpServletRequest request) {
 		String basePath = UrlFormat.getBasepath(request);
 		
-		return new TsmWikiModel(basePath, basePath + "images/${image}", basePath + "search/eventsearch.htm?_id=${title}");
+		return new TsmWikiModel(basePath, basePath + "images/${image}", basePath + "page.htm?page=${title}");
 	}
 
 	

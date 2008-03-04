@@ -39,7 +39,10 @@
 						
 								Revision <c:out value="${simpleTable.version}"/>, 
 								<spring:message code="audit.action.field.${simpleTable.action}"/> by
-								<a  href="${basePath}event/contributions.htm?user=${simpleTable.user}" >${simpleTable.user}</a> 
+								<jsp:include page="../include/userlinks.jsp">
+									<jsp:param name="user" value="${simpleTable.user}"/>
+								</jsp:include>
+								
 					 		<fmt:formatDate value="${simpleTable.dateCreated}" pattern="MMM dd, yyyy hh:mm a"/>
 					 		
 					 		<c:choose>
