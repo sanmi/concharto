@@ -1,7 +1,9 @@
 package com.tech4d.tsm.dao;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,20 @@ public class WikiTextDaoHib implements WikiTextDao {
 		} else {
 			return false;
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Map<String,Long> exists(String[] titles) {
+		List ids = this.sessionFactory.getCurrentSession().createQuery(
+		"select title, id from WikiText wikiText where wikiText.title in (:titles)")
+		.setParameterList("titles", titles)
+		.list();
+		Map<String,Long> results = new HashMap<String,Long>();
+		for (Object object : ids) {
+			Object[] result = (Object[]) object;
+			results.put((String)result[0], (Long)result[1]);
+		}
+		return results;
 	}
 
 	public Serializable save(WikiText wikiText) {

@@ -183,6 +183,7 @@
 	<bean id="changeHistoryControllerHelper" class="com.tech4d.tsm.web.changehistory.ChangeHistoryControllerHelper">
 		<property name="auditEntryDao" ref="auditEntryDao" />
 		<property name="eventDao" ref="eventDao" />
+		<property name="wikiTextDao" ref="wikiTextDao" />
 	</bean>
 	<bean id="contributionsController" class="com.tech4d.tsm.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
 		<property name="formView" value="event/contributions" />
