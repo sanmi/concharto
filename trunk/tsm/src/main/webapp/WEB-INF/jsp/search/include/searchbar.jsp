@@ -95,5 +95,6 @@
   </div> 
 </c:if>  
 
+<jsp:include page="../../include/notificationbox.jsp"/>
 <div class="clearfloat"></div>
 

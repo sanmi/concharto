@@ -50,9 +50,6 @@
 				<li>|</li>
 				<li><a href="${basePath}logout.htm">Sign out</a></li>
 				</c:if></ul>
-		    <c:if test="${null != hasMessages}">
-		    	There are messages!
-		    </c:if>
     </div>
     <div class="nav_left" ><img style="height:20px;width:6px"  alt="" src="${basePath}images/nav-left.png" /></div>
   </div>
