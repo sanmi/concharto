@@ -43,13 +43,13 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 					<jsp:include page="include/userlinks.jsp">
 						<jsp:param name="user" value="${simpleTable.auditEntry.user}"/>
 					</jsp:include>
+					,(<spring:message code="audit.action.field.${simpleTable.auditEntry.action}"/>
+					r${simpleTable.auditEntry.version}) 						
 					, 
 					<c:if test="${simpleTable.auditable.summary != null}">  <%-- todo this is a kludge - fix it --%>
 						(<a href="${basePath}edit/event.htm?id=${simpleTable.auditEntry.entityId}">edit</a> | 
 						<a href="${basePath}event/changehistory.htm?id=${simpleTable.auditEntry.entityId}">changes</a>),
 					</c:if>
-					(<spring:message code="audit.action.field.${simpleTable.auditEntry.action}"/>
-					r${simpleTable.auditEntry.version}), 						
 					<c:choose>
 						<c:when test="${simpleTable.auditable.summary == null}">
 							<em>event has been deleted</em> 

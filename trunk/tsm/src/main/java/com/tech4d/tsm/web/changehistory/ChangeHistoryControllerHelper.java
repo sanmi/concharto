@@ -1,7 +1,9 @@
 package com.tech4d.tsm.web.changehistory;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,10 +14,12 @@ import org.springframework.web.bind.ServletRequestUtils;
 import com.tech4d.tsm.dao.AuditEntryDao;
 import com.tech4d.tsm.dao.AuditUserChange;
 import com.tech4d.tsm.dao.EventDao;
+import com.tech4d.tsm.dao.WikiTextDao;
 import com.tech4d.tsm.model.Auditable;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.audit.AuditEntry;
 import com.tech4d.tsm.web.util.DisplayTagHelper;
+import com.tech4d.tsm.web.wiki.WikiConstants;
 
 /**
  * Helper class for displaying change lists based on GET string parameters.  Used by
@@ -30,8 +34,10 @@ public class ChangeHistoryControllerHelper {
     private static final String DISPLAYTAG_TABLE_ID = "simpleTable";
 	private static final String MODEL_EVENT_ID = "eventId";
 	private static final String MODEL_EVENT = "event";
+	private static final Object MODEL_USER_PAGES = "userPages";
     private AuditEntryDao auditEntryDao;
     private EventDao eventDao;
+    private WikiTextDao wikiTextDao;
     
     public void setAuditEntryDao(AuditEntryDao auditEntryDao) {
 		this.auditEntryDao = auditEntryDao;
@@ -39,7 +45,10 @@ public class ChangeHistoryControllerHelper {
 	public void setEventDao(EventDao eventDao) {
 		this.eventDao = eventDao;
 	}
-
+	public void setWikiTextDao(WikiTextDao wikiTextDao) {
+		this.wikiTextDao = wikiTextDao;
+	}
+	
 	@SuppressWarnings("unchecked")
     public Map doProcess(Class<?> clazz, String formView, HttpServletRequest request, Map model, int pageSize) throws Exception {
         Integer firstRecord = DisplayTagHelper.getFirstRecord(request, DISPLAYTAG_TABLE_ID, pageSize);
@@ -55,6 +64,7 @@ public class ChangeHistoryControllerHelper {
        
         String user = ServletRequestUtils.getStringParameter(request, MODEL_USER);
         Long totalResults = 0L;
+        
         //TODO - split this into two controllers one for user contribs, one for event changes
         if ((id != null) ||(hasEmptyId)) {
         	//we are doing history for an Auditable
@@ -72,8 +82,13 @@ public class ChangeHistoryControllerHelper {
 	            Auditable auditable = (Auditable) clazz.newInstance();
 	            auditable.setId(id);
 	            List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(auditable, firstRecord, pageSize);
-	            totalResults = auditEntryDao.getAuditEntriesCount(auditable);        	
+	            totalResults = auditEntryDao.getAuditEntriesCount(auditable);
 	            model.put(MODEL_AUDIT_ENTRIES, auditEntries);
+	    		Set<String> titles = new HashSet<String>();
+	    		for (AuditEntry auditEntry : auditEntries) {
+	    			addTitle(titles, auditEntry.getUser());
+	    		}
+	    		updateModelUserPages(model, titles);
             }
         } else if (!StringUtils.isEmpty(user)){
         	//we are doing history for a user
@@ -85,6 +100,11 @@ public class ChangeHistoryControllerHelper {
         	List<AuditUserChange> userChanges = auditEntryDao.getLatestAuditEntries(clazz, firstRecord, pageSize);
             totalResults = auditEntryDao.getAuditEntriesCount(Event.class);
             model.put(MODEL_USER_CHANGES, userChanges);
+    		Set<String> titles = new HashSet<String>();
+    		for (AuditUserChange auditUserChange : userChanges) {
+    			addTitle(titles, auditUserChange.getAuditEntry().getUser());
+    		}
+    		updateModelUserPages(model, titles);
         }
         
         model.put(DisplayTagHelper.MODEL_PAGESIZE, pageSize);
@@ -94,4 +114,28 @@ public class ChangeHistoryControllerHelper {
 
         return model;
     }
+
+	/**
+	 * Add user page titles to the given set.
+	 * @param titles
+	 * @param username
+	 */
+	private void addTitle(Set<String> titles, String username) {
+		titles.add(WikiConstants.PREFIX_USER + username);
+		titles.add(WikiConstants.PREFIX_USER_TALK + username);
+	}
+	
+	/**
+	 * Update the model with a set of user page titles.  This allows the view to give hints to 
+	 * the user about which user pages have been created and which haven't (e.g. red links indicate
+	 * the page hasn't been created yet)
+	 * @param model
+	 * @param titles
+	 */
+	@SuppressWarnings("unchecked")
+	private void updateModelUserPages(Map model, Set<String> titles) {
+		Map<String,Long> pages = wikiTextDao.exists((String[])(titles.toArray(new String[titles.size()])));
+		model.put(MODEL_USER_PAGES, pages);
+	}
+	
 }
