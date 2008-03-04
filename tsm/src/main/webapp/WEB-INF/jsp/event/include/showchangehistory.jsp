@@ -43,7 +43,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 		
 			Revision <c:out value="${simpleTable.version}"/>, 
 			<spring:message code="audit.action.field.${simpleTable.action}"/> by
-			<jsp:include page="userlinks.jsp">
+			<jsp:include page="../../include/userlinks.jsp">
 				<jsp:param name="user" value="${simpleTable.user}"/>
 			</jsp:include>
 	 		<fmt:formatDate value="${simpleTable.dateCreated}" pattern="MMM dd, yyyy hh:mm a"/>

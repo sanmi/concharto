@@ -40,7 +40,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 				<display:setProperty name="paging.banner.some_items_found">&nbsp;</display:setProperty>
 				<display:column >
 					<fmt:formatDate value="${simpleTable.auditEntry.dateCreated}" pattern="MMM dd, yyyy hh:mm a z"/>,
-					<jsp:include page="include/userlinks.jsp">
+					<jsp:include page="../include/userlinks.jsp">
 						<jsp:param name="user" value="${simpleTable.auditEntry.user}"/>
 					</jsp:include>
 					,(<spring:message code="audit.action.field.${simpleTable.auditEntry.action}"/>

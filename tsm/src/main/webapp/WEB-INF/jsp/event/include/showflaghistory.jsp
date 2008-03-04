@@ -28,7 +28,7 @@
 		 	<fmt:formatDate value="${dt.created}" pattern="MMM dd, yyyy hh:mm a"/>
 		</display:column>
 		<display:column sortable="true" title="User"  style="width:10.8em" >
-			<jsp:include page="userlinks.jsp">
+			<jsp:include page="../../include/userlinks.jsp">
 				<jsp:param name="user" value="${dt.user.username}"/>
 			</jsp:include>
 		</display:column>
