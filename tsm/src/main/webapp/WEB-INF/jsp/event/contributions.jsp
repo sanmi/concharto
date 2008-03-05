@@ -19,7 +19,13 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 	<jsp:body>
 		
 		<div class="textpanel">			
-			<h2>Member Contributions for ${param.user}</h2>
+			<h2>Member Contributions for 
+			<jsp:include page="../include/userlinks.jsp">
+				<jsp:param name="user" value="${param.user}"/>
+				<jsp:param name="excludecontribs" value="yes"/>
+			</jsp:include>
+			
+			</h2>
 			
 			<display:table id="simpleTable" 
 								name="userChanges" 

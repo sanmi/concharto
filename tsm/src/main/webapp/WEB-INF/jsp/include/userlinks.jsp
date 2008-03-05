@@ -10,6 +10,15 @@
 <c:if test="${null == userPages[userpage]}">
 	<c:set var="userclass" value="new_links"/> 
 </c:if>
+
 <span class="${userclass}"><a href="${basePath}page.htm?page=${userpage}">${param.user}</a></span> 
-(<span class="${talkclass}"><a href="${basePath}page.htm?page=${talkpage}">Talk</a></span> 
-| <a  href="${basePath}event/contributions.htm?user=${param.user}" >Contribs</a>)
+(<span class="${talkclass}"><a href="${basePath}page.htm?page=${talkpage}">Talk</a></span>
+<%-- TODO this is goofy.  There should be a better way to do it --%>
+<c:choose>
+	<c:when test="${param.excludecontribs == null}">
+	| <a href="${basePath}event/contributions.htm?user=${param.user}" >Contribs</a>)
+	</c:when>
+	<c:otherwise>
+	)
+	</c:otherwise>
+</c:choose>
