@@ -121,6 +121,8 @@ public class ChangeHistoryControllerHelper {
 	 * @param username
 	 */
 	private void addTitle(Set<String> titles, String username) {
+		//wiki convention replaces ' ' with '_'
+		username = StringUtils.replace(username, " ", "_");
 		titles.add(WikiConstants.PREFIX_USER + username);
 		titles.add(WikiConstants.PREFIX_USER_TALK + username);
 	}
