@@ -30,9 +30,10 @@
 					<li><a href="${basePath}">Home </a></li>
 					<li>|</li>
 				</c:if>
-				<li><span class="${myPageLinkClass}"><a href="${basePath}page.htm?page=User:${username}">My Page</a></span></li>
+				<c:set var="userPageName" value="${fn:replace(username,' ','_')}"/>
+				<li><span class="${myPageLinkClass}"><a href="${basePath}page.htm?page=User:${userPageName}">My Page</a></span></li>
 				<li>|</li>
-				<li><span class="${myTalkLinkClass}"><a href="${basePath}page.htm?page=User_talk:${username}">My Talk</a></span></li>
+				<li><span class="${myTalkLinkClass}"><a href="${basePath}page.htm?page=User_talk:${userPageName}">My Talk</a></span></li>
 				<li>|</li>
 				<li> 
 					<a href="${basePath}member/settings.htm">Settings</a>
