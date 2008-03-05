@@ -12,9 +12,8 @@
         primary key (id)
     );
     
-    
-    alter table wikitext modify text mediumtext;
-    alter table wikitext add title varchar(512);
+    alter table WikiText modify text mediumtext;
+    alter table WikiText add title varchar(512);
     
     alter table Notification 
         add index FK_NOTIF_FROMUSER (fromUser_id), 
