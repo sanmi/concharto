@@ -9,6 +9,7 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
+import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.auth.AuthHelper;
@@ -28,6 +29,7 @@ import com.tech4d.tsm.web.util.SessionHelper;
 public class UserWikiPageController extends SimpleFormController {
 	private static final String PARAMSUB_USER_TALK = "User_talk:";
 	private static final String PARAMSUB_USER = "User:";
+	private static final String PARAMSUB_EVENT = "Event:";
 	private String PARAM_PAGE="page";
 	private WikiTextDao wikiTextDao;
 	private UserDao userDao;
@@ -68,32 +70,40 @@ public class UserWikiPageController extends SimpleFormController {
 		return new WikiTextForm(wikiText, true);
 	}
 
+	/*
+	 * TODO refactor this User, User_talk, Event - it is messy
+	 */
 	@Override
 	protected ModelAndView showForm(HttpServletRequest request,
 			HttpServletResponse response, BindException errors)
 			throws Exception {
 		
-		User user = getUser(request);
-		//only edit pages for users that exist
-		if (null != user) {
-			//If this is my talk page and there are notifications, then we can clear
-			//the notifications
-			if (iAmWritingOnMyPage(request) && isUserTalkPage(request)) {
-				if (null != WebUtils.getSessionAttribute(request, 
-							NotificationFilter.SESSION_MESSAGES_PENDING)) {
-					//clear the notifications
-					notificationService.clearNotifications(user, NotificationType.TALK);
-					//clear the session variable
-					WebUtils.setSessionAttribute(request, NotificationFilter.SESSION_MESSAGES_PENDING, null);
-					//if the page didn't exist before, we should make it so the link shows
-					//that the page now exists
-					WebUtils.setSessionAttribute(request, WikiConstants.SESSION_MYTALK_EXISTS, true);
-				}
-			} 
-			return super.showForm(request, response, errors);
+		if (isEventPage(request)) {
+			//ok we simply redirect to the search page
+			return new ModelAndView(new RedirectView("/search/eventsearch.htm?_what=%22" + getEvent(request) + "%22"));
 		} else {
-			//not good this user doesn't exist - redirect to notfound
-			return new ModelAndView("404");
+			User user = getUser(request);
+			//only edit pages for users that exist
+			if (null != user) {
+				//If this is my talk page and there are notifications, then we can clear
+				//the notifications
+				if (iAmWritingOnMyPage(request) && isUserTalkPage(request)) {
+					if (null != WebUtils.getSessionAttribute(request, 
+								NotificationFilter.SESSION_MESSAGES_PENDING)) {
+						//clear the notifications
+						notificationService.clearNotifications(user, NotificationType.TALK);
+						//clear the session variable
+						WebUtils.setSessionAttribute(request, NotificationFilter.SESSION_MESSAGES_PENDING, null);
+						//if the page didn't exist before, we should make it so the link shows
+						//that the page now exists
+						WebUtils.setSessionAttribute(request, WikiConstants.SESSION_MYTALK_EXISTS, true);
+					}
+				} 
+				return super.showForm(request, response, errors);
+			} else {
+				//not good this user doesn't exist - redirect to notfound
+				return new ModelAndView("404");
+			}
 		}
 	}
 
@@ -145,7 +155,15 @@ public class UserWikiPageController extends SimpleFormController {
 	private User getUser(HttpServletRequest request) throws ServletRequestBindingException {
 		String username = getUsername(request);
 		if (null != username) {
-			return userDao.find(username);
+			User user = userDao.find(username);
+			if (user == null) {
+				//this is a hack.  The wiki formatter adds spaces by wikipedia's convention, but our usernames
+				//can have spaces.
+				//try replacing '_' with spaces.  The wiki formatter puts them there.
+				username = StringUtils.replace(username, "_", " ");
+				user = userDao.find(username);
+			}
+			return user;
 		}
 		return null;
 	}
@@ -192,4 +210,25 @@ public class UserWikiPageController extends SimpleFormController {
 			return ((myname.equals(theirname)) && isUserTalkPage(request));	
 		}
 	}
+
+	/**
+	 * Determine whether this page is an event page
+	 * @param request
+	 * @return
+	 * @throws ServletRequestBindingException
+	 */
+	private boolean isEventPage(HttpServletRequest request) throws ServletRequestBindingException {
+		String page = ServletRequestUtils.getStringParameter(request, PARAM_PAGE);
+		return StringUtils.contains(page, PARAMSUB_EVENT);
+	}
+	
+	private String getEvent(HttpServletRequest request) throws ServletRequestBindingException {
+		String page = ServletRequestUtils.getStringParameter(request, PARAM_PAGE);
+		String eventName = StringUtils.substringAfter(page, ":");
+		//replace underscores with %20
+		eventName = StringUtils.replace(eventName, "_", "%20");
+		return eventName;
+		
+	}
+
 }
