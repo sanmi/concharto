@@ -210,7 +210,7 @@ public class UserWikiPageController extends SimpleFormController {
 		if (null == myname) {
 			return false;
 		} else {
-			return ((myname.equals(theirname)) && isUserTalkPage(request));	
+			return myname.equals(theirname);	
 		}
 	}
 
