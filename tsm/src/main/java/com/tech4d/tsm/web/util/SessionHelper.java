@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.auth.AuthConstants;
@@ -23,8 +24,11 @@ public class SessionHelper {
 		WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME, user.getUsername());
 		WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_ROLES, makeRoles(user.getRoles()));
         //put some flags to indicate whether the user and talk pages have been created
+		//wiki convention is that we replace ' ' with '_' in user names
+		String username = user.getUsername();
+		username = StringUtils.replace(username, " ", "_");
 		WebUtils.setSessionAttribute(request, WikiConstants.SESSION_MYPAGE_EXISTS, 
-				wikiTextDao.exists(WikiConstants.PREFIX_USER + user.getUsername()));
+				wikiTextDao.exists(WikiConstants.PREFIX_USER + username));
 		WebUtils.setSessionAttribute(request, WikiConstants.SESSION_MYTALK_EXISTS, 
 				wikiTextDao.exists(WikiConstants.PREFIX_USER_TALK + user.getUsername()));
 	}
