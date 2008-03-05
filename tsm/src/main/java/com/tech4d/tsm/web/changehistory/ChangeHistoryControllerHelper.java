@@ -95,6 +95,9 @@ public class ChangeHistoryControllerHelper {
         	List<AuditUserChange> userChanges = auditEntryDao.getAuditEntries(user, clazz, firstRecord, pageSize);
             totalResults = auditEntryDao.getAuditEntriesCount(user, clazz);
             model.put(MODEL_USER_CHANGES, userChanges);
+    		Set<String> titles = new HashSet<String>();
+    		addTitle(titles, user);
+    		updateModelUserPages(model, titles);
         } else {
         	//just get everything
         	List<AuditUserChange> userChanges = auditEntryDao.getLatestAuditEntries(clazz, firstRecord, pageSize);
