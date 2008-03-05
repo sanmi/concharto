@@ -203,6 +203,9 @@ public class UserWikiPageController extends SimpleFormController {
 	 */
 	private boolean iAmWritingOnMyPage(HttpServletRequest request) throws ServletRequestBindingException {
 		String myname =  AuthHelper.getUsername();
+		//subsitiute '_' for ' ' because of the wiki username convention (a hack)
+		myname = StringUtils.replace(myname, " ", "_");
+
 		String theirname = getUsername(request);
 		if (null == myname) {
 			return false;

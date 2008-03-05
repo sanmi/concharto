@@ -22,7 +22,11 @@ public class SubstitutionMacro {
 		String username = AuthHelper.getUsername();
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy hh:mm a z");
 		StringBuffer replaceWith = new StringBuffer()
-			.append("[[User:").append(username).append("]] ")
+			.append("[[User:")
+			.append(username)
+			.append(" | ")
+			.append(username)
+			.append("]] ")
 			.append(sdf.format(new Date()));
 		rendered = StringUtils.replace(rendered, USER_TAGS, replaceWith.toString());
 		return rendered;
