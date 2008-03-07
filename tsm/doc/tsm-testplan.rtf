@@ -227,7 +227,48 @@
 \pard\keepn\sb240\sa120\tx0\tx0\b\fs32 Browser Back\par
 \pard\tx720\b0\f0\fs24 BB1. Home page - verify desitnation spotlight image and captions are identical\par
 BB2. Search page\par
-BB3. Edit page\f1\par
+BB3. Edit page\par
+\par
+\pard\keepn\sb240\sa120\tx0\tx0\b\f1\fs32 MyTalk, MyPage\par
+\pard\tx720\b0\f0\fs24 MP.Setup\par
+\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720 In squirrel, delete the my page and talk page for "test user1"\par
+{\pntext\f7\'B7\tab}In squirrel, delete the my page and talk page for "test_user2" \par
+{\pntext\f7\'B7\tab}As "test user1", edit an event\par
+{\pntext\f7\'B7\tab}As "test_user2", edit an event\par
+\pard\tx720\tx720 MP1. New Pages\par
+\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720 login as "test user1"\par
+{\pntext\f7\'B7\tab}In the top nav menu, verify My Talk and My Page are red \par
+{\pntext\f7\'B7\tab}Edit the My Page.  Verify the "My Page" link changes to blue.\par
+{\pntext\f7\'B7\tab}login as "test_user2"\par
+{\pntext\f7\'B7\tab}In the top nav menu, verify My Talk and My Page are red \par
+{\pntext\f7\'B7\tab}Edit the Talk Page.  Verify the "Talk Page" link changes to blue.\par
+\pard\tx720\tx720 MP2. Page exists link style in change views\par
+\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720 Go to "home | latest changes"\par
+{\pntext\f7\'B7\tab}Verify the "test user1" links are blue and the "talk" links for "test user1" are red\par
+{\pntext\f7\'B7\tab}Click on "test user1".  Verify it goes to the "test user1" page\par
+{\pntext\f7\'B7\tab}Verify the "test_user2" links are red and the "talk" links are "test_user2" are blue\par
+{\pntext\f7\'B7\tab}Click on "test_user2".  Verify it goes to the "test_user2" talk page\par
+\pard\tx720\tx720 MP3. Page exists link style contributions\par
+\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720 Go to "Contributions" for test user1 and test_user2 and repeat MP2 \par
+\pard\tx720\tx720 MP4. Page exists link style contributions\par
+\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720 Go to "changes" for the events you edited in MP.Setup and repeat MP2 \par
+\pard\keepn\sb240\sa120\tx0\tx0\b\f1\fs32 Notifications\par
+\pard\tx720\b0\f0\fs24 NT.prerequisites\par
+\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720 Run all MyTalk, MyPage tests first (MP)\par
+\pard\tx720\par
+NT1. Write on someone's talk page\par
+\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720 login as "test user1"\par
+{\pntext\f7\'B7\tab}go to "home | recent"\par
+{\pntext\f7\'B7\tab}click on "test_user2" talk and edit the page\par
+\pard\tx720\tx720 NT2. Notification\par
+\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\fi-360\li720\tx720\tx720 login as "test_user2"\par
+{\pntext\f7\'B7\tab}verify the home page displays "You have new messages"\par
+{\pntext\f7\'B7\tab}click "search"\par
+{\pntext\f7\'B7\tab}verify the search page page displays "You have new messages"\par
+{\pntext\f7\'B7\tab}click on the link in the "You have new messages" box\par
+{\pntext\f7\'B7\tab}verify that you can see the edits from test_user1\par
+\pard\tx720\par
+\f1\par
 \pard\f6\fs20\par
 }
  
