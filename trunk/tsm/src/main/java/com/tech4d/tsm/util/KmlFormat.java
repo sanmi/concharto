@@ -68,7 +68,7 @@ public class KmlFormat {
 	}
 	
 	/**
-     * LabTestSerialize a list of events to KML
+     * Serialize a list of events to KML
      * @param events
      * @throws ParserConfigurationException
      * @throws IOException
