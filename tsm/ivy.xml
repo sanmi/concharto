@@ -36,6 +36,7 @@
 			<artifact name="activation-1.1.1" type="jar" url="http://download.java.net/maven/1/javax.activation/jars/activation-1.1.1.jar"/>
       <include name="*"/>
     </dependency>
+		<dependency org="jdom" name="jdom" rev="1.0" conf="deploy->default; build->default"/> 
        
     <!--  Problem with json-lib at the maven repository because of the jdk15 addition at the end of the version -->
     <dependency org="net.sf.json-lib" name="json-lib" rev="2.0" conf="deploy->default; build->default">

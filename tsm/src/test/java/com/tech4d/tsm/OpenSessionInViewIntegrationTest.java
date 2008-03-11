@@ -40,9 +40,15 @@ public class OpenSessionInViewIntegrationTest {
 		return sessionFactory;
 	}
 
+	public static void setSessionFactory(SessionFactory sessionFactory) {
+		OpenSessionInViewIntegrationTest.sessionFactory = sessionFactory;
+	}
+
 	@Before public void setupTransactionFactory() {
         ApplicationContext appCtx = ContextUtil.getCtx();
-        sessionFactory = (SessionFactory)  appCtx.getBean("mySessionFactory");
+        if (null == sessionFactory) {
+            sessionFactory = (SessionFactory)  appCtx.getBean("mySessionFactory");
+        }
         AuditInterceptor auditInterceptor = (AuditInterceptor) appCtx.getBean("auditInterceptor");
 		Session session = SessionFactoryUtils.getSession(
 				sessionFactory, auditInterceptor, null);
