@@ -20,9 +20,9 @@ import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.util.ContextUtil;
 import com.tech4d.tsm.util.KmlFormat;
 
-public class LabTestSerialize extends OpenSessionInViewIntegrationTest {
+public class Serialize extends OpenSessionInViewIntegrationTest {
 	private static EventTesterDao eventTesterDao;
-    protected static final Log logger = LogFactory.getLog(LabTestSerialize.class);
+    protected static final Log logger = LogFactory.getLog(Serialize.class);
 	
 
     @BeforeClass
