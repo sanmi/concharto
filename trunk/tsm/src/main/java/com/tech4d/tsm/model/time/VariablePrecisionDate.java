@@ -14,6 +14,7 @@ public class VariablePrecisionDate {
     public static final int PRECISION_DAY = 3;
     public static final int PRECISION_MONTH = 4;
     public static final int PRECISION_YEAR = 5;
+    public static final int MAX_PRECISIONS = 6;
 
 	Integer precision = null;
 	Date date;
