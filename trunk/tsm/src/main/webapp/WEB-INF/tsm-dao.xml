@@ -106,8 +106,34 @@
   <bean id="sessionHelper" class="com.tech4d.tsm.web.util.SessionHelper">
   	<property name="wikiTextDao" ref="wikiTextDao"/>
   </bean>
-
-  
+<!-- TODO
+	<bean id="kmlExportService" class="com.tech4d.tsm.service.KmlExportService">
+		<property name="eventDao" ref="eventDao"/>
+		<property name="eventSearchService" ref="eventSearchService"/>
+		<property name="kmlFileName" value="events1.kml"/>
+	</bean>  
+-->	
 	<!-- end services -->
+	
+	<!-- Scheduled Tasks -->
+<!-- TODO
+	<bean id="kmlExportTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+     wait 10 seconds before starting repeated execution 
+    <property name="delay" value="1000" />
+     run every 24 hours 
+    <property name="period" value="86400000" />
+    <property name="timerTask" ref="kmlExportService" />
+	</bean>
+	
+	<bean id="timerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
+    <property name="scheduledTimerTasks">
+        <list>
+            <ref bean="kmlExportTask" />
+        </list>
+    </property>
+	</bean>
+-->	
+
+	<!-- end Scheduled Tasks -->
 	
 </beans>

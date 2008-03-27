@@ -68,7 +68,7 @@ public class KmlFormat {
 	}
 	
 	/**
-     * Serialize a list of events to KML
+     * ManualTestSerialize a list of events to KML
      * @param events
      * @throws ParserConfigurationException
      * @throws IOException
@@ -200,6 +200,11 @@ public class KmlFormat {
 		}
 	}
 
+	/**
+	 * KML polygon
+	 * @param parent
+	 * @param poly
+	 */
 	private static void addPoly(Element parent, Polygon poly) {
 		Element polygon = new Element("Polygon");
         addTesselate(polygon);
@@ -211,6 +216,11 @@ public class KmlFormat {
         parent.addContent(polygon);
 	}
 	
+	/**
+	 * output coordinates in kml comma delimited format
+	 * @param parent
+	 * @param line
+	 */
 	private static void addCoordinates(Element parent, LineString line) {
     	StringBuffer sb = new StringBuffer();
         for (int i=0; i<line.getNumPoints(); i++) {
@@ -220,6 +230,11 @@ public class KmlFormat {
         parent.addContent(simpleElement(COORDINATES, sb.toString()));
 	}
 
+	/**
+	 * KML LineString
+	 * @param parent
+	 * @param line
+	 */
 	private static void addLine(Element parent, LineString line) {
 		Element lineString = new Element("LineString");
         addTesselate(lineString);
@@ -227,12 +242,18 @@ public class KmlFormat {
         parent.addContent(lineString);
 	}
 
+	/** */
 	private static void addTesselate(Element parent) {
 		//follow terrain.  Need to do this for very long lines, otherwise
         //they sink under the earth
         parent.addContent(simpleElement(TESSELLATE, "1"));
 	}
 
+	/**
+	 * KML point
+	 * @param parent
+	 * @param point
+	 */
 	private static void addPoint(Element parent, Point point) {
 
 		Element pointEmt = new Element("Point");
@@ -332,6 +353,12 @@ public class KmlFormat {
 			return sb.toString();
 	}
 
+	/**
+	 * Add a field or <br/> if the field is null
+	 * @param sb
+	 * @param field
+	 * @return
+	 */
 	private static StringBuffer addNullableField(StringBuffer sb, String field) {
 		if (StringUtils.isEmpty(field)) {
 			sb.append("<br/>");
