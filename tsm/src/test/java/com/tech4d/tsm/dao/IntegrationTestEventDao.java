@@ -205,20 +205,30 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
     }
 
     @Test
-    public void userTags() throws ParseException {
+    public void setUserTagsAsString() throws ParseException {
     	Event event = eventUtil.createEvent();
-    	event.setUserTagsAsString("tag a, tag b, tag c, tag d");
+    	
+		event.setUserTagsAsString("tag a, tag b, tag c, tag d");
     	Long id = (Long) eventDao.save(event);
     	Event returned = eventDao.findById(id);
     	eventDao.saveOrUpdate(returned);
+    	assertEquals(4, eventTesterDao.getCount(UserTag.class));
     	
     	boolean found = false;
     	for(UserTag tag : returned.getUserTags()) {
-    		System.out.println(">" + tag.getTag() + "<");
     		if (tag.getTag().equals("tag b")) {
     			found = true;
     		}
     	}
     	assertTrue(found);
+
+    	//now make sure we don't create orphaned UserTags
+    	event.setUserTagsAsString("tag d, tag a, tag b, tag c");
+    	eventDao.saveOrUpdate(event);
+    	assertEquals(4, eventTesterDao.getCount(UserTag.class));
+
+    	event.setUserTagsAsString("tag d, tag a, tag b");
+    	eventDao.saveOrUpdate(event);
+    	assertEquals(3, eventTesterDao.getCount(UserTag.class));
     }
 }

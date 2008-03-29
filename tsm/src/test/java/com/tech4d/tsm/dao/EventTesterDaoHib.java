@@ -121,4 +121,15 @@ public class EventTesterDaoHib implements EventTesterDao {
     public void save(Role role) {
         this.sessionFactory.getCurrentSession().save(role);
     }
+    
+    /**
+     * For verifying counts in the db
+     */
+    @SuppressWarnings("unchecked")
+	public Long getCount(Class<?> clazz) {
+    	List results = this.sessionFactory.getCurrentSession().createQuery(
+    			"select count(*) from " + clazz.getSimpleName()
+    		).list();
+    	return (Long) results.get(0);
+    }
 }
