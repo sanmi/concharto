@@ -59,6 +59,7 @@ public class SearchHelper {
 	public static final String QUERY_WHEN = "_when";
 	public static final String QUERY_WHERE = "_where";
 	public static final String QUERY_MAPTYPE = "_maptype";
+	public static final String QUERY_USERTAG = "_tag";
 	public static final String QUERY_LAT_LNG = "_ll";
 	public static final String QUERY_SW = "_sw";
 	public static final String QUERY_NE = "_ne";
@@ -119,6 +120,7 @@ public class SearchHelper {
         	eventSearchForm.setZoomOverride(true);
     	}
     	eventSearchForm.setMapType(ServletRequestUtils.getIntParameter(request, QUERY_MAPTYPE));
+    	eventSearchForm.setUserTag(ServletRequestUtils.getStringParameter(request, QUERY_USERTAG));
     	eventSearchForm.setLimitWithinMapBounds((ServletRequestUtils.getBooleanParameter(request, QUERY_WITHIN_MAP_BOUNDS)));
     	eventSearchForm.setExcludeTimeRangeOverlaps((ServletRequestUtils.getBooleanParameter(request, QUERY_EXCLUDE_TIMERANGE_OVERLAPS)));
     	eventSearchForm.setEmbed((ServletRequestUtils.getBooleanParameter(request, QUERY_EMBED)));
@@ -257,6 +259,7 @@ public class SearchHelper {
                 LatLngBounds bounds = getBounds(eventSearchForm);
                 SearchParams params = new SearchParams();
                 params.setTextFilter(eventSearchForm.getWhat());
+                params.setUserTag(eventSearchForm.getUserTag());
                 params.setTimeRange(eventSearchForm.getWhen());
                 params.setVisibility(getVisibility(eventSearchForm));
                 //note these are opposites.. a value of null or false = false, true=true

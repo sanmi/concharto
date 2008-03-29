@@ -21,6 +21,8 @@ import com.tech4d.tsm.web.util.DisplayTagHelper;
 
 public class EventSearchController extends AbstractFormController {
 
+	private static final String PARM_REAL_URI = "realURI";
+
 	private static final Log log = LogFactory.getLog(EventSearchController.class);
 
     private String formView;
@@ -133,11 +135,11 @@ public class EventSearchController extends AbstractFormController {
     @Override
     protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response,
                                                  Object command, BindException errors) throws Exception {
-		
         EventSearchForm eventSearchForm = (EventSearchForm) command;
         //reset zoom and map center overrides, they are only used for get strings
         eventSearchForm.setMapCenterOverride(false);
         eventSearchForm.setZoomOverride(false);
+        eventSearchForm.setUserTag(null);
         ModelAndView returnModelAndView;
         if (errors.hasErrors()) {
             if (log.isDebugEnabled()) {
@@ -182,6 +184,11 @@ public class EventSearchController extends AbstractFormController {
         		returnModelAndView = new ModelAndView(getSuccessView(), model);
             }
         }
+        // this is because of a wierd problem in our JSTL where ${pageContex.request.requestURI} yields
+        // WEB-INF/jsp/search/eventsearch.jsp instead of the expected /search/eventsearch.htm or 
+        // /list/event.htm.  So here we have to put it in the model for the jsp to use
+        returnModelAndView.getModel().put(PARM_REAL_URI, request.getRequestURI());
+        
         //put the data into the session in case we are leaving to edit, and then want to come back
         WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_FORM, eventSearchForm);
         return returnModelAndView;

@@ -33,6 +33,7 @@ public class EventSearchForm  {
     private Boolean limitWithinMapBounds;
     private Boolean excludeTimeRangeOverlaps;
     private Boolean embed;
+    private String userTag;
     
 	public String getShow() {
 		return show;
@@ -158,6 +159,12 @@ public class EventSearchForm  {
 	}
 	public void setEmbed(Boolean embed) {
 		this.embed = embed;
+	}
+	public String getUserTag() {
+		return userTag;
+	}
+	public void setUserTag(String userTag) {
+		this.userTag = userTag;
 	}
     
 }

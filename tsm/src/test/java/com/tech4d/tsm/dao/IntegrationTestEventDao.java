@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tech4d.tsm.OpenSessionInViewIntegrationTest;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.PositionalAccuracy;
+import com.tech4d.tsm.model.UserTag;
 import com.tech4d.tsm.model.wiki.WikiText;
 import com.tech4d.tsm.util.ContextUtil;
 import com.vividsolutions.jts.geom.Point;
@@ -201,7 +202,23 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
     	eventDao.saveOrUpdate(event);
     	Event returned = eventDao.findById(event.getId());
     	assertEquals(name, returned.getPositionalAccuracy().getName());
-    	
     }
-    
+
+    @Test
+    public void userTags() throws ParseException {
+    	Event event = eventUtil.createEvent();
+    	event.setUserTagsAsString("tag a, tag b, tag c, tag d");
+    	Long id = (Long) eventDao.save(event);
+    	Event returned = eventDao.findById(id);
+    	eventDao.saveOrUpdate(returned);
+    	
+    	boolean found = false;
+    	for(UserTag tag : returned.getUserTags()) {
+    		System.out.println(">" + tag.getTag() + "<");
+    		if (tag.getTag().equals("tag b")) {
+    			found = true;
+    		}
+    	}
+    	assertTrue(found);
+    }
 }

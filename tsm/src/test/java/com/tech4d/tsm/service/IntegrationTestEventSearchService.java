@@ -145,7 +145,7 @@ public class IntegrationTestEventSearchService {
         for (int i=0; i<searchStrings.length; i++) {
             String searchString = searchStrings[i];
             List<Event> events = eventSearchService.search(MAX_RESULTS, 0, searchBox, new SearchParams(searchString,
-                    searchTimeRange, Visibility.NORMAL, true));
+                    searchTimeRange, Visibility.NORMAL, true, null));
             for (Event event : events) {
                 System.out.println(event.getDescription());
             }
@@ -185,54 +185,54 @@ public class IntegrationTestEventSearchService {
         EventUtil.printTimeRange(timeRange);
         EventUtil.printTimeRange(TimeRangeFormat.parse("Jan 1, 1007"));
         List<Event> events = eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams(null,
-                timeRange, Visibility.NORMAL, true));
+                timeRange, Visibility.NORMAL, true, null));
         assertEquals(1, events.size());
     }
     
     @Test public void noneInBox() {
         // now search in a bounding box that is out
         assertEquals("none should match", 0, eventSearchService.search(MAX_RESULTS, 0, failBox,  
-                new SearchParams(searchStrings[0], searchTimeRange, Visibility.NORMAL, true)).size());
+                new SearchParams(searchStrings[0], searchTimeRange, Visibility.NORMAL, true, null)).size());
     }
 
     @Test public void noTextMach() {
         // now search strings that are don't count words
         for (String failString : failStrings) {
             assertEquals("none should match", 0, eventSearchService.search(MAX_RESULTS, 0, searchBox, new SearchParams(failString,
-                    searchTimeRange, Visibility.NORMAL, true)).size());
+                    searchTimeRange, Visibility.NORMAL, true, null)).size());
         }
     }
     
     @Test public void noTimeRangeMatch() {
         // now search timeframes that are out
         assertEquals("none should match", 0, eventSearchService.search(MAX_RESULTS, 0, searchBox, 
-                new SearchParams(searchStrings[0], failTimeRange, Visibility.NORMAL, true)).size());
+                new SearchParams(searchStrings[0], failTimeRange, Visibility.NORMAL, true, null)).size());
         
     }
     
     @Test public void checkMaxReturn() {
         // now set the max return threshold to below the number of possible results
         assertEquals("only one should match", 1, eventSearchService.search(1, 0, searchBox, 
-                new SearchParams(searchStrings[0], searchTimeRange,  Visibility.NORMAL, true)).size());
+                new SearchParams(searchStrings[0], searchTimeRange,  Visibility.NORMAL, true, null)).size());
     }
     
     @Test public void checkNullSearchText() {
         assertEquals("three should match", 3, eventSearchService.search(MAX_RESULTS, 0, searchBox, 
-                new SearchParams(null, searchTimeRange, Visibility.NORMAL, true)).size());
+                new SearchParams(null, searchTimeRange, Visibility.NORMAL, true, null)).size());
     }
 
     @Test public void checkCount() {
         assertEquals(3, eventSearchService.search(MAX_RESULTS, 0, searchBox,
-                new SearchParams(searchStrings[0], searchTimeRange,  Visibility.NORMAL, true)).size());
+                new SearchParams(searchStrings[0], searchTimeRange,  Visibility.NORMAL, true, null)).size());
         assertEquals(3L, (long) eventSearchService.getCount(searchBox,
-                new SearchParams(searchStrings[0], searchTimeRange,  Visibility.NORMAL, true)));
+                new SearchParams(searchStrings[0], searchTimeRange,  Visibility.NORMAL, true, null)));
     }
 
     @Test public void checkCountPartial() {
         assertEquals(5, eventSearchService.search(10, 0, null,  
-                new SearchParams(searchStrings[0], null, Visibility.NORMAL, true)).size());
+                new SearchParams(searchStrings[0], null, Visibility.NORMAL, true, null)).size());
         assertEquals(5L, (long) eventSearchService.getCount(null,
-                new SearchParams(searchStrings[0], null, Visibility.NORMAL, true)));
+                new SearchParams(searchStrings[0], null, Visibility.NORMAL, true, null)));
     }
 
     private static LatLngBounds makeBoundingRectangle(int x, int y) {

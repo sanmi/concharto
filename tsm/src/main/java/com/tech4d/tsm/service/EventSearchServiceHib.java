@@ -26,7 +26,12 @@ import com.vividsolutions.jts.geom.Geometry;
 @Transactional
 public class EventSearchServiceHib implements EventSearchService {
 	
-    private SessionFactory sessionFactory;
+    private static final String PARAM_GEOM_TEXT = "geom_text";
+	private static final String PARAM_SEARCH_TEXT = "search_text";
+	private static final String PARAM_LATEST = "latest";
+	private static final String PARAM_EARLIEST = "earliest";
+	private static final String PARAM_TAG = "tag";
+	private SessionFactory sessionFactory;
     protected final Log log = LogFactory.getLog(getClass());
 
     private static final String SQL_PREFIX_GET_COUNT = "SELECT count(*) "; 
@@ -36,6 +41,8 @@ public class EventSearchServiceHib implements EventSearchService {
     private static final String SQL_GEO_JOIN ="INNER JOIN TsGeometry AS g ON ev.tsgeometry_id = g.id ";
     private static final String SQL_SEARCH_JOIN ="INNER JOIN EventSearchText AS es ON ev.eventsearchtext_id = es.id ";
     private static final String SQL_TIME_JOIN="INNER JOIN TimePrimitive AS t ON ev.when_id = t.id ";
+    private static final String SQL_TAG_JOIN="INNER JOIN Event_UserTag AS ev_tag ON ev.id =ev_tag.Event_id " + 
+    	" INNER JOIN UserTag AS tag ON tag.id = ev_tag.userTags_id"; 
     private static final String SQL_WHERE = " WHERE ";
     private static final String SQL_AND = " AND ";
     
@@ -50,6 +57,8 @@ public class EventSearchServiceHib implements EventSearchService {
     private static final String SQL_VISIBLE_CLAUSE = " NOT(ev.visible  <=> false) ";
     private static final String SQL_HIDDEN_CLAUSE = " ev.visible  <=> false ";
     private static final String SQL_FLAGGED_CLAUSE = " ev.hasUnresolvedFlag = true ";
+    //TODO I think this will be a performance problem when the DB gets large!!
+    private static final String SQL_TAG_CLAUSE = " upper(tag.tag) = upper(:tag) ";
     	
     private static final String SQL_MBRWITHIN_CLAUSE = 
         " MBRIntersects(geometryCollection, Envelope(GeomFromText(:geom_text))) ";
@@ -260,6 +269,10 @@ public class EventSearchServiceHib implements EventSearchService {
             	addClause(hasConjuncted, clause, SQL_TIMERANGE_EXCLUDE_OVERLAPS_CLAUSE);
         	}
         }
+        if (!StringUtils.isEmpty(params.getUserTag())) {
+        	select.append(SQL_TAG_JOIN);
+        	hasConjuncted = addClause(hasConjuncted, clause, SQL_TAG_CLAUSE);
+        }
         clause.append(SQL_ORDER_CLAUSE);
         select.append(clause);
 
@@ -268,14 +281,17 @@ public class EventSearchServiceHib implements EventSearchService {
                 .createSQLQuery(select.toString());
         
         if (boundingBox != null) {
-            sqlQuery.setString("geom_text", boundingBox.toText());
+            sqlQuery.setString(PARAM_GEOM_TEXT, boundingBox.toText());
         }
         if (!StringUtils.isEmpty(params.getTextFilter())) {
-            sqlQuery.setString("search_text", params.getTextFilter());
+            sqlQuery.setString(PARAM_SEARCH_TEXT, params.getTextFilter());
+        }
+        if (!StringUtils.isEmpty(params.getUserTag())) {
+        	sqlQuery.setString(PARAM_TAG, StringUtils.trim(params.getUserTag()));
         }
         if (params.getTimeRange() != null) {
-            sqlQuery.setBigInteger("earliest", BigInteger.valueOf(params.getTimeRange().getBegin().getDate().getTime()));
-            sqlQuery.setBigInteger("latest", BigInteger.valueOf(params.getTimeRange().getEnd().getDate().getTime()));
+            sqlQuery.setBigInteger(PARAM_EARLIEST, BigInteger.valueOf(params.getTimeRange().getBegin().getDate().getTime()));
+            sqlQuery.setBigInteger(PARAM_LATEST, BigInteger.valueOf(params.getTimeRange().getEnd().getDate().getTime()));
         }
         return sqlQuery;
     }

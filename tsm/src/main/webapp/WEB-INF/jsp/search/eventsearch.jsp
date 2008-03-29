@@ -110,7 +110,7 @@
 								</display:column>
 								
 								<display:column autolink="true">
-									<div class="result wikitext">
+									<div id="${event.id}" class="result wikitext">
 			            	<div>					           
 				          	<c:if test="${event.hasUnresolvedFlag}">
 					          	<a class="errorLabel" href="${basePath}event/changehistory.htm?id=${event.id}">Flagged! </a>
@@ -138,17 +138,28 @@
 						          </c:otherwise> 
 					          </c:choose>
 					          <wiki:render wikiText="${description}${more}"/>
+					          <c:if test="${fn:length(event.userTagsAsString) > 0}">
+						          <div class="usertags">
+						          	<b>Tags:</b>
+						          	<c:choose>
+							          	<c:when test="${fn:contains(realURI,'list')}">
+							          		<c:set var="root" value="list/event.htm"/>
+							          	</c:when>
+							          	<c:otherwise>
+							          		<c:set var="root" value="search/eventsearch.htm"/>
+							          	</c:otherwise>
+						          	</c:choose>
+						          	<c:forEach items="${event.userTags}" var="userTag" varStatus="status">
+						          	  <%-- note the following needs to all be on one line for proper HTML format --%>
+						          		<a href="${basePath}${root}?_tag=${userTag.tag}"><c:out value="${userTag.tag}"/></a><c:if test="${status.index != (fn:length(event.userTags)-1)}">, </c:if>
+						          	</c:forEach>
+						          </div>
+					          </c:if>
 					          <c:if test="${fn:length(event.source) > 0}">
 						          <div class="source">
 						          	<b>Source:</b>
 							          <c:set var="source" value="${fn:substring(event.source,0,300)}"/>
 							          <wiki:render wikiText="${source}"/>
-						          </div>
-					          </c:if>
-					          <c:if test="${fn:length(event.userTagsAsString) > 0}">
-						          <div class="usertags">
-						          	<b>Tags:</b>
-							          ${fn:substring(event.userTagsAsString,0,300)}
 						          </div>
 					          </c:if>
 										<div class="linkbar">
