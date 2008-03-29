@@ -14,6 +14,7 @@ import com.tech4d.tsm.dao.EventTesterDao;
 import com.tech4d.tsm.dao.EventUtil;
 import com.tech4d.tsm.dao.StyleUtil;
 import com.tech4d.tsm.model.Event;
+import com.tech4d.tsm.model.UserTag;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.ContextUtil;
 import com.tech4d.tsm.util.LatLngBounds;
@@ -60,7 +61,7 @@ public class IntegrationTestSearchBoundaries {
     }
     private void assertSearchMatch(int matchesExpected, String dateText, boolean includeOverlaps) throws java.text.ParseException {
         List<Event> events = eventSearchService.search(MAX_RESULTS, 0, null, 
-        		new SearchParams(null, TimeRangeFormat.parse(dateText), Visibility.NORMAL, includeOverlaps));
+        		new SearchParams(null, TimeRangeFormat.parse(dateText), Visibility.NORMAL, includeOverlaps, null));
         assertEquals(matchesExpected, events.size());        
     }
 
@@ -76,7 +77,7 @@ public class IntegrationTestSearchBoundaries {
     	Point boundingBoxSW =  (Point) new WKTReader().read("POINT (120 20)");
     	Point boundingBoxNE =  (Point) new WKTReader().read("POINT (-156 34)");
     	LatLngBounds bounds = new LatLngBounds(boundingBoxSW, boundingBoxNE);
-    	assertEquals(2, eventSearchService.search(10, 0, bounds, new SearchParams(null, null, null, true)).size());
+    	assertEquals(2, eventSearchService.search(10, 0, bounds, new SearchParams(null, null, null, true, null)).size());
     }
     
     @Test public void testTimeBoundaries() throws java.text.ParseException {
@@ -103,26 +104,25 @@ public class IntegrationTestSearchBoundaries {
         event.setVisible(false);
         eventDao.saveOrUpdate(event);
         //should only see one
-        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams(null, null, Visibility.NORMAL, true)).size());        
+        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams(null, null, Visibility.NORMAL, true, null)).size());        
         
         //now test showing only invisible
-        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams(null, null, Visibility.HIDDEN, true)).size());        
+        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams(null, null, Visibility.HIDDEN, true, null)).size());        
         
     }
     
     @Test public void testFlagged() throws java.text.ParseException {
     	//first one is unflagged
         Event event = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522-1527"), "Stuff", null);
-        eventDao.saveOrUpdate(event);
         //second one is flagged
         event = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522-1527"), "Stuff", null);
         event.setHasUnresolvedFlag(true);
         eventDao.saveOrUpdate(event);
         //should see both
-        assertEquals(2, eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams( null, null, Visibility.NORMAL, true)).size());        
+        assertEquals(2, eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams( null, null, Visibility.NORMAL, true, null)).size());        
         
         //now test showing only invisible
-        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams(null, null, Visibility.FLAGGED, true)).size());        
+        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams(null, null, Visibility.FLAGGED, true, null)).size());        
     	
     }
     
@@ -143,6 +143,39 @@ public class IntegrationTestSearchBoundaries {
     	
     }
     
+    @Test 
+    public void testUserTagSearch() throws ParseException, java.text.ParseException {
+    	//first one has our tag
+        String tag1 = "san_francisco";
+        String tag2 = "sdf";
+		makeTaggedEvent(tag1 + ", a, b, c");
+		makeTaggedEvent(tag1 + ", d, e, f");
+		makeTaggedEvent(tag2 + ", h, i");
+        checkUserTagSearch(2, tag1);
+        checkUserTagSearch(2, "San_Francisco");
+        checkUserTagSearch(2, " San_Francisco ");
+        checkUserTagSearch(0, "San Francisco"); //missing underbar
+        checkUserTagSearch(0, "San");  //three letters are excluded
+        checkUserTagSearch(2, "SAN_Francisco ");
+        checkUserTagSearch(1, tag2);
+        checkUserTagSearch(0, "3453fsdf");
+        checkUserTagSearch(3, null);
+        assertEquals(3, eventSearchService.search(MAX_RESULTS, 0, null, 
+        		new SearchParams( null, null, Visibility.NORMAL, true, null)).size());        
+    	
+    }
+    
+    private void checkUserTagSearch(int count, String tag) {
+        assertEquals(count, eventSearchService.search(MAX_RESULTS, 0, null, 
+        		new SearchParams( null, null, Visibility.NORMAL, true, tag)).size());        
+	}
 
+	private Event makeTaggedEvent(String tags) throws ParseException, java.text.ParseException {
+        Event event = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522-1527"), "tag summary", "tag description");
+        
+        event.setUserTagsAsString(tags);
+        eventDao.saveOrUpdate(event);
+        return event;
+    }
 
 }

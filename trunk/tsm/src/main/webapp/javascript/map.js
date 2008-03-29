@@ -123,10 +123,17 @@
 				if (!isEmpty(event.accy)) {
 					 html += ' (Accuracy: ' + _msg_accy[event.accy] + ')'; 
 				}
-				html += '</span><br/>' + event.description  +
-				'<span class="source"><b>Source: </b>' + event.source + '</span>' +
-				'<span class="usertags"><b>Tags: </b>' + event.tags.escapeHTML() + '</span>' +   
-				'</div>';
+				html += '</span><br/>' + event.description;
+				
+				var tags = event.tags.split( "," );
+				var taglink = new Array();
+				tags.each( function(tag, index){
+					taglink[index] = '<a href="/search/eventsearch.htm?_tag='+ tag +'">'+ tag +'</a>';
+				});
+				
+				html += '<div class="usertags"><b>Tags: </b>' + taglink.join(', ') + '</div>';   
+				html += '<span class="source"><b>Source: </b>' + event.source + '</span>';
+				html += '</div>';
 				
 	   return html;
 	}	

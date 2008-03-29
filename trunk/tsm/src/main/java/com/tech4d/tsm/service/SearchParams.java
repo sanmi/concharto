@@ -12,6 +12,7 @@ public class SearchParams {
 	private TimeRange timeRange;
 	private Visibility visibility;
 	private boolean includeTimeRangeOverlaps;
+	private String userTag;
 
 	public SearchParams() {
 		super();
@@ -23,14 +24,16 @@ public class SearchParams {
      * @param timeRange Time range to use Ignored if value is null
      * @param visibility enum that determines the visibility of search results
      * @param excludeTimeRangeOverlaps if this is true, then overlapping timeranges will be ignored
+     * @param userTag a single userTag to search
      */
     public SearchParams(String textFilter, TimeRange timeRange,
-			Visibility visibility, boolean excludeTimeRangeOverlaps) {
+			Visibility visibility, boolean excludeTimeRangeOverlaps, String userTag) {
 		super();
 		this.textFilter = textFilter;
 		this.timeRange = timeRange;
 		this.visibility = visibility;
 		this.includeTimeRangeOverlaps = excludeTimeRangeOverlaps;
+		this.userTag = userTag;
 	}
 
 	public String getTextFilter() {
@@ -56,5 +59,11 @@ public class SearchParams {
 	}
 	public void setIncludeTimeRangeOverlaps(boolean excludeTimeRangeOverlaps) {
 		this.includeTimeRangeOverlaps = excludeTimeRangeOverlaps;
+	}
+	public String getUserTag() {
+		return userTag;
+	}
+	public void setUserTag(String tag) {
+		this.userTag = tag;
 	}
 }

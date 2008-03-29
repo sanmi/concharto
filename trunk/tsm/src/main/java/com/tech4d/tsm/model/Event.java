@@ -258,7 +258,7 @@ public class Event extends BaseAuditableEntity {
             String[] tags = split(tagList, ",");
             List<UserTag> userTags = new ArrayList<UserTag>();
             for (String tag : tags) {
-                userTags.add(new UserTag(tag));
+                userTags.add(new UserTag(StringUtils.trim(tag)));
             }
             this.setUserTags(userTags);
         }
