@@ -14,7 +14,6 @@ import com.tech4d.tsm.dao.EventTesterDao;
 import com.tech4d.tsm.dao.EventUtil;
 import com.tech4d.tsm.dao.StyleUtil;
 import com.tech4d.tsm.model.Event;
-import com.tech4d.tsm.model.UserTag;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.ContextUtil;
 import com.tech4d.tsm.util.LatLngBounds;

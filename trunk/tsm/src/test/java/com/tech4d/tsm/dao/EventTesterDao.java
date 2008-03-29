@@ -32,5 +32,9 @@ public interface EventTesterDao {
     public void save(Set<Event> events);
     
     public void save(Role role);
+    /**
+     * For verifying counts in the db
+     */
+    public Long getCount(Class<?> clazz);
 
 }

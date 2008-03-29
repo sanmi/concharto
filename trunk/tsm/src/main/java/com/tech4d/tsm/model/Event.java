@@ -3,7 +3,6 @@ package com.tech4d.tsm.model;
 import static org.apache.commons.lang.StringUtils.join;
 import static org.apache.commons.lang.StringUtils.split;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -149,6 +148,8 @@ public class Event extends BaseAuditableEntity {
 
     //TODO this should probably be one to many!  many to many would be slow to fetch.
     @ManyToMany(cascade={CascadeType.ALL})
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
+          org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
     @ForeignKey(name="FK_EVENT_USERTAG", inverseName = "FK_USERTAG_EVENT")
     public List<UserTag> getUserTags() {
         return userTags;
@@ -256,7 +257,7 @@ public class Event extends BaseAuditableEntity {
         }
         if (dirty) {
             String[] tags = split(tagList, ",");
-            List<UserTag> userTags = new ArrayList<UserTag>();
+            userTags.clear();
             for (String tag : tags) {
                 userTags.add(new UserTag(StringUtils.trim(tag)));
             }
