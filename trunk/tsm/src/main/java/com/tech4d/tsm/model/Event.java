@@ -3,6 +3,7 @@ package com.tech4d.tsm.model;
 import static org.apache.commons.lang.StringUtils.join;
 import static org.apache.commons.lang.StringUtils.split;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -257,11 +258,14 @@ public class Event extends BaseAuditableEntity {
         }
         if (dirty) {
             String[] tags = split(tagList, ",");
-            userTags.clear();
+            if (userTags == null) {
+            	userTags = new ArrayList<UserTag>();
+            } else {
+            	userTags.clear();
+            }
             for (String tag : tags) {
                 userTags.add(new UserTag(StringUtils.trim(tag)));
             }
-            this.setUserTags(userTags);
         }
     }
 
