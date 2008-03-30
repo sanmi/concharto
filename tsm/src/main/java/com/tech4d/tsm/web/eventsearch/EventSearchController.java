@@ -181,13 +181,13 @@ public class EventSearchController extends AbstractFormController {
         		// needed so the displaytag paging can work
         		displayTagModelElements(model, request);
 
+                // this is because of a wierd problem in our JSTL where ${pageContex.request.requestURI} yields
+                // WEB-INF/jsp/search/eventsearch.jsp instead of the expected /search/eventsearch.htm or 
+                // /list/event.htm.  So here we have to put it in the model for the jsp to use
+                model.put(PARM_REAL_URI, request.getRequestURI());
         		returnModelAndView = new ModelAndView(getSuccessView(), model);
             }
         }
-        // this is because of a wierd problem in our JSTL where ${pageContex.request.requestURI} yields
-        // WEB-INF/jsp/search/eventsearch.jsp instead of the expected /search/eventsearch.htm or 
-        // /list/event.htm.  So here we have to put it in the model for the jsp to use
-        returnModelAndView.getModel().put(PARM_REAL_URI, request.getRequestURI());
         
         //put the data into the session in case we are leaving to edit, and then want to come back
         WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_FORM, eventSearchForm);
