@@ -129,15 +129,13 @@
 					          <c:set var="description" value="${fn:substring(event.description,0,300)}"/>
 					          <c:choose>
 						          <c:when test="${fn:length(event.description) > 300}">
-							          <c:set var="more" >
-							          	<a class="more" href="#" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)"> ... more</a>
-							          </c:set>
+							          <wiki:render wikiText="${description} '''. . .'''"/>
+							          <a class="more" href="#" onclick="openMarker(<c:out value='${event_rowNum-1}'/>)">... more</a>
 						          </c:when>
 						          <c:otherwise>
-							          <c:set var="more" value=""/>
+							          <wiki:render wikiText="${description}"/>
 						          </c:otherwise> 
 					          </c:choose>
-					          <wiki:render wikiText="${description}${more}"/>
 					          <c:if test="${fn:length(event.userTagsAsString) > 0}">
 						          <div class="usertags">
 						          	<b>Tags:</b>
