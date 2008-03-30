@@ -115,7 +115,7 @@
 		}
 	  var html = '<div class="result inforesult wikitext" style="width:' + width +'px;'+ height +'margin-bottom:10px">';
 				if (event.flagged) {
-					html += '<a class="errorLabel" href="/event/changehistory.htm?id=' + event.id +'">Flagged! </a>'; 
+					html += '<a target="_top" class="errorLabel" href="/event/changehistory.htm?id=' + event.id +'">Flagged! </a>'; 
 				}
 	  		html += '<span class="summary">' + event.summary.escapeHTML() +'</span><br/>' + 
 	   		'<span class="when">' + event.when + '</span><br/>' + 
@@ -128,7 +128,7 @@
 				var tags = event.tags.split( "," );
 				var taglink = new Array();
 				tags.each( function(tag, index){
-					taglink[index] = '<a href="/search/eventsearch.htm?_tag='+ tag +'">'+ tag +'</a>';
+					taglink[index] = '<a target="_top" href="/search/eventsearch.htm?_tag='+ tag +'">'+ tag +'</a>';
 				});
 				
 				html += '<div class="usertags"><b>Tags: </b>' + taglink.join(', ') + '</div>';   
