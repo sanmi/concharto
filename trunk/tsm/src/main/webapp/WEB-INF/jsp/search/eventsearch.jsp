@@ -37,6 +37,7 @@
 			<form:hidden path="editEventId"/>
 			<form:hidden path="displayEventId"/>
 			<form:hidden path="linkHereEventId"/>
+			<form:hidden path="userTag"/>
 			<form:hidden path="embed"/>
 			<%-- for javascript --%>
 			<input type="hidden" id="basePath" value="${basePath}"/>
