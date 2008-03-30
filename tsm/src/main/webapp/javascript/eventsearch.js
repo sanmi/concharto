@@ -106,6 +106,7 @@
 			querystring = appendIfNotEmpty(querystring, '_where', $('where').value);
 			querystring = appendIfNotEmpty(querystring, '_when', $('when').value);
 			querystring = appendIfNotEmpty(querystring, '_what', $('what').value);
+			querystring = appendIfNotEmpty(querystring, '_tag', $('userTag').value);
 			querystring = appendIfTrue(querystring, '_timeoverlaps', $('excludeTimeRangeOverlaps1').checked);
 
 			if (	$('limitWithinMapBounds1').checked || !isEmpty($('where').value) ) {
