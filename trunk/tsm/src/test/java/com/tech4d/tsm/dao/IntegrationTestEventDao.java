@@ -212,7 +212,7 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
     	Long id = (Long) eventDao.save(event);
     	Event returned = eventDao.findById(id);
     	eventDao.saveOrUpdate(returned);
-    	assertEquals(4, eventTesterDao.getCount(UserTag.class));
+    	assertEquals(4L, eventTesterDao.getCount(UserTag.class));
     	
     	boolean found = false;
     	for(UserTag tag : returned.getUserTags()) {
@@ -225,10 +225,10 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
     	//now make sure we don't create orphaned UserTags
     	event.setUserTagsAsString("tag d, tag a, tag b, tag c");
     	eventDao.saveOrUpdate(event);
-    	assertEquals(4, eventTesterDao.getCount(UserTag.class));
+    	assertEquals(4L, eventTesterDao.getCount(UserTag.class));
 
     	event.setUserTagsAsString("tag d, tag a, tag b");
     	eventDao.saveOrUpdate(event);
-    	assertEquals(3, eventTesterDao.getCount(UserTag.class));
+    	assertEquals(3L, eventTesterDao.getCount(UserTag.class));
     }
 }
