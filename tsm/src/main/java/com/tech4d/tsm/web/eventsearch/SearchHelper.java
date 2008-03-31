@@ -155,7 +155,7 @@ public class SearchHelper {
 	private String getUtf8QueryStringParameter(HttpServletRequest request, String paramName) {
 		String queryString = request.getQueryString();
 		String before = paramName+"=";
-    	String tag = StringUtils.substringBetween(queryString, before, "?");
+    	String tag = StringUtils.substringBetween(queryString, before, "&");
     	if (tag == null) {
     		tag = StringUtils.substringAfter(queryString, before);
     	}

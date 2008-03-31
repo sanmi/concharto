@@ -187,7 +187,7 @@
 		} else {
 			urltext += '&';
 		}
-		urltext += query + '=' + URLEncode(value);
+		urltext += query + '=' + encodeURIComponent(value);
 		return urltext;
 	}
 	
