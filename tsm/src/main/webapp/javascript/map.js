@@ -128,7 +128,9 @@
 				var tags = event.tags.split( "," );
 				var taglink = new Array();
 				tags.each( function(tag, index){
-					taglink[index] = '<a target="_top" href="/search/eventsearch.htm?_tag='+ tag +'">'+ tag +'</a>';
+					taglink[index] = '<a target="_top" href="'
+					+ '/search/eventsearch.htm?_tag='+ tag + '&_maptype=' + getMapTypeIndex()
+					+ '">'+ tag +'</a>';
 				});
 				
 				html += '<div class="usertags"><b>Tags: </b>' + taglink.join(', ') + '</div>';   
@@ -137,6 +139,23 @@
 				
 	   return html;
 	}	
+
+	/*
+		This function is used to do a tag search using the current map type (as opposed to
+		the map type when the page was loaded).  E.g. the user may have changed the map type
+		since writing the page.  Unfortunately, we can't use this from the javascript infowindow
+		(see above) because it doesn't work properly when the map is embedded in an iframe in
+		that case, you get a search/embeddedsearch.htm rather than a search/eventsearch.htm.  
+		For this reason, we have to do it two different ways.  So when the user clicks on a
+		tag in a popup info window, he gets the map type when the page was loaded, regardless
+		of whether it has been changed.  Ugh!  
+	*/	
+	function visitTag(tag) {
+		var host = window.location.hostname;
+		document.target = '_parent';
+		var location = 'http://' + host + '/search/eventsearch.htm?_tag='+ tag + '&_maptype=' + getMapTypeIndex();
+		document.location = location;
+	}
 	
 	function getMapTypeIndex() {
 		var mapTypeIndex = 0;
