@@ -150,8 +150,11 @@
 						          	</c:choose>
 						          	<c:forEach items="${event.userTags}" var="userTag" varStatus="status">
 						          	  <%-- note the following needs to all be on one line for proper HTML format --%>
-						          	  <c:url var="url" value="${basePath}${root}" />
-						          		<a href="${url}" onclick="visitTag('${userTag.tag}')"><c:out value="${userTag.tag}"/></a><c:if test="${status.index != (fn:length(event.userTags)-1)}">, </c:if>
+						          	  <c:url var="url" value="${basePath}${root}">
+						          	  	<c:param name="_tag" value="${userTag.tag}"/>
+						          	  	<c:param name="_maptype" value="${eventSearchForm.mapType}"/>
+						          	  </c:url>
+						          		<a href="${url}"><c:out value="${userTag.tag}"/></a><c:if test="${status.index != (fn:length(event.userTags)-1)}">, </c:if>
 						          	</c:forEach>
 						          </div>
 					          </c:if>
