@@ -37,7 +37,7 @@
 			<form:hidden path="editEventId"/>
 			<form:hidden path="displayEventId"/>
 			<form:hidden path="linkHereEventId"/>
-			<form:hidden path="userTag"/>
+			<form:hidden path="userTag" htmlEscape="true"/>
 			<form:hidden path="embed"/>
 			<%-- for javascript --%>
 			<input type="hidden" id="basePath" value="${basePath}"/>
@@ -150,7 +150,10 @@
 						          	</c:choose>
 						          	<c:forEach items="${event.userTags}" var="userTag" varStatus="status">
 						          	  <%-- note the following needs to all be on one line for proper HTML format --%>
-						          		<a href="${basePath}${root}?_tag=${userTag.tag}"><c:out value="${userTag.tag}"/></a><c:if test="${status.index != (fn:length(event.userTags)-1)}">, </c:if>
+						          	  <c:url var="url" value="${basePath}${root}">
+						          	  	<c:param name="_tag" value="${userTag.tag}"/>
+						          	  </c:url>
+						          		<a href="${url}"><c:out value="${userTag.tag}"/></a><c:if test="${status.index != (fn:length(event.userTags)-1)}">, </c:if>
 						          	</c:forEach>
 						          </div>
 					          </c:if>

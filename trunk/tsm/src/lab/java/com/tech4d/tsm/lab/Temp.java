@@ -1,9 +1,9 @@
 package com.tech4d.tsm.lab;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.junit.Test;
 
 import com.tech4d.tsm.util.PasswordUtil;
@@ -24,5 +24,13 @@ public class Temp {
 				System.out.println(key);
 			}
 		}
+	}
+	
+	@Test public void testURLEncoding() throws UnsupportedEncodingException {
+		String tmp = URLEncoder.encode("Gaspar de Portolà", "UTF-8");
+		System.out.println( tmp );
+		System.out.println( URLDecoder.decode(tmp, "UTF-8" ));
+		System.out.println( URLDecoder.decode("Gaspar+de+Portol%c3%a0", "UTF-8" ));
+		
 	}
 }

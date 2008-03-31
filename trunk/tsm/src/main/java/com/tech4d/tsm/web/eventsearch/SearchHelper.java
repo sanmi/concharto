@@ -3,7 +3,9 @@ package com.tech4d.tsm.web.eventsearch;
 import info.bliki.wiki.model.WikiModel;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +104,7 @@ public class SearchHelper {
      * @param request servlet request
      * @param eventSearchForm the form to populate
      * @throws ServletRequestBindingException e
+     * @throws UnsupportedEncodingException 
      */
 	public void bindGetParameters(HttpServletRequest request, EventSearchForm eventSearchForm)
 			throws ServletRequestBindingException {
@@ -120,7 +123,7 @@ public class SearchHelper {
         	eventSearchForm.setZoomOverride(true);
     	}
     	eventSearchForm.setMapType(ServletRequestUtils.getIntParameter(request, QUERY_MAPTYPE));
-    	eventSearchForm.setUserTag(ServletRequestUtils.getStringParameter(request, QUERY_USERTAG));
+    	eventSearchForm.setUserTag(getUtf8QueryStringParameter(request, QUERY_USERTAG));
     	eventSearchForm.setLimitWithinMapBounds((ServletRequestUtils.getBooleanParameter(request, QUERY_WITHIN_MAP_BOUNDS)));
     	eventSearchForm.setExcludeTimeRangeOverlaps((ServletRequestUtils.getBooleanParameter(request, QUERY_EXCLUDE_TIMERANGE_OVERLAPS)));
     	eventSearchForm.setEmbed((ServletRequestUtils.getBooleanParameter(request, QUERY_EMBED)));
@@ -138,6 +141,30 @@ public class SearchHelper {
     	eventSearchForm.setBoundingBoxSW(getLatLng(request, QUERY_SW));
     	
     	WebUtils.setSessionAttribute(request, SESSION_DO_SEARCH_ON_SHOW, true);
+	}
+	
+
+	/**
+	 * TODO - There is a wierd bug with Get string character encoding that results in improper
+	 * decoding of the query string - when you call request.getCharacterEncoding() it returns UTF-8,
+	 * but the parameter is not decoded as UTF-8.  So we have to do it by hand here.
+	 *  
+	 * @param request
+	 * @param paramName
+	 */
+	private String getUtf8QueryStringParameter(HttpServletRequest request, String paramName) {
+		String queryString = request.getQueryString();
+		String before = paramName+"=";
+    	String tag = StringUtils.substringBetween(queryString, before, "?");
+    	if (tag == null) {
+    		tag = StringUtils.substringAfter(queryString, before);
+    	}
+    	try {
+			tag = URLDecoder.decode(tag, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			log.error("Couldn't decode query paramter " + tag, e);
+		} 
+		return tag;
 	}
 	
 	private Point getLatLng(HttpServletRequest request, String query) throws ServletRequestBindingException {

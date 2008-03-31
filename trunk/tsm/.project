@@ -51,7 +51,7 @@
 		<link>
 			<name>build classes</name>
 			<type>2</type>
-			<location>/home/frank/apps/eclipse/C::/dev/tsm/tmp-classes</location>
+			<location>C:/home/frank/apps/eclipse/C::/dev/tsm/tmp-classes</location>
 		</link>
 	</linkedResources>
 </projectDescription>

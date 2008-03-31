@@ -1,4 +1,4 @@
-<%@tag description="page layout" %>
+<%@tag description="page layout" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@attribute name="head" fragment="true"%>
@@ -11,7 +11,6 @@
 <%@attribute name="nohomemenu" required="false" type="java.lang.String"%>
 <%@tag import="com.tech4d.tsm.auth.AuthConstants" %>
 <%@tag import="com.tech4d.tsm.web.filter.NotificationFilter" %>
-
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+path;
