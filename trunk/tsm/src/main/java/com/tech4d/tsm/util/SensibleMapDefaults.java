@@ -16,6 +16,7 @@ public class SensibleMapDefaults {
     public static double[] SEARCH_BOX_DIMENTSIONS = new double[NUM_ZOOM_LEVELS];
     public static Point USA;
     public static Point NORTH_ATLANTIC;
+    public static int DEFAULT_MAP_TYPE = 0;
     
     static {
     	//the low zoom levels have variable search boxes

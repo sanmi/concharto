@@ -122,7 +122,14 @@ public class SearchHelper {
         	eventSearchForm.setMapZoom(zoom);
         	eventSearchForm.setZoomOverride(true);
     	}
-    	eventSearchForm.setMapType(ServletRequestUtils.getIntParameter(request, QUERY_MAPTYPE));
+    	//TSM-257 problem with googlebot.  This is a kludge.  It is difficult to figure out
+    	//why google isn't following the maptype
+    	String mapType = request.getParameter(QUERY_MAPTYPE);
+    	try {
+        	eventSearchForm.setMapType(new Integer(mapType));
+    	} catch (NumberFormatException e) {
+    		eventSearchForm.setMapType(SensibleMapDefaults.DEFAULT_MAP_TYPE);
+    	}
     	eventSearchForm.setUserTag(getUtf8QueryStringParameter(request, QUERY_USERTAG));
     	eventSearchForm.setLimitWithinMapBounds((ServletRequestUtils.getBooleanParameter(request, QUERY_WITHIN_MAP_BOUNDS)));
     	eventSearchForm.setExcludeTimeRangeOverlaps((ServletRequestUtils.getBooleanParameter(request, QUERY_EXCLUDE_TIMERANGE_OVERLAPS)));
