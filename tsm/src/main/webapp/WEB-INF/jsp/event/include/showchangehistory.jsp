@@ -39,6 +39,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 		<display:column>
 		
 		<%-- TODO make it so we don't show empty changes or we record something for empty changes (e.g. added a flag) --%>
+		<%-- TODO fix cut and paste code --%>
 		<div class="changeEntry">
 		
 			Revision <c:out value="${simpleTable.version}"/>, 
@@ -66,8 +67,10 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 				   				</c:when>
 									<%--  Description and Source are wikitext and need to show carriage returns--%>			   				
 				   				<c:when test="${(dt.propertyName == descriptionField) || (dt.propertyName == sourceField)}">
-										<c:set var="withCR" value="${fn:replace(dt.oldValue, linefeed, '<br/>')}" />
-										<c:out value="${withCR}" escapeXml="no"/>
+										<c:set var="lines" value="${fn:split(dt.oldValue, linefeed)}" />
+										<c:forEach items="${lines}" var="line">
+											<c:out value="${line}" /><br/>												
+										</c:forEach>
 				   				</c:when>
 				   				<c:when test="${dt.propertyName == posAccuracyField}">
 				   					<spring:message code="event.positionalAccuracy.${dt.oldValue}"/>
@@ -88,8 +91,10 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 				   				</c:when>
 									<%--  Description and Source are wikitext and need to show carriage returns--%>			   				
 				   				<c:when test="${(dt.propertyName == descriptionField) || (dt.propertyName == sourceField)}">
-										<c:set var="withCR" value="${fn:replace(dt.newValue, linefeed, '<br/>')}" />
-										<c:out value="${withCR}" escapeXml="no"/>
+										<c:set var="lines" value="${fn:split(dt.newValue, linefeed)}" />
+										<c:forEach items="${lines}" var="line">
+											<c:out value="${line}" /><br/>												
+										</c:forEach>
 				   				</c:when>
 				   				<c:when test="${dt.propertyName == posAccuracyField}">
 				   					<spring:message code="event.positionalAccuracy.${dt.newValue}"/>
