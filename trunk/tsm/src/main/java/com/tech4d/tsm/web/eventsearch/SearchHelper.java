@@ -165,12 +165,13 @@ public class SearchHelper {
     	String tag = StringUtils.substringBetween(queryString, before, "&");
     	if (tag == null) {
     		tag = StringUtils.substringAfter(queryString, before);
+    	} else {
+	    	try {
+				tag = URLDecoder.decode(tag, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				log.error("Couldn't decode query paramter " + tag, e);
+			} 
     	}
-    	try {
-			tag = URLDecoder.decode(tag, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			log.error("Couldn't decode query paramter " + tag, e);
-		} 
 		return tag;
 	}
 	
