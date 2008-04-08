@@ -66,8 +66,7 @@ public class EventSearchServiceHib implements EventSearchService {
     private static final String SQL_MATCH_CLAUSE = 
         " MATCH (es.summary, es._where, es.usertags, es.description, es.source) AGAINST (:search_text IN BOOLEAN MODE) ";
 
-    
-    private static final String SQL_ORDER_CLAUSE = " order by t.begin asc";
+    private static final String SQL_ORDER_CLAUSE = " order by t.begin asc, ev.summary asc";
 
     /*
      * (non-Javadoc)
