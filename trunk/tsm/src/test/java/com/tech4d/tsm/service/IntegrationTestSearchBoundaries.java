@@ -161,7 +161,22 @@ public class IntegrationTestSearchBoundaries {
         checkUserTagSearch(3, null);
         assertEquals(3, eventSearchService.search(MAX_RESULTS, 0, null, 
         		new SearchParams( null, null, Visibility.NORMAL, true, null)).size());        
-    	
+    }
+    
+    @Test
+    public void testSortOrder() throws java.text.ParseException  {
+        String summary1 = "Stuff 1";
+        String summary2 = "Stuff 2";
+        String summary3 = "Stuff 3";
+        Event e2 = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522"), summary3, null);
+		Event e0 = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522"), summary1, null);
+        Event e1 = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522"), summary2, null);
+		Event e3 = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1529"), summary3, null);
+		List<Event> events = eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams( null, null, Visibility.NORMAL, true, null));
+		assertEquals(e0.getId(), events.get(0).getId());
+		assertEquals(e1.getId(), events.get(1).getId());
+		assertEquals(e2.getId(), events.get(2).getId());
+		assertEquals(e3.getId(), events.get(3).getId());
     }
     
     private void checkUserTagSearch(int count, String tag) {
