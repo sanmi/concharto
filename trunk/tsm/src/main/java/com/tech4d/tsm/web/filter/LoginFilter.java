@@ -216,12 +216,11 @@ public class LoginFilter implements Filter{
 				if (user != null) {
 					//ok, they are authenticated
 					sessionHelper.setUserInSession(request, user);
-					
 					return true;
 				}
 			}
 			//The user is anonymous
-			sessionHelper.setUserAddrInSession(request, request.getRemoteAddr());
+			sessionHelper.setUserInSession(request, null);
 		}
 		return false;
 	}
