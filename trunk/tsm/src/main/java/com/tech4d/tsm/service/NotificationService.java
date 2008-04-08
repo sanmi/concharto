@@ -29,13 +29,13 @@ public class NotificationService {
 	 * @param toUser
 	 * @param fromUser
 	 */
-	public void notifyNewTalk(User toUser, User fromUser) {
+	public void notifyNewTalk(String toUsername, String fromUsername) {
 		Notification notification = new Notification();
-		notification.setFromUser(fromUser);
-		notification.setToUser(toUser);
+		notification.setFromUsername(fromUsername);
+		notification.setToUsername(toUsername);
 		notification.setTitle(messageSource.getMessage(
-				MSGKEY_NEW_TALK_TITLE, new Object[]{fromUser.getUsername(), 
-						toUser.getUsername()}, null));
+				MSGKEY_NEW_TALK_TITLE, new Object[]{fromUsername, 
+						toUsername}, null));
 		notification.setType(NotificationType.TALK);
 		notificationDao.save(notification);
 	}
@@ -46,8 +46,8 @@ public class NotificationService {
 	 * @param user
 	 * @param type
 	 */
-	public void clearNotifications(User user, NotificationType type) {
-		notificationDao.delete(user, type);
+	public void clearNotifications(String toUsername, NotificationType type) {
+		notificationDao.delete(toUsername, type);
 		
 	}
 

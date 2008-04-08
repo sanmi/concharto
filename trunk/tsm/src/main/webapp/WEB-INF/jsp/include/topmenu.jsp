@@ -15,41 +15,45 @@
 <div id="nav">
     <div class="nav_block">
 			<ul>
-			<c:if test="${username == null}">
-				<c:if test="${param.nohomemenu != true}">
-					<li><a href="${basePath}">Home </a></li>
+			<c:choose>
+				<c:when test="${fn:contains(roles,'anonymous')}">
+					<c:if test="${param.nohomemenu != true}">
+						<li><a href="${basePath}">Home </a></li>
+						<li>|</li>
+					</c:if>
+					<li><a href="${basePath}login.htm">Sign in / create account</a></li>
+				</c:when>
+				<c:otherwise>
+					<li> 
+						Hello, <b><c:out value="${username}"/></b>
+					</li>
+					<c:if test="${param.nohomemenu != true}">
+						<li><a href="${basePath}">Home </a></li>
+						<li>|</li>
+					</c:if>
+					<c:set var="userPageName" value="${fn:replace(username,' ','_')}"/>
+					<li><span class="${myPageLinkClass}"><a href="${basePath}page.htm?page=User:${userPageName}">My Page</a></span></li>
 					<li>|</li>
-				</c:if>
-				<li><a href="${basePath}login.htm">Sign in / create account</a></li>
-				</c:if><c:if test="${username != null}">
-				<li> 
-					Hello, <b><c:out value="${username}"/></b>
-				</li>
-				<c:if test="${param.nohomemenu != true}">
-					<li><a href="${basePath}">Home </a></li>
+					<li><span class="${myTalkLinkClass}"><a href="${basePath}page.htm?page=User_talk:${userPageName}">My Talk</a></span></li>
 					<li>|</li>
-				</c:if>
-				<c:set var="userPageName" value="${fn:replace(username,' ','_')}"/>
-				<li><span class="${myPageLinkClass}"><a href="${basePath}page.htm?page=User:${userPageName}">My Page</a></span></li>
-				<li>|</li>
-				<li><span class="${myTalkLinkClass}"><a href="${basePath}page.htm?page=User_talk:${userPageName}">My Talk</a></span></li>
-				<li>|</li>
-				<li> 
-					<a href="${basePath}member/settings.htm">Settings</a>
-				</li>
-				<li>|</li>
-				<li> 
-					<a href="${basePath}event/contributions.htm?user=${username}">Contributions</a>
-				</li>
-				<c:if test="${fn:contains(roles, 'admin')}">
-				<li>|</li>
-				<li> 
-					<a href="${basePath}admin/adminlinks.htm">Admin</a>
-				</li>
-				</c:if>
-				<li>|</li>
-				<li><a href="${basePath}logout.htm">Sign out</a></li>
-				</c:if></ul>
+					<li> 
+						<a href="${basePath}member/settings.htm">Settings</a>
+					</li>
+					<li>|</li>
+					<li> 
+						<a href="${basePath}event/contributions.htm?user=${username}">Contributions</a>
+					</li>
+					<c:if test="${fn:contains(roles, 'admin')}">
+					<li>|</li>
+					<li> 
+						<a href="${basePath}admin/adminlinks.htm">Admin</a>
+					</li>
+					</c:if>
+					<li>|</li>
+					<li><a href="${basePath}logout.htm">Sign out</a></li>
+				</c:otherwise>
+			</c:choose>
+			</ul>
     </div>
     <div class="nav_left" ><img style="height:20px;width:6px"  alt="" src="${basePath}images/nav-left.png" /></div>
   </div>
