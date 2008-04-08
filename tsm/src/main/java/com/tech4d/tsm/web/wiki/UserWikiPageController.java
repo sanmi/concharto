@@ -1,5 +1,7 @@
 package com.tech4d.tsm.web.wiki;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -82,28 +84,28 @@ public class UserWikiPageController extends SimpleFormController {
 			//ok we simply redirect to the search page
 			return new ModelAndView(new RedirectView("/search/eventsearch.htm?_what=%22" + getEvent(request) + "%22"));
 		} else {
-			User user = getUser(request);
-			//only edit pages for users that exist
-			if (null != user) {
-				//If this is my talk page and there are notifications, then we can clear
-				//the notifications
-				if (iAmWritingOnMyPage(request) && isUserTalkPage(request)) {
-					if (null != WebUtils.getSessionAttribute(request, 
-								NotificationFilter.SESSION_MESSAGES_PENDING)) {
-						//clear the notifications
-						notificationService.clearNotifications(user, NotificationType.TALK);
-						//clear the session variable
-						WebUtils.setSessionAttribute(request, NotificationFilter.SESSION_MESSAGES_PENDING, null);
-						//if the page didn't exist before, we should make it so the link shows
-						//that the page now exists
-						WebUtils.setSessionAttribute(request, WikiConstants.SESSION_MYTALK_EXISTS, true);
-					}
-				} 
-				return super.showForm(request, response, errors);
-			} else {
-				//not good this user doesn't exist - redirect to notfound
-				return new ModelAndView("404");
+			Map model = errors.getModel();
+			String username = getUsername(request);
+			//if the user doesn't exist, it means this is an anonymous user page
+			if (null == getUser(request)) {
+				model.put("isAnonymous", true);
 			}
+			
+			//If this is my talk page and there are notifications, then we can clear
+			//the notifications
+			if (iAmWritingOnMyPage(request) && isUserTalkPage(request)) {
+				if (null != WebUtils.getSessionAttribute(request, 
+							NotificationFilter.SESSION_MESSAGES_PENDING)) {
+					//clear the notifications
+					notificationService.clearNotifications(username, NotificationType.TALK);
+					//clear the session variable
+					WebUtils.setSessionAttribute(request, NotificationFilter.SESSION_MESSAGES_PENDING, null);
+					//if the page didn't exist before, we should make it so the link shows
+					//that the page now exists
+					WebUtils.setSessionAttribute(request, WikiConstants.SESSION_MYTALK_EXISTS, true);
+				}
+			} 
+			return new ModelAndView(getFormView(), model);
 		}
 	}
 
@@ -137,9 +139,9 @@ public class UserWikiPageController extends SimpleFormController {
 			//If someone else is writing on my talk page, notify me - otherwise check and clear
 			//page notifications
 			if (!iAmWritingOnMyPage(request) && isUserTalkPage(request)) {
-				User userOfPage = getUser(request);
-				User me = userDao.find(AuthHelper.getUsername());
-				notificationService.notifyNewTalk(userOfPage, me);
+				String usernameOfPage = getUsername(request);
+				String me = AuthHelper.getUsername();
+				notificationService.notifyNewTalk(usernameOfPage, me);
 			} 
 			
 			return super.onSubmit(request, response, command, errors);

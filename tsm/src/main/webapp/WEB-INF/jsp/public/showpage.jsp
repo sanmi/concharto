@@ -35,6 +35,13 @@
 			</div>
 		</c:otherwise>
 	</c:choose>
+	<div class="notifySpace"></div>
+	<c:if test="${isAnonymous == true}">
+		<jsp:include page="../include/wikianonmessage.jsp"/>
+		<div class="infoBox">
+		<b>NOTE:</b> This is the discussion page for an anonymous user, identified by the user's numerical IP address. Some IP addresses change periodically, and may be shared by several users. If you are an anonymous user, you may create an account or log in to avoid future confusion with other anonymous users. Registering also hides your IP address.
+		</div>
+	</c:if>
 </div>			
 </jsp:body>
 </tsm:page>

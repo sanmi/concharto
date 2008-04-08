@@ -12,7 +12,7 @@ import com.tech4d.tsm.model.user.Notification.NotificationType;
 
 @Transactional
 public class NotificationDaoHib implements NotificationDao {
-    private static final String FROM_SUBSQL = " from Notification notification where notification.toUser.username = ?";
+    private static final String FROM_SUBSQL = " from Notification notification where notification.toUsername = ?";
 	private SessionFactory sessionFactory;
 
     public void setSessionFactory(SessionFactory sessionFactory) {
@@ -50,10 +50,10 @@ public class NotificationDaoHib implements NotificationDao {
 		this.sessionFactory.getCurrentSession().delete(notification);
 	}
 
-	public void delete(User user, NotificationType type) {
+	public void delete(String toUsername, NotificationType type) {
 		this.sessionFactory.getCurrentSession().createQuery(
-				"delete Notification n where n.toUser = :toUser and n.type = :type")
-				.setEntity("toUser", user)
+				"delete Notification n where n.toUsername = :toUsername and n.type = :type")
+				.setString("toUsername", toUsername)
 				.setString("type", type.toString())
 				.executeUpdate();
 	}

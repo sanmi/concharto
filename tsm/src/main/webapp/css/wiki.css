@@ -92,5 +92,7 @@
 }
 .changeEntry table td{
 	vertical-align: top;
-	
+}
+.notifySpace {
+	height: 2em;
 }

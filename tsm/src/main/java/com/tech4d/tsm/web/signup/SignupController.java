@@ -23,7 +23,6 @@ import com.tech4d.tsm.web.util.SessionHelper;
  * Signup a new user
  */
 public class SignupController extends SimpleFormController {
-    private static final String ROLE_EDIT = "edit";
     private UserDao userDao;
     private EmailService emailService;
     private SessionHelper sessionHelper;
@@ -59,8 +58,7 @@ public class SignupController extends SimpleFormController {
         User user = new User(form.getUsername(), hashedPassword, form.getEmail());
         //give them the default 'edit' role
         List<Role> roles = new ArrayList<Role>();
-        Role editRole = userDao.getRole(ROLE_EDIT);
-        roles.add(editRole);
+        roles.add(Role.ROLE_EDIT);
         user.setRoles(roles);
         userDao.save(user);
         

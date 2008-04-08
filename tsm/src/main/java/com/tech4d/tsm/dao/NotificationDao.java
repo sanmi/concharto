@@ -31,6 +31,6 @@ public interface NotificationDao {
 	 * @param me
 	 * @param type
 	 */
-	public abstract void delete(User user, NotificationType type);
+	public abstract void delete(String toUsername, NotificationType type);
 
 }

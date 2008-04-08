@@ -65,7 +65,7 @@ public class IntegrationTestNotificationDao {
     	notificationDao.save(makeNotification(user2));
     	notificationDao.save(makeNotification(user1));  
     	assertEquals(2, notificationDao.find(user2).size());
-    	notificationDao.delete(user2, NotificationType.TALK);
+    	notificationDao.delete(user2.getUsername(), NotificationType.TALK);
     	assertEquals(0, notificationDao.find(user2).size());
     	assertEquals(1, notificationDao.find(user1).size());
     }
@@ -79,8 +79,8 @@ public class IntegrationTestNotificationDao {
     	Notification notification = new Notification();
     	notification.setDescription(DESCRIPTION);
     	notification.setTitle(TITLE);
-    	notification.setFromUser(user1);
-    	notification.setToUser(toUser);
+    	notification.setFromUsername(user1.getUsername());
+    	notification.setToUsername(toUser.getUsername());
     	notification.setType(NotificationType.TALK);
     	return notification;
     }

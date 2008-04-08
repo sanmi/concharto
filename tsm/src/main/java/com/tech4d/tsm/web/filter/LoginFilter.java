@@ -81,8 +81,6 @@ public class LoginFilter implements Filter{
         //Does this page require authentication
         if (requiresAuthentication(httpRequest)) {
             if (!isAuthenticated(httpRequest)) {
-//        		filterConfig.getServletContext().getRequestDispatcher(httpRequest.getContextPath() + 
-//                		REDIRECT_LOGIN).forward(request, response);
                 httpResponse.sendRedirect(httpResponse.encodeRedirectURL(httpRequest.getContextPath() + 
                 		REDIRECT_LOGIN));
             }  
@@ -222,6 +220,8 @@ public class LoginFilter implements Filter{
 					return true;
 				}
 			}
+			//The user is anonymous
+			sessionHelper.setUserAddrInSession(request, request.getRemoteAddr());
 		}
 		return false;
 	}

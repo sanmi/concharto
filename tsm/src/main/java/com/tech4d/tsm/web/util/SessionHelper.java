@@ -1,5 +1,6 @@
 package com.tech4d.tsm.web.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,5 +43,14 @@ public class SessionHelper {
         }
         return roleStr.toString();
     }
+	public void setUserAddrInSession(HttpServletRequest request, String remoteAddr) {
+		User user = new User();
+		user.setUsername(remoteAddr);
+		List<Role> roles = new ArrayList<Role>();
+		roles.add(Role.ROLE_EDIT);
+		roles.add(Role.ROLE_ANONYMOUS);
+		user.setRoles(roles);
+		setUserInSession(request, user);
+	}
 
 }
