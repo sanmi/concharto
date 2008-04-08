@@ -75,6 +75,7 @@ public class UserWikiPageController extends SimpleFormController {
 	/*
 	 * TODO refactor this User, User_talk, Event - it is messy
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected ModelAndView showForm(HttpServletRequest request,
 			HttpServletResponse response, BindException errors)

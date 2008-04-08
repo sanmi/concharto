@@ -22,6 +22,9 @@ public class SessionHelper {
 	}
 
 	public void setUserInSession(HttpServletRequest request, User user) {
+		if (user == null) {
+			user = makeAnonymousUser(request);
+		}
 		WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_USERNAME, user.getUsername());
 		WebUtils.setSessionAttribute(request, AuthConstants.SESSION_AUTH_ROLES, makeRoles(user.getRoles()));
         //put some flags to indicate whether the user and talk pages have been created
@@ -43,14 +46,14 @@ public class SessionHelper {
         }
         return roleStr.toString();
     }
-	public void setUserAddrInSession(HttpServletRequest request, String remoteAddr) {
+
+	private User makeAnonymousUser(HttpServletRequest request) {
 		User user = new User();
-		user.setUsername(remoteAddr);
+		user.setUsername(request.getRemoteAddr());
 		List<Role> roles = new ArrayList<Role>();
 		roles.add(Role.ROLE_EDIT);
 		roles.add(Role.ROLE_ANONYMOUS);
 		user.setRoles(roles);
-		setUserInSession(request, user);
+		return user;
 	}
-
 }
