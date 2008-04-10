@@ -52,12 +52,16 @@
 											name="${simpleTable.auditEntryFieldChange}" id="dt" >
 											
 											<display:column style="width:50%" title="Old Value">
-												<c:set var="withCR" value="${fn:replace(dt.oldValue, linefeed, '<br/>')}" />
-						     				<c:out value="${withCR}" escapeXml="no"/>
+                        <c:set var="lines" value="${fn:split(dt.oldValue, linefeed)}" />
+                        <c:forEach items="${lines}" var="line">
+                          <c:out value="${line}"/><br/>
+                        </c:forEach> 
 											</display:column>
 											<display:column title="New Value">
-												<c:set var="withCR" value="${fn:replace(dt.newValue, linefeed, '<br/>')}" />
-						     				<c:out value="${withCR}" escapeXml="no"/>
+                        <c:set var="lines" value="${fn:split(dt.newValue, linefeed)}" />
+                        <c:forEach items="${lines}" var="line">
+                          <c:out value="${line}"/><br/>
+                        </c:forEach> 
 											</display:column>
 										</display:table> 
 									</div>
