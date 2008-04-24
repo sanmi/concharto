@@ -3,9 +3,6 @@
 	.mapedit {
 	background: #FFFFFF url(../images/search-backg.gif) repeat-x;
 	}
-	#addbox {
-	top: 48px;
-	}
 	#search_tagline {
 	color: #4D4D4D;
 	font:italic 700 8pt Georgia, "Times New Roman", Times, serif;
@@ -21,7 +18,9 @@
 	width:100%;
 	background: url(../images/title-search.png) no-repeat;
 	}
-
+  #addbox {
+  top: 49px;
+  }
 .mapedit #results {
   overflow-x:hidden; 
   overflow-y:scroll;

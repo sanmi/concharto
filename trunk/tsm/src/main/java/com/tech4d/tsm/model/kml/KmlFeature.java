@@ -4,7 +4,7 @@ import com.tech4d.tsm.model.time.TimePrimitive;
 import com.tech4d.tsm.model.geometry.*;
 
 /**
- * Copyright 2007, Time Space Map
+ * Copyright 2007, Concharto
  *
  * Implements a subset of the KML Feature object for rendering
  * in a viewer such as google maps, google earth, etc

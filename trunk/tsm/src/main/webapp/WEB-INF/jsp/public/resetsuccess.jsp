@@ -8,7 +8,7 @@
 	  	<div class="textpanel">
 				<h2>Your password has been reset</h2>
 				<p>Welcome back!</p>	
-		  	<p>Back to <a href="${basePath}">Time Space Map</a></p>	
+		  	<p>Back to <a href="${basePath}">Concharto</a></p>	
 		  </div>
 	  
 	</jsp:body>

@@ -9,7 +9,7 @@
 	  	<div class="textpanel">
 				<h2>Thank You</h2>
 				<p>Thank you for providing your feedback!</p>	
-		  	<p>Back to <a href="${basePath}">Time Space Map</a></p>	
+		  	<p>Back to <a href="${basePath}">Concharto</a></p>	
 		  </div>
 	  
 	</jsp:body>

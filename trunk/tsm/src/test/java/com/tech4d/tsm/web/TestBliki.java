@@ -12,12 +12,12 @@ public class TestBliki {
 
 	@Test public void render() {
 		
-		WikiModel wikiModel = new WikiModel("http://www.timespacemap.com/images/${image}", 
-			"http://www.timespacemap.com/${title}");
+		WikiModel wikiModel = new WikiModel("http://www.concharto.com/images/${image}", 
+			"http://www.concharto.com/${title}");
 		String results = wikiModel.render(WIKI_MARKUP);
 		System.out.println(results);
 		//there should be one url in the string
-		assertTrue(-1 != results.indexOf("timespacemap"));
+		assertTrue(-1 != results.indexOf("concharto"));
 		//there should be three <li> items in the string
 		assertEquals(4, StringUtils.splitByWholeSeparator(results,"<li>").length);
 

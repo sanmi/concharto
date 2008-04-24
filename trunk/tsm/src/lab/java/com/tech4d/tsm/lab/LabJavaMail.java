@@ -17,14 +17,14 @@ import com.tech4d.tsm.util.PasswordUtil;
 
 public class LabJavaMail {
 
-	private static final String WELCOME_SUBJECT = "Confirm your registration with Time Space Map";
+	private static final String WELCOME_SUBJECT = "Confirm your registration with Concharto";
 	private static String PARAM_NAME = ":name";
 	private static String PARAM_CONFIRMATION = ":confirmation";
 	private static String  WELCOME_MESSAGE = "Hello " + PARAM_NAME + ",\n\n" + 
-	"Welcome to the Time Space Map community! \n\n" +
+	"Welcome to the Concharto community! \n\n" +
 	"Please click on this link to confirm your registration: \n" +
-	"http://www.timespacemap.com/member/confirm.htm?id=" + PARAM_CONFIRMATION + " \n\n" + 
-	"You can find out more about us at http://wiki.timespacemap.com/wiki/About.\n\n" +
+	"http://www.concharto.com/member/confirm.htm?id=" + PARAM_CONFIRMATION + " \n\n" + 
+	"You can find out more about us at http://wiki.concharto.com/wiki/About.\n\n" +
 	"If you were not expecting this email, just ignore it, no further action is required to terminate the request.\n";
 	
 	@Test public void confirmation() {
@@ -43,16 +43,16 @@ public class LabJavaMail {
     	String messageText = StringUtils.replace(WELCOME_MESSAGE, PARAM_NAME, user.getUsername());
     	message.setText(messageText);
     	message.setSubject(WELCOME_SUBJECT);
-    	message.setFrom("<Time Space Map Notifications> notify@timespacemap.com");
+    	message.setFrom("<Concharto Notifications> notify@concharto.com");
 
     	JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
     	MimeMessage mimeMessage = mailSender.createMimeMessage();
     	InternetAddress from = new InternetAddress();
-    	from.setAddress("notify@timespacemap.com");
+    	from.setAddress("notify@concharto.com");
     	InternetAddress to = new InternetAddress();
     	to.setAddress(user.getEmail());
     	try {
-			from.setPersonal("Time Space Map Notifications");
+			from.setPersonal("Concharto Notifications");
 			mimeMessage.addRecipient(Message.RecipientType.TO, to);
 			mimeMessage.setSubject(WELCOME_SUBJECT);
 			mimeMessage.setText(messageText);
@@ -68,15 +68,15 @@ public class LabJavaMail {
     	mailSender.send(mimeMessage);
 
     	/*
-Confirm your registration with Time Space Map
+Confirm your registration with Concharto
 
 Hello sanmi,
 
-Welcome to the Time Space Map community!
+Welcome to the Concharto community!
 
-Please click on this link to confirm your registration: http://www.timespacemap.com/member/confirm.htm?id=:confirmation 
+Please click on this link to confirm your registration: http://www.concharto.com/member/confirm.htm?id=:confirmation 
 
-You can find out more about us at http://wiki.timespacemap.com/wiki/About.
+You can find out more about us at http://wiki.concharto.com/wiki/About.
 
 If you were not expecting this email, just ignore it, no further action is required to terminate the request.
     	 */

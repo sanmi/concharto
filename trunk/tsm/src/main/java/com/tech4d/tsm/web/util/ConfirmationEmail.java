@@ -20,20 +20,20 @@ import com.tech4d.tsm.model.user.User;
 public class ConfirmationEmail {
 	private static final Log log = LogFactory.getLog(ConfirmationEmail.class);
 
-    private static final String FROM_NAME = "Time Space Map Notifications";
-	private static final String FROM_ADDRESS = "notify@timespacemap.com";
-	private static final String WELCOME_SUBJECT = "Welcome to Time Space Map";
+    private static final String FROM_NAME = "Concharto Notifications";
+	private static final String FROM_ADDRESS = "notify@concharto.com";
+	private static final String WELCOME_SUBJECT = "Welcome to Concharto";
 	private static String PARAM_NAME = ":name";
 	private static String CONTACT_US = 
-		"If you would like to contact us, our feedback form can be found at http://www.timespacemap.com/feedback.htm\n\n";
+		"If you would like to contact us, our feedback form can be found at http://www.concharto.com/feedback.htm\n\n";
 	private static String  WELCOME_MESSAGE = "Hello " + PARAM_NAME + ",\n\n" + 
-	"Welcome to the Time Space Map community! \n\n" +
+	"Welcome to the Concharto community! \n\n" +
 	"The username you registered with is: :name\n\n" +
 //	private static String PARAM_CONFIRMATION = ":confirmation";
 //	"Please click on this link to confirm your registration: \n" +
-//	"http://www.timespacemap.com/member/confirm.htm?id=" + PARAM_CONFIRMATION + " \n\n" +
+//	"http://www.concharto.com/member/confirm.htm?id=" + PARAM_CONFIRMATION + " \n\n" +
 //	"If the above link is not clickable, you will need to manually copy it into your browser.\n\n" +
-	"You can find out more about us at http://wiki.timespacemap.com/wiki/About.\n\n" + 
+	"You can find out more about us at http://wiki.concharto.com/wiki/About.\n\n" + 
 	CONTACT_US;
 //  "If you were not expecting this email, just ignore it, no further action is required to terminate the request.\n"
 	;
@@ -42,7 +42,7 @@ public class ConfirmationEmail {
     	return makeMessage(message, user, WELCOME_SUBJECT, messageText);
 	}
 	
-	private static final String FORGOT_SUBJECT = "Change password on Time Space Map";
+	private static final String FORGOT_SUBJECT = "Change password on Concharto";
 	private static final String PARAM_FORGOT_RESET_LINK = ":resetlink";
 	private static final String FORGOT_MESSAGE = 
 		"Hello " + PARAM_NAME + ",\n\n" + 

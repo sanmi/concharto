@@ -57,7 +57,7 @@
 				  	</c:when>
 				  	<c:otherwise>
 				  		<tr>
-		            <td>
+		            <td style="padding-top:-5px">
 				 					<span class="options">All fields are optional</span>
 							 		<form:hidden path="limitWithinMapBounds"/> 
 				 				</td>

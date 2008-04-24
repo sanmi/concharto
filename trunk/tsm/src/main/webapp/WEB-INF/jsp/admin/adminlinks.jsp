@@ -11,7 +11,7 @@
 			<ul>
 				<li><a href="${basePath}admin/spotlightlist.htm">Spotlight Events:</a> Edit or create new events to be spotlighted on the home page</li>
 			</ul>
-	  	<p>Back to <a href="${basePath}">Time Space Map</a></p>	
+	  	<p>Back to <a href="${basePath}">Concharto</a></p>	
 	  </div>
 	  
 	</jsp:body>

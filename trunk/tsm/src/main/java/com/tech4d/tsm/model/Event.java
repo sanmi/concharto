@@ -24,7 +24,7 @@ import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.model.wiki.WikiText;
 
 /**
- * Copyright 2007, Time Space Map
+ * Copyright 2007, Concharto
  *
  * This is the main class for storing events in time and space.  It contains enough information to
  * be serialized to KML and can be searched using a spatial query.

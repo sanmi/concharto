@@ -3,7 +3,6 @@
 	#home {
 	background: #FFFFFF url(../images/home-backg.png) repeat-x;
 	}
-
 	#headerhome{
 	height:213px;
 	width:100%;
@@ -16,6 +15,7 @@
 	margin: 0;
 	padding: 0;
 	top: -152px;
+  top: expression('-156px');    /* any IE */
 	width: 855px;
 	margin-right:auto;
 	margin-left:auto;
@@ -23,7 +23,7 @@
 	
 	#main {
 	position:relative;
-	top:-44px;
+	top:-74px;
 	}
 	#main h1 {
 	margin: .2em 0;

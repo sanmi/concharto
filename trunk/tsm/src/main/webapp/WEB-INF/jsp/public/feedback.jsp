@@ -10,7 +10,7 @@
 	  <form:form id="feedbackForm" name="feedback" commandName="feedback"> 
 	  	<div class="textpanel">
 				<h2>Feedback</h2>
-				<p>Please let us know what you think about Time Space Map.  Use this form to ask a question, report bugs, make suggestions or leave a comment.</p>
+				<p>Please let us know what you think about Concharto.  Use this form to ask a question, report bugs, make suggestions or leave a comment.</p>
 
 				<div class="inputcell">
 		        <span class="inputlabel">Name</span> 
