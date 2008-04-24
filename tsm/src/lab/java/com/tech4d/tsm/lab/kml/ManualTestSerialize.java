@@ -47,7 +47,7 @@ public class ManualTestSerialize extends OpenSessionInViewIntegrationTest {
     	
 		FileOutputStream fileOutputStream = new FileOutputStream("tmp3.kml");
 		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, "UTF-8"); 
-		KmlFormat.toKML(events, outputStreamWriter, "10 most recent events from timespacemap.com", "Recent events from time space map!");
+		KmlFormat.toKML(events, outputStreamWriter, "10 most recent events from concharto.com", "Recent events from concharto!");
     }
 
 }

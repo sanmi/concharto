@@ -15,7 +15,7 @@ import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.util.KmlFormat;
 
 /**
- * Periodically writes all time space map events into KML file(s)
+ * Periodically writes all Concharto events into KML file(s)
  */
 public class KmlExportService extends TimerTask {
     private static final String CHARACTER_ENCODING = "UTF-8";

@@ -32,7 +32,7 @@
 	//]]>
 	</script>
 	</jsp:attribute>	
-	<jsp:attribute name="stylesheet">main.css,header.css</jsp:attribute>
+	<jsp:attribute name="stylesheet">header.css,main.css</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="init()" id="home"</jsp:attribute>
 	<jsp:attribute name="nohead">true</jsp:attribute>
 	<jsp:attribute name="nohomemenu">true</jsp:attribute>
@@ -41,7 +41,7 @@
 	<jsp:body>
 
 		<div id="heading" >
-			<img alt="title-home" src="images/title-home.png" />	
+			<img alt="title-home" src="images/${hostprefix}title-home.png" />	
 		</div>
 		
 		<form:form name="event" id="eventSearchForm" action="search/eventsearch.htm" commandName="eventSearch" onsubmit="search(); return false">
@@ -80,13 +80,14 @@
 		    <tr>
 		    <td id="left" >
 		      <h1>An Atlas of History and Happenings</h1>
-		      <p>Time Space Map is an encyclopedic atlas of history and happenings that anyone can edit.  It is a geographic wiki. </p>
+          <p>We've changed our name from <em>Time Space Map</em> to <strong>Concharto</strong>!  Everything else is the same!</p>  
+		      <p>Concharto is an encyclopedic atlas of history and happenings that anyone can edit.  It is a geographic wiki. </p>
 		      <table><tr>
 		      	<td>
 				      <ul>
-								<li><a href="http://wiki.timespacemap.com/wiki/Tour">Take a tour</a></li>
-								<li><a href="http://wiki.timespacemap.com/wiki/Guidelines">Policies and guidelines</a></li>
-								<li><a href="http://wiki.timespacemap.com/wiki/About">About Time Space Map</a></li>
+								<li><a href="http://wiki.concharto.com/wiki/Tour">Take a tour</a></li>
+								<li><a href="http://wiki.concharto.com/wiki/Guidelines">Policies and guidelines</a></li>
+								<li><a href="http://wiki.concharto.com/wiki/About">About Concharto</a></li>
 				      </ul>
 		      	</td>
 		      	<td>

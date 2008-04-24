@@ -37,6 +37,9 @@ import com.tech4d.tsm.web.util.SessionHelper;
  *
  */
 public class LoginFilter implements Filter{
+	private static final String PREFIX_TSM = "tsm-";
+	public static final String SESSION_HOSTPREFIX = "hostprefix";
+	private static final String HOSTNAME_CONCHARTO = "concharto";
 	private static final String REDIRECT_NOTAUTHORIZED = "/notauthorized.htm";
     private static final String REDIRECT_LOGIN = "/login.htm";
     //TODO search requires authentication only during the private pilot
@@ -56,6 +59,11 @@ public class LoginFilter implements Filter{
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+        //name change hack - TODO REMOVE this after 5/1/08
+        if (httpRequest.getServerName().indexOf(HOSTNAME_CONCHARTO) == -1) {
+        	//they are using the old name, timespacemap
+        	httpRequest.getSession().setAttribute(SESSION_HOSTPREFIX, PREFIX_TSM);
+        }
         //Has the user signed in?
     	if (handleRememberMeCookie(httpRequest)) {
     		//redirect to get rid of the jsessionid crap on the URL string

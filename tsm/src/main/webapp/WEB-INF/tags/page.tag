@@ -11,6 +11,7 @@
 <%@attribute name="nohomemenu" required="false" type="java.lang.String"%>
 <%@tag import="com.tech4d.tsm.auth.AuthConstants" %>
 <%@tag import="com.tech4d.tsm.web.filter.NotificationFilter" %>
+<%@tag import="com.tech4d.tsm.web.filter.LoginFilter" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+path;
@@ -23,6 +24,7 @@ request.setAttribute("basePath", basePath);
 request.setAttribute("roles", (String)request.getSession().getAttribute(AuthConstants.SESSION_AUTH_ROLES));
 request.setAttribute("username", (String)request.getSession().getAttribute(AuthConstants.SESSION_AUTH_USERNAME));
 request.setAttribute("hasMessages", (String)request.getSession().getAttribute(NotificationFilter.SESSION_MESSAGES_PENDING));
+request.setAttribute("hostprefix", (String)request.getSession().getAttribute(LoginFilter.SESSION_HOSTPREFIX));
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -33,7 +35,7 @@ request.setAttribute("hasMessages", (String)request.getSession().getAttribute(No
 	<meta http-equiv="Pragma" content="no-cache"/>
 	<meta name="description" content="an encyclopedic atlas of history and happenings that anyone can edit. It is a geographic wiki" />
 	<meta name="keywords" lang="en" content="history, historical maps, historical events, geographic wiki, happenings, atlas, places, maps, locations, sharing, biography, neogeography, geospatial, collective mapping, collaborative mapping, metadata, tagging, groupmaps, mashups, web2.0, google, tools, geotagging, googlemaps, community, cartography"/>
-	<title>Time Space Map - ${title}  </title>
+	<title>Concharto - ${title}  </title>
 	<style type="text/css">
 
   @import url("${basePath}css/style.css");
@@ -71,11 +73,11 @@ request.setAttribute("hasMessages", (String)request.getSession().getAttribute(No
 	<c:if test="${stripped != 'true'}">
 	  <div id="footer">
 			<span class="links linkleft">&copy; 2008, Time Space Map, LLC</span>
-			<a class="linkleft links" href="http://wiki.timespacemap.com/wiki/Legal" >Legal</a>
-			<a class="linkleft links" href="http://wiki.timespacemap.com/wiki/About" >About</a>
+			<a class="linkleft links" href="http://wiki.concharto.com/wiki/Legal" >Legal</a>
+			<a class="linkleft links" href="http://wiki.concharto.com/wiki/About" >About</a>
 			<a class="links linkleft" href="${basePath}feedback.htm">Feedback</a>
-			<a class="links linkleft" href="http://blog.timespacemap.com">Blog</a>
-			<a class="links linkleft" href="http://wiki.timespacemap.com">Community Wiki</a>
+			<a class="links linkleft" href="http://blog.concharto.com">Blog</a>
+			<a class="links linkleft" href="http://wiki.concharto.com">Community Wiki</a>
 	  	
 			<a class="links linkleftright" href="http://creativecommons.org/licenses/by-sa/3.0/us" >
 				<img alt="creative commons" src="http://i.creativecommons.org/l/by-sa/3.0/us/80x15.png"/>

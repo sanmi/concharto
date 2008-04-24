@@ -11,7 +11,7 @@
 	<jsp:body>
 	
  	<div class="textpanel">
-		<div class="title"><h1>Sign in to Time Space Map</h1></div>
+		<div class="title"><h1>Sign in to Concharto</h1></div>
 		<%--  if we have been redirected to this page from the loginfilter because the page requires
 				  authentication and authorization, it will add '?r' to the URL.  This tells us to display the following message --%>
 		<c:if test="${pageContext.request.queryString == 'r'}">
@@ -88,7 +88,7 @@
 						<div class="inputcell">
 							<div class="inputlabel">
 								<form:checkbox path="agreeToTermsOfService"/>
-				  			I agree with the Time Space Map <a href="http://wiki.timespacemap.com/wiki/Legal">Terms of Service</a>								
+				  			I agree with the Concharto <a href="http://wiki.concharto.com/wiki/Legal">Terms of Service</a>								
 							</div>
 							<c:if test="${login.fromController == 'signup'}">
 								<form:errors path="agreeToTermsOfService" cssClass="errorText" element="div"/>

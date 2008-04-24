@@ -45,7 +45,7 @@ public class KmlFormat {
 	private static final String COORDINATES = "coordinates";
 	private static final String DEFAULT_STYLES = "defaultStyles";
 	private static final String STYLE = "Style";
-    private static final String BASEPATH = "http://www.timespacemap.com";
+    private static final String BASEPATH = "http://www.concharto.com";
     protected static final Log logger = LogFactory.getLog(KmlFormat.class);
     //TODO extract the constants from WikiModelFactory
 	private static WikiModel wikiModel = new TsmWikiModel(BASEPATH, BASEPATH + "images/${image}", BASEPATH + "page.htm?page=${title}");
@@ -74,7 +74,7 @@ public class KmlFormat {
      * @throws IOException
      */
 	public static void toKML(List<Event> events, OutputStreamWriter out) {
-		toKML(events, out, "time space map events", null);
+		toKML(events, out, "Concharto events", null);
 	}
 	public static void toKML(List<Event> events, OutputStreamWriter out, String docTitle, String snippet) {
 		
@@ -120,7 +120,7 @@ public class KmlFormat {
 		Element iconStyle = new Element("IconStyle");
 		iconStyle.addContent(simpleElement("scale", "1"));
 		Element icon = new Element("Icon");
-		icon.addContent(simpleElement("href", "http://www.timespacemap.com/images/icons/markerA.png"));
+		icon.addContent(simpleElement("href", "http://www.concharto.com/images/icons/markerA.png"));
 		iconStyle.addContent(icon);
 		style.addContent(iconStyle);
 
@@ -348,7 +348,7 @@ public class KmlFormat {
 		sb = addNullableField(sb, wikiModel.render(event.getSource()));
 		sb.append("Tags: ")
 			.append(event.getUserTagsAsString())
-			.append("<br/><a href=\""  + getLink(event) + "\"><img src=\"http://www.timespacemap.com/images/tsm-logo-sm.png\"/></a>");
+			.append("<br/><a href=\""  + getLink(event) + "\"><img src=\"http://www.concharto.com/images/tsm-logo-sm.png\"/></a>");
 		
 			return sb.toString();
 	}
@@ -374,7 +374,7 @@ public class KmlFormat {
 	 * @return
 	 */
 	private static String getLink(Event event) {
-		return "http://www.timespacemap.com/list/event.htm?_id=" + event.getId();
+		return "http://www.concharto.com/list/event.htm?_id=" + event.getId();
 	}
 
 

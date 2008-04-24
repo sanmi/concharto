@@ -112,7 +112,7 @@
 					 <input type="button" name="Cancel" value="Cancel" onclick="javascript:document.location='${basePath}search/eventsearch.htm';"/>
 					 	<p class="textInput expando">
 							By submitting this, you are releasing your work under the 
-							<a href="http://wiki.timespacemap.com/wiki/Legal#User_Submissions">Creative Commons License</a>. 
+							<a href="http://wiki.concharto.com/wiki/Legal#User_Submissions">Creative Commons License</a>. 
 							You are also promising us that you wrote this yourself, or copied it from a public domain or 
 							similar free resource. <b>DO NOT SUBMIT COPYRIGHTED WORK WITHOUT PERMISSION!</b>
 						</p>		  		
