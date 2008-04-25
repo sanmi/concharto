@@ -297,7 +297,8 @@
 	</target>
 
 	<target name="single-test" depends="compile-tests">
-		<do-test include="${single.test}.class" exclude="**/*$$*"/>
+	  <echo>${single.test}</echo>
+		<do-test include="**/${single.test}*.class" exclude="**/*$$*"/>
 	</target>
 
 	<target name="test" depends="create-db-dev, integration-test, unit-test"/>
