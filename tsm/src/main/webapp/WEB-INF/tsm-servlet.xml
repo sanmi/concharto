@@ -291,16 +291,23 @@
 	</bean>
 	
 	<bean id="eventUndoController" class="com.tech4d.tsm.web.changehistory.AuditableUndoController" >
-		<property name="successView" value="event/changehistory" />
+    <property name="commandName" value="undo"/>
+    <property name="commandClass" value="com.tech4d.tsm.web.changehistory.UndoForm"/>
+    <property name="successView" value="event/changehistory" />
+    <property name="formView" value="event/changehistory" />
 		<property name="revertEventService" ref="revertEventService" />
 		<property name="auditableClass" value="com.tech4d.tsm.model.Event" />
 	</bean>
 	<bean id="discussUndoController" class="com.tech4d.tsm.web.changehistory.AuditableUndoController">
+    <property name="commandName" value="undo"/>
+    <property name="commandClass" value="com.tech4d.tsm.web.changehistory.UndoForm"/>
 		<property name="successView" value="event/discusshistory" />
 		<property name="revertEventService" ref="revertEventService" />
 		<property name="auditableClass" value="com.tech4d.tsm.model.wiki.WikiText" />
 	</bean>
 	<bean id="wikiPageUndoController" class="com.tech4d.tsm.web.changehistory.AuditableUndoController">
+    <property name="commandName" value="undo"/>
+    <property name="commandClass" value="com.tech4d.tsm.web.changehistory.UndoForm"/>
 		<property name="successView" value="pagehistory" />
 		<property name="revertEventService" ref="revertEventService" />
 		<property name="auditableClass" value="com.tech4d.tsm.model.wiki.WikiText" />

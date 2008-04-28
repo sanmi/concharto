@@ -4,38 +4,36 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.tech4d.tsm.model.Auditable;
 import com.tech4d.tsm.service.RevertEventService;
 
-public class AuditableUndoController extends AbstractController {
-	private String successView;
+public class AuditableUndoController extends SimpleFormController {
     private Class<Auditable> auditableClass;
-	private static final String PARAM_ID = "id";
-	private static final String PARAM_TO_REVISION = "toRev";
 	private static final String PARAM_EVENT_ID = "eventId";
 	private static final String PARAM_PAGE = "page";
     private RevertEventService revertEventService;
 	
-	public void setSuccessView(String formView) {
-		this.successView = formView;
-	}
 	public void setAuditableClass(Class<Auditable> auditableClass) {
 		this.auditableClass = auditableClass;
 	}
 	public void setRevertEventService(RevertEventService revertEventService) {
 		this.revertEventService = revertEventService;
 	}
-
+	
 	@Override
-	protected ModelAndView handleRequestInternal(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-    	Long id = ServletRequestUtils.getLongParameter(request, PARAM_ID);
-    	Integer revision = ServletRequestUtils.getIntParameter(request, PARAM_TO_REVISION);
+	protected ModelAndView processFormSubmission(HttpServletRequest request,
+			HttpServletResponse response, Object command, BindException errors)
+			throws Exception {
+
+		UndoForm undoForm = (UndoForm) command;
+    	Long id = undoForm.getId();
+    	Integer revision = undoForm.getToRev();
 
     	if ((id != null) && (revision != null)) {
     		revertEventService.revertToRevision(this.auditableClass, revision, id);
@@ -45,7 +43,7 @@ public class AuditableUndoController extends AbstractController {
     	String page = ServletRequestUtils.getStringParameter(request, PARAM_PAGE);
     	StringBuffer redirect = new StringBuffer(request.getContextPath())
     		.append('/')
-    		.append(this.successView)
+    		.append(getSuccessView())
     		.append(".htm?id=")
     		.append(id);
         if (null != eventId) {
@@ -63,6 +61,7 @@ public class AuditableUndoController extends AbstractController {
 
         //redirect back to the list
         return new ModelAndView(new RedirectView(redirect.toString(), true));
+		
 	}
 
 }
