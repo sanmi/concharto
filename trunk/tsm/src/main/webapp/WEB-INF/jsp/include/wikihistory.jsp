@@ -5,6 +5,24 @@
 <%@ taglib prefix="display" uri="http://displaytag.sf.net" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <% pageContext.setAttribute("linefeed", "\n"); %>
+<script type="text/javascript">
+<!--
+<%-- for submitting a post method to undo (POST is not idempotent) --%>
+  function undo(id, toRev, page) {
+    document.getElementById('undoId').value = id;
+    document.getElementById('undoToRev').value = toRev;
+    document.getElementById('undoPage').value = page;
+    document.undoForm.submit();
+  }
+
+//-->
+</script>
+
+  <form name="undoForm" id="undoForm" method="post" action="${basePath}undopage.htm">
+       <input type="hidden" name="id" id="undoId" />
+       <input type="hidden" name="toRev" id="undoToRev" />
+       <input type="hidden" name="page" id="undoPage" />
+  </form>
 
 		<table><tr><td>
       <div class="simpleForm">
@@ -66,9 +84,7 @@
 										</display:table> 
 									</div>
 									<c:if test="${dt.id > 0}">
-										<a  href="${basePath}undopage.htm?id=${simpleTable.entityId}&toRev=${simpleTable.version-1}&page=${param.page}">
-											Undo this revision
-										</a>
+									  <a href="#" onclick="undo(${simpleTable.entityId}, ${simpleTable.version-1}, '${param.page}');">Undo this revision</a>
 									</c:if>
 						 		</c:when>
 					 		</c:choose>

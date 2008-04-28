@@ -14,7 +14,23 @@ request.setAttribute("descriptionField", EventFieldChangeFormatter.DESCRIPTION);
 request.setAttribute("sourceField", EventFieldChangeFormatter.SOURCE);
 request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 %>
-	
+<script type="text/javascript">
+<!--
+<%-- for submitting a post method to undo (POST is not idempotent) --%>
+  function undo(id, toRev) {
+    document.getElementById('undoId').value = id;
+    document.getElementById('undoToRev').value = toRev;
+    document.undoForm.submit();
+  }
+
+//-->
+</script>
+
+  <form name="undoForm" id="undoForm" method="post" action="${basePath}edit/undoevent.htm">
+       <input type="hidden" name="id" id="undoId" />
+       <input type="hidden" name="toRev" id="undoToRev" />
+  </form>
+
 	<display:table id="simpleTable" 
 						name="auditEntries" 
 						sort="list" 
@@ -111,9 +127,8 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 					</div>
 					<%-- Only a user can undo an event.  And we can't undo the first revision --%>
 					<c:if test="${(dt.id > 0) && (fn:contains(roles, 'edit'))}">
-						<a  href="${basePath}edit/undoevent.htm?id=${simpleTable.entityId}&toRev=${simpleTable.version-1}">
-							Undo this revision
-						</a>
+            <a href="#" onclick="undo(${simpleTable.entityId}, ${simpleTable.version-1});">Undo this revision</a>
+            
 					</c:if>
 		 		</c:when>
 	 		</c:choose>
