@@ -53,7 +53,7 @@ public class ResponseHeaderFilter implements Filter {
 		try {
 			Integer maxAge = new Integer(maxAgeStr);
 			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.MILLISECOND, maxAge);
+			cal.add(Calendar.SECOND, maxAge);
 			SimpleDateFormat sdf = new SimpleDateFormat(HEADER_DATE_FORMAT);
 			sdf.setTimeZone (TimeZone.getTimeZone("GMT"));
 			String expires = sdf.format(cal.getTime());
