@@ -36,20 +36,12 @@ request.setAttribute("hostprefix", (String)request.getSession().getAttribute(Log
 	<meta name="description" content="an encyclopedic atlas of history and happenings that anyone can edit. It is a geographic wiki" />
 	<meta name="keywords" lang="en" content="history, historical maps, historical events, geographic wiki, happenings, atlas, places, maps, locations, sharing, biography, neogeography, geospatial, collective mapping, collaborative mapping, metadata, tagging, groupmaps, mashups, web2.0, google, tools, geotagging, googlemaps, community, cartography"/>
 	<title>Concharto - ${title}  </title>
-	<style type="text/css">
-
-  @import url("${basePath}css/style.css");
-
-	<c:forTokens var="item" items="${stylesheet}" delims=",">
-    @import url("${basePath}css/${item}");
-	</c:forTokens>    
-	</style>
-
+  <link href="${basePath}css/style.css" rel="stylesheet" type="text/css" media="screen">
+  <c:forTokens var="item" items="${stylesheet}" delims=",">
+     <link href="${basePath}css/${item}" rel="stylesheet" type="text/css" media="screen">
+  </c:forTokens>    
 	<jsp:invoke fragment="head" />
 	
-	<c:forTokens var="item" items="${script}" delims=",">
-		<script type="text/javascript" src="${basePath}javascript/${item}"></script>
-	</c:forTokens>    
 </head>
 
 <body ${bodyattr}>
@@ -98,3 +90,6 @@ request.setAttribute("hostprefix", (String)request.getSession().getAttribute(Log
 
   </body>
 </html>
+ <c:forTokens var="item" items="${script}" delims=",">
+   <script type="text/javascript" src="${basePath}javascript/${item}"></script>
+ </c:forTokens>    
