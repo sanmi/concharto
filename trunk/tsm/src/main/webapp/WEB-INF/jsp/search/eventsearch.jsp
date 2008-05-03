@@ -154,7 +154,7 @@
 						          	  	<c:param name="_tag" value="${userTag.tag}"/>
 						          	  	<c:param name="_maptype" value="${eventSearchForm.mapType}"/>
 						          	  </c:url>
-						          		<a href="${url}"><c:out value="${userTag.tag}"/></a><c:if test="${status.index != (fn:length(event.userTags)-1)}">, </c:if>
+						          		<a href="#" onclick="goToTag('${userTag.tag}')"><c:out value="${userTag.tag}"/></a><c:if test="${status.index != (fn:length(event.userTags)-1)}">, </c:if>
 						          	</c:forEach>
 						          </div>
 					          </c:if>

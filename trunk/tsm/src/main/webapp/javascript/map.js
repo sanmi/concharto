@@ -128,9 +128,7 @@
 				var tags = event.tags.split( "," );
 				var taglink = new Array();
 				tags.each( function(tag, index){
-					taglink[index] = '<a target="_top" href="'
-					+ '/search/eventsearch.htm?_tag='+ tag + '&_maptype=' + getMapTypeIndex()
-					+ '">'+ tag +'</a>';
+					taglink[index] = '<a target="_top" href="#" onclick="goToTag(\'' + tag + '\')">' + tag +'</a>';
 				});
 				
 				html += '<div class="usertags"><b>Tags: </b>' + taglink.join(', ') + '</div>';   
@@ -139,6 +137,11 @@
 				
 	   return html;
 	}	
+	
+	/* go to the tag link, but use the current map type */
+	function goToTag(tag) {
+	 document.location = '/search/eventsearch.htm?_tag='+ tag + '&_maptype=' + getMapTypeIndex();
+	}
 	
 	function getMapTypeIndex() {
 		var mapTypeIndex = 0;
