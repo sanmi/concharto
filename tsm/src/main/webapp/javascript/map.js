@@ -128,10 +128,17 @@
 				var tags = event.tags.split( "," );
 				var taglink = new Array();
 				tags.each( function(tag, index){
-					taglink[index] = '<a target="_top" href="#" onclick="goToTag(\'' + tag + '\')">' + tag +'</a>';
+	        //embedded search is wierd with following tags using document.location so we will use a regular href
+	        if (-1 == document.location.pathname.indexOf('embedded')) {
+	          taglink[index] = '<a target="_top" href="" onclick="goToTag(\'' + tag + '\')">' + tag +'</a>';
+	        } else {
+	          //this is embedded
+	          taglink[index] = '<a target="_top" href="'
+	            + '/search/eventsearch.htm?_tag='+ tag + '&_maptype=' + getMapTypeIndex()
+	            + '">'+ tag +'</a>';
+	        }
 				});
-				
-				html += '<div class="usertags"><b>Tags: </b>' + taglink.join(', ') + '</div>';   
+        html += '<div class="usertags"><b>Tags: </b>' + taglink.join(', ') + '</div>';   
 				html += '<span class="source"><b>Source: </b>' + event.source + '</span>';
 				html += '</div>';
 				
@@ -140,7 +147,7 @@
 	
 	/* go to the tag link, but use the current map type */
 	function goToTag(tag) {
-	 document.location = '/search/eventsearch.htm?_tag='+ tag + '&_maptype=' + getMapTypeIndex();
+	  document.location = '/search/eventsearch.htm?_tag='+ tag + '&_maptype=' + getMapTypeIndex();
 	}
 	
 	function getMapTypeIndex() {
