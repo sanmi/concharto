@@ -73,7 +73,7 @@
 				var events = eventsJSON.evalJSON();
 				createOverlays(events);
 			}
-		}
+		}		
 		adjustSidebarIE();
 		if ($('embed').value == 'true') {
 			/* always fit to results for embedded maps */
@@ -103,21 +103,21 @@
 
 		//listeners for hiding polygons when you are zoomed way in
 		GEvent.addListener(map, "zoomend", function() {
-		  hideZoomedPolygons();
+		  hideZoomedPolygons(1);
 		});
 		GEvent.addListener(map, "moveend", function() {
-		  hideZoomedPolygons();
+		  hideZoomedPolygons(2);
 		});
-		//first time, let's make the adjustment
-		hideZoomedPolygons();
+
+		hideZoomedPolygons(3);
 	}
 	
 	/* Don't show polygons when we are zoomed so far in that we can't see them */
-	function hideZoomedPolygons() { 
+	function hideZoomedPolygons(from) { 
 		_overlays.each( function(item, index){
 			if (item.type == 'polygon') {
-				//alert('The item in the position #' + index + ' is:' + item.type);
 				var overlay = item.overlay;
+				var hide = true;
 				for (var i=0; i<overlay.getVertexCount(); i++) {
 					var vertex = overlay.getVertex(i);
 					//if vertex within the map OR
@@ -125,11 +125,15 @@
 					if ((map.getBounds().contains(vertex)) ||
 							((i+1 < overlay.getVertexCount()) && intersectsMap(vertex, overlay.getVertex(i+1)))) 
 					{
-						overlay.show();
+					  hide = false;
 						break;
 					} 
-					//ok, there are no vertexes within the map, so we should hide this overlay
-					overlay.hide();
+				}
+				if (hide) {
+          //ok, there are no vertexes within the map, so we should hide this overlay
+          map.removeOverlay(overlay);
+				} else {
+          map.addOverlay(overlay);
 				}
 			}
 		});
@@ -258,8 +262,8 @@
 			var html = makeOverlayHtml(event);
 			var overlayItem = recordOverlay(poly, html, event.gtype, event.id)
 			addOverlayClickListener(overlayItem);
-		  
-			map.addOverlay(poly);
+			//NOTE: the overlay will be added to the map when/if the hideZoomedPolygons() 
+			//decides it is appropriate 
 		}
 	}
 	
@@ -404,7 +408,7 @@
 	    place = response.Placemark[0];
 	    latLng = new GLatLng(place.Point.coordinates[1],
 	                        place.Point.coordinates[0]);
-			accuracy = place.AddressDetails.Accuracy; 	                        
+			accuracy = place.AddressDetails.Accuracy;
 			/* set the center so we can calulate the map bounds to be passed to the geographic search */
 			map.setCenter(latLng);
 			var where = document.getElementById("eventSearchForm").where.value;
@@ -430,7 +434,6 @@
 		document.getElementById("eventSearchForm").mapType.value = getMapTypeIndex();
 		document.getElementById("eventSearchForm").mapZoom.value = map.getZoom();
 		document.event.submit();
-	  
 	}
 
   /* END POST FUNCTIONS  ============================= */

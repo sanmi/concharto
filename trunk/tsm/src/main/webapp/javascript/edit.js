@@ -7,6 +7,7 @@
 	var _polyMarkers = [];
 	var _currMarker = 0;
 	var _clickListener;
+	var _editablePolyClickListener;
 
 	function initializeVars() {
 		var basePath = $('basePath').value;
@@ -70,7 +71,9 @@
 	
 	function removeClickListener() {
 		GEvent.removeListener(_clickListener);
+		GEvent.removeListener(_editablePolyClickListener);		
 		_clickListener = null;		
+		_editablePolyClickListener = null;
 	}
 	
 	/* create a non-editable poly from an event */
@@ -84,8 +87,12 @@
 		var poly = newPoly(points, event.gtype);
 		
 		var html = createInfoWindowHtml(event);
-		GEvent.addListener(poly, "click", function(point) {		    
-	    map.openInfoWindowHtml(point, html);
+		GEvent.addListener(poly, "click", function(point) {
+			if (_clickListener == null) {
+		    map.openInfoWindowHtml(point, html);
+	    } else {
+	      addVertex(point); 
+	    }
 	  });
 	  if (poly) {
 			map.addOverlay(poly);
@@ -124,21 +131,32 @@
 				marker = createEditableMarker(point);
 			} else if ((geometryType == "line") || (geometryType == "polygon")) {
 				marker = createEditablePoly(geom);
-				addClickListener();					
+				addClickListener(marker);					
 			}
 		}
 	}
 	
 	/* If we are editing a poly, add listener for clicking on the map */
-	function addClickListener() {
+	function addClickListener(poly) {
 		/* only add if it is missing */
 		if (_clickListener == null) {
 			_clickListener = GEvent.addListener(map,"click", function(overlay, point) {
-				addMarker(point);
-				drawPoly();
+			   addVertex(point);
 			});
 		}
+		//we have to add it each time, because the poly is added and redrawn each time (I think)
+    if (_editablePoly != null) {
+	    _editablePolyClickListener = GEvent.addListener(_editablePoly, "click", function(point) {
+        addVertex(point); 
+	    });
+	  }
 	}
+
+  /* used by listeners */
+  function addVertex(point) {
+     addMarker(point);
+     drawPoly();
+  }
 
 	/* create an editable marker from a json point object */
 	function createEditableMarker(point) {
@@ -223,6 +241,7 @@
 	function addMarker(point) {
 		/* When the user clicks on an overlay, not the map, then the point is null 
 				 In that case, we don't want to add apoint */
+				 
 		if (point != null) {
 			_polyMarkers[_currMarker] = new GMarker(point, {icon:_entPointIcon, draggable: true});
 			drawMarker(_polyMarkers[_currMarker], _currMarker);
@@ -282,6 +301,8 @@
 		if (_editablePoly) {
 			map.addOverlay(_editablePoly);
 		}
+		addClickListener(_editablePoly);
+		return _editablePoly;
 	}
 	
 	
@@ -302,9 +323,9 @@
 			map.addOverlay(_polyMarkers[i]);
 		}
 		goToPoly(_editablePoly);
-		drawPoly();
+		var poly = drawPoly();
 		showPolyMessage();
-		addClickListener();
+		addClickListener(poly);
 	}
 	
 	/* remove point AND poly overlay */
