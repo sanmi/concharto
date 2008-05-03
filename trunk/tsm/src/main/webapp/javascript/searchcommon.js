@@ -262,8 +262,11 @@
 			var html = makeOverlayHtml(event);
 			var overlayItem = recordOverlay(poly, html, event.gtype, event.id)
 			addOverlayClickListener(overlayItem);
-			//NOTE: the overlay will be added to the map when/if the hideZoomedPolygons() 
-			//decides it is appropriate 
+			//NOTE: if the overlay is a poly it will be added to the map when/if the hideZoomedPolygons() 
+			//decides it is appropriate
+			if (event.gtype == 'line') {
+			  map.addOverlay(poly);
+			} 
 		}
 	}
 	
