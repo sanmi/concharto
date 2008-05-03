@@ -31,26 +31,11 @@ public class EventSearchServiceHib implements EventSearchService {
 	private static final String PARAM_LATEST = "latest";
 	private static final String PARAM_EARLIEST = "earliest";
 	private static final String PARAM_TAG = "tag";
-	private static final String PARAM_MAXRESULTS = "maxResults";
-	
 	private SessionFactory sessionFactory;
     protected final Log log = LogFactory.getLog(getClass());
 
     private static final String SQL_PREFIX_GET_COUNT = "SELECT count(*) "; 
-    /**
-     * This is somewhat of a hack because we get a performance problem otherwise (TSM-283)
-     * MySQL can't index ORDER BY with an INNER JOIN with a LIMIT by.  E.g. 
-     * <pre>
-     * SELECT *  FROM Event ev 
-     * INNER JOIN TimePrimitive AS t ON ev.when_id = t.id  
-	 * WHERE  NOT(ev.visible  <=> false)  
-	 * order by t.begin asc, ev.summary asc limit 22
-     * </pre>  
-     * 
-     * The subselect allows indexes to be used.  The alternative is to denormalize the DB and put
-     * t.begin in Event or summary in TimePrimitive.   
-     */
-    private static final String SQL_PREFIX_SEARCH = "SELECT * from (SELECT ev.* "; 
+    private static final String SQL_PREFIX_SEARCH = "SELECT * "; 
     private static final String SQL_SELECT_STUB = " FROM Event ev ";
      
     private static final String SQL_GEO_JOIN ="INNER JOIN TsGeometry AS g ON ev.tsgeometry_id = g.id ";
@@ -81,8 +66,7 @@ public class EventSearchServiceHib implements EventSearchService {
     private static final String SQL_MATCH_CLAUSE = 
         " MATCH (es.summary, es._where, es.usertags, es.description, es.source) AGAINST (:search_text IN BOOLEAN MODE) ";
 
-    private static final String SQL_ORDER_CLAUSE = " order by t.begin asc limit :maxResults) results order by results.summary asc";
-    
+    private static final String SQL_ORDER_CLAUSE = " order by t.begin asc, ev.summary asc";
 
     /*
      * (non-Javadoc)
@@ -151,7 +135,7 @@ public class EventSearchServiceHib implements EventSearchService {
     @SuppressWarnings("unchecked")
 	private Long getCountInternal(Geometry boundingBox, SearchParams params) {
         LapTimer timer = new LapTimer(this.log);
-        SQLQuery sqlQuery = createQuery(SQL_PREFIX_GET_COUNT, boundingBox, 0, params);
+        SQLQuery sqlQuery = createQuery(SQL_PREFIX_GET_COUNT, boundingBox, params);
         List result = sqlQuery.addScalar("count(*)", Hibernate.LONG).list();
         timer.timeIt("count").logInfoTime();
         return (Long) result.get(0);
@@ -246,17 +230,18 @@ public class EventSearchServiceHib implements EventSearchService {
     private List<Event> searchInternal(int maxResults, int firstResult, 
             Geometry boundingBox, SearchParams params) {
         LapTimer timer = new LapTimer(this.log);
-        SQLQuery sqlQuery = createQuery(SQL_PREFIX_SEARCH, boundingBox, maxResults, params);
-
+        SQLQuery sqlQuery = createQuery(SQL_PREFIX_SEARCH, boundingBox, params);
+               
         List<Event> events = sqlQuery
             .addEntity(Event.class)
+            .setMaxResults(maxResults)
             .setFirstResult(firstResult)
             .list(); 
         timer.timeIt("search").logInfoTime();
         return events;
     }
 
-	private SQLQuery createQuery(String prefix, Geometry boundingBox, int maxResults, SearchParams params) {
+    private SQLQuery createQuery(String prefix, Geometry boundingBox, SearchParams params) {
         StringBuffer select = new StringBuffer(prefix).append(SQL_SELECT_STUB);
     	select.append(SQL_TIME_JOIN); //always join on time, so we can order by time
         StringBuffer clause = new StringBuffer();
@@ -287,22 +272,15 @@ public class EventSearchServiceHib implements EventSearchService {
         	select.append(SQL_TAG_JOIN);
         	hasConjuncted = addClause(hasConjuncted, clause, SQL_TAG_CLAUSE);
         }
-        //Don't add the order by clause if we are just getting the count 
-        if (!SQL_PREFIX_GET_COUNT.equals(prefix)) {
-            clause.append(SQL_ORDER_CLAUSE);
-        }
+        clause.append(SQL_ORDER_CLAUSE);
         select.append(clause);
 
         // Note: Hibernate always uses prepared statements
         SQLQuery sqlQuery = this.sessionFactory.getCurrentSession()
                 .createSQLQuery(select.toString());
         
-        //Note: not used for count
-        if (!SQL_PREFIX_GET_COUNT.equals(prefix)) {
-            sqlQuery.setInteger(PARAM_MAXRESULTS, maxResults);
-        }
         if (boundingBox != null) {
-        	sqlQuery.setString(PARAM_GEOM_TEXT, boundingBox.toText());
+            sqlQuery.setString(PARAM_GEOM_TEXT, boundingBox.toText());
         }
         if (!StringUtils.isEmpty(params.getTextFilter())) {
             sqlQuery.setString(PARAM_SEARCH_TEXT, params.getTextFilter());
