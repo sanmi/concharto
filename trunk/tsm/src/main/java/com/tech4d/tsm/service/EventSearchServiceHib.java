@@ -66,7 +66,11 @@ public class EventSearchServiceHib implements EventSearchService {
     private static final String SQL_MATCH_CLAUSE = 
         " MATCH (es.summary, es._where, es.usertags, es.description, es.source) AGAINST (:search_text IN BOOLEAN MODE) ";
 
-    private static final String SQL_ORDER_CLAUSE = " order by t.begin asc, ev.summary asc";
+    /**
+     * NOTE: be careful about this order by clause because it can break indexed searches
+     * @see EventSearchServiceHib.sortResults()
+     */
+    private static final String SQL_ORDER_CLAUSE = " order by t.begin asc";
 
     /*
      * (non-Javadoc)
@@ -236,12 +240,38 @@ public class EventSearchServiceHib implements EventSearchService {
             .addEntity(Event.class)
             .setMaxResults(maxResults)
             .setFirstResult(firstResult)
-            .list(); 
+            .list();
+        sortResults(events);
         timer.timeIt("search").logInfoTime();
         return events;
     }
 
-    private SQLQuery createQuery(String prefix, Geometry boundingBox, SearchParams params) {
+    /**
+     * This is somewhat of a hack because we get a performance problem otherwise (TSM-283)
+     * MySQL can't index ORDER BY with an INNER JOIN with a LIMIT by.  E.g. 
+     * <pre>
+     * SELECT *  FROM Event ev 
+     * INNER JOIN TimePrimitive AS t ON ev.when_id = t.id  
+	 * WHERE  NOT(ev.visible  <=> false)  
+	 * order by t.begin asc, ev.summary asc limit 22
+     * </pre>  
+     * 
+     * This means we have to do go back to order by t.begin asc limit 22 and
+     * then sort the events by hand.  The alternative is to denormalize the DB and put
+     * t.begin in Event or summary in TimePrimitive.   The limit of maxResults is always
+     * small so there is very little cost for this method.
+     * @param results unsorted list of results
+     */
+    private void sortResults(List<Event> events) {
+		Collections.sort(events, new Comparator<Event>() {
+			public int compare(Event o1, Event o2) {
+				return o1.getSummary().compareTo(o2.getSummary());
+			}
+		});
+		
+	}
+
+	private SQLQuery createQuery(String prefix, Geometry boundingBox, SearchParams params) {
         StringBuffer select = new StringBuffer(prefix).append(SQL_SELECT_STUB);
     	select.append(SQL_TIME_JOIN); //always join on time, so we can order by time
         StringBuffer clause = new StringBuffer();
