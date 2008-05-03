@@ -260,12 +260,21 @@ public class EventSearchServiceHib implements EventSearchService {
      * then sort the events by hand.  The alternative is to denormalize the DB and put
      * t.begin in Event or summary in TimePrimitive.   The limit of maxResults is always
      * small so there is very little cost for this method.
+     * 
+     * This method sorts first by time then by summary
      * @param results unsorted list of results
      */
     private void sortResults(List<Event> events) {
 		Collections.sort(events, new Comparator<Event>() {
 			public int compare(Event o1, Event o2) {
-				return o1.getSummary().compareTo(o2.getSummary());
+				int dateCompare = o1.getWhen().getBegin().getDate().compareTo(o2.getWhen().getBegin().getDate());
+				if (dateCompare != 0) {
+					//dates are different
+					return dateCompare;
+				} else {
+					//dates are the same, sort by summary
+					return o1.getSummary().compareTo(o2.getSummary());
+				}
 			}
 		});
 		

@@ -165,14 +165,13 @@ public class IntegrationTestSearchBoundaries {
     
     @Test
     public void testSortOrder() throws java.text.ParseException  {
-        String summary0 = "Stuff 0";
         String summary1 = "Stuff 1";
         String summary2 = "Stuff 2";
-        String summary3 = "Stuff 22";
-        Event e2 = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522"), summary2, null);
-		Event e0 = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522"), summary0, null);
-        Event e1 = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522"), summary1, null);
-		Event e3 = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1529"), summary3, null);
+        String summary3 = "Stuff 3";
+		Event e3 = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1529"), summary1, null);
+        Event e2 = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522"), summary3, null);
+		Event e0 = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522"), summary1, null);
+        Event e1 = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522"), summary2, null);
 		List<Event> events = eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams( null, null, Visibility.NORMAL, true, null));
 		assertEquals(e0.getId(), events.get(0).getId());
 		assertEquals(e1.getId(), events.get(1).getId());
