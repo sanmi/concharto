@@ -349,14 +349,8 @@ public class SearchHelper {
 				addIfNotEmpty(terms, "when: ", eventSearchForm.getWhen().getAsText());
 			}
 			addIfNotEmpty(terms, "what: ", eventSearchForm.getWhat());
-			StringBuffer searchTerms = new StringBuffer();
-			for (int i=0; i<terms.size(); i++) {
-				searchTerms.append(terms.get(i));
-				if (i < terms.size()-1) {
-					searchTerms.append(", ");
-				}
-			}
-			title = searchTerms.toString();
+			addIfNotEmpty(terms, "tag: ", eventSearchForm.getUserTag());
+			title = StringUtils.join(terms.toArray(), ", ");
 		}
 		model.put(MODEL_TITLE, title);
 	}

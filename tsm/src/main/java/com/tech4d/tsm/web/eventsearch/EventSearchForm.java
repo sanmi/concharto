@@ -1,5 +1,10 @@
 package com.tech4d.tsm.web.eventsearch;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.tech4d.tsm.model.time.TimeRange;
 import com.vividsolutions.jts.geom.Point;
 
@@ -167,4 +172,25 @@ public class EventSearchForm  {
 		this.userTag = userTag;
 	}
     
+	/**
+	 * Return a comma delimited string that represents the user viewable form settings
+	 * @return
+	 */
+	public String getAsText() {
+		List<String> params = new ArrayList<String>();
+		addIfNotEmpty(params, getWhere());
+		if (null != getWhen()) {
+			params.add(getWhen().getAsText());
+		}
+		addIfNotEmpty(params, getWhat());
+		addIfNotEmpty(params, getUserTag());
+		
+		return StringUtils.join(params.toArray(), ", ");
+	}
+	
+	private void addIfNotEmpty(List<String> params, String param) {
+		if (!StringUtils.isEmpty(param)) {
+			params.add(param);
+		}
+	}
 }
