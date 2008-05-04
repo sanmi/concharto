@@ -41,7 +41,7 @@ request.setAttribute("hostprefix", (String)request.getSession().getAttribute(Log
      <link href="${basePath}css/${item}" rel="stylesheet" type="text/css" media="screen">
   </c:forTokens>    
 	<jsp:invoke fragment="head" />
-	
+	<link rel="shortcut icon" href="/favicon.ico" />
 </head>
 
 <body ${bodyattr}>
