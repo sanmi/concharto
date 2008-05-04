@@ -138,12 +138,11 @@
 							          	</c:otherwise>
 						          	</c:choose>
 						          	<c:forEach items="${event.userTags}" var="userTag" varStatus="status">
-						          	  <%-- note the following needs to all be on one line for proper HTML format --%>
-						          	  <c:url var="url" value="${basePath}${root}">
-						          	  	<c:param name="_tag" value="${userTag.tag}"/>
-						          	  	<c:param name="_maptype" value="${eventSearchForm.mapType}"/>
-						          	  </c:url>
-						          		<a href="#" onclick="goToTag('<c:out value="${userTag.tag}"/>')"><c:out value="${userTag.tag}"/></a><c:if test="${status.index != (fn:length(event.userTags)-1)}">, </c:if>
+                          <%-- THE following operation is necessary because javascript in IE6 doesn't interpret
+                          single quote &#039; properly so we replace 'qu'ran' with 'qu\'ran' --%>
+						          	  <c:set var="tag" value="${fn:replace(userTag.tag,'\\'','\\\\\\'')}"/>
+                          <%-- note the following needs to all be on one line for proper HTML format --%>
+                          <a href="#" onclick="goToTag('<c:out value="${tag}"/>')"><c:out value="${userTag.tag}"/></a><c:if test="${status.index != (fn:length(event.userTags)-1)}">, </c:if>
 						          	</c:forEach>
 						          </div>
 					          </c:if>
