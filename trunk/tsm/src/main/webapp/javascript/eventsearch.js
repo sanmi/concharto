@@ -82,7 +82,7 @@
 	}
 	
 	function cleanUrl(url) {
-		url = url.gsub('\'',' ');  /* mysql free text doesn't pay attention to this anyway! */ 
+		url = url.gsub('\'',' ');  /* mysql free text doesn't pay attention to this anyway! */
 		url = url.escapeHTML();
 		return url;
 	}
@@ -140,7 +140,6 @@
 	}
 	
 	function appendIfNotEmpty(urltext, query, value) {
-		//alert(query + ', ' + value + ', ' + isEmpty(value));
 		if (!isEmpty(value)) {
 			urltext = append(urltext, query, value);
 		}
@@ -148,7 +147,6 @@
 	}
 	
 	function appendIfTrue(urltext, query, value) {
-		//alert(query + ', ' + value );
 		if (value == true) {
 			urltext = append(urltext, query, value);
 		}
@@ -163,6 +161,7 @@
 			urltext += '&';
 		}
 		urltext += query + '=' + encodeURIComponent(value);
+    urltext = urltext.gsub('%20','+');  /* I favor '+' instead of %20 for spaces */ 
 		return urltext;
 	}
 	
