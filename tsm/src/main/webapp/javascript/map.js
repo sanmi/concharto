@@ -129,10 +129,10 @@
 				var taglink = new Array();
 				tags.each( function(tag, index){
 				  //urlencode the tag
-				  encodedtag = URLEncode(tag);
+				  var encodedtag = URLEncode(tag);
 	        //embedded search is wierd with following tags using document.location so we will use a regular href
 	        if (-1 == document.location.pathname.indexOf('embedded')) {
-	          taglink[index] = '<a target="_top" href="" onclick="goToTag(\'' + encodedtag + '\')">' + tag +'</a>';
+	          taglink[index] = '<a target="_top" href="" onclick="goToTag(\'' + encodedtag + '\'); return false;">' + tag +'</a>';
 	        } else {
 	          //this is embedded
 	          taglink[index] = '<a target="_top" href="'
