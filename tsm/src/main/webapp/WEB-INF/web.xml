@@ -9,6 +9,7 @@
         <param-value>
             WEB-INF/tsm-application.xml
             WEB-INF/tsm-dao.xml
+            WEB-INF/quartz.xml
             WEB-INF/tsm-datasource.xml
         </param-value>
     </context-param>
