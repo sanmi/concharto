@@ -4,7 +4,10 @@ import info.bliki.wiki.model.WikiModel;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -21,6 +24,7 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 import com.tech4d.tsm.model.Event;
+import com.tech4d.tsm.model.UserTag;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.model.time.VariablePrecisionDate;
 import com.tech4d.tsm.web.wiki.TsmWikiModel;
@@ -36,6 +40,7 @@ import com.vividsolutions.jts.geom.Polygon;
  *
  */
 public class KmlFormat {
+	private static final Log log = LogFactory.getLog(KmlFormat.class);
 	private static final String TESSELLATE = "tessellate";
 	private static final String POLY_OPACITY = "6f";
 	private static final String POLY_COLOR = POLY_OPACITY + "0000FF";
@@ -87,7 +92,9 @@ public class KmlFormat {
 		kmlDocument.addContent(simpleElement("open","1"));
 
 		addDefaultStyles(kmlDocument);
+		int i = 0;
 		for (Event event : events) {
+			log.info(i++ + " " + event.getId() + ", " + event.getSummary());
 			addPlacemark(kmlDocument, event);
 		}
 
@@ -120,7 +127,7 @@ public class KmlFormat {
 		Element iconStyle = new Element("IconStyle");
 		iconStyle.addContent(simpleElement("scale", "1"));
 		Element icon = new Element("Icon");
-		icon.addContent(simpleElement("href", "http://www.concharto.com/images/icons/markerA.png"));
+		icon.addContent(simpleElement("href", BASEPATH + "/images/icons/markerA.png"));
 		iconStyle.addContent(icon);
 		style.addContent(iconStyle);
 
@@ -172,6 +179,18 @@ public class KmlFormat {
 	 */
 	private static void addTimeSpan(Element parent, Event event) {
 		TimeRange tr = event.getWhen();
+		if (tr.getBegin().getPrecision() == null) {
+			//this is legacy data from before precisions.  We fix it by parsing it then formatting it
+			//which is how it would work in the UI
+			String trText = TimeRangeFormat.format(tr);
+			try {
+				tr = TimeRangeFormat.parse(trText);
+			} catch (ParseException e) {
+				log.error("Error re-constituting time for event id " + event.getId());
+				throw new RuntimeException(e);
+			}
+			
+		}
 		Element timePrimitive = new Element("TimeSpan");
 		timePrimitive.addContent(simpleElement("begin", getTimeStamp(tr.getBegin())));
 		timePrimitive.addContent(simpleElement("end", getTimeStamp(tr.getEnd())));
@@ -346,13 +365,42 @@ public class KmlFormat {
 		sb = addNullableField(sb, wikiModel.render(event.getDescription()));
 		sb.append("Source: ");
 		sb = addNullableField(sb, wikiModel.render(event.getSource()));
-		sb.append("Tags: ")
-			.append(event.getUserTagsAsString())
-			.append("<br/><a href=\""  + getLink(event) + "\"><img src=\"http://www.concharto.com/images/tsm-logo-sm.png\"/></a>");
+		addTags(sb, event.getUserTags());
+		sb.append("<br/><a href=\"")
+		  .append(getLink(event)).append("\"><img src=\"").append(BASEPATH).append("/images/concharto-logo-sm.png\"/></a>");
 		
 			return sb.toString();
 	}
 
+	/** Add linked tags
+	 * 
+	 * @param sb
+	 * @param userTags
+	 */
+	private static void addTags(StringBuffer sb, List<UserTag> userTags) {
+		int i=0;
+		for (UserTag tag : userTags) {
+			if (i == 0) {
+				sb.append("Tags: ");
+			}
+			sb.append("<a href=\"")
+			  .append(BASEPATH).append("/search/eventsearch.htm?_tag=");
+			
+			try {
+				sb.append(URLEncoder.encode(tag.getTag(), "UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+				log.error("Error encoding tag " + tag);
+				throw new RuntimeException(e);
+			}
+			sb.append("\">")
+			  .append(tag.getTag())
+			  .append("</a>");
+			if (++i < userTags.size()) {
+				sb.append(", ");
+			}
+		}
+		
+	}
 	/**
 	 * Add a field or <br/> if the field is null
 	 * @param sb
@@ -374,7 +422,7 @@ public class KmlFormat {
 	 * @return
 	 */
 	private static String getLink(Event event) {
-		return "http://www.concharto.com/list/event.htm?_id=" + event.getId();
+		return BASEPATH + "/list/event.htm?_id=" + event.getId();
 	}
 
 

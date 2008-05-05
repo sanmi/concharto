@@ -1,8 +1,10 @@
 package com.tech4d.tsm.lab.kml;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -39,15 +41,33 @@ public class ManualTestSerialize extends OpenSessionInViewIntegrationTest {
     }
   
     @Test
-    public void doSerialize() throws IOException, ParserConfigurationException {
+    public void doSerialize() throws ParserConfigurationException {
 
     	List<Event> events = eventTesterDao.findRecent(20,0);
     	System.out.println(events.size() + "======================");
 		//serializeToKML(events);
     	
-		FileOutputStream fileOutputStream = new FileOutputStream("tmp3.kml");
-		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, "UTF-8"); 
-		KmlFormat.toKML(events, outputStreamWriter, "10 most recent events from concharto.com", "Recent events from concharto!");
+		FileOutputStream fileOutputStream = null;
+		try {
+			fileOutputStream = new FileOutputStream("tmp3.kml");
+			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, "UTF-8"); 
+			KmlFormat.toKML(events, outputStreamWriter, "recent events from concharto.com", "Recent events from concharto!");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		try {
+			if (fileOutputStream != null) {
+				fileOutputStream.close();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
 }
