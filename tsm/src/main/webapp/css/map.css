@@ -99,6 +99,9 @@
 #sidebar .result {
 	width: 292px
 }
+#sidebar .highlight {
+  background-color: #EDECF3;
+}
 .inforesult {
   overflow-x:hidden; 
   overflow-y:scroll;

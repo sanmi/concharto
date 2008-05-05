@@ -212,7 +212,7 @@
 	}
 	
 	/* called by createOverlay */
-	function createMarker(event) { 
+	function createMarker(event, totalEvents) { 
 		updateFitToPolygon(new GLatLng(event.geom.lat, event.geom.lng));
 		
 	  /* Create a lettered icon for this point using our icon class */
@@ -223,12 +223,13 @@
 	  /* Set up our GMarkerOptions object */
 	  var markerOptions = { icon:letteredIcon };
 		var marker = new GMarker(new GLatLng(event.geom.lat, event.geom.lng), markerOptions);
-		var html = makeOverlayHtml(event);
+		var html = makeOverlayHtml(event, totalEvents);
 		marker.bindInfoWindowHtml(html);
 		map.addOverlay(marker);
 		
 		/* record so the user can click on the sidebar and see a popup in the map */
-		recordOverlay( marker, html, "point", event.id)
+		var overlayItem = recordOverlay( marker, html, "point", event.id);
+		addOverlayClickListener(overlayItem);
 	}
 	
 	/* Add to a global polygon object that is used to fit the map to the
@@ -240,7 +241,7 @@
 		}
 	}
 	/* called by createOverlay */
-	function createPoly(event) {
+	function createPoly(event, totalEvents) {
 		var points = [];
 		var line = event.geom.line;
 		
@@ -259,7 +260,7 @@
 		var poly = newPoly(points, event.geom.gtype);
 		if (poly) {
 			/* record so the user can click on the sidebar and see a popup in the map */
-			var html = makeOverlayHtml(event);
+			var html = makeOverlayHtml(event, totalEvents);
 			var overlayItem = recordOverlay(poly, html, event.gtype, event.id)
 			addOverlayClickListener(overlayItem);
 			//NOTE: if the overlay is a poly it will be added to the map when/if the hideZoomedPolygons() 
@@ -273,8 +274,13 @@
 	/* Listener for polys and lines */
 	function addOverlayClickListener(overlayItem) {
 			GEvent.addListener(overlayItem.overlay, "click", function(point) {
-		    map.openInfoWindowHtml(point, overlayItem.html);
-		    highlightOverlay(overlayItem);
+			  //for points, we only want to highlight the sidebar item. the
+			  //infowindow is handled elsewhere
+		    if (overlayItem.type != 'point') {
+          highlightOverlay(overlayItem);
+		      map.openInfoWindowHtml(point, overlayItem.html);
+        }
+		    highlightSidebarItem(overlayItem);
 		  });
 	}
 	
@@ -301,8 +307,22 @@
 			map.openInfoWindow(point, _overlays[index].html);
 			highlightOverlay(_overlays[index]);
 		}
+    highlightSidebarItem(_overlays[index]);
 	}
 	
+	/* Add a subtle highlight to the sidebar item when */
+	function highlightSidebarItem(overlayItem) {
+    //highlight our one if it exists (e.g. we are on the search page, not the embedded page
+    if ($(overlayItem.id.toString()) != null) {
+	    //unhighligh others
+	    $$('.highlight').each(function(item){
+	     $(item).removeClassName('highlight');
+	    });
+      $(overlayItem.id.toString()).addClassName('highlight');
+    }	  
+	}
+	
+	/* Highlight the overlay by changing its color */
 	function highlightOverlay(overlayItem) {
 		var newOverlay = redrawOverlay(overlayItem, LINE_WEIGHT_HIGHLIGHT, LINE_COLOR_HIGHLIGHT, POLY_COLOR_HIGHLIGHT);
 		overlayItem.isHighlighted = true;

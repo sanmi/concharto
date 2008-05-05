@@ -13,6 +13,8 @@
 	var LINE_WEIGHT_HIGHLIGHT = 4;
 	var POLY_COLOR_HIGHLIGHT = '#17ACFD';
 	var LINE_COLOR_HIGHLIGHT = '#0000FF';
+	var INFO_WIDTH = 450;
+	var INFO_HEIGHT = 375;
 	 
 
 	/** Objects ---------------- */
@@ -69,7 +71,7 @@
 	
 	function setMapExtent() {
     	var top = document.getElementById("map").offsetTop;
-    	var height = getHeight() - top - 32;
+    	var height = getHeight() - top - 28;
     	document.getElementById("map").style.height=height+"px";
 	}
 	
@@ -107,9 +109,9 @@
     }
 	
 	function createInfoWindowHtml(event, width /* optional */, height /* optional */) {
-		if (width==null || width=='null' || width=='') { width = 450};
+		if (width==null || width=='null' || width=='') { width = INFO_WIDTH};
 		if (height==null || height=='null' || height=='') {
-			height = 'max-height:375px;';
+			height = 'max-height:' + INFO_HEIGHT + ';';
 		} else {
 			height = 'height:' + height + 'px;'
 		}
@@ -195,9 +197,9 @@
 			var event = events[i];
 			if ((excludeEventId === null) || (event.id != excludeEventId)) {
 				if (event.gtype == 'point') {
-				  createMarker(event);
+				  createMarker(event, events.length);
 				} else if ((event.gtype == 'line') || (event.gtype == 'polygon')) {
-					createPoly(event);					
+					createPoly(event, events.length);					
 				}
 			}
 		} 

@@ -77,7 +77,7 @@
 	}
 	
 	/* create a non-editable poly from an event */
-	function createPoly(event) {
+	function createPoly(event, totalEvents) {
 		var points = [];
 		var line = event.geom.line;
 		for (var i=0; i<line.length; i++) {
@@ -100,7 +100,7 @@
 	}
 	
 	/* create a non-editable marker from an event */
-	function createMarker(event) {
+	function createMarker(event, totalEvents) {
 		var point = new GLatLng(event.geom.lat, event.geom.lng);
 		var marker = new GMarker(point, {icon:_markerIcon});  
 		marker.bindInfoWindowHtml(createInfoWindowHtml(event));
