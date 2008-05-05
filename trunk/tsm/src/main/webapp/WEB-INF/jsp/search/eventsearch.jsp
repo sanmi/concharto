@@ -51,22 +51,21 @@
 		 
 			<table class="mainarea"><tbody><tr>			
 				<td id="sidebar">
-					<div class="resultcount">
-						<c:choose>
-		  				<c:when test="${fn:length(events) > 0}">
-				  			Displaying events <b>${currentRecord + 1}  - ${currentRecord + fn:length(events) }</b>  
-				  			of <b><c:out value="${totalResults}"/></b>
-			 				</c:when>
-		  				<c:otherwise>
-			  				No Events found
-		  				</c:otherwise>
-		  			</c:choose>
-            <c:if test="${eventSearchForm.asText != ''}">
-              for <b><c:out value="${eventSearchForm.asText}"/></b>
-            </c:if>
-		  			  
-					</div>		    		
           <div id="results" >
+	          <div class="resultcount">
+	            <c:choose>
+	              <c:when test="${fn:length(events) > 0}">
+	                Displaying events <b>${currentRecord + 1}  - ${currentRecord + fn:length(events) }</b>  
+	                of <b><c:out value="${totalResults}"/></b>
+	              </c:when>
+	              <c:otherwise>
+	                No Events found
+	              </c:otherwise>
+	            </c:choose>
+	            <c:if test="${eventSearchForm.asText != ''}">
+	              for <b><c:out value="${eventSearchForm.asText}"/></b>
+	            </c:if>
+	          </div>    
 		    		<form:errors path="where" cssClass="errorLabel" element="div"/>
 						<form:errors path="when" cssClass="errorLabel" element="div"/>
 						<form:errors path="when">

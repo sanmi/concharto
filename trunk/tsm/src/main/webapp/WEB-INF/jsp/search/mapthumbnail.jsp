@@ -35,7 +35,7 @@
 	}
 	
 		<%-- called by createOverlay --%>
-	function createMarker(event) {
+	function createMarker(event, totalEvents) {
 		var point = new GLatLng(event.geom.lat, event.geom.lng);
 		var marker = new GMarker(point);
 		map.addOverlay(marker);
@@ -44,7 +44,7 @@
 	}
 	
 	<%-- called by createOverlay --%>
-	function createPoly(event) {
+	function createPoly(event, totalEvents) {
 		var points = [];
 		var line = event.geom.line;
 		

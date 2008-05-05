@@ -26,7 +26,7 @@
 		}
 	
 		<%-- override create html for info bubbles --%>	
-		function makeOverlayHtml(event) {
+		function makeOverlayHtml(event, totalEvents) {
 			return createInfoWindowHtml(event, 350, 150);
 		}
 	

@@ -4,19 +4,28 @@
 		setupHelpPanels();
 		initialize();
 		
-
 		new Control.Modal('link_linkhere',{
 				containerClassName: 'linkbox',
         opacity: 0.2,
         afterOpen: getLinkUrls
         });
-
 	}
 
 	/* create html for info bubbles */	
-	function makeOverlayHtml(event) {
-		var html = createInfoWindowHtml(event) +  
-			'<div class="infolinkbar linkbar"><a class="links" href="#" onclick="editEvent(' + event.id + ')" title="' + _msg_edit + '">edit</a>';  
+	function makeOverlayHtml(event, totalEvents) {
+	  var overlaysIndex = getOverlaysIndex(event.id);
+		var html = createInfoWindowHtml(event);  
+    html += 
+    '<div style="width:' + INFO_WIDTH + 'px;"><span  style="float:right">';
+    if (overlaysIndex > 0) {
+      html +='<a href="" onclick="showEvent(' + event.id + ', -1); return false;">&laquo; prev</a>&nbsp;&nbsp; '; 
+    } 
+    if (overlaysIndex < (totalEvents - 1)) {
+      html += '<a href="" onclick="showEvent(' + event.id + ', 1); return false;">next &raquo;</a>';
+    }
+    html += '</span>';
+		html += '<div class="infolinkbar linkbar"><a class="links" href="#" onclick="editEvent(' + event.id + ')" title="' + _msg_edit + '">edit</a>';
+			  
 	  if (event.hasDiscuss) {
 			html += '<a class="links" href="'+ _basePath + 'event/discuss.htm?id=' + event.id + '" title="' + _msg_discuss + '">discuss</a>';
 	  } else {
@@ -24,8 +33,9 @@
 	  }
 		html += '<a class="links" href="' + _basePath + 'event/changehistory.htm?id=' + event.id + '" title="' + _msg_changes + '">changes</a>';
 		html += '<a class="links" href="' + _basePath + 'edit/flagevent.htm?id=' + event.id + '" title="' + _msg_flag + '">flag</a>' +
-			'<a class="links" href="#" onclick="zoomTo(' + event.id + ')">zoom in</a>';
-		html += '<br/></div>';
+			'<a class="links" href="#" onclick="zoomTo(' + event.id + ')">zoom in</a>' +
+		  '<br/>'+
+		  '</div></div>';
 		return html;
 	}
 	
@@ -33,12 +43,30 @@
   /* END PRE FUNCTIONS (initialization) ============================= */
 
   /* BEGIN WHILE FUNCTIONS  ============================= */
+  /* Get the index to the _overlays array for a given event id */ 
+	function getOverlaysIndex(id) {
+   var i;
+   for (i=0; i<_overlays.length; i++) {
+     if (_overlays[i].id == id) {
+       break;
+     }
+   }
+   return i;
+	}
+
+	function showEvent(id, incr) {
+	 var i = getOverlaysIndex(id);
+	 var next = i + incr;
+	 if ((next >= 0) && (next < _overlays.length)) {
+	   openMarker(next); 
+	 }
+	}
 	
 	function adjustSidebarIE() {
 		/* adjust the map */
 		setMapExtent();
    	var top = document.getElementById("map").offsetTop;
-   	var height = getHeight() - top - 44;
+   	var height = getHeight() - top - 40;
    	document.getElementById("results").style.height=height+"px";
    	/* DEBUG the following is a Kludge! for an IE 6 rendering problem argh!*/
    	document.getElementById("results").style.width = "320px"; 
