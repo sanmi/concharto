@@ -60,10 +60,10 @@ public class KmlExportService extends QuartzJobBean {
 		Integer total = eventDao.getTotalCount();
 		log.debug("running export task for " + total + " events");
 		//TODO we need to split this up later! otherwise we will run out of ram
-//		List<Event> events = eventSearchService.search(total, 0, null, 
-//				new SearchParams(null, null, Visibility.NORMAL, true, null));
+		List<Event> events = eventSearchService.search(1000, 0, null, 
+				new SearchParams(null, null, Visibility.NORMAL, true, null));
 		//TODO FIXME!! 5-4-08
-		List<Event> events = eventDao.findRecent(1000, 0);
+//		List<Event> events = eventDao.findRecent(1000, 0);
 		log.info("retrieved " + total + " events");
 
 		FileOutputStream fileOutputStream = null;
