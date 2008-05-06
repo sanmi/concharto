@@ -130,8 +130,9 @@
 				var tags = event.tags.split( "," );
 				var taglink = new Array();
 				tags.each( function(tag, index){
-				  //urlencode the tag
-				  var encodedtag = URLEncode(tag);
+				  //encode ant apostrophes in the tag because that will mess up the call from HTML
+				  //we will have to decode them later in goToTag()
+				  var encodedtag = tag.gsub('\'', '%27');
 	        //embedded search is wierd with following tags using document.location so we will use a regular href
 	        if (-1 == document.location.pathname.indexOf('embedded')) {
 	          taglink[index] = '<a target="_top" href="" onclick="goToTag(\'' + encodedtag + '\'); return false;">' + tag +'</a>';
@@ -151,6 +152,11 @@
 	
 	/* go to the tag link, but use the current map type */
 	function goToTag(tag) {
+    // UGH.  Some tags have single quotes which messes up the call when the HTML uses onclick.  However 
+    // we need those single quotes for the search, since it is a valid code in the URL and the server doesn't
+    // decode %27 unescape single quotes
+    tag = tag.gsub('%27', '\'');
+    var tag = encodeURIComponent(tag);
 	  document.location = '/search/eventsearch.htm?_tag='+ tag + '&_maptype=' + getMapTypeIndex();
 	}
 	
@@ -245,13 +251,6 @@
 	
 	function return2br(dataStr) {
 		return dataStr.gsub('(\r\n|[\r\n])', '<br/>');
-  }
-  
-  function autolink(dataStr) {
-  	var linked = dataStr.gsub('((ftp|https?)://[^ ,;\t\n<]*)','<a href="#{1}" target="_top">#{1}</a>');
-		linked = linked.gsub('.\</a\>','\</a\>.');  	
-  	linked = linked.gsub('[.]" target','" target');  	
-  	return linked;
   }
   
   function findClosestVertex(point, overlay) {
@@ -356,29 +355,3 @@ function intersectLineLine(a1, a2, b1, b2) {
 
     return result;
 };	
- 
-  // Copied from http://cass-hacks.com/articles/code/js_url_encode_decode/
-  function URLEncode (clearString) {
-    var output = '';
-    var x = 0;
-    clearString = clearString.toString();
-    var regex = /(^[a-zA-Z0-9_.]*)/;
-    while (x < clearString.length) {
-      var match = regex.exec(clearString.substr(x));
-      if (match != null && match.length > 1 && match[1] != '') {
-        output += match[1];
-        x += match[1].length;
-      } else {
-        if (clearString[x] == ' ')
-          output += '+';
-        else {
-          var charCode = clearString.charCodeAt(x);
-          var hexVal = charCode.toString(16);
-          output += '%' + ( hexVal.length < 2 ? '0' : '' ) + hexVal.toUpperCase();
-        }
-        x++;
-      }
-    }
-    return output;
-  }
-  
