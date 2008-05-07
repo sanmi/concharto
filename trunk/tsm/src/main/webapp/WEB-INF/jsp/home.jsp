@@ -80,7 +80,6 @@
 		    <tr>
 		    <td id="left" >
 		      <h1>An Atlas of History and Happenings</h1>
-          <p>We've changed our name from <em>Time Space Map</em> to <strong>Concharto</strong>!  Everything else is the same!</p>  
 		      <p>Concharto is an encyclopedic atlas of history and happenings that anyone can edit.  It is a geographic wiki. </p>
 		      <table><tr>
 		      	<td>
