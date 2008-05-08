@@ -235,6 +235,8 @@
 	  
 	  //show the "show"
 	  new Insertion.Top('sidebarSize', '<a href="#" onclick="showSidebar()">show</a>');
+	  
+	  return false;
 	}
 	
 	
