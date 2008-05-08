@@ -1,8 +1,15 @@
   /* BEGIN PRE FUNCTIONS (initialization) ============================= */
 
+  //constants
   var RESULTS_WIDTH = 320;
+  var RESULTS_NUDGE = 53;
   var SIDEBAR_WIDTH = RESULTS_WIDTH;
-  var _currResultsWidth = SIDEBAR_WIDTH;
+  var HEADERBAR_HEIGHT = 147;
+  var SEARCHBOX_TOP = 68;
+    
+  //global variables
+  var _currResultsWidth = RESULTS_WIDTH;
+  var _currResultsNudge = RESULTS_NUDGE;
   
 	function init() {
 		setupHelpPanels();
@@ -70,7 +77,7 @@
 		/* adjust the map */
 		setMapExtent();
    	var top = document.getElementById("map").offsetTop;
-   	var height = getHeight() - top - 53;
+   	var height = getHeight() - top - _currResultsNudge;
    	document.getElementById("results").style.height=height+"px";
    	/* DEBUG the following is a Kludge! for an IE 6 rendering problem argh!*/
    	document.getElementById("results").style.width = _currResultsWidth + "px"; 
@@ -201,9 +208,26 @@
 	  $('results').style.visibility = 'hidden';
 	  $('sidebar').style.width = '10px';
 	  _currResultsWidth = 10;
-	  adjustSidebarIE();
-	  map.checkResize();
-	  
+
+    //shorten the search bar
+	  $('headerbar').style.background = 'url() no-repeat';
+	  $('headerbar').style.height = '87px';
+	  $('addbox').hide();
+	  $('search_tagline').hide();
+	  $('searchbox').style.top = '15px';
+    $('searchpage').style.background = 'url(../images/short-backg.png) repeat-x';
+    _currResultsNudge = RESULTS_NUDGE;
+
+    //todo, add a logo to the right (doesn't work in IE 6)
+		if (typeof document.body.style.maxHeight != "undefined") {
+      new Insertion.Top('map', '<img id="tmp-logo" alt="logo" src="../images/concharto-logo-sm.png"/>');
+		}
+    
+
+	  //adjust the map
+    adjustSidebarIE();
+    map.checkResize();
+
 	  //remove the "hide"
 	  $('sidebarSize').childElements().each(function(e) {
 	    e.remove();
@@ -218,6 +242,22 @@
     $('results').style.visibility = 'visible';
     $('sidebar').style.width = SIDEBAR_WIDTH + 'px';
     _currResultsWidth = RESULTS_WIDTH;
+
+    //put the the search bar back
+    $('headerbar').style.background = 'url(../images/title-search.png) no-repeat';
+    $('headerbar').style.height = HEADERBAR_HEIGHT + 'px';
+    $('addbox').show();
+    $('search_tagline').show();
+    $('searchbox').style.top = SEARCHBOX_TOP + 'px';
+    $('searchpage').style.background = 'url(../images/search-backg.png) repeat-x';
+    _currResultsNudge = RESULTS_NUDGE;
+
+    //Remove a logo to the right (if we added it, it won't be added for IE6)
+    if (null != $('tmp-logo')) {
+      $('tmp-logo').remove();
+    } 
+    
+    //adjust the map
     adjustSidebarIE();
     map.checkResize();
     
