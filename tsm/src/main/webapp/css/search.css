@@ -1,7 +1,7 @@
 @charset "utf-8";
 /* CSS Document */
-	.mapedit {
-	background: #FFFFFF url(../images/search-backg.gif) repeat-x;
+	#searchpage {
+	background: #FFFFFF url(../images/search-backg.png) repeat-x;
 	}
 	#search_tagline {
 	color: #4D4D4D;
@@ -20,6 +20,11 @@
 	}
   #addbox {
   top: 49px;
+  }
+  #tmp-logo {
+    position:relative;
+    top:-88px;
+    left:680px
   }
 .mapedit #results {
   overflow-x:hidden; 
