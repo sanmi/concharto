@@ -1,5 +1,9 @@
   /* BEGIN PRE FUNCTIONS (initialization) ============================= */
 
+  var RESULTS_WIDTH = 320;
+  var SIDEBAR_WIDTH = RESULTS_WIDTH;
+  var _currResultsWidth = SIDEBAR_WIDTH;
+  
 	function init() {
 		setupHelpPanels();
 		initialize();
@@ -66,10 +70,10 @@
 		/* adjust the map */
 		setMapExtent();
    	var top = document.getElementById("map").offsetTop;
-   	var height = getHeight() - top - 40;
+   	var height = getHeight() - top - 53;
    	document.getElementById("results").style.height=height+"px";
    	/* DEBUG the following is a Kludge! for an IE 6 rendering problem argh!*/
-   	document.getElementById("results").style.width = "320px"; 
+   	document.getElementById("results").style.width = _currResultsWidth + "px"; 
 	}
 	
 	function selectThis(element) {
@@ -193,4 +197,36 @@
 		return urltext;
 	}
 	
+	function hideSidebar() {
+	  $('results').style.visibility = 'hidden';
+	  $('sidebar').style.width = '10px';
+	  _currResultsWidth = 10;
+	  adjustSidebarIE();
+	  map.checkResize();
+	  
+	  //remove the "hide"
+	  $('sidebarSize').childElements().each(function(e) {
+	    e.remove();
+	  });
+	  
+	  //show the "show"
+	  new Insertion.Top('sidebarSize', '<a href="#" onclick="showSidebar()">show</a>');
+	}
+	
+	
+	function showSidebar() {
+    $('results').style.visibility = 'visible';
+    $('sidebar').style.width = SIDEBAR_WIDTH + 'px';
+    _currResultsWidth = RESULTS_WIDTH;
+    adjustSidebarIE();
+    map.checkResize();
+    
+    //remove the "show"
+    $('sidebarSize').childElements().each(function(e) {
+      e.remove();
+    });
+    
+    //show the "hide"
+    new Insertion.Top('sidebarSize', '<a href="#" onclick="hideSidebar()">hide sidebar</a>');
+	}
   /* END WHILEFUNCTIONS  ============================= */

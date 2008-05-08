@@ -51,6 +51,7 @@
 		 
 			<table class="mainarea"><tbody><tr>			
 				<td id="sidebar">
+				  <div id="sidebarSize"><a href="#" onclick="hideSidebar();">hide sidebar</a></div>
           <div id="results" >
 	          <div class="resultcount">
 	            <c:choose>
