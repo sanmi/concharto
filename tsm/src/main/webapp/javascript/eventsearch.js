@@ -220,7 +220,7 @@
 
     //todo, add a logo to the right (doesn't work in IE 6)
 		if (typeof document.body.style.maxHeight != "undefined") {
-      new Insertion.Top('map', '<img id="tmp-logo" alt="logo" src="../images/concharto-logo-sm.png"/>');
+      new Insertion.Top('headerbar', '<img id="tmp-logo" alt="logo" src="../images/concharto-logo-sm.png"/>');
 		}
     
 
