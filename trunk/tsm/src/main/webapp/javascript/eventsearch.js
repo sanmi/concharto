@@ -210,7 +210,7 @@
 	  _currResultsWidth = 10;
 
     //shorten the search bar
-	  $('headerbar').style.background = 'url() no-repeat';
+	  $('headerbar').style.background = 'none';
 	  $('headerbar').style.height = '87px';
 	  $('addbox').hide();
 	  $('search_tagline').hide();
@@ -246,7 +246,6 @@
     _currResultsWidth = RESULTS_WIDTH;
 
     //put the the search bar back
-    //NOTE this url style is causing an additional GET request to eventsearch.htm for some odd reason!
     $('headerbar').style.background = 'url(../images/title-search.png) no-repeat';
     $('headerbar').style.height = HEADERBAR_HEIGHT + 'px';
     $('addbox').show();
