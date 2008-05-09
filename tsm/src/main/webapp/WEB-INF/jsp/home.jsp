@@ -125,7 +125,7 @@
 		    	<form name="nextForm" method="post" action="${basePath}home.htm"></form>
 		    	
 			    <div id="spotlightbox">
-		        <div class="next"><a href="#" onclick="document.nextForm.submit();">next</a></div>
+		        <div class="next"><a href="#" onclick="document.nextForm.submit(); return false;">next</a></div>
 		        <p>${spotlightLabel}</p>
 		        <div class="clearfloat"></div>
 		        <small style="float:right;padding-right:18px">Click on red icons, lines or areas</small>

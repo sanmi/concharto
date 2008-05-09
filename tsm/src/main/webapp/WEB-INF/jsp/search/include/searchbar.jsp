@@ -6,7 +6,7 @@
  	<tr>
    	<td>
 	    <div id="addbox">
-        <span class="biglink"><a href="#" onclick="editEvent('')">Add to the Map...</a></span>
+        <span class="biglink"><a href="#" onclick="editEvent(''); return false;">Add to the Map...</a></span>
       </div>
       <c:if test="${param.showSearchOptions == 'true'}">
 	      <div id="search_tagline">

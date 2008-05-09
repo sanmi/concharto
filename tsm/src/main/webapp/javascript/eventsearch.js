@@ -234,7 +234,7 @@
 	  });
 	  
 	  //show the "show"
-	  new Insertion.Top('sidebarSize', '<a href="#" onclick="showSidebar()">show</a>');
+	  new Insertion.Top('sidebarSize', '<a href="#" onclick="showSidebar(); return false;">show</a>');
 	  
 	  return false;
 	}
@@ -246,6 +246,7 @@
     _currResultsWidth = RESULTS_WIDTH;
 
     //put the the search bar back
+    //NOTE this url style is causing an additional GET request to eventsearch.htm for some odd reason!
     $('headerbar').style.background = 'url(../images/title-search.png) no-repeat';
     $('headerbar').style.height = HEADERBAR_HEIGHT + 'px';
     $('addbox').show();
@@ -269,6 +270,6 @@
     });
     
     //show the "hide"
-    new Insertion.Top('sidebarSize', '<a href="#" onclick="hideSidebar()">hide sidebar</a>');
+    new Insertion.Top('sidebarSize', '<a href="#" onclick="hideSidebar(); return false;">hide sidebar</a>');
 	}
   /* END WHILEFUNCTIONS  ============================= */
