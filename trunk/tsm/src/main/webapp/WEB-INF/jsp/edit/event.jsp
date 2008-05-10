@@ -41,8 +41,8 @@
 		 		    </div>
 	    		</c:if>
    		    <div class="inputcell ">
-	 		    	<span id="larger" class="hidden"><a href="#" onClick="larger()">larger &raquo;</a></span>
- 	 		    	<span id="smaller" class="hidden"><a href="#" onClick="smaller()">smaller &laquo;</a></span>
+	 		    	<span id="larger" class="hidden"><a href="#" onClick="larger(); return false;">larger &raquo;</a></span>
+ 	 		    	<span id="smaller" class="hidden"><a href="#" onClick="smaller(); return false;">smaller &laquo;</a></span>
 		        <span class="radio">
 		        	<span class="inputlabel">Point:</span>
 		        	<form:radiobutton path="geometryType" value="point" onclick="setupNewPoint()"/> 
