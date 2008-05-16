@@ -38,6 +38,7 @@
 			map = new GMap2(document.getElementById("map"));
 			//map.enableContinuousZoom();
 			map.addControl(new GMapTypeControl(1));
+			map.addMapType(G_PHYSICAL_MAP);
 			if ((control == null) || (control == 'null')) {
 				control = new GLargeMapControl();
 			}
