@@ -21,7 +21,11 @@
 		function initialize_embedded() {
 			initialize(new GSmallMapControl());
 	   	var top = document.getElementById("map").offsetTop;
-	   	var height = getHeight();
+	   	var headerHeight = 0;
+		  if ($('embeddedHeader') != null) {
+		     headerHeight = 23;
+		  }
+	   	var height = getHeight() - headerHeight; 
 	   	document.getElementById("map").style.height=height+"px";		
 		}
 	
@@ -37,10 +41,10 @@
 		//]]>
 		</script>
 		<style type="text/css">
-body {
-	background-image: none;
-}
-</style>
+			body {
+				background-image: none;
+			}
+		</style>
 	</jsp:attribute>
 
 	<jsp:body>
@@ -67,16 +71,29 @@ body {
 			<form:hidden path="what" />
 			<%-- for javascript --%>
 			<input type="hidden" id="basePath" value="${basePath}" />
-	  
-					<div id="map">
-					  <br />
-				<br />Map coming...
-					  <noscript>
-					    <p>
-					      JavaScript must be enabled to get the map.
-					    </p>
-					  </noscript>
-					</div>
+			<%-- a branded header, but don't show it if we are on our own site (e.g. from home page) --%>
+			  <c:if test="${param.h != 1}">
+          <div id="embedded">
+	        <div id="embeddedHeader">
+	          <a class="embeddedTitleLinks" href="${basePath}search/eventsearch.htm?${pageContext.request.queryString}" target="_top">
+	            <span class="embeddedTitleLogo"><img src="${basePath}images/concharto-logo-xsm.png" alt="concharto"/></span>
+	            <span class="embeddedTitle">An atlas of history and happenings that anyone can edit</span>
+	          </a>
+	        </div>   
+	        <div class="clearfloat"/>
+			  </c:if>
+				<div id="map">
+				  <br />
+		    	<br />Map coming...
+				  <noscript>
+				    <p>
+				      JavaScript must be enabled to get the map.
+				    </p>
+				  </noscript>
+				</div>
+      <c:if test="${param.h != 1}">
+      </div>
+      </c:if>
 		</form:form>	
 
 	</jsp:body>

@@ -13,9 +13,30 @@
 	top:-4px;
 }
 #map {
-    height:1000px;
-    border:1px solid #999999; 
-    margin:-1px;
+  height:1000px;
+  border:1px solid #999999; 
+  margin:-1px;
+}
+#embedded {
+	margin: 0 4px 4px 4px;
+}
+#embedded #map{
+  border: none;
+}
+#embeddedHeader {
+  margin-left: 4px;
+	height:20px;
+  float:left;
+}
+.embeddedTitleLogo {
+  float:left;
+}
+.embeddedTitle {
+  margin: 3px 5px;
+  float:left;
+  font-style: italic;
+  font-weight:normal;
+  color: #4D4D4D;
 }
 .mapedit {
 	padding:0;
