@@ -15,6 +15,7 @@
 	var LINE_COLOR_HIGHLIGHT = '#0000FF';
 	var INFO_WIDTH = 450;
 	var INFO_HEIGHT = 375;
+  var MAP_TYPES = [G_NORMAL_MAP, G_SATELLITE_MAP, G_HYBRID_MAP, G_PHYSICAL_MAP];
 	 
 
 	/** Objects ---------------- */
@@ -163,8 +164,9 @@
 	
 	function getMapTypeIndex() {
 		var mapTypeIndex = 0;
-		for (i=0; i<G_DEFAULT_MAP_TYPES.length; i++) {
-			if (G_DEFAULT_MAP_TYPES[i].getName() == map.getCurrentMapType().getName()) {
+				
+		for (i=0; i<MAP_TYPES.length; i++) {
+			if (MAP_TYPES[i].getName() == map.getCurrentMapType().getName()) {
 				mapTypeIndex = i;
 			}
 		}

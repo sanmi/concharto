@@ -38,7 +38,7 @@
 		var mapType = document.getElementById("eventForm").mapType.value;
 		/* set map type from the event */			
 		if (mapType != '') {
-			map.setMapType(G_DEFAULT_MAP_TYPES[mapType]);				
+			map.setMapType(MAP_TYPES[mapType]);				
 		}
 		
 		//The current search results

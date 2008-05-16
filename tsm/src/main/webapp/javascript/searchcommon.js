@@ -60,7 +60,7 @@
 		/* set map type from the event */
 		var mapType = $('mapType').value;
 		if (mapType != '') {
-			map.setMapType(G_DEFAULT_MAP_TYPES[mapType]);
+			map.setMapType(MAP_TYPES[mapType]);
 		}
 		
 		var mapCenter = getMapCenterFromJSON();
