@@ -471,20 +471,16 @@ public class KmlFormat {
 	}
 
 
-	private static final double MIN_ZOOM = 18D;
-	private static final double MIN_ALT = 90D;
-	private static final double MAX_ZOOM = 2D;
-	private static final double MAX_ALT = 5000000D;
-	private static final double SLOPE = (MAX_ZOOM-MIN_ZOOM)/(MAX_ALT-MIN_ALT);
-	private static final double Y_INTERCEPT = MIN_ZOOM - SLOPE*MIN_ALT;
+	private static final double ZOOM_TO_RANGE[] = 
+	{10619000,8331000,7253000,6314000,4622000,2311000,1116000,578000,300000,160270,77400,32540,16850,8430,4220,1440,780,425,170,115,50};
 	/**
 	 * map google map zoom levels to KML altitudes.  
 	 * TODO refactor this - it is really an exponential function
 	 * @param zoom
 	 * @return
 	 */
-	private static double zoomToRange(int zoom) {
-		return (zoom - Y_INTERCEPT)/SLOPE;
+	protected static double zoomToRange(int zoom) {
+		return ZOOM_TO_RANGE[zoom];
 	}
 
 }
