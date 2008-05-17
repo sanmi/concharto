@@ -392,7 +392,8 @@ public class KmlFormat {
 				log.error("Error encoding tag " + tag);
 				throw new RuntimeException(e);
 			}
-			sb.append("\">")
+			sb.append("&_maptype=3")
+			  .append("\">")
 			  .append(tag.getTag())
 			  .append("</a>");
 			if (++i < userTags.size()) {
