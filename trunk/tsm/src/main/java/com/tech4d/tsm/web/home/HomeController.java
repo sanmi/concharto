@@ -1,5 +1,9 @@
 package com.tech4d.tsm.web.home;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Random;
 
@@ -91,8 +95,8 @@ public class HomeController extends SimpleFormController {
 	}
 	private String formatLabel(Spotlight spotlight) {
 		String link = URLEncode(spotlight.getLink());
-		
-		String label = StringUtils.replace(spotlight.getLabel(),"[[","<a href='" + link + "'>");
+		String label = null;
+		label = StringUtils.replace(spotlight.getLabel(),"[[","<a href='" + link + "'>");
 		label = StringUtils.replace(label,"]]","</a>");
 		return label;
 	}
@@ -110,6 +114,7 @@ public class HomeController extends SimpleFormController {
 	private String URLEncode(String str) {
 		str = StringUtils.replace(str, "&", "&amp;");
 		str = StringUtils.replace(str, "\"", "%22");
+		str = StringUtils.replace(str, "\'", "%27");
 		return str;
 	}
 }
