@@ -43,6 +43,7 @@
 		<style type="text/css">
 			body {
 				background-image: none;
+			  background-color: white;
 			}
 		</style>
 	</jsp:attribute>
@@ -72,16 +73,9 @@
 			<%-- for javascript --%>
 			<input type="hidden" id="basePath" value="${basePath}" />
 			<%-- a branded header, but don't show it if we are on our own site (e.g. from home page) --%>
-			  <c:if test="${param.h != 1}">
-          <div id="embedded">
-	        <div id="embeddedHeader">
-	          <a class="embeddedTitleLinks" href="${basePath}search/eventsearch.htm?${pageContext.request.queryString}" target="_top">
-	            <span class="embeddedTitleLogo"><img src="${basePath}images/concharto-logo-xsm.png" alt="concharto"/></span>
-	            <span class="embeddedTitle">An atlas of history and happenings that anyone can edit</span>
-	          </a>
-	        </div>   
-	        <div class="clearfloat"/>
-			  </c:if>
+		  <c:if test="${param.h != 1}">
+      <div id="embedded">
+      </c:if>
 				<div id="map">
 				  <br />
 		    	<br />Map coming...
@@ -91,6 +85,15 @@
 				    </p>
 				  </noscript>
 				</div>
+        <c:if test="${param.h != 1}">
+          <div id="embeddedHeader">
+            <a class="embeddedTitleLinks" href="${basePath}search/eventsearch.htm?${pageContext.request.queryString}" target="_top">
+              <span class="embeddedTitleLogo"><img src="${basePath}images/concharto-logo-xsm.png" alt="concharto"/></span>
+              <span class="embeddedTitle">An atlas of history and happenings that anyone can edit</span>
+            </a>
+          </div>   
+          <div class="clearfloat"/>
+        </c:if>
       <c:if test="${param.h != 1}">
       </div>
       </c:if>

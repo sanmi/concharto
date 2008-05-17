@@ -26,14 +26,13 @@
 #embeddedHeader {
   margin-left: 4px;
 	height:20px;
-  float:left;
 }
 .embeddedTitleLogo {
-  float:left;
+  float:right;
 }
 .embeddedTitle {
   margin: 3px 5px;
-  float:left;
+  float:right;
   font-style: italic;
   font-weight:normal;
   color: #4D4D4D;
