@@ -1,0 +1,1 @@
+<%@ page contentType="application/vnd.google-earth.kml+xml; charset=UTF-8"%>${kml}

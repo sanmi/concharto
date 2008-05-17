@@ -39,6 +39,7 @@ public class EventSearchForm  {
     private Boolean excludeTimeRangeOverlaps;
     private Boolean embed;
     private String userTag;
+    private Boolean kml;
     
 	public String getShow() {
 		return show;
@@ -171,7 +172,12 @@ public class EventSearchForm  {
 	public void setUserTag(String userTag) {
 		this.userTag = userTag;
 	}
-    
+	public Boolean getKml() {
+		return kml;
+	}
+	public void setKml(Boolean kml) {
+		this.kml = kml;
+	}
 	/**
 	 * Return a comma delimited string that represents the user viewable form settings
 	 * @return
