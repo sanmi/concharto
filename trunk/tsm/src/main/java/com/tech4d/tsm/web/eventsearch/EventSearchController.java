@@ -1,11 +1,15 @@
 package com.tech4d.tsm.web.eventsearch;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,9 +21,12 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.model.Event;
+import com.tech4d.tsm.util.KmlFormat;
 import com.tech4d.tsm.web.util.DisplayTagHelper;
 
 public class EventSearchController extends AbstractFormController {
+
+	private static final String MODEL_KML = "kml";
 
 	private static final String PARM_REAL_URI = "realURI";
 
@@ -27,23 +34,27 @@ public class EventSearchController extends AbstractFormController {
 
     private String formView;
     private String successView;
+    private String kmlView;
     private SearchHelper searchHelper;
     
     public String getFormView() {
         return formView;
     }                              
-
     public void setFormView(String formView) {
         this.formView = formView;
     }
-
     public String getSuccessView() {
         return successView;
     }
-
     public void setSuccessView(String successView) {
         this.successView = successView;
     }
+	public String getKmlView() {
+		return kmlView;
+	}
+	public void setKmlView(String kmlView) {
+		this.kmlView = kmlView;
+	}
 
 	public void setSearchHelper(SearchHelper searchHelper) {
 		this.searchHelper = searchHelper;
@@ -140,6 +151,7 @@ public class EventSearchController extends AbstractFormController {
         eventSearchForm.setMapCenterOverride(false);
         eventSearchForm.setZoomOverride(false);
         eventSearchForm.setUserTag(null);
+        eventSearchForm.setKml(false);
         ModelAndView returnModelAndView;
         if (errors.hasErrors()) {
             if (log.isDebugEnabled()) {
@@ -165,7 +177,6 @@ public class EventSearchController extends AbstractFormController {
                 returnModelAndView = new ModelAndView(new RedirectView(request.getContextPath() + "/edit/event.htm?id=" + id));
             } else {
             	//This is a normal search
-            	
             	//if this is a GET search, we must first process the query parameters
             	if ((!StringUtils.isEmpty(request.getQueryString()) && 
                 		(null == DisplayTagHelper.getPageParameterId(request, SearchHelper.DISPLAYTAG_TABLE_ID)))) {
@@ -178,14 +189,31 @@ public class EventSearchController extends AbstractFormController {
         		if (!StringUtils.isEmpty(eventSearchForm.getWhere())) {
         			eventSearchForm.setLimitWithinMapBounds(false);
         		}
-        		// needed so the displaytag paging can work
-        		displayTagModelElements(model, request);
+        		if (BooleanUtils.isTrue(eventSearchForm.getKml())) {
+                	//they just want a kml file
+        			ByteArrayOutputStream kmlOutputStream = new ByteArrayOutputStream();
+        			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(kmlOutputStream, "UTF-8");
+        			List<Event> events = (List<Event>) model.get(SearchHelper.MODEL_EVENTS); 
+        			KmlFormat.toKML(events, outputStreamWriter, 
+        					"Search results from Concharto.com", 
+        					"NOTE: all events are time coded, so you may need to adjust the time slider.");
+        			//throw away the current model, we aren't rendering and just add the kml. 
+        			//TODO - fix this hack
+        			model = errors.getModel();
+        			String utf8Kml = new String(kmlOutputStream.toByteArray(), "UTF8");
+        			model.put(MODEL_KML, utf8Kml);
+                    returnModelAndView = new ModelAndView(getKmlView(), model);
+                } else {
+                	//we are rendering to a normal page
+            		// needed so the displaytag paging can work
+            		displayTagModelElements(model, request);
 
-                // this is because of a wierd problem in our JSTL where ${pageContex.request.requestURI} yields
-                // WEB-INF/jsp/search/eventsearch.jsp instead of the expected /search/eventsearch.htm or 
-                // /list/event.htm.  So here we have to put it in the model for the jsp to use
-                model.put(PARM_REAL_URI, request.getRequestURI());
-        		returnModelAndView = new ModelAndView(getSuccessView(), model);
+                    // this is because of a wierd problem in our JSTL where ${pageContex.request.requestURI} yields
+                    // WEB-INF/jsp/search/eventsearch.jsp instead of the expected /search/eventsearch.htm or 
+                    // /list/event.htm.  So here we have to put it in the model for the jsp to use
+                    model.put(PARM_REAL_URI, request.getRequestURI());
+            		returnModelAndView = new ModelAndView(getSuccessView(), model);
+                }
             }
         }
         

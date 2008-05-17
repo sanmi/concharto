@@ -41,6 +41,7 @@
           <prop key="edit/flagevent.htm">flagEventController</prop>
           <prop key="edit/flageventsuccess.htm">flagEventController</prop>
 
+          <prop key="search/conchartosearch.kml">kmlExportController</prop>
           <prop key="search/eventsearch.htm">eventSearchController</prop>
           <prop key="search/embeddedsearch.htm">embeddedSearchController</prop>
 
@@ -225,9 +226,16 @@
 		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
 		<property name="formView" value="search/eventsearch" />
 		<property name="successView" value="search/eventsearch" />
+		<property name="kmlView" value="search/exportkml" />
 		<property name="searchHelper" ref="searchHelper" />
 		<property name="validator" ref="eventSearchFormValidator"/>
 	</bean>
+  
+  <bean id="kmlExportController" class="com.tech4d.tsm.web.eventsearch.EventSearchController" parent="eventSearchController">
+    <!--  no cache -->
+    <property name="cacheSeconds" value="0"/>  
+  </bean>
+	
 	
 	<bean id="embeddedSearchController" class="com.tech4d.tsm.web.eventsearch.EmbeddedSearchController" parent="baseEventController">
 		<property name="commandName" value="eventSearch" />

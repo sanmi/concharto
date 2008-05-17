@@ -7,7 +7,7 @@
     <bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-                <ref local="kmlExportTriggerStartup"/>
+                <!-- <ref local="kmlExportTriggerStartup"/> -->
                 <ref local="kmlExportTriggerNightly"/>
             </list>
         </property>

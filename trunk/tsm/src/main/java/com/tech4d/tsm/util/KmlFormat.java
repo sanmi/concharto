@@ -94,11 +94,11 @@ public class KmlFormat {
 		addDefaultStyles(kmlDocument);
 		int i = 0;
 		for (Event event : events) {
-			log.info(i++ + " " + event.getId() + ", " + event.getSummary());
+			log.debug(i++ + " " + event.getId() + ", " + event.getSummary());
 			addPlacemark(kmlDocument, event);
 		}
 
-		Element root = new Element("kml", "http://earth.google.com/kml/2.0");
+		Element root = new Element("kml", "http://earth.google.com/kml/2.2");
 		root.addNamespaceDeclaration(Namespace.getNamespace("atom", "http://www.w3.org/2005/Atom"));
 		root.addContent(kmlDocument);
 		Document doc = new Document(root);

@@ -69,6 +69,7 @@ public class SearchHelper {
 	public static final String QUERY_WITHIN_MAP_BOUNDS = "_withinMap";
 	public static final String QUERY_EXCLUDE_TIMERANGE_OVERLAPS = "_timeoverlaps";
 	public static final String QUERY_EMBED = "_embed";
+	public static final String QUERY_KML = "_kml";
     public static final String MODEL_EVENTS = "events";
     public static final String MODEL_TOTAL_RESULTS = "totalResults";
     public static final String MODEL_CURRENT_RECORD = "currentRecord";
@@ -134,6 +135,7 @@ public class SearchHelper {
     	eventSearchForm.setLimitWithinMapBounds((ServletRequestUtils.getBooleanParameter(request, QUERY_WITHIN_MAP_BOUNDS)));
     	eventSearchForm.setExcludeTimeRangeOverlaps((ServletRequestUtils.getBooleanParameter(request, QUERY_EXCLUDE_TIMERANGE_OVERLAPS)));
     	eventSearchForm.setEmbed((ServletRequestUtils.getBooleanParameter(request, QUERY_EMBED)));
+    	eventSearchForm.setKml((ServletRequestUtils.getBooleanParameter(request, QUERY_KML)));
     	Long eventId = ServletRequestUtils.getLongParameter(request, QUERY_ID);
     	if (null != eventId) {
         	eventSearchForm.setDisplayEventId(eventId);

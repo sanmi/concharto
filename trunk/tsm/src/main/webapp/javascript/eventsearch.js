@@ -88,6 +88,15 @@
 		element.select();
 	}
 	
+	/** construct a URL like the linkhere url for getting the kml for this
+	  * search */
+	function exportKml() {
+    var urltext = getLinkHereUrl();
+    var kmlUrl = urltext.gsub('eventsearch.htm','conchartosearch.kml');
+    document.location = kmlUrl + '&_kml=1';
+	}
+	
+	//Populate the linkhere dialog box
 	function getLinkUrls() {
 		$('linkhere_url').value = getLinkHereUrl();
 		$('embedmap_html').value = getEmbedMapHtml();
@@ -109,7 +118,7 @@
 		*/
 		/* substituted 'embeddedsearch.htm' for 'eventsearch.htm' */
 		var urltext = getLinkHereUrl();
-		embedUrltext = urltext.gsub('eventsearch.htm','embeddedsearch.htm');
+		var embedUrltext = urltext.gsub('eventsearch.htm','embeddedsearch.htm');
 		embedUrltext = append(embedUrltext, '_embed', 'true');
 		embedUrltext = cleanUrl(embedUrltext);
 		return '<iframe src=\'' + 
