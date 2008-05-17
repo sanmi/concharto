@@ -273,15 +273,18 @@
 	
 	/* Listener for polys and lines */
 	function addOverlayClickListener(overlayItem) {
-			GEvent.addListener(overlayItem.overlay, "click", function(point) {
-			  //for points, we only want to highlight the sidebar item. the
-			  //infowindow is handled elsewhere
-		    if (overlayItem.type != 'point') {
-          highlightOverlay(overlayItem);
-		      map.openInfoWindowHtml(point, overlayItem.html);
-        }
-		    highlightSidebarItem(overlayItem);
-		  });
+    //first turn stuff off
+		GEvent.addListener(overlayItem.overlay, "click", function(point) {
+		  //for points, we only want to highlight the sidebar item. the
+		  //infowindow is handled elsewhere
+	    if (overlayItem.type != 'point') {
+	      map.openInfoWindowHtml(point, overlayItem.html);
+        //NOTE: order is important here.  The highlight must come AFTER the openInfoWindowHtml
+        //otherwise, events will fire and the overlay will be hidden after we show it
+        highlightOverlay(overlayItem);
+      }
+	    highlightSidebarItem(overlayItem);
+	  });
 	}
 	
 	/* record overlay and html so we can pop up a window when the user clicks
@@ -314,7 +317,7 @@
 	function highlightSidebarItem(overlayItem) {
     //highlight our one if it exists (e.g. we are on the search page, not the embedded page
     if ($(overlayItem.id.toString()) != null) {
-	    //unhighligh others
+	    //unhighlight others
 	    $$('.highlight').each(function(item){
 	     $(item).removeClassName('highlight');
 	    });
