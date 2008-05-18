@@ -16,7 +16,12 @@
 	var INFO_WIDTH = 450;
 	var INFO_HEIGHT = 375;
   var MAP_TYPES = [G_NORMAL_MAP, G_SATELLITE_MAP, G_HYBRID_MAP, G_PHYSICAL_MAP];
-	 
+
+  /* Create a base icon for all of our markers that specifies the
+       shadow, icon dimensions, etc. */
+  var _baseIcon = new GIcon();
+  var _basePath;
+
 
 	/** Objects ---------------- */
   function Point2D(x, y) {
@@ -35,6 +40,7 @@
 	function initializeMap(control) {
 	
 		if (GBrowserIsCompatible()) {
+		  initializeMapVars();
 			// map and its equipment
 			map = new GMap2(document.getElementById("map"));
 			//map.enableContinuousZoom();
@@ -59,6 +65,18 @@
 			showDefault(); 
 		}
 	}
+
+  //Initialize global variables
+  function initializeMapVars() {
+    _basePath = $('basePath').value;
+    _baseIcon.shadow = _basePath+"images/icons/00shadow.png";
+    _baseIcon.iconSize = new GSize(20, 32);
+    _baseIcon.shadowSize = new GSize(40, 35);
+    _baseIcon.iconAnchor = new GPoint(10, 32);
+    _baseIcon.infoWindowAnchor = new GPoint(12, 3);
+
+  }
+   
 	
 	/* default map coordinates */
 	function showDefault() {		
