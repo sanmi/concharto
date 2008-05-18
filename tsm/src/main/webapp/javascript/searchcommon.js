@@ -11,21 +11,6 @@
 	var _accuracy_to_zoom = [4, 5, 7, 10, 11, 12, 13, 14, 15];
 	var _initialZoom;
 	var _initialCenter;
-	var _basePath;
-	
-	/* Create a base icon for all of our markers that specifies the
-	     shadow, icon dimensions, etc. */
-	var _baseIcon = new GIcon();
-		
-	function initializeVars() {
-		_basePath = $('basePath').value;
-		_baseIcon.shadow = _basePath+"images/icons/shadow50.png";
-		_baseIcon.iconSize = new GSize(20, 34);
-		_baseIcon.shadowSize = new GSize(37, 34);
-		_baseIcon.iconAnchor = new GPoint(9, 34);
-		_baseIcon.infoWindowAnchor = new GPoint(9, 2);
-		_baseIcon.infoShadowAnchor = new GPoint(18, 25);
-	}
 	
   /* BEGIN OBJECT DEFINITIONS ============================= */
   function overlayItem(overlay, html, type, id ) {
@@ -47,7 +32,6 @@
   
   /* Main initialization function */
 	function initialize(mapControl) {
-		initializeVars();
 		adjustSidebarIE();
 		initializeMap(mapControl);
 		/* map center and map zoom */
@@ -218,7 +202,7 @@
 	  /* Create a lettered icon for this point using our icon class */
 	  var letter = String.fromCharCode("A".charCodeAt(0) + _overlayIndex);
 	  var letteredIcon = new GIcon(_baseIcon);
-	  letteredIcon.image = _basePath+"images/icons/marker" + letter + ".png";
+	  letteredIcon.image = _basePath+"images/icons/" + letter + ".png";
 	
 	  /* Set up our GMarkerOptions object */
 	  var markerOptions = { icon:letteredIcon };

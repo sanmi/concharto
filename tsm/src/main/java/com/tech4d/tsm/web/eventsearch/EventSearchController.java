@@ -23,6 +23,7 @@ import org.springframework.web.util.WebUtils;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.util.KmlFormat;
 import com.tech4d.tsm.web.util.DisplayTagHelper;
+import com.tech4d.tsm.web.util.UrlFormat;
 
 public class EventSearchController extends AbstractFormController {
 
@@ -196,7 +197,8 @@ public class EventSearchController extends AbstractFormController {
         			List<Event> events = (List<Event>) model.get(SearchHelper.MODEL_EVENTS); 
         			KmlFormat.toKML(events, outputStreamWriter, 
         					"Search results from Concharto.com", 
-        					"NOTE: all events are time coded, so you may need to adjust the time slider.");
+        					"NOTE: all events are time coded, so you may need to adjust the time slider.",
+        					UrlFormat.getBasepath(request));
         			//throw away the current model, we aren't rendering and just add the kml. 
         			//TODO - fix this hack
         			model = errors.getModel();

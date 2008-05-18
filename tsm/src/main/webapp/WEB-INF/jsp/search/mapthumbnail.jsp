@@ -37,7 +37,9 @@
 		<%-- called by createOverlay --%>
 	function createMarker(event, totalEvents) {
 		var point = new GLatLng(event.geom.lat, event.geom.lng);
-		var marker = new GMarker(point);
+    markerIcon = _baseIcon;
+    markerIcon.image = _basePath+"images/icons/marker-clk.png";
+    var marker = new GMarker(point, {icon:markerIcon});  
 		map.addOverlay(marker);
 		map.setCenter(point);
 		map.setZoom(11);
@@ -73,7 +75,8 @@
 
 	<jsp:body>
 		<form id="mapForm">
-			<input type="hidden" name="event" value="<c:out escapeXml="true" value='${event}'/>" >
+			<input type="hidden" name="event" value="<c:out escapeXml="true" value='${event}'/>"> 
+			<input type="hidden" id="basePath" value="${basePath}"/>
 		</form>
 		<div id="map">
 			Map coming...

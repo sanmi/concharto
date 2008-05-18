@@ -50,10 +50,11 @@ public class KmlFormat {
 	private static final String COORDINATES = "coordinates";
 	private static final String DEFAULT_STYLES = "defaultStyles";
 	private static final String STYLE = "Style";
-    private static final String BASEPATH = "http://www.concharto.com";
+	private static final String BASEPATH = "http://www.concharto.com";
     protected static final Log logger = LogFactory.getLog(KmlFormat.class);
     //TODO extract the constants from WikiModelFactory
-	private static WikiModel wikiModel = new TsmWikiModel(BASEPATH, BASEPATH + "images/${image}", BASEPATH + "page.htm?page=${title}");
+    private static String basepath;
+	private static WikiModel wikiModel; 
 	private static NumberFormat llFormat = NumberFormat.getInstance();
 	private static NumberFormat rangeFormat = NumberFormat.getInstance();
 	private static SimpleDateFormat sdf = new SimpleDateFormat();
@@ -73,7 +74,7 @@ public class KmlFormat {
 	}
 	
 	/**
-     * ManualTestSerialize a list of events to KML
+     * Serialize a list of events to KML
      * @param events
      * @throws ParserConfigurationException
      * @throws IOException
@@ -81,13 +82,38 @@ public class KmlFormat {
 	public static void toKML(List<Event> events, OutputStreamWriter out) {
 		toKML(events, out, "Concharto events", null);
 	}
+
+	/**
+	 * Serialize a list of events to KML
+	 * @param events
+	 * @param out
+	 * @param docTitle
+	 * @param snippet
+	 */
 	public static void toKML(List<Event> events, OutputStreamWriter out, String docTitle, String snippet) {
-		
+		toKML(events, out, docTitle, snippet, BASEPATH);
+	}
+
+	/**
+	 * Serialize a list of events to KML
+	 * @param events
+	 * @param out
+	 * @param docTitle
+	 * @param snippet
+	 * @param overrideBasepath
+	 */
+	public static void toKML(List<Event> events, OutputStreamWriter out, 
+			String docTitle, String snippet, String overrideBasepath) {
+
+		basepath = overrideBasepath;
+    	wikiModel = new TsmWikiModel(overrideBasepath, basepath 
+    			+ "images/${image}", basepath + "page.htm?page=${title}");
+
 		//main kml document stuff
 		Element kmlDocument = new Element("Document");
 		kmlDocument.addContent(simpleElement("name", docTitle));
 		Element snippetElement = simpleElement("Snippet",snippet);
-		snippetElement.setAttribute("maxLines","1");
+		snippetElement.setAttribute("maxLines","2");
 		kmlDocument.addContent(snippetElement);
 		kmlDocument.addContent(simpleElement("open","1"));
 
@@ -112,8 +138,6 @@ public class KmlFormat {
 	      logger.error(e);
 	    }		
 	}
-
-
 	/**
 	 * KML default style
 	 * @param parent
@@ -127,7 +151,7 @@ public class KmlFormat {
 		Element iconStyle = new Element("IconStyle");
 		iconStyle.addContent(simpleElement("scale", "1"));
 		Element icon = new Element("Icon");
-		icon.addContent(simpleElement("href", BASEPATH + "/images/icons/markerA.png"));
+		icon.addContent(simpleElement("href", basepath + "/images/icons/marker-clk.png"));
 		iconStyle.addContent(icon);
 		style.addContent(iconStyle);
 
@@ -160,17 +184,54 @@ public class KmlFormat {
 		placemark.addContent(simpleElement("author", null, atom));
 		placemark.addContent(simpleElement("link", getLink(event), atom));
 		addMetadata(placemark, event);
-		placemark.addContent(simpleElement("name", event.getSummary() +", " + event.getWhen().getAsText()));
-		
-		Element description = new Element("description");
-		description.addContent(new CDATA(printEvent(event)));
-		placemark.addContent(description);
+		placemark.addContent(simpleElement("name", event.getSummary() ));
+		addSnippet(placemark, event);
+		addDescription(placemark, event);
 		placemark.addContent(simpleElement("visibility", "1"));
 		placemark.addContent(simpleElement("styleUrl", "#" + DEFAULT_STYLES));
 		addGeometry(placemark, event);
 		addTimeSpan(placemark, event);
 		parent.addContent(placemark);
-}
+	}
+
+	/**
+	 * Add description.  Formatted as KML HTML subset
+	 * @param placemark
+	 * @param event
+	 */
+	private static void addDescription(Element placemark, Event event) {
+		Element description = new Element("description");
+		StringBuffer sb = new StringBuffer()
+			.append("<b>")
+			.append(event.getWhen().getAsText())
+			.append("</b><br/><em>")
+			.append(event.getWhere())
+			.append("</em>");
+		sb.append("<br/><a href=\"")
+		  .append(getLink(event)).append("\"><img src=\"")
+		  .append(basepath).append("/images/concharto-logo-xsm.png\"/></a>");
+		sb.append("<br/><a href=\"")
+		.append(getLink(event)).append("\">see more...</a>");
+		sb = addNullableField(sb, wikiModel.render(event.getDescription()));
+		sb.append("Source: ");
+		sb = addNullableField(sb, wikiModel.render(event.getSource()));
+		addTags(sb, event.getUserTags());
+
+		description.addContent(new CDATA(sb.toString()));
+		placemark.addContent(description);		
+	}
+	
+	/**
+	 * Add snippet
+	 * @param placemark
+	 * @param event
+	 */
+	private static void addSnippet(Element placemark, Event event) {
+		Element snippet = new Element("Snippet");
+		snippet.setAttribute("maxLines", "2");
+		snippet.addContent(event.getWhen().getAsText() + ", " + event.getWhere() );
+		placemark.addContent(snippet);
+	}
 
 	/**
 	 * KML TimeSpan
@@ -354,24 +415,6 @@ public class KmlFormat {
 		return gf.createPoint(closest);
 	}
 
-	/**
-	 * Print the event to an HTML formatted string
-	 * @param event
-	 * @return
-	 */
-	private static String printEvent(Event event) {
-		StringBuffer sb = new StringBuffer()
-			.append(event.getWhere());
-		sb = addNullableField(sb, wikiModel.render(event.getDescription()));
-		sb.append("Source: ");
-		sb = addNullableField(sb, wikiModel.render(event.getSource()));
-		addTags(sb, event.getUserTags());
-		sb.append("<br/><a href=\"")
-		  .append(getLink(event)).append("\"><img src=\"").append(BASEPATH).append("/images/concharto-logo-sm.png\"/></a>");
-		
-			return sb.toString();
-	}
-
 	/** Add linked tags
 	 * 
 	 * @param sb
@@ -384,7 +427,7 @@ public class KmlFormat {
 				sb.append("Tags: ");
 			}
 			sb.append("<a href=\"")
-			  .append(BASEPATH).append("/search/eventsearch.htm?_tag=");
+			  .append(basepath).append("/search/eventsearch.htm?_tag=");
 			
 			try {
 				sb.append(URLEncoder.encode(tag.getTag(), "UTF-8"));
@@ -423,7 +466,7 @@ public class KmlFormat {
 	 * @return
 	 */
 	private static String getLink(Event event) {
-		return BASEPATH + "/list/event.htm?_id=" + event.getId();
+		return basepath + "/list/event.htm?_id=" + event.getId();
 	}
 
 

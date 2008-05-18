@@ -1,6 +1,7 @@
 	/* Create a base icon for all of our markers that specifies the
 	     shadow, icon dimensions, etc. */
 	var _markerIcon = new GIcon();
+	var _editableMarkerIcon = new GIcon();
 	var _editableMarker;
 	var _editableMarkerHtml;
 	var _editablePoly;
@@ -27,6 +28,11 @@
 		_entPointIcon.iconAnchor = new GPoint(5, 5);
 		_entPointIcon.infoWindowAnchor = new GPoint(0, 0);
 		_entPointIcon.infoShadowAnchor = new GPoint(12, 12);
+		
+		_editableMarkerIcon = _baseIcon;
+    _editableMarkerIcon.image = basePath+"images/icons/marker-clk.png";
+    _editableMarkerIcon.infoWindowAnchor = new GPoint(9, 0);
+   
 	}	
 	
   /* BEGIN PRE FUNCTIONS (initialization) ============================= */
@@ -160,7 +166,7 @@
 
 	/* create an editable marker from a json point object */
 	function createEditableMarker(point) {
-		var marker = new GMarker(point, {draggable: true});
+		var marker = new GMarker(point, {draggable: true});  
 		marker.enableDragging();
 		marker.bindInfoWindowHtml(html);
 		map.addOverlay(marker);
