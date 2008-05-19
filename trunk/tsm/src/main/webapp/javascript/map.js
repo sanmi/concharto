@@ -142,8 +142,8 @@
 		}
 		//if there is an index, then put the marker icon in the bubble
 		if (index != null) {
-		     var char = ALPHA_CHARS.substring(index,index+1);
-		     html += '<img alt="marker" style="margin-right:4px;" src="' + _basePath + 'images/icons/' + char + '_label.png' + '"/>';
+		     var letter = ALPHA_CHARS.substring(index,index+1);
+		     html += '<img alt="marker" style="margin-right:4px;" src="' + _basePath + 'images/icons/' + letter + '_label.png' + '"/>';
 		    }
 			html += '<span class="summary">' + event.summary.escapeHTML() +'</span><br/>' + 
 				'<span class="when">' + event.when + '</span><br/>' + 
