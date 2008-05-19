@@ -23,9 +23,9 @@
 	}
 
 	/* create html for info bubbles */	
-	function makeOverlayHtml(event, totalEvents) {
+	function makeOverlayHtml(index, event, totalEvents) {
 	  var overlaysIndex = getOverlaysIndex(event.id);
-		var html = createInfoWindowHtml(event);  
+		var html = createInfoWindowHtml(index, event);  
     html += 
     '<div style="width:' + INFO_WIDTH + 'px;"><span  style="float:right">';
     if (overlaysIndex > 0) {

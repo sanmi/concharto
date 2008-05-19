@@ -16,6 +16,7 @@
 	var INFO_WIDTH = 450;
 	var INFO_HEIGHT = 375;
   var MAP_TYPES = [G_NORMAL_MAP, G_SATELLITE_MAP, G_HYBRID_MAP, G_PHYSICAL_MAP];
+  var ALPHA_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
   /* Create a base icon for all of our markers that specifies the
        shadow, icon dimensions, etc. */
@@ -128,7 +129,7 @@
       return myWidth;
     }
 	
-	function createInfoWindowHtml(event, width /* optional */, height /* optional */) {
+	function createInfoWindowHtml(index, event, width /* optional */, height /* optional */) {
 		if (width==null || width=='null' || width=='') { width = INFO_WIDTH};
 		if (height==null || height=='null' || height=='') {
 			height = 'max-height:' + INFO_HEIGHT + ';';
@@ -136,38 +137,43 @@
 			height = 'height:' + height + 'px;'
 		}
 	  var html = '<div class="result inforesult wikitext" style="width:' + width +'px;'+ height +'margin-bottom:10px">';
-				if (event.flagged) {
-					html += '<a target="_top" class="errorLabel" href="/event/changehistory.htm?id=' + event.id +'">Flagged! </a>'; 
-				}
-	  		html += '<span class="summary">' + event.summary.escapeHTML() +'</span><br/>' + 
-	   		'<span class="when">' + event.when + '</span><br/>' + 
-				'<span class="where">' + event.where.escapeHTML();
-				if (!isEmpty(event.accy)) {
-					 html += ' (Accuracy: ' + _msg_accy[event.accy] + ')'; 
-				}
-				html += '</span><br/>' + event.description;
+		if (event.flagged) {
+			html += '<a target="_top" class="errorLabel" href="/event/changehistory.htm?id=' + event.id +'">Flagged! </a>'; 
+		}
+		//if there is an index, then put the marker icon in the bubble
+		if (index != null) {
+		     var char = ALPHA_CHARS.substring(index,index+1);
+		     html += '<img alt="marker" style="margin-right:4px;" src="' + _basePath + 'images/icons/' + char + '_label.png' + '"/>';
+		    }
+			html += '<span class="summary">' + event.summary.escapeHTML() +'</span><br/>' + 
+				'<span class="when">' + event.when + '</span><br/>' + 
+		'<span class="where">' + event.where.escapeHTML();
+		if (!isEmpty(event.accy)) {
+			 html += ' (Accuracy: ' + _msg_accy[event.accy] + ')'; 
+		}
+		html += '</span><br/>' + event.description;
+		
+		var tags = event.tags.split( "," );
+		var taglink = new Array();
+		tags.each( function(tag, index){
+		  //encode ant apostrophes in the tag because that will mess up the call from HTML
+		  //we will have to decode them later in goToTag()
+		  var encodedtag = tag.gsub('\'', '%27');
+		     //embedded search is wierd with following tags using document.location so we will use a regular href
+		     if (-1 == document.location.pathname.indexOf('embedded')) {
+		       taglink[index] = '<a target="_top" href="" onclick="goToTag(\'' + encodedtag + '\'); return false;">' + tag +'</a>';
+		     } else {
+		       //this is embedded
+		       taglink[index] = '<a target="_top" href="'
+		         + '/search/eventsearch.htm?_tag='+ encodedtag + '&_maptype=' + getMapTypeIndex()
+		         + '">'+ tag +'</a>';
+		     }
+		});
+		    html += '<div class="usertags"><b>Tags: </b>' + taglink.join(', ') + '</div>';   
+		html += '<span class="source"><b>Source: </b>' + event.source + '</span>';
+		html += '</div>';
 				
-				var tags = event.tags.split( "," );
-				var taglink = new Array();
-				tags.each( function(tag, index){
-				  //encode ant apostrophes in the tag because that will mess up the call from HTML
-				  //we will have to decode them later in goToTag()
-				  var encodedtag = tag.gsub('\'', '%27');
-	        //embedded search is wierd with following tags using document.location so we will use a regular href
-	        if (-1 == document.location.pathname.indexOf('embedded')) {
-	          taglink[index] = '<a target="_top" href="" onclick="goToTag(\'' + encodedtag + '\'); return false;">' + tag +'</a>';
-	        } else {
-	          //this is embedded
-	          taglink[index] = '<a target="_top" href="'
-	            + '/search/eventsearch.htm?_tag='+ encodedtag + '&_maptype=' + getMapTypeIndex()
-	            + '">'+ tag +'</a>';
-	        }
-				});
-        html += '<div class="usertags"><b>Tags: </b>' + taglink.join(', ') + '</div>';   
-				html += '<span class="source"><b>Source: </b>' + event.source + '</span>';
-				html += '</div>';
-				
-	   return html;
+	  return html;
 	}	
 	
 	/* go to the tag link, but use the current map type */
@@ -224,9 +230,9 @@
 			var event = events[i];
 			if ((excludeEventId === null) || (event.id != excludeEventId)) {
 				if (event.gtype == 'point') {
-				  createMarker(event, events.length);
+				  createMarker(i, event, events.length);
 				} else if ((event.gtype == 'line') || (event.gtype == 'polygon')) {
-					createPoly(event, events.length);					
+					createPoly(i, event, events.length);					
 				}
 			}
 		} 
