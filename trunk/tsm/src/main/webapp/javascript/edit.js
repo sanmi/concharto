@@ -28,11 +28,13 @@
 		_entPointIcon.iconAnchor = new GPoint(5, 5);
 		_entPointIcon.infoWindowAnchor = new GPoint(0, 0);
 		_entPointIcon.infoShadowAnchor = new GPoint(12, 12);
-		
-		_editableMarkerIcon = _baseIcon;
-    _editableMarkerIcon.image = basePath+"images/icons/marker-clk.png";
-    _editableMarkerIcon.infoWindowAnchor = new GPoint(9, 0);
-   
+	
+	  //NOTE: this is a work around for a draggable problem with the current google map api.
+	  //when you try to substitute any draggable icon other than G_DEFAULT_ICON, AND there is 
+	  //an info window, then the area over the icon for grabbing and dragging is truncated and 
+	  //much too low.  Users would have a hard time knowing where to click  
+    G_DEFAULT_ICON.image = basePath+"images/icons/marker-clk.png";
+    G_DEFAULT_ICON.shadow = basePath+"images/icons/00shadow.png";
 	}	
 	
   /* BEGIN PRE FUNCTIONS (initialization) ============================= */
@@ -83,7 +85,7 @@
 	}
 	
 	/* create a non-editable poly from an event */
-	function createPoly(event, totalEvents) {
+	function createPoly(index, event, totalEvents) {
 		var points = [];
 		var line = event.geom.line;
 		for (var i=0; i<line.length; i++) {
@@ -92,7 +94,7 @@
 		}
 		var poly = newPoly(points, event.gtype);
 		
-		var html = createInfoWindowHtml(event);
+		var html = createInfoWindowHtml(index, event);
 		GEvent.addListener(poly, "click", function(point) {
 			if (_clickListener == null) {
 		    map.openInfoWindowHtml(point, html);
@@ -106,10 +108,10 @@
 	}
 	
 	/* create a non-editable marker from an event */
-	function createMarker(event, totalEvents) {
+	function createMarker(index, event, totalEvents) {
 		var point = new GLatLng(event.geom.lat, event.geom.lng);
 		var marker = new GMarker(point, {icon:_markerIcon});  
-		marker.bindInfoWindowHtml(createInfoWindowHtml(event));
+		marker.bindInfoWindowHtml(createInfoWindowHtml(index, event));
 		map.addOverlay(marker);
 	}
 	
@@ -166,7 +168,7 @@
 
 	/* create an editable marker from a json point object */
 	function createEditableMarker(point) {
-		var marker = new GMarker(point, {draggable: true});  
+		var marker = new GMarker(point, {draggable:true});  
 		marker.enableDragging();
 		marker.bindInfoWindowHtml(html);
 		map.addOverlay(marker);
@@ -187,7 +189,7 @@
 	
 	function makePreviewHtml() {
 	  	var event = getPreviewEvent();
-			return createInfoWindowHtml(event);
+			return createInfoWindowHtml(null, event);
 	}
 	
 	/* create an editable poly from a json poly object */

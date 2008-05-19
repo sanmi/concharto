@@ -196,7 +196,7 @@
 	}
 	
 	/* called by createOverlay */
-	function createMarker(event, totalEvents) { 
+	function createMarker(index, event, totalEvents) { 
 		updateFitToPolygon(new GLatLng(event.geom.lat, event.geom.lng));
 		
 	  /* Create a lettered icon for this point using our icon class */
@@ -207,7 +207,7 @@
 	  /* Set up our GMarkerOptions object */
 	  var markerOptions = { icon:letteredIcon };
 		var marker = new GMarker(new GLatLng(event.geom.lat, event.geom.lng), markerOptions);
-		var html = makeOverlayHtml(event, totalEvents);
+		var html = makeOverlayHtml(index, event, totalEvents);
 		marker.bindInfoWindowHtml(html);
 		map.addOverlay(marker);
 		
@@ -225,7 +225,7 @@
 		}
 	}
 	/* called by createOverlay */
-	function createPoly(event, totalEvents) {
+	function createPoly(index, event, totalEvents) {
 		var points = [];
 		var line = event.geom.line;
 		
@@ -244,7 +244,7 @@
 		var poly = newPoly(points, event.geom.gtype);
 		if (poly) {
 			/* record so the user can click on the sidebar and see a popup in the map */
-			var html = makeOverlayHtml(event, totalEvents);
+			var html = makeOverlayHtml(index, event, totalEvents);
 			var overlayItem = recordOverlay(poly, html, event.gtype, event.id)
 			addOverlayClickListener(overlayItem);
 			//NOTE: if the overlay is a poly it will be added to the map when/if the hideZoomedPolygons() 
