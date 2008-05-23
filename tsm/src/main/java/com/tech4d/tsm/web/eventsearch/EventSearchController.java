@@ -196,7 +196,7 @@ public class EventSearchController extends AbstractFormController {
         			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(kmlOutputStream, "UTF-8");
         			List<Event> events = (List<Event>) model.get(SearchHelper.MODEL_EVENTS); 
         			KmlFormat.toKML(events, outputStreamWriter, 
-        					"Search results from Concharto.com", 
+        					"Concharto.com search results", 
         					"NOTE: all events are time coded, so you may need to adjust the time slider.",
         					UrlFormat.getBasepath(request));
         			//throw away the current model, we aren't rendering and just add the kml. 
