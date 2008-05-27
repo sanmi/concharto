@@ -5,7 +5,6 @@
 	var _editableMarker;
 	var _editableMarkerHtml;
 	var _editablePoly;
-	var _polyMarkers = [];
 	var _currMarker = 0;
 	var _clickListener;
 	var _editablePolyClickListener;
@@ -76,14 +75,7 @@
 		} 
 		
 	}
-	
-	function removeClickListener() {
-		GEvent.removeListener(_clickListener);
-		GEvent.removeListener(_editablePolyClickListener);		
-		_clickListener = null;		
-		_editablePolyClickListener = null;
-	}
-	
+		
 	/* create a non-editable poly from an event */
 	function createPoly(index, event, totalEvents) {
 		var points = [];
@@ -93,7 +85,6 @@
 			points.push(vertex);
 		}
 		var poly = newPoly(points, event.gtype);
-		
 		var html = createInfoWindowHtml(index, event);
 		GEvent.addListener(poly, "click", function(point) {
 			if (_clickListener == null) {
@@ -139,27 +130,10 @@
 				marker = createEditableMarker(point);
 			} else if ((geometryType == "line") || (geometryType == "polygon")) {
 				marker = createEditablePoly(geom);
-				addClickListener(marker);					
 			}
 		}
 	}
 	
-	/* If we are editing a poly, add listener for clicking on the map */
-	function addClickListener(poly) {
-		/* only add if it is missing */
-		if (_clickListener == null) {
-			_clickListener = GEvent.addListener(map,"click", function(overlay, point) {
-			   addVertex(point);
-			});
-		}
-		//we have to add it each time, because the poly is added and redrawn each time (I think)
-    if (_editablePoly != null) {
-	    _editablePolyClickListener = GEvent.addListener(_editablePoly, "click", function(point) {
-        addVertex(point); 
-	    });
-	  }
-	}
-
   /* used by listeners */
   function addVertex(point) {
      addMarker(point);
@@ -191,34 +165,42 @@
 	  	var event = getPreviewEvent();
 			return createInfoWindowHtml(null, event);
 	}
-	
+	//--------------------------------
 	/* create an editable poly from a json poly object */
-	function createEditablePoly(jsonLine) {
-		var points = [];
-		var marker;
-		if (jsonLine != null) {
-			var line = jsonLine.line;
-			/* if we are adding, then line will be null */
-			if (line) {
-				for (var i=0; i<line.length; i++) {
-					/* If this marker is a polygon clusure, i.e. it is the same as element 0, 
-					then we don't want to drag it */
-					if (!((i!=0) && (line[0].lat == line[i].lat) && (line[0].lng == line[i].lng))) {
-						var vertex = new GLatLng(line[i].lat, line[i].lng);
-						points.push(vertex);
-						addMarker(vertex);
-					}			
-				}
-		
-				/* we create a poly here just so we can find the centroid */
-				var poly = newPoly(points, getGeometryType());
-				goToPoly(poly);
-			}
-			
-			drawPoly();
-		}
-		showPolyMessage(poly);
-	}
+	 function createEditablePoly(jsonLine) {
+    var points = [];
+    if (jsonLine != null) {
+      var line = jsonLine.line;
+      /* if we are adding, then line will be null */
+      if (line) {
+        for (var i=0; i<line.length; i++) {
+           var vertex = new GLatLng(line[i].lat, line[i].lng);
+           points.push(vertex);
+        }
+      }
+    }
+    createEditablePolyFromPoints(points);
+  }
+
+  /* create an editable poly from an array of points*/
+  function createEditablePolyFromPoints(points) {
+    if (points != null) {
+      /* we create the editable poly */
+      _editablePoly = newPoly(points, getGeometryType());
+      goToPoly(_editablePoly);
+	    map.addOverlay(_editablePoly);
+      _editablePoly.enableEditing();
+	    //for deleting
+	    _editablePolyClickListener = GEvent.addListener(_editablePoly, "click", function(point, index) {
+	      if (typeof index == "number") {
+	        _editablePoly.deleteVertex(index);
+	      }
+	    });
+    }
+    showPolyMessage(_editablePoly);
+  }
+  
+  //--------------------------------
 	
 	function goToPoly(poly) {
 		if (poly) {
@@ -230,8 +212,7 @@
 	
 	function showPolyMessage(poly) {
 		var html;
-		if ((document.getElementById("eventForm").showPreview.value == 'true') &&
-		     (_polyMarkers.length >0)) {
+		if (document.getElementById("eventForm").showPreview.value == 'true')  {
 			html = makePreviewHtml();
 		} else {
 			html = " <b>Click anywhere</b> on the map to add a point<br/><b>Drag a point </b> to edit the line.<br/><b>Click a point</b> to delete it.";
@@ -242,77 +223,7 @@
 			var point = findClosestVertex(map.getCenter(), poly)
 	    map.openInfoWindowHtml(point, html);
 		}
-	
 	}
-
-	/* add a marker to the poly */
-	function addMarker(point) {
-		/* When the user clicks on an overlay, not the map, then the point is null 
-				 In that case, we don't want to add apoint */
-				 
-		if (point != null) {
-			_polyMarkers[_currMarker] = new GMarker(point, {icon:_entPointIcon, draggable: true});
-			drawMarker(_polyMarkers[_currMarker], _currMarker);
-			_currMarker++;
-		}
-	}
-	
-	/* draw the marker, add drag listener, add infoWindow */
-	function drawMarker(marker, index) {
-		map.addOverlay(marker);
-		marker.enableDragging();
-		GEvent.addListener(marker,'drag',function(){
-			drawPoly()
-		});
-		var html = '<a href="#" onclick="deleteMarker('+ 
-			index +  ')">Delete</a> <a href="#">';
-		marker.bindInfoWindowHtml(html);
-	}
-
-	/* delete an overlay marker */
-	function deleteMarker(index) {
-		var marker = _polyMarkers[index];
-		map.removeOverlay(marker);
-		removeFromArray(_polyMarkers, index); 
-		if (_currMarker >0) {
-			_currMarker--;
-		}
-		redrawOverlayMarkers();
-		drawPoly();
-	}
-	
-	/* redraw the overlay vertex markers */
-	function redrawOverlayMarkers() {
-		for (var i=0; i<_polyMarkers.length; i++) {
-			map.removeOverlay(_polyMarkers[i]);
-			drawMarker(_polyMarkers[i], i);
-		}
-	}
-
-	/* remove item from an array and shift everything down */
-	function removeFromArray(array, index) {
-	  array.splice(index, 1);
-	}
-
-	/* redraw the line */
-	function drawPoly() {
-		if (_editablePoly) {
-			map.removeOverlay(_editablePoly);
-		}
-		var points = [];
-		for (var i=0; i<_polyMarkers.length; i++) {
-			if (_polyMarkers[i]) {
-				points.push(_polyMarkers[i].getPoint());
-			}
-		}		
-		_editablePoly = newPoly(points, getGeometryType());
-		if (_editablePoly) {
-			map.addOverlay(_editablePoly);
-		}
-		addClickListener(_editablePoly);
-		return _editablePoly;
-	}
-	
 	
 	/* END PRE FUNCTIONS (initialization) ============================= */
 
@@ -321,19 +232,29 @@
 	function setupNewPoint() {
 		removeEditableOverlay();
 		createEditableOverlay();
-		removeClickListener();
 	}
 	
 	/* user is creating a poly */
 	function setupNewPoly() {
-		removeEditableOverlay();
-		for (var i=0; i<_polyMarkers.length; i++) {
-			map.addOverlay(_polyMarkers[i]);
+	  var points = [];
+    removeEditableOverlay();
+	  if (_editablePoly != null) {
+		  for (var i=0; i<_editablePoly.getVertexCount(); i++) {
+	      points.push(_editablePoly.getVertex(i));
+	    }
+      createEditablePolyFromPoints(points);
+		} else {
+		  //there was no polyline before so we are creating one
+		  _editablePoly = newPoly(points, getGeometryType());
+		  map.addOverlay(_editablePoly);
+		  _editablePoly.enableDrawing();
+      var listener = GEvent.addListener(_editablePoly, "endline", function() {
+        //NOTE: this is a kludge to get around a google maps bug in
+        //version 2.111 where we can't just enable editing because otherwise
+        //something later in the event change simply disables it again.
+        setTimeout('_editablePoly.enableEditing()', 50)
+      });
 		}
-		goToPoly(_editablePoly);
-		var poly = drawPoly();
-		showPolyMessage();
-		addClickListener(poly);
 	}
 	
 	/* remove point AND poly overlay */
@@ -342,11 +263,9 @@
 		if (_editableMarker) {
 			map.removeOverlay(_editableMarker);
 		} 		
-		if (_editablePoly) {
+		if (_editablePoly != null) {
+      _editablePoly.disableEditing();
 			map.removeOverlay(_editablePoly);
-			for (var i=0; i<_polyMarkers.length; i++) {
-				map.removeOverlay(_polyMarkers[i]);
-			}
 		}
 	}
 	
@@ -429,7 +348,7 @@
 		submitEvent();
 	}
 	
-	function preview() {
+	function preview() {	  
 		document.getElementById("eventForm").showPreview.value = 'true';
 		submitEvent();
 	}
@@ -449,7 +368,7 @@
 		if (geometryType == "point") {
 			document.getElementById("eventForm").geometry.value = gLatLngToJSON(_editableMarker.getLatLng());
 		} else if ((geometryType == "line") || (geometryType == "polygon")) {
-			document.getElementById("eventForm").geometry.value = markersToJSON(_polyMarkers, geometryType);
+			document.getElementById("eventForm").geometry.value = polyToJSON(_editablePoly, geometryType);
 		}
 	}
 

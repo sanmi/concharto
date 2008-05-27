@@ -212,6 +212,18 @@
 		str +=']}';
 		return str;
 	}
+
+  function polyToJSON(poly, geometryType) {
+    var str = '{"gtype":"' + geometryType + '","line":[';
+    for (var i=0; i<poly.getVertexCount(); i++) {
+      str += gLatLngToJSON( poly.getVertex(i));
+      if (i != poly.length-1) {
+        str += ',';
+      }
+    }
+    str +=']}';
+    return str;
+  }
 	
 	///prevent page scroll
 	function wheelevent(e)
@@ -258,7 +270,9 @@
 		if (polyColor == undefined) {
 			polyColor = POLY_COLOR;
 		}
-		if (points.length > 0) {
+		//adjust closure of the poly based on geomType
+    points = setPolyClosure(geometryType, points);
+		if (points != null) { 
 			if ((geometryType == 'line')){
 				var encodedPolyline = new GPolyline.fromEncoded({
 				    color: lineColor,
@@ -272,10 +286,35 @@
 			} else if (geometryType == 'polygon') {
 				return new GPolygon(points, polyColor, weight, .8, lineColor, .25);
 			}
-		}
+		} 
 		return null;
 	}
-	
+
+  /** if this is a poly, the last point should also be the first
+    * if this is a line, the last point should not be the first */
+  function setPolyClosure(geometryType, points) {
+    if ((geometryType == 'line')){
+      if (GLatLngEquals(points[0], points[points.length-1])) {
+        //remove the closure
+        points.pop(points[points.length-1]);
+      } 
+    } else if (geometryType == 'polygon') {
+      if (!GLatLngEquals(points[0], points[points.length-1])) {
+        //add missing closure 
+        points.push(points[0]);
+      }
+    }
+    return points;
+  }
+  
+  function GLatLngEquals(g1, g2) {
+    if ((g1 == null) || (g2 == null)) {
+      return false;
+    } else { 
+      return ((g1.lat() == g2.lat()) && (g1.lng() == g1.lng()));
+    } 
+  }
+  
 	function return2br(dataStr) {
 		return dataStr.gsub('(\r\n|[\r\n])', '<br/>');
   }
