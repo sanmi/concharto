@@ -32,7 +32,7 @@
 				<jsp:param name="user" value="${dt.user.username}"/>
 			</jsp:include>
 		</display:column>
-		<display:column title="Comment">${dt.comment}&nbsp;</display:column>
+		<display:column title="Comment"><c:out value="{dt.comment}"/>$&nbsp;</display:column>
 		<display:column title="Reason" >
 			<spring:message code="flag.reason.${dt.reason}"/>
 		</display:column>
