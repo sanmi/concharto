@@ -10,11 +10,13 @@ import com.tech4d.tsm.model.user.User;
 
 @Entity
 public class Spotlight extends BaseAuditableEntity {
-	public  static final int SZ_FIELDS = 2000;
+	public static final int SZ_FIELDS = 2000;
+    public static final int SZ_CATALOG = 64;
 	private String label;
 	private String link;
 	private Boolean visible;
 	private User addedByUser;
+	private String catalog;
 	
 	@Column(length=SZ_FIELDS)
 	public String getLabel() {
@@ -43,5 +45,12 @@ public class Spotlight extends BaseAuditableEntity {
 	}
 	public void setAddedByUser(User addedByUser) {
 		this.addedByUser = addedByUser;
+	}
+	@Column(length=SZ_CATALOG)
+	public String getCatalog() {
+		return catalog;
+	}
+	public void setCatalog(String catalog) {
+		this.catalog = catalog;
 	}
 }

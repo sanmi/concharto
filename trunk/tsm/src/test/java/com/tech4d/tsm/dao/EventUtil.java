@@ -16,6 +16,7 @@ import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.tech4d.tsm.model.kml.Style;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.model.user.User;
+import com.tech4d.tsm.web.util.CatalogUtil;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
@@ -110,7 +111,7 @@ public class EventUtil {
         event.setStyleSelector(style);
         event.setSource("http://www.wikipedia.com");
         event.setUserTags(usertags);
-        
+        event.setCatalog(CatalogUtil.CATALOG_WWW);
         return event;
     }
     

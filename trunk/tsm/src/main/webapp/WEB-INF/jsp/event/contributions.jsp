@@ -51,8 +51,13 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 				<display:column >
 					<fmt:formatDate value="${simpleTable.auditEntry.dateCreated}" pattern="MMM dd, yyyy hh:mm a z"/>,
 					<c:if test="${simpleTable.auditable.summary != null}">  <%-- todo this is a kludge - fix it --%>
-						(<a href="${basePath}edit/event.htm?id=${simpleTable.auditEntry.entityId}">edit</a> | 
-						<a href="${basePath}event/changehistory.htm?id=${simpleTable.auditEntry.entityId}">changes</a>),
+					  <%-- this view shows events from all catalogs, so we need to correct the basepath to point to
+					       the base path cooresponding to the catalog of each event
+					  --%>
+					  <c:set var="catalogBasePath" value="http://${simpleTable.auditable.catalog}.${fn:substringAfter(basePath,'.')}"/>
+            <c:out value="${simpleTable.auditable.catalog}"/>, 
+						(<a href="${catalogBasePath}edit/event.htm?id=${simpleTable.auditEntry.entityId}">edit</a> | 
+						<a href="${catalogBasePath}event/changehistory.htm?id=${simpleTable.auditEntry.entityId}">changes</a>),
 					</c:if>
 					(<spring:message code="audit.action.field.${simpleTable.auditEntry.action}"/>
 					r${simpleTable.auditEntry.version}), 						
@@ -61,7 +66,7 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 							<em>event has been deleted</em> 
 						</c:when>
 						<c:otherwise>
-							<a href='${basePath}search/eventsearch.htm?_id=${simpleTable.auditEntry.entityId}'>${simpleTable.auditable.summary}</a>
+							<a href='${catalogBasePath}search/eventsearch.htm?_id=${simpleTable.auditEntry.entityId}'>${simpleTable.auditable.summary}</a>
 							${simpleTable.auditable.when.asText} &nbsp; <%-- IE6 hack --%>
 							${simpleTable.auditable.where} &nbsp; <%-- IE6 hack --%>
 						</c:otherwise>

@@ -50,8 +50,10 @@ public class ManualTestSerialize extends OpenSessionInViewIntegrationTest {
 		FileOutputStream fileOutputStream = null;
 		try {
 			fileOutputStream = new FileOutputStream("tmp3.kml");
-			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, "UTF-8"); 
+			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, "UTF-8");
+			long start = System.currentTimeMillis();
 			KmlFormat.toKML(events, outputStreamWriter, "recent events from concharto.com", "Recent events from concharto!");
+			logger.debug("time: " + (System.currentTimeMillis() - start));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

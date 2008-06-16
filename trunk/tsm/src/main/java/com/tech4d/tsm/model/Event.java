@@ -18,6 +18,7 @@ import javax.persistence.Transient;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.Index;
 
 import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.tech4d.tsm.model.time.TimeRange;
@@ -40,6 +41,7 @@ public class Event extends BaseAuditableEntity {
     public static final int MAP_TYPE_MAP = 0;
     public static final int MAP_TYPE_HYBRID = 1;
     public static final int MAP_TYPE_SATELLITE = 2;
+    public static final int SZ_CATALOG = 64;
     private String summary;
     private String where;
     private String snippet;
@@ -50,8 +52,6 @@ public class Event extends BaseAuditableEntity {
     private List<UserTag> userTags;
     private Votes votes;
     private String source;
-    private Catalog catalog;
-    public enum Catalog {ENCYCLOPEDIA, ANECDOTAL, PERSONAL, CURRENT_EVENT}
     private Boolean visible;
     private Boolean hasUnresolvedFlag;
     private List<Flag> flags;
@@ -60,7 +60,8 @@ public class Event extends BaseAuditableEntity {
     private Integer mapType;
     private WikiText discussion;
     private PositionalAccuracy positionalAccuracy;
-
+    private String catalog;
+    
     @Column(name = "_where", length=SZ_WHERE)  //'where' is a sql reserved word
     public String getWhere() {
         return where;
@@ -137,14 +138,6 @@ public class Event extends BaseAuditableEntity {
 
     public void setSource(String source) {
         this.source = source;
-    }
-
-    public Catalog getCatalog() {
-        return catalog;
-    }
-
-    public void setCatalog(Catalog catalog) {
-        this.catalog = catalog;
     }
 
     //TODO this should probably be one to many!  many to many would be slow to fetch.
@@ -287,6 +280,16 @@ public class Event extends BaseAuditableEntity {
 
 	public void setPositionalAccuracy(PositionalAccuracy positionalAccuracy) {
 		this.positionalAccuracy = positionalAccuracy;
+	}
+
+    @Column(length=SZ_CATALOG) 
+    @Index(name="catalogindex")
+	public String getCatalog() {
+		return catalog;
+	}
+
+	public void setCatalog(String catalog) {
+		this.catalog = catalog;
 	}
     
 }

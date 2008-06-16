@@ -46,6 +46,15 @@ public interface AuditEntryDao {
      */
     public List<AuditUserChange> getLatestAuditEntries(Class<?> clazz, int firstResult, int maxResults);
 
+	/**
+	 * Get the latest changes
+	 * @param catalog the catalog for the Event
+     * @param firstResult record to start the results at 
+     * @param maxResults max results to return
+     * @return list of AuditEntry objects ordered by most recent version
+	 */
+    public List<AuditUserChange> getLatestEventEntries(String catalog, int firstResult, int maxResults);
+
     /**
      * Get the total number of AuditEntry objects available for a given Auditable
      * @param auditable Auditable object - must have at a minimum the id present

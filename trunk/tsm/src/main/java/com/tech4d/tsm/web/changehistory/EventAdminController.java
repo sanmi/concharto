@@ -55,6 +55,7 @@ public class EventAdminController extends MultiActionController{
         }
         Flag flag = flagDao.setFlagDisposition(id, disposition);
     	Event event = flag.getEvent();
+    	
     	if (Flag.DISPOSITION_DELETED.equals(disposition)) {
         	eventDao.delete(flag.getEvent());
     		//update the event that is in the search results, since we are going back there
@@ -65,6 +66,9 @@ public class EventAdminController extends MultiActionController{
             if (Flag.DISPOSITION_REMOVED.equals(disposition)) {
             	//if REMOVED, then we need to remove the event by making it invisible
             	event.setVisible(false);
+            } else if (Flag.DISPOSITION_FLAG_SPAM.equals(disposition)) {
+            	//clear the comment
+            	flagDao.delete(flag);
             } else if (null == disposition) {
             	//we are being asked to reopen it.  TODO fix this kludge!
             	event.setVisible(true);

@@ -1,6 +1,9 @@
 package com.tech4d.tsm.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.tech4d.tsm.dao.SpotlightDao;
 import com.tech4d.tsm.model.Spotlight;
@@ -12,7 +15,7 @@ import com.tech4d.tsm.model.Spotlight;
  */
 public class SpotlightService {
 	SpotlightDao spotlightDao;
-	List<Spotlight> spotlights;
+	Map<String, List<Spotlight>> spotlightMap;
 	int current = 0;
 
 	public void setSpotlightDao(SpotlightDao spotlightDao) {
@@ -21,7 +24,17 @@ public class SpotlightService {
 	}
 
 	public void refresh() {
-		spotlights = spotlightDao.findVisible();
+		spotlightMap = new HashMap<String, List<Spotlight>>();
+		List<Spotlight> findVisible = spotlightDao.findVisible();
+		for (Spotlight spotlight : findVisible) {
+			List<Spotlight> catalogSet = spotlightMap.get(spotlight.getCatalog());
+			if (null == catalogSet) {
+				//doesn't exist so create a new one and put it in the map
+				catalogSet = new ArrayList<Spotlight>();
+				spotlightMap.put(spotlight.getCatalog(), catalogSet);
+			}
+			catalogSet.add(spotlight);
+		}
 	}
 	
 	/**
@@ -29,10 +42,10 @@ public class SpotlightService {
 	 * all over again.
 	 * @return the next spotlight
 	 */
-	public Spotlight getNext() {
-		if (spotlights.size() > 0) {
-			current = (++current % spotlights.size());
-			return spotlights.get(current);
+	public Spotlight getNext(String catalog) {
+		if (spotlightMap.size() > 0) {
+			current = (++current % spotlightMap.size());
+			return spotlightMap.get(catalog).get(current);
 		} else {
 			return null;
 		}
@@ -44,10 +57,10 @@ public class SpotlightService {
 	 * @param curr any positive integer
 	 * @return the spotlight event
 	 */
-	public Spotlight getSpotlight(int curr) {
-		if (spotlights.size() > 0) {
-			int index = curr % spotlights.size();
-			return spotlights.get(index);
+	public Spotlight getSpotlight(int curr, String catalog) {
+		if ((spotlightMap.get(catalog) != null) && ((spotlightMap.get(catalog)).size() > 0)) {
+			int index = curr % spotlightMap.get(catalog).size();
+			return spotlightMap.get(catalog).get(index);
 		} else {
 			return null;
 		}

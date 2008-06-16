@@ -23,6 +23,13 @@ import com.tech4d.tsm.util.LatLngBounds;
 import com.tech4d.tsm.util.ProximityHelper;
 import com.vividsolutions.jts.geom.Geometry;
 
+/**
+ * For searching for events.  We can't use hql or criteria queries because the
+ * geo and text stuff is so specialized and the indexes only work if you have it
+ * just right.
+ * @author frank
+ *
+ */
 @Transactional
 public class EventSearchServiceHib implements EventSearchService {
 	
@@ -31,6 +38,7 @@ public class EventSearchServiceHib implements EventSearchService {
 	private static final String PARAM_LATEST = "latest";
 	private static final String PARAM_EARLIEST = "earliest";
 	private static final String PARAM_TAG = "tag";
+	private static final String PARAM_CATALOG = "catalog";
 	private SessionFactory sessionFactory;
     protected final Log log = LogFactory.getLog(getClass());
 
@@ -65,6 +73,7 @@ public class EventSearchServiceHib implements EventSearchService {
 
     private static final String SQL_MATCH_CLAUSE = 
         " MATCH (es.summary, es._where, es.usertags, es.description, es.source) AGAINST (:search_text IN BOOLEAN MODE) ";
+    private static final String SQL_CATALOG_CLAUSE=" ev.catalog = :catalog ";
 
     /**
      * NOTE: be careful about this order by clause because it can break indexed searches
@@ -311,6 +320,9 @@ public class EventSearchServiceHib implements EventSearchService {
         	select.append(SQL_TAG_JOIN);
         	hasConjuncted = addClause(hasConjuncted, clause, SQL_TAG_CLAUSE);
         }
+        if (!StringUtils.isEmpty(params.getCatalog())) {
+        	hasConjuncted = addClause(hasConjuncted, clause, SQL_CATALOG_CLAUSE);
+        }
         clause.append(SQL_ORDER_CLAUSE);
         select.append(clause);
 
@@ -326,6 +338,9 @@ public class EventSearchServiceHib implements EventSearchService {
         }
         if (!StringUtils.isEmpty(params.getUserTag())) {
         	sqlQuery.setString(PARAM_TAG, StringUtils.trim(params.getUserTag()));
+        }
+        if (!StringUtils.isEmpty(params.getCatalog())) {
+        	sqlQuery.setString(PARAM_CATALOG, StringUtils.trim(params.getCatalog()));
         }
         if (params.getTimeRange() != null) {
             sqlQuery.setBigInteger(PARAM_EARLIEST, BigInteger.valueOf(params.getTimeRange().getBegin().getDate().getTime()));

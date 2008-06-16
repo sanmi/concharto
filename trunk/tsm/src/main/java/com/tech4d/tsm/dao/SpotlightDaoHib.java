@@ -10,10 +10,17 @@ import com.tech4d.tsm.model.Spotlight;
 
 @Transactional
 public class SpotlightDaoHib implements SpotlightDao {
+    private static final String FIELD_CATALOG = "catalog";
+    private static final String SQL_PRE = "select spotlight from Spotlight spotlight ";
+    private static final String SQL_CATALOG = " where catalog = :catalog ";
     private static final String SQL_SELECT_ALL = 
-    	"select spotlight from Spotlight spotlight order by id asc";
+    	SQL_PRE + " order by id asc";
     private static final String SQL_SELECT_VISIBLE = 
-    	"select spotlight from Spotlight spotlight where spotlight.visible = true order by id asc";
+    	SQL_PRE + " where spotlight.visible = true order by id asc";
+    private static final String SQL_SELECT_ALL_CATALOG = 
+    	SQL_PRE + SQL_CATALOG + " order by id asc";
+    private static final String SQL_SELECT_VISIBLE_CATALOG = 
+    	SQL_PRE + SQL_CATALOG + " and spotlight.visible = true order by id asc";
 	private SessionFactory sessionFactory;
 
     public void setSessionFactory(SessionFactory sessionFactory) {
@@ -52,6 +59,14 @@ public class SpotlightDaoHib implements SpotlightDao {
         SQL_SELECT_ALL).list();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Spotlight> findAll(String catalog) {
+		return this.sessionFactory.getCurrentSession().createQuery(
+				SQL_SELECT_ALL_CATALOG)
+				.setString(FIELD_CATALOG, catalog)
+				.list();
+	}
+	
 	public Serializable save(Spotlight spotlight) {
 		 return this.sessionFactory.getCurrentSession().save(spotlight);
 	}
@@ -72,10 +87,26 @@ public class SpotlightDaoHib implements SpotlightDao {
     	}
 
 	@SuppressWarnings("unchecked")
+	public Integer getTotalVisible(String catalog) {
+		List results = this.sessionFactory.getCurrentSession()
+		.createQuery("select count(spotlight) from Spotlight spotlight where catalog = :catalog spotlight.visible = true")
+		.setString(FIELD_CATALOG, catalog)
+		.list();
+		Long count = (Long) results.get(0);
+		//cast to Integer.  It aint never going to be bigger!
+		return Math.round(count);	
+	}
+	
+	@SuppressWarnings("unchecked")
 	public List<Spotlight> findVisible() {
 		return this.sessionFactory.getCurrentSession().createQuery(
 		        SQL_SELECT_VISIBLE).list();
 	}
-	
 
+	@SuppressWarnings("unchecked")
+	public List<Spotlight> findVisible(String catalog) {
+		return this.sessionFactory.getCurrentSession().createQuery(
+				SQL_SELECT_VISIBLE_CATALOG).setString(FIELD_CATALOG, catalog).list();
+	}
+	
 }

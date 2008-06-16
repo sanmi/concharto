@@ -9,6 +9,8 @@ public interface FlagDao {
 
 	public abstract void deleteFlag(Long id);
 
+	public abstract void delete(Flag flag);
+
 	public abstract Flag setFlagDisposition(Long flagId, String disposition);
 
 	public Flag find(Long id);

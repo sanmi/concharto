@@ -74,11 +74,20 @@ public class EventFieldChangeFormatter extends BaseAuditFieldChangeFormatter{
         makeChange(ZOOM_LEVEL, nullSafeToString(current.getZoomLevel()), nullSafeToString(previous.getZoomLevel()), auditEntry);
         makeChange(POSITIONAL_ACCURACY, nullSafeToString(current.getPositionalAccuracy()), nullSafeToString(previous.getPositionalAccuracy()), auditEntry);
         makeChange(DISCUSSION, checkExists(current.getDiscussion()), checkExists(previous.getDiscussion()), auditEntry);
+        makeChange(FLAGS, nullSafeToString(current.getHasUnresolvedFlag()), nullSafeToString(previous.getHasUnresolvedFlag()), auditEntry);
         return auditEntry;
     }
     
     
-   private String nullSafeToString(PositionalAccuracy positionalAccuracy) {
+   private String nullSafeToString(Boolean bool) {
+		if (bool == null) {
+			return "";
+		} else {
+			return bool.toString();
+		}
+	}
+
+private String nullSafeToString(PositionalAccuracy positionalAccuracy) {
 		if (positionalAccuracy == null) {
 			return "";
 		}

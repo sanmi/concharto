@@ -11,12 +11,12 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.auth.AuthConstants;
+import com.tech4d.tsm.auth.AuthHelper;
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.dao.FlagDao;
 import com.tech4d.tsm.dao.UserDao;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.Flag;
-import com.tech4d.tsm.model.user.User;
 import com.tech4d.tsm.web.changehistory.ChangeHistoryControllerHelper;
 import com.tech4d.tsm.web.eventsearch.SearchSessionUtil;
 
@@ -66,11 +66,11 @@ public class FlagEventController extends SimpleFormController {
 
 
 	private Event saveFlag(FlagEventForm flagEventForm, Long eventId, String username) {
+		
 		Event event = eventDao.findById(eventId);
 		event.setHasUnresolvedFlag(true);
-		User user = userDao.find(username);
 		Flag flag = new Flag(flagEventForm.getComment(), flagEventForm.getReason(),
-				user, event);
+				AuthHelper.getUsername(), event);
 		flagDao.save(flag);
 		eventDao.saveOrUpdate(event);
 		return event;
