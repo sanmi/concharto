@@ -22,6 +22,7 @@ import com.tech4d.tsm.util.JSONFormat;
 import com.tech4d.tsm.util.SensibleMapDefaults;
 import com.tech4d.tsm.web.eventsearch.EventSearchForm;
 import com.tech4d.tsm.web.eventsearch.SearchHelper;
+import com.tech4d.tsm.web.util.CatalogUtil;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
 import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
 import com.vividsolutions.jts.geom.Geometry;
@@ -142,6 +143,8 @@ public class EventController extends SimpleFormController {
             } else {
                 event = EventFormFactory.createEvent(eventForm);
             }
+            //get the catalog from the URL
+            event.setCatalog(CatalogUtil.getCatalog(request));
             this.eventDao.saveOrUpdate(event);
             eventSearchForm.setDisplayEventId(event.getId()); //we want to show only the event we've just edited  
             WebUtils.setSessionAttribute(request, SESSION_EVENT, event);

@@ -52,9 +52,10 @@ public class KmlFormat {
 	private static final String STYLE = "Style";
 	private static final String BASEPATH = "http://www.concharto.com";
     protected static final Log logger = LogFactory.getLog(KmlFormat.class);
+	private static final String CATALOG_SUBST = "???";
     //TODO extract the constants from WikiModelFactory
     private static String basepath;
-	private static WikiModel wikiModel; 
+    private static String basepathWithoutCatalog;
 	private static NumberFormat llFormat = NumberFormat.getInstance();
 	private static NumberFormat rangeFormat = NumberFormat.getInstance();
 	private static SimpleDateFormat sdf = new SimpleDateFormat();
@@ -105,10 +106,7 @@ public class KmlFormat {
 	public static void toKML(List<Event> events, OutputStreamWriter out, 
 			String docTitle, String snippet, String overrideBasepath) {
 
-		basepath = overrideBasepath;
-    	wikiModel = new TsmWikiModel(overrideBasepath, basepath 
-    			+ "images/${image}", basepath + "page.htm?page=${title}");
-
+		setupBasepath(overrideBasepath);
 		//main kml document stuff
 		Element kmlDocument = new Element("Document");
 		kmlDocument.addContent(simpleElement("name", docTitle));
@@ -151,7 +149,7 @@ public class KmlFormat {
 		Element iconStyle = new Element("IconStyle");
 		iconStyle.addContent(simpleElement("scale", "1"));
 		Element icon = new Element("Icon");
-		icon.addContent(simpleElement("href", basepath + "/images/icons/marker-clk.png"));
+		icon.addContent(simpleElement("href", getBasepath() + "/images/icons/marker-clk.png"));
 		iconStyle.addContent(icon);
 		style.addContent(iconStyle);
 
@@ -209,13 +207,17 @@ public class KmlFormat {
 			.append("</em>");
 		sb.append("<br/><a href=\"")
 		  .append(getLink(event)).append("\"><img src=\"")
-		  .append(basepath).append("/images/concharto-logo-xsm.png\"/></a>");
+		  .append(getBasepath()).append("/images/concharto-logo-xsm.png\"/></a>");
 		sb.append("<br/><a href=\"")
 		.append(getLink(event)).append("\">see more...</a>");
+		String bpath = getBasepath(event);
+		//NOTE: it is not the most efficient thing to create a new wikimodel for each event, but
+		//until we are at 100,000 events it won't make a difference
+    	WikiModel wikiModel = new TsmWikiModel(bpath, bpath + "images/${image}", bpath + "page.htm?page=${title}");
 		sb = addNullableField(sb, wikiModel.render(event.getDescription()));
 		sb.append("Source: ");
 		sb = addNullableField(sb, wikiModel.render(event.getSource()));
-		addTags(sb, event.getUserTags());
+		addTags(sb, event);
 
 		description.addContent(new CDATA(sb.toString()));
 		placemark.addContent(description);		
@@ -420,14 +422,14 @@ public class KmlFormat {
 	 * @param sb
 	 * @param userTags
 	 */
-	private static void addTags(StringBuffer sb, List<UserTag> userTags) {
+	private static void addTags(StringBuffer sb, Event event) {
 		int i=0;
-		for (UserTag tag : userTags) {
+		for (UserTag tag : event.getUserTags()) {
 			if (i == 0) {
 				sb.append("Tags: ");
 			}
 			sb.append("<a href=\"")
-			  .append(basepath).append("/search/eventsearch.htm?_tag=");
+			  .append(getBasepath(event)).append("/search/eventsearch.htm?_tag=");
 			
 			try {
 				sb.append(URLEncoder.encode(tag.getTag(), "UTF-8"));
@@ -439,7 +441,7 @@ public class KmlFormat {
 			  .append("\">")
 			  .append(tag.getTag())
 			  .append("</a>");
-			if (++i < userTags.size()) {
+			if (++i < event.getUserTags().size()) {
 				sb.append(", ");
 			}
 		}
@@ -466,7 +468,7 @@ public class KmlFormat {
 	 * @return
 	 */
 	private static String getLink(Event event) {
-		return basepath + "/list/event.htm?_id=" + event.getId();
+		return getBasepath(event) + "/list/event.htm?_id=" + event.getId();
 	}
 
 
@@ -527,4 +529,20 @@ public class KmlFormat {
 		return ZOOM_TO_RANGE[zoom];
 	}
 
+	/**
+	 * Setup for processing more than catalog (e.g. history, fishing, ...)
+	 * @param initialBasepath
+	 */
+	private static void setupBasepath(String initialBasepath) {
+		basepath = initialBasepath;
+		basepathWithoutCatalog = StringUtils.substringAfter(initialBasepath, ".");
+		basepathWithoutCatalog = "http://" + CATALOG_SUBST + "." + basepathWithoutCatalog; 
+	}
+	
+	private static String getBasepath() {
+		return basepath;
+	}
+	private static String getBasepath(Event event) {
+		return StringUtils.replace(basepathWithoutCatalog, CATALOG_SUBST, event.getCatalog());
+	}
 }

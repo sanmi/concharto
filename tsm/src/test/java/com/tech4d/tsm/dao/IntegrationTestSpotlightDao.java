@@ -5,13 +5,14 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 
 import com.tech4d.tsm.model.Spotlight;
 import com.tech4d.tsm.model.user.User;
 import com.tech4d.tsm.util.ContextUtil;
+import com.tech4d.tsm.web.util.CatalogUtil;
 
 public class IntegrationTestSpotlightDao {
 	private static final String LABLE = "Path of the  at [Kensington palace] ";
@@ -32,8 +33,8 @@ public class IntegrationTestSpotlightDao {
 	 * 
 	 */
 
-	@BeforeClass
-	public static void init() {
+	@Before
+	public void init() {
 		ApplicationContext appCtx = ContextUtil.getCtx();
 		spotlightDao = (SpotlightDao) appCtx.getBean("spotlightDao");
 		eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
@@ -83,6 +84,22 @@ public class IntegrationTestSpotlightDao {
 		//now for the one with the gap in id's
 		assertEquals(visible2.get(0), spotlightDao.getVisible(numVisible-1).getId());
 	}
+	
+	@Test 
+	public void testCatalog() {
+		//some visible with the default catalog
+		makeSpotlights(3, true);
+		//some invisible with the default catalog
+		makeSpotlights(2, false);
+		//and a different catalog
+		String catalog = "Sgffgf";
+		Spotlight spotlight = makeSpotlight(true, catalog);
+		spotlightDao.save(spotlight);
+		assertEquals(5, spotlightDao.findAll(CatalogUtil.CATALOG_WWW).size());
+		assertEquals(1, spotlightDao.findAll(catalog).size());
+		assertEquals(3, spotlightDao.findVisible(CatalogUtil.CATALOG_WWW).size());
+		assertEquals(1, spotlightDao.findVisible(catalog).size());
+	}
 
 	private List<Long> makeSpotlights(int numVisible, boolean isVisible) {
 		List<Long> spotlightIds = new ArrayList<Long>();
@@ -97,13 +114,17 @@ public class IntegrationTestSpotlightDao {
 	}
 	
 	private Spotlight makeSpotlight(boolean isVisible) {
+		return makeSpotlight(isVisible, CatalogUtil.CATALOG_WWW);
+	}
+
+	private Spotlight makeSpotlight(boolean isVisible, String catalog) {
 		Spotlight spotlight = new Spotlight();
 		spotlight.setLabel(LABLE);
 		spotlight.setLink(LINK);
 		spotlight.setVisible(isVisible);
 		spotlight.setAddedByUser(user);
-		return spotlight;
-		
+		spotlight.setCatalog(catalog);
+		return spotlight;		
 	}
 
 }

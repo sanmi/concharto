@@ -12,6 +12,7 @@ request.setAttribute("posAccuracyField", EventFieldChangeFormatter.POSITIONAL_AC
 request.setAttribute("discussField", EventFieldChangeFormatter.DISCUSSION);
 request.setAttribute("descriptionField", EventFieldChangeFormatter.DESCRIPTION);
 request.setAttribute("sourceField", EventFieldChangeFormatter.SOURCE);
+request.setAttribute("flagsField", EventFieldChangeFormatter.FLAGS);
 request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 %>
 <script type="text/javascript">
@@ -125,8 +126,10 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 							</display:column>
 						</display:table> 
 					</div>
-					<%-- Only a user can undo an event.  And we can't undo the first revision --%>
-					<c:if test="${(dt.id > 0) && (fn:contains(roles, 'edit'))}">
+					<%-- Only a user can undo an event.  And we can't undo the first revision --%> 
+          <%-- And we can't undo flags --%>
+					<c:if test="${(dt.id > 0) && (fn:contains(roles, 'edit')) 
+					              && (simpleTable.auditEntryFieldChange[0].propertyName != flagsField)}">
             <a href="#" onclick="undo(${simpleTable.entityId}, ${simpleTable.version-1});">Undo this revision</a>
             
 					</c:if>

@@ -23,13 +23,15 @@ public class Flag extends BaseAuditableEntity {
 	public static final String DISPOSITION_DELETED = "deleted";
 	public static final String DISPOSITION_REMOVED = "removed";
 	public static final String DISPOSITION_INVALID = "invalid";
+	public static final String DISPOSITION_FLAG_SPAM = "flagspam";
 	public static final String DISPOSITION_WONTFIX = "wontfix";
 	public static final String DISPOSITION_FIXED = "fixed";
+	//TODO - remove DISPOSITION_DELETED for now 6-15-08
 	public static final String[] DISPOSITION_CODES = {
-		DISPOSITION_DELETED, DISPOSITION_REMOVED, DISPOSITION_INVALID, DISPOSITION_WONTFIX, DISPOSITION_FIXED
+		DISPOSITION_REMOVED, DISPOSITION_INVALID, DISPOSITION_FLAG_SPAM, DISPOSITION_WONTFIX, DISPOSITION_FIXED
 	};
 	private String comment;
-	private User user;
+	private String username;
 	private String reason;
 	private String disposition;
 	private String dispositionComment;
@@ -39,11 +41,11 @@ public class Flag extends BaseAuditableEntity {
 	public Flag() {
 	}
 	
-	public Flag(String comment, String reasonCode, User user, Event event) {
+	public Flag(String comment, String reasonCode, String username, Event event) {
 		super();
 		this.comment = comment;
 		this.reason = reasonCode;
-		this.user = user;
+		this.username = username;
 		this.event = event;
 	}
 	
@@ -54,15 +56,17 @@ public class Flag extends BaseAuditableEntity {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-	
-	@ManyToOne
-    @ForeignKey(name="FK_FLAG_USER")
-	public User getUser() {
-		return user;
+
+		
+    @Column(length= User.SZ_USERNAME)
+	public String getUsername() {
+		return username;
 	}
-	public void setUser(User whoFlaggedIt) {
-		this.user = whoFlaggedIt;
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
+
     @Column(length= SZ_REASON)
     public String getReason() {
 		return reason;

@@ -25,6 +25,7 @@ import com.tech4d.tsm.model.PositionalAccuracy;
 import com.tech4d.tsm.model.UserTag;
 import com.tech4d.tsm.model.wiki.WikiText;
 import com.tech4d.tsm.util.ContextUtil;
+import com.tech4d.tsm.web.util.CatalogUtil;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 
@@ -230,5 +231,20 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
     	event.setUserTagsAsString("tag d, tag a, tag b");
     	eventDao.saveOrUpdate(event);
     	assertEquals(new Long(3), eventTesterDao.getCount(UserTag.class));
+    }
+    
+    @Test
+    public void testCatalog() throws ParseException {
+    	for (int i=0; i<3; i++) {
+            eventDao.save(eventUtil.createEvent());
+    	}
+    	Event event = eventUtil.createEvent();
+    	String catalog = "SDfsdf";
+    	event.setCatalog(catalog);
+    	eventDao.save(event);
+    	assertEquals(1, eventDao.findRecent(catalog, 10, 0).size());
+    	assertEquals(3, eventDao.findRecent(CatalogUtil.CATALOG_WWW, 10, 0).size());    	
+    	assertEquals(1, eventDao.getTotalCount(catalog));
+    	assertEquals(3, eventDao.getTotalCount(CatalogUtil.CATALOG_WWW));
     }
 }

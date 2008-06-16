@@ -20,6 +20,7 @@ import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.ContextUtil;
 import com.tech4d.tsm.util.LatLngBounds;
 import com.tech4d.tsm.util.TimeRangeFormat;
+import com.tech4d.tsm.web.util.CatalogUtil;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -145,7 +146,7 @@ public class IntegrationTestEventSearchService {
         for (int i=0; i<searchStrings.length; i++) {
             String searchString = searchStrings[i];
             List<Event> events = eventSearchService.search(MAX_RESULTS, 0, searchBox, new SearchParams(searchString,
-                    searchTimeRange, Visibility.NORMAL, true, null));
+                    searchTimeRange, Visibility.NORMAL, true, null, CatalogUtil.CATALOG_WWW));
             for (Event event : events) {
                 System.out.println(event.getDescription());
             }
@@ -185,54 +186,62 @@ public class IntegrationTestEventSearchService {
         EventUtil.printTimeRange(timeRange);
         EventUtil.printTimeRange(TimeRangeFormat.parse("Jan 1, 1007"));
         List<Event> events = eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams(null,
-                timeRange, Visibility.NORMAL, true, null));
+                timeRange, Visibility.NORMAL, true, null, CatalogUtil.CATALOG_WWW));
         assertEquals(1, events.size());
     }
     
     @Test public void noneInBox() {
         // now search in a bounding box that is out
         assertEquals("none should match", 0, eventSearchService.search(MAX_RESULTS, 0, failBox,  
-                new SearchParams(searchStrings[0], searchTimeRange, Visibility.NORMAL, true, null)).size());
+                new SearchParams(searchStrings[0], searchTimeRange, Visibility.NORMAL, true, null, 
+                		CatalogUtil.CATALOG_WWW)).size());
     }
 
     @Test public void noTextMach() {
         // now search strings that are don't count words
         for (String failString : failStrings) {
             assertEquals("none should match", 0, eventSearchService.search(MAX_RESULTS, 0, searchBox, new SearchParams(failString,
-                    searchTimeRange, Visibility.NORMAL, true, null)).size());
+                    searchTimeRange, Visibility.NORMAL, true, null, CatalogUtil.CATALOG_WWW)).size());
         }
     }
     
     @Test public void noTimeRangeMatch() {
         // now search timeframes that are out
         assertEquals("none should match", 0, eventSearchService.search(MAX_RESULTS, 0, searchBox, 
-                new SearchParams(searchStrings[0], failTimeRange, Visibility.NORMAL, true, null)).size());
+                new SearchParams(searchStrings[0], failTimeRange, Visibility.NORMAL, true, null,
+                		CatalogUtil.CATALOG_WWW)).size());
         
     }
     
     @Test public void checkMaxReturn() {
         // now set the max return threshold to below the number of possible results
         assertEquals("only one should match", 1, eventSearchService.search(1, 0, searchBox, 
-                new SearchParams(searchStrings[0], searchTimeRange,  Visibility.NORMAL, true, null)).size());
+                new SearchParams(searchStrings[0], searchTimeRange,  Visibility.NORMAL, true, null,
+                		CatalogUtil.CATALOG_WWW)).size());
     }
     
     @Test public void checkNullSearchText() {
         assertEquals("three should match", 3, eventSearchService.search(MAX_RESULTS, 0, searchBox, 
-                new SearchParams(null, searchTimeRange, Visibility.NORMAL, true, null)).size());
+                new SearchParams(null, searchTimeRange, Visibility.NORMAL, true, null,
+                		CatalogUtil.CATALOG_WWW)).size());
     }
 
     @Test public void checkCount() {
         assertEquals(3, eventSearchService.search(MAX_RESULTS, 0, searchBox,
-                new SearchParams(searchStrings[0], searchTimeRange,  Visibility.NORMAL, true, null)).size());
+                new SearchParams(searchStrings[0], searchTimeRange,  Visibility.NORMAL, true, null,
+                		CatalogUtil.CATALOG_WWW)).size());
         assertEquals(3L, (long) eventSearchService.getCount(searchBox,
-                new SearchParams(searchStrings[0], searchTimeRange,  Visibility.NORMAL, true, null)));
+                new SearchParams(searchStrings[0], searchTimeRange,  Visibility.NORMAL, true, null,
+                		CatalogUtil.CATALOG_WWW)));
     }
 
     @Test public void checkCountPartial() {
         assertEquals(5, eventSearchService.search(10, 0, null,  
-                new SearchParams(searchStrings[0], null, Visibility.NORMAL, true, null)).size());
+                new SearchParams(searchStrings[0], null, Visibility.NORMAL, true, null,
+                		CatalogUtil.CATALOG_WWW)).size());
         assertEquals(5L, (long) eventSearchService.getCount(null,
-                new SearchParams(searchStrings[0], null, Visibility.NORMAL, true, null)));
+                new SearchParams(searchStrings[0], null, Visibility.NORMAL, true, null,
+                		CatalogUtil.CATALOG_WWW)));
     }
 
     private static LatLngBounds makeBoundingRectangle(int x, int y) {

@@ -39,7 +39,7 @@ public class IntegrationTestFlagDao extends OpenSessionInViewIntegrationTest {
     	Event event = eventUtil.createEvent();
         Serializable id = eventDao.save(event);
         
-        Flag flag = new Flag("it is bad!", "isBad", null, event);
+        Flag flag = new Flag("it is bad!", "isBad", "joe", event);
         //Save it the hard way
         List<Flag> flags = new ArrayList<Flag>();
         flags.add(flag);
@@ -49,7 +49,7 @@ public class IntegrationTestFlagDao extends OpenSessionInViewIntegrationTest {
         eventUtil.assertEquivalent(event, returned);
     	
         //Now try it the easy way
-        flag = new Flag("it is really bad!", "isBad", null, event);
+        flag = new Flag("it is really bad!", "isBad", "joe", event);
         flagDao.save(flag);
         
         //in order to check, we will add the flag to our event
@@ -68,7 +68,7 @@ public class IntegrationTestFlagDao extends OpenSessionInViewIntegrationTest {
 
     @Test
     public void disposition() {
-        Flag flag = new Flag("it is really bad!", "isBad", null, null);
+        Flag flag = new Flag("it is really bad!", "isBad", "joe", null);
         Long id = (Long) flagDao.save(flag);
         flagDao.setFlagDisposition(id, Flag.DISPOSITION_CODES[0]);
     	Flag returned = flagDao.find(id);

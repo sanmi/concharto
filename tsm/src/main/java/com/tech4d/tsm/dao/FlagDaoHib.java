@@ -25,6 +25,10 @@ public class FlagDaoHib implements FlagDao{
 		this.sessionFactory.getCurrentSession().delete(flag);
 	}
 
+	public void delete(Flag flag) {
+		this.sessionFactory.getCurrentSession().delete(flag);
+	}
+
 	public Flag setFlagDisposition(Long flagId, String disposition) {
 		Flag flag = (Flag) this.sessionFactory.getCurrentSession().load(Flag.class, flagId);
 		flag.setDisposition(disposition);

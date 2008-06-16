@@ -40,6 +40,7 @@ import com.tech4d.tsm.util.LatLngBounds;
 import com.tech4d.tsm.util.ProximityHelper;
 import com.tech4d.tsm.util.SensibleMapDefaults;
 import com.tech4d.tsm.util.TimeRangeFormat;
+import com.tech4d.tsm.web.util.CatalogUtil;
 import com.tech4d.tsm.web.util.DisplayTagHelper;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
 import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
@@ -299,6 +300,7 @@ public class SearchHelper {
                 params.setUserTag(eventSearchForm.getUserTag());
                 params.setTimeRange(eventSearchForm.getWhen());
                 params.setVisibility(getVisibility(eventSearchForm));
+                params.setCatalog(CatalogUtil.getCatalog(request));
                 //note these are opposites.. a value of null or false = false, true=true
                 params.setIncludeTimeRangeOverlaps(!BooleanUtils.isTrue(eventSearchForm.getExcludeTimeRangeOverlaps()));
                 events = eventSearchService.search(DISPLAYTAG_PAGESIZE, firstRecord, bounds, params);

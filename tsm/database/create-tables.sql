@@ -24,7 +24,7 @@
         created datetime,
         lastModified datetime,
         version bigint,
-        catalog integer,
+        catalog varchar(64),
         description varchar(2048),
         hasUnresolvedFlag bit,
         mapType integer,
@@ -36,12 +36,12 @@
         positive integer,
         _where varchar(512),
         zoomLevel integer,
-        positionalAccuracy_id bigint,
-        discussion_id bigint,
-        eventSearchText_id bigint,
         when_id bigint,
         tsGeometry_id bigint,
+        positionalAccuracy_id bigint,
         styleSelector_id bigint,
+        eventSearchText_id bigint,
+        discussion_id bigint,
         primary key (id)
     );
 
@@ -82,8 +82,8 @@
         dispositionComment varchar(512),
         reason varchar(32),
         state varchar(255),
+        username varchar(32),
         event_id bigint,
-        user_id bigint,
         primary key (id)
     );
 
@@ -121,6 +121,7 @@
         created datetime,
         lastModified datetime,
         version bigint,
+        catalog varchar(64),
         label varchar(2000),
         link varchar(2000),
         visible bit,
@@ -229,6 +230,8 @@
         foreign key (auditEntry_id) 
         references AuditEntry (id);
 
+    create index catalogindex on Event (catalog);
+
     alter table Event 
         add index FK_EVENT_EVENTSEARCHTEXT (eventSearchText_id), 
         add constraint FK_EVENT_EVENTSEARCHTEXT 
@@ -248,16 +251,16 @@
         references TsGeometry (id);
 
     alter table Event 
-        add index FK_EVENT_TIMEPR (when_id), 
-        add constraint FK_EVENT_TIMEPR 
-        foreign key (when_id) 
-        references TimePrimitive (id);
-
-    alter table Event 
         add index FK_EVENT_DISCUSS (discussion_id), 
         add constraint FK_EVENT_DISCUSS 
         foreign key (discussion_id) 
         references WikiText (id);
+
+    alter table Event 
+        add index FK_EVENT_TIMEPR (when_id), 
+        add constraint FK_EVENT_TIMEPR 
+        foreign key (when_id) 
+        references TimePrimitive (id);
 
     alter table Event 
         add index FK_EVENT_POSACCURACY (positionalAccuracy_id), 
@@ -276,12 +279,6 @@
         add constraint FK_USERTAG_EVENT 
         foreign key (userTags_id) 
         references UserTag (id);
-
-    alter table Flag 
-        add index FK_FLAG_USER (user_id), 
-        add constraint FK_FLAG_USER 
-        foreign key (user_id) 
-        references User (id);
 
     alter table Flag 
         add index FK_FLAG_EVENT (event_id), 

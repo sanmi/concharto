@@ -26,6 +26,7 @@ public class AuditEntryDaoHib implements AuditEntryDao {
     private static final String FIELD_ID = "id";
     private static final String FIELD_USER = "user";
     private static final String FIELD_CLASS_NAME = "className";
+    private static final String FIELD_CATALOG = "catalog";
     protected final Log log = LogFactory.getLog(getClass());
     private SessionFactory sessionFactory;
 
@@ -45,11 +46,15 @@ public class AuditEntryDaoHib implements AuditEntryDao {
     	"and auditEntry.user = :user ";
 
 	private static final String ENTITY_TABLE = "[ENTITY_TABLE]";
+	private static final String CATALOG_PLACEHOLDER = "[CATALOG_PLACEHOLDER]";
 
     private static final String SUB_RECENT_AUDIT_ENTRIES_SQL = 
     	"select a.*, e.* from AuditEntry a " +
     	"left join " + ENTITY_TABLE + " e ON a.entityId = e.id " +
-    	"where a.entityClass = :className " ;
+    	"where a.entityClass = :className " + CATALOG_PLACEHOLDER; 
+
+    private static final String SUB_CLAUSE_CATALOG = 
+    	" and e.catalog = :catalog ";
     
     private static final String RECENT_AUDIT_ENTRIES_BY_USER_SQL = 
 		SUB_RECENT_AUDIT_ENTRIES_SQL +
@@ -113,8 +118,22 @@ public class AuditEntryDaoHib implements AuditEntryDao {
 		String user;
 		Class<?> clazz;
 		int firstResult, maxResults;
+		String catalog;
 
-		public AuditEntryQueryHandler(SessionFactory sessionFactory, String user, Class<?> clazz, int firstResult, int maxResults){
+
+		public AuditEntryQueryHandler(SessionFactory session, String user,
+				Class<?> clazz, int firstResult, int maxResults, String catalog) {
+			super();
+			this.session = session;
+			this.user = user;
+			this.clazz = clazz;
+			this.firstResult = firstResult;
+			this.maxResults = maxResults;
+			this.catalog = catalog;
+		}
+
+		public AuditEntryQueryHandler(SessionFactory sessionFactory, String user, 
+				Class<?> clazz, int firstResult, int maxResults){
 			this.session = sessionFactory;
 			this.user = user;
 			this.clazz = clazz;
@@ -135,7 +154,12 @@ public class AuditEntryDaoHib implements AuditEntryDao {
 			//The auditable table could join with a number of entities, based on the entity Class
 			//so we have to do some substitution in the select clause in order to set up the query
 			sql = StringUtils.replace(sql, ENTITY_TABLE, clazz.getSimpleName());
-			
+			//if catalog was specified
+			if (catalog != null) {
+				sql = StringUtils.replace(sql, CATALOG_PLACEHOLDER, SUB_CLAUSE_CATALOG);
+			} else {
+				sql = StringUtils.replace(sql, CATALOG_PLACEHOLDER, "");
+			}
 			List<Object[]> results = getAuditEntriesQuery(sessionFactory.getCurrentSession(), sql).list();
 			
 			List<AuditUserChange> auditUserChanges = new ArrayList<AuditUserChange>();
@@ -192,6 +216,28 @@ public class AuditEntryDaoHib implements AuditEntryDao {
 	        	.setString(FIELD_CLASS_NAME, clazz.getSimpleName())
 	            .setFirstResult(firstResult)
 	            .setMaxResults(maxResults);
+			}
+		};
+			
+		return handler.getAuditEntriesAndLogTimingInfo(RECENT_AUDIT_ENTRIES_SQL);
+	}
+
+	public List<AuditUserChange> getLatestEventEntries(String catalog, int firstResult, int maxResults) {
+
+		AuditEntryQueryHandler handler = 
+			new AuditEntryQueryHandler(sessionFactory, null, Event.class, firstResult, maxResults, catalog) {
+			@SuppressWarnings("unchecked")
+			public Query getAuditEntriesQuery(Session session, String sql) {		
+				Query query = session.createSQLQuery(sql)
+	        	.addEntity("a", AuditEntry.class)
+	        	.addEntity("e", clazz)
+	        	.setString(FIELD_CLASS_NAME, clazz.getSimpleName())
+	            .setFirstResult(firstResult)
+	            .setMaxResults(maxResults);
+				if (catalog != null) {
+					query.setString(FIELD_CATALOG, catalog);
+				}
+				return query;
 			}
 		};
 			

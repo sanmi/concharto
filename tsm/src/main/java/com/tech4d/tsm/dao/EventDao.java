@@ -22,11 +22,15 @@ public interface EventDao {
 
     public abstract List<Event> findRecent(int maxResults, int firstResult);
 
+    public abstract List<Event> findRecent(String catalog, int maxResults, int firstResult);
+
     public abstract Event findById(Long id);
     
     public Auditable findById(Class<?> clazz, Long id);
     
     public Integer getTotalCount();
+
+    public Integer getTotalCount(String catalog);
     
     public WikiText getDiscussion(Long eventId);
 

@@ -14,6 +14,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.tech4d.tsm.dao.SpotlightDao;
 import com.tech4d.tsm.model.Spotlight;
 import com.tech4d.tsm.service.SpotlightService;
+import com.tech4d.tsm.web.util.CatalogUtil;
 
 /**
  * Lists all of the spotlights
@@ -59,7 +60,7 @@ public class SpotlightListController extends AbstractController{
 		
 		//get the list
 		Map model = new HashMap();
-		model.put("spotlights", spotlightDao.findAll());
+		model.put("spotlights", spotlightDao.findAll(CatalogUtil.getCatalog(request)));
     	return new ModelAndView(formView, model);
 	}
 	

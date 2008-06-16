@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -23,14 +24,17 @@ import com.tech4d.tsm.dao.AuditUserChange;
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.dao.EventTesterDao;
 import com.tech4d.tsm.dao.EventUtil;
+import com.tech4d.tsm.dao.FlagDao;
 import com.tech4d.tsm.dao.StyleUtil;
 import com.tech4d.tsm.model.Event;
+import com.tech4d.tsm.model.Flag;
 import com.tech4d.tsm.model.audit.AuditEntry;
 import com.tech4d.tsm.model.audit.AuditFieldChange;
 import com.tech4d.tsm.model.geometry.TsGeometry;
 import com.tech4d.tsm.model.wiki.WikiText;
 import com.tech4d.tsm.service.RevertEventService;
 import com.tech4d.tsm.util.ContextUtil;
+import com.tech4d.tsm.web.util.CatalogUtil;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
@@ -44,6 +48,7 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
     private static EventTesterDao eventTesterDao;
     private static RevertEventService revertEventService;
     private static EventUtil eventUtil;
+	private static FlagDao flagDao;
    
 
     private Date begin;
@@ -63,6 +68,7 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
     public static void setUpClass() {
         ApplicationContext appCtx = ContextUtil.getCtx();
         eventDao = (EventDao) appCtx.getBean("eventDao");
+        flagDao = (FlagDao) appCtx.getBean("flagDao");
         eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
         auditEntryDao = (AuditEntryDao) appCtx.getBean("auditEntryDao");
         revertEventService =  (RevertEventService) appCtx.getBean("revertEventService");
@@ -281,6 +287,48 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
     	assertEquals(2, auditEntryDao.getLatestAuditEntries(WikiText.class, 0, 10).size());
     	assertEquals(2L, (long)auditEntryDao.getAuditEntriesCount(WikiText.class));
     	
+    }
+    
+    @Test public void testFlag() throws ParseException {
+    	//make an event
+    	Event event = eventUtil.createEvent();
+    	eventDao.save(event);
+    	//add a flag
+    	Flag flag = new Flag();
+    	flag.setComment("sdf");
+    	flag.setEvent(event);
+    	List<Flag> flags = new ArrayList<Flag>();
+    	flags.add(flag);
+    	event.setFlags(flags);
+    	event.setHasUnresolvedFlag(true);
+    	eventDao.saveOrUpdate(event);
+    	
+        //now ensure correct number audit entries were created for this event
+        List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(event, 0, MAX_RESULTS);
+        assertEquals(2, auditEntries.size());
+    	
+    }
+
+    @Test public void testCatalog() throws ParseException {
+    	//create three events, and another from another event.
+    	makeEvents(3);
+    	Event event = eventUtil.createEvent();
+    	String newCatalog = "sdfsdf";
+    	event.setCatalog(newCatalog);
+    	eventDao.save(event);
+
+    	//change them all
+    	List<Event> events = eventDao.findRecent(4, 0);
+    	for (Event e : events) {
+    		e.setDescription("ee");
+    		eventDao.saveOrUpdate(e);
+    	}
+    	
+    	//get all of the changes for the default catalog.  There should be 
+    	//two for each event (create and change)
+    	assertEquals(6, auditEntryDao.getLatestEventEntries(CatalogUtil.CATALOG_WWW, 0, 10).size());
+    	//get all of the changes for the new catalog  
+    	assertEquals(2, auditEntryDao.getLatestEventEntries(newCatalog, 0, 10).size());
     }
     
     private void makeEvents(int numEvents) throws ParseException {

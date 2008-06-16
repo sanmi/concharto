@@ -14,6 +14,7 @@ import com.tech4d.tsm.dao.UserDao;
 import com.tech4d.tsm.model.Spotlight;
 import com.tech4d.tsm.model.user.User;
 import com.tech4d.tsm.service.SpotlightService;
+import com.tech4d.tsm.web.util.CatalogUtil;
 
 /**
  * Edit or add spotlights
@@ -62,13 +63,14 @@ public class SpotlightEditController extends SimpleFormController{
 		
 		//save or update it
 		Spotlight spotlight = (Spotlight) command;
-		//if this is the first time, then we should add the user
+		//if this is the first time, then we should add the user and catalog
 		if (spotlight.getId() == null) {
 			User user = userDao.find(AuthHelper.getUsername());
 			spotlight.setAddedByUser(user);
+			spotlight.setCatalog(CatalogUtil.getCatalog(request));
 		}
 		spotlightDao.save(spotlight);
-		//refress the round robbin service with our new stuff
+		//refresh the round robbin service with our new stuff
 		spotlightService.refresh();
 		
 		return new ModelAndView(getSuccessView());

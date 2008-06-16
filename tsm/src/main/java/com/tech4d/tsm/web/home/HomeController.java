@@ -1,9 +1,5 @@
 package com.tech4d.tsm.web.home;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Random;
 
@@ -22,6 +18,7 @@ import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.model.Spotlight;
 import com.tech4d.tsm.service.SpotlightService;
 import com.tech4d.tsm.web.eventsearch.SearchHelper;
+import com.tech4d.tsm.web.util.CatalogUtil;
 
 public class HomeController extends SimpleFormController {
     protected final Log log = LogFactory.getLog(getClass());
@@ -60,8 +57,8 @@ public class HomeController extends SimpleFormController {
 			HttpServletResponse response, BindException errors, Map controlModel)
 			throws Exception {
 		Map model = errors.getModel();
-		model.put(MODEL_RECENT_EVENTS, eventDao.findRecent(MAX_RECENT_EVENTS, 0));
-		model.put(MODEL_TOTAL_EVENTS, eventDao.getTotalCount());
+		model.put(MODEL_RECENT_EVENTS, eventDao.findRecent(CatalogUtil.getCatalog(request), MAX_RECENT_EVENTS, 0));
+		model.put(MODEL_TOTAL_EVENTS, eventDao.getTotalCount(CatalogUtil.getCatalog(request)));
 		setupSpotlight(request, model);
 		//clear out the eventSearchForm session if there is one
 		WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_FORM, null);
@@ -82,16 +79,18 @@ public class HomeController extends SimpleFormController {
 			//setup the new counter.  Any old integer will do.
 			spotlightIndex = Math.abs((new Random()).nextInt());
 		}
-		Spotlight spotlight = spotlightService.getSpotlight(spotlightIndex);
+		Spotlight spotlight = spotlightService.getSpotlight(spotlightIndex, CatalogUtil.getCatalog(request));
 		spotlightIndex++;
 		WebUtils.setSessionAttribute(request, SESSION_SPOTLIGHT_INDEX, spotlightIndex);
-		if (null != spotlight) {
-			model.put(MODEL_SPOTLIGHT_LABEL, formatLabel(spotlight));
-			model.put(MODEL_SPOTLIGHT_LINK, spotlight.getLink());
-			model.put(MODEL_SPOTLIGHT_EMBED_LINK, formatEmbedLabel(spotlight));
-		} else {
-			log.error("no spotlight");
+		if (null == spotlight) {
+			log.warn("no spotlight, using default");
+			spotlight = new Spotlight();
+			spotlight.setLink("search/eventsearch.htm?_what=");
+			spotlight.setLabel("Items [[on the map so far]]");
 		}
+		model.put(MODEL_SPOTLIGHT_LABEL, formatLabel(spotlight));
+		model.put(MODEL_SPOTLIGHT_LINK, spotlight.getLink());
+		model.put(MODEL_SPOTLIGHT_EMBED_LINK, formatEmbedLabel(spotlight));
 	}
 	private String formatLabel(Spotlight spotlight) {
 		String link = URLEncode(spotlight.getLink());

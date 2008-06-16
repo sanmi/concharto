@@ -15,7 +15,7 @@ import com.tech4d.tsm.model.wiki.WikiText;
 @Transactional
 public class EventDaoHib implements EventDao {
     private SessionFactory sessionFactory;
-    private static final String HQL_VISIBLE_CLAUSE = " where (event.visible = null) or (event.visible = true) ";
+    private static final String HQL_VISIBLE_CLAUSE = " where ((event.visible = null) or (event.visible = true)) ";
 
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -108,6 +108,17 @@ public class EventDaoHib implements EventDao {
                 .list();
     }
 
+    @SuppressWarnings("unchecked")
+	public List<Event> findRecent(String catalog, int maxResults, int firstResult) {
+        return this.sessionFactory.getCurrentSession().createQuery(
+                "select event from Event event " + HQL_VISIBLE_CLAUSE 
+                	+ " and catalog = :catalog order by created desc")
+                .setString("catalog", catalog)
+                .setMaxResults(maxResults)
+                .setFirstResult(firstResult)
+                .list();
+    }
+
     public Event findById(Long id) {
         return (Event)findById(Event.class, id);
     }
@@ -127,6 +138,18 @@ public class EventDaoHib implements EventDao {
     	return Math.round(count);
     }
 
+    @SuppressWarnings("unchecked")
+	public Integer getTotalCount(String catalog) {
+    	List results = this.sessionFactory.getCurrentSession()
+    	.createQuery("select count(event) from Event event " + HQL_VISIBLE_CLAUSE 
+    			+ " and catalog = :catalog")
+    	.setString("catalog", catalog)
+    	.list();
+    	Long count = (Long) results.get(0);
+    	//cast to Integer.  It aint never going to be bigger!
+    	return Math.round(count);
+    }
+    
 	@SuppressWarnings("unchecked")
 	public WikiText getDiscussion(Long eventId) {
     	List results = this.sessionFactory.getCurrentSession()

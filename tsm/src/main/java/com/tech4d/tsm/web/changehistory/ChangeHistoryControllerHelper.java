@@ -1,5 +1,6 @@
 package com.tech4d.tsm.web.changehistory;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import com.tech4d.tsm.dao.WikiTextDao;
 import com.tech4d.tsm.model.Auditable;
 import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.audit.AuditEntry;
+import com.tech4d.tsm.web.util.CatalogUtil;
 import com.tech4d.tsm.web.util.DisplayTagHelper;
 import com.tech4d.tsm.web.wiki.WikiConstants;
 
@@ -100,7 +102,8 @@ public class ChangeHistoryControllerHelper {
     		updateModelUserPages(model, titles);
         } else {
         	//just get everything
-        	List<AuditUserChange> userChanges = auditEntryDao.getLatestAuditEntries(clazz, firstRecord, pageSize);
+        	List<AuditUserChange> userChanges = 
+        		auditEntryDao.getLatestEventEntries(CatalogUtil.getCatalog(request), firstRecord, pageSize);
             totalResults = auditEntryDao.getAuditEntriesCount(Event.class);
             model.put(MODEL_USER_CHANGES, userChanges);
     		Set<String> titles = new HashSet<String>();
@@ -139,7 +142,12 @@ public class ChangeHistoryControllerHelper {
 	 */
 	@SuppressWarnings("unchecked")
 	private void updateModelUserPages(Map model, Set<String> titles) {
-		Map<String,Long> pages = wikiTextDao.exists((String[])(titles.toArray(new String[titles.size()])));
+		Map<String,Long> pages;
+		if (titles.size() != 0 ) {
+			pages = wikiTextDao.exists((String[])(titles.toArray(new String[titles.size()])));
+		} else {
+			pages = new HashMap<String,Long>();
+		}
 		model.put(MODEL_USER_PAGES, pages);
 	}
 	

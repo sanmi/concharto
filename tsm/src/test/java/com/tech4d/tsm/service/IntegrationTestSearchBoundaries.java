@@ -18,6 +18,7 @@ import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.util.ContextUtil;
 import com.tech4d.tsm.util.LatLngBounds;
 import com.tech4d.tsm.util.TimeRangeFormat;
+import com.tech4d.tsm.web.util.CatalogUtil;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
@@ -60,7 +61,8 @@ public class IntegrationTestSearchBoundaries {
     }
     private void assertSearchMatch(int matchesExpected, String dateText, boolean includeOverlaps) throws java.text.ParseException {
         List<Event> events = eventSearchService.search(MAX_RESULTS, 0, null, 
-        		new SearchParams(null, TimeRangeFormat.parse(dateText), Visibility.NORMAL, includeOverlaps, null));
+        		new SearchParams(null, TimeRangeFormat.parse(dateText), Visibility.NORMAL, includeOverlaps, null,
+        				CatalogUtil.CATALOG_WWW));
         assertEquals(matchesExpected, events.size());        
     }
 
@@ -76,7 +78,8 @@ public class IntegrationTestSearchBoundaries {
     	Point boundingBoxSW =  (Point) new WKTReader().read("POINT (120 20)");
     	Point boundingBoxNE =  (Point) new WKTReader().read("POINT (-156 34)");
     	LatLngBounds bounds = new LatLngBounds(boundingBoxSW, boundingBoxNE);
-    	assertEquals(2, eventSearchService.search(10, 0, bounds, new SearchParams(null, null, null, true, null)).size());
+    	assertEquals(2, eventSearchService.search(10, 0, bounds, new SearchParams(null, null, null, true, null,
+    			CatalogUtil.CATALOG_WWW)).size());
     }
     
     @Test public void testTimeBoundaries() throws java.text.ParseException {
@@ -102,11 +105,12 @@ public class IntegrationTestSearchBoundaries {
         event = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522-1527"), "Stuff", null);
         event.setVisible(false);
         eventDao.saveOrUpdate(event);
-        //should only see one
-        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams(null, null, Visibility.NORMAL, true, null)).size());        
+        assertResult(1, CatalogUtil.CATALOG_WWW);        
         
         //now test showing only invisible
-        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams(null, null, Visibility.HIDDEN, true, null)).size());        
+        assertEquals(1, eventSearchService
+        		.search(MAX_RESULTS, 0, null, new SearchParams(null, null, Visibility.HIDDEN, true, 
+        		null, CatalogUtil.CATALOG_WWW)).size());        
         
     }
     
@@ -118,10 +122,14 @@ public class IntegrationTestSearchBoundaries {
         event.setHasUnresolvedFlag(true);
         eventDao.saveOrUpdate(event);
         //should see both
-        assertEquals(2, eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams( null, null, Visibility.NORMAL, true, null)).size());        
+        assertEquals(2, eventSearchService
+        		.search(MAX_RESULTS, 0, null, new SearchParams( null, null, Visibility.NORMAL, true, 
+        				null, CatalogUtil.CATALOG_WWW)).size());        
         
         //now test showing only invisible
-        assertEquals(1, eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams(null, null, Visibility.FLAGGED, true, null)).size());        
+        assertEquals(1, eventSearchService
+        		.search(MAX_RESULTS, 0, null, new SearchParams(null, null, Visibility.FLAGGED, true, 
+        				null ,CatalogUtil.CATALOG_WWW)).size());        
     	
     }
     
@@ -160,7 +168,7 @@ public class IntegrationTestSearchBoundaries {
         checkUserTagSearch(0, "3453fsdf");
         checkUserTagSearch(3, null);
         assertEquals(3, eventSearchService.search(MAX_RESULTS, 0, null, 
-        		new SearchParams( null, null, Visibility.NORMAL, true, null)).size());        
+        		new SearchParams( null, null, Visibility.NORMAL, true, null, CatalogUtil.CATALOG_WWW)).size());        
     }
     
     @Test
@@ -172,16 +180,39 @@ public class IntegrationTestSearchBoundaries {
         Event e2 = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522"), summary3, null);
 		Event e0 = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522"), summary1, null);
         Event e1 = makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1522"), summary2, null);
-		List<Event> events = eventSearchService.search(MAX_RESULTS, 0, null, new SearchParams( null, null, Visibility.NORMAL, true, null));
+		List<Event> events = eventSearchService
+		.search(MAX_RESULTS, 0, null, new SearchParams( null, null, Visibility.NORMAL, true, 
+				null, CatalogUtil.CATALOG_WWW));
 		assertEquals(e0.getId(), events.get(0).getId());
 		assertEquals(e1.getId(), events.get(1).getId());
 		assertEquals(e2.getId(), events.get(2).getId());
 		assertEquals(e3.getId(), events.get(3).getId());
     }
     
+    @Test
+    public void testCatalog() throws java.text.ParseException, ParseException {
+		makeSearchEvent(insideTheBox, TimeRangeFormat.parse("1529"), "lalal", null);
+		assertResult(1, CatalogUtil.CATALOG_WWW);    	
+		//now make an event with a different catalog
+		String catalogFishing = "fishing";
+        Event event = eventUtil.createEvent();
+        event.setCatalog(catalogFishing);
+        eventDao.save(event);
+        //should still be one
+		assertResult(1, CatalogUtil.CATALOG_WWW);    	
+		//and one for fishing
+        assertResult(1, catalogFishing);    	
+    }
+
+	private void assertResult(int numResults, String catalog) {
+		assertEquals(numResults, eventSearchService.search(MAX_RESULTS, 0, null, 
+				new SearchParams( null, null, Visibility.NORMAL, true, 
+						null, catalog)).size());
+	}
+    
     private void checkUserTagSearch(int count, String tag) {
         assertEquals(count, eventSearchService.search(MAX_RESULTS, 0, null, 
-        		new SearchParams( null, null, Visibility.NORMAL, true, tag)).size());        
+        		new SearchParams( null, null, Visibility.NORMAL, true, tag, CatalogUtil.CATALOG_WWW)).size());        
 	}
 
 	private Event makeTaggedEvent(String tags) throws ParseException, java.text.ParseException {
@@ -193,3 +224,4 @@ public class IntegrationTestSearchBoundaries {
     }
 
 }
+

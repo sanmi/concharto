@@ -10,6 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import com.tech4d.tsm.dao.EventDao;
+import com.tech4d.tsm.web.util.CatalogUtil;
 import com.tech4d.tsm.web.util.DisplayTagHelper;
 
 public class RecentController extends AbstractController {
@@ -40,7 +41,7 @@ public class RecentController extends AbstractController {
 
         Integer firstResult = DisplayTagHelper.getFirstRecord(request, DISPLAYTAG_TABLE_ID, pageSize);
 
-		model.put(MODEL_RECENT_EVENTS, eventDao.findRecent(pageSize, firstResult));
+		model.put(MODEL_RECENT_EVENTS, eventDao.findRecent(CatalogUtil.getCatalog(request), pageSize, firstResult));
         model.put(DisplayTagHelper.MODEL_PAGESIZE, pageSize);
         model.put(DisplayTagHelper.MODEL_REQUEST_URI, request.getRequestURI());
         model.put(DisplayTagHelper.MODEL_TOTAL_RESULTS, Math.round(eventDao.getTotalCount()));
