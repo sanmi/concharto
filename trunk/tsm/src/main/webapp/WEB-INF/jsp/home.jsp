@@ -36,7 +36,7 @@
 	<jsp:attribute name="bodyattr">onload="init()" id="home"</jsp:attribute>
 	<jsp:attribute name="nohead">true</jsp:attribute>
 	<jsp:attribute name="nohomemenu">true</jsp:attribute>
-	<jsp:attribute name="script">prototype.js,control.modal.js,help.js</jsp:attribute>
+	<jsp:attribute name="script">prototype.js,effects.js,dragdrop.js,resizable.js,livepipe.js,window.js,help.js</jsp:attribute>
 	
 	<jsp:body>
 

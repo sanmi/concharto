@@ -8,7 +8,7 @@
 
 <tsm:page title="Spotlight List">
 	<jsp:attribute name="stylesheet">textpanel.css,contributions.css,spotlight.css,header.css</jsp:attribute>
-	<jsp:attribute name="script">prototype.js,control.modal.js</jsp:attribute>
+	<jsp:attribute name="script">prototype.js,effects.js,dragdrop.js,resizable.js,livepipe.js,window.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="init()"</jsp:attribute>
 	<jsp:attribute name="head">
 		<script type="text/javascript">
@@ -21,11 +21,11 @@
 			}
 
 			function init() {
-		    document.getElementsByClassName('link_map').each(function(link){
+		    $$('.link_map').each(function(link) {
 		        var modal = new Control.Modal(link, {
 		        opacity: 0.2,
 		        iframe: true, 
-						containerClassName: 'helpbox',
+						className: 'helpbox',
 		        width: 500,
 		        height: 400
 		        });

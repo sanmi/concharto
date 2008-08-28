@@ -14,9 +14,8 @@
 	function init() {
 		setupHelpPanels();
 		initialize();
-		
 		new Control.Modal('link_linkhere',{
-				containerClassName: 'linkbox',
+				className: 'linkbox',
         opacity: 0.2,
         afterOpen: getLinkUrls
         });
@@ -25,9 +24,9 @@
 	/* create html for info bubbles */	
 	function makeOverlayHtml(index, event, totalEvents) {
 	  var overlaysIndex = getOverlaysIndex(event.id);
-		var html = createInfoWindowHtml(index, event);  
+		var html = _overlayManager.createInfoWindowHtml(index, event);  
     html += 
-    '<div style="width:' + INFO_WIDTH + 'px;"><span  style="float:right">';
+    '<div style="width:' + _overlayManager.INFO_WIDTH + 'px;"><span  style="float:right">';
     if (overlaysIndex > 0) {
       html +='<a href="" onclick="showEvent(' + event.id + ', -1); return false;">&laquo; prev</a>&nbsp;&nbsp; '; 
     } 
@@ -75,9 +74,9 @@
 	
 	function adjustSidebarIE() {
 		/* adjust the map */
-		setMapExtent();
+		_mapManager.setMapExtent();
    	var top = document.getElementById("map").offsetTop;
-   	var height = getHeight() - top - _currResultsNudge;
+   	var height = _mapManager.getHeight() - top - _currResultsNudge;
    	document.getElementById("results").style.height=height+"px";
    	/* DEBUG the following is a Kludge! for an IE 6 rendering problem argh!*/
    	document.getElementById("results").style.width = _currResultsWidth + "px"; 
@@ -172,7 +171,7 @@
 			querystring = append(querystring, '_zoom', map.getZoom());
 			querystring = append(querystring, '_ll', formatLL(map.getCenter()) );
 		}
-		querystring = append(querystring, '_maptype', getMapTypeIndex());			
+		querystring = append(querystring, '_maptype', _mapManager.getMapTypeIndex());			
 			
 		return urlbase + querystring;
 	}

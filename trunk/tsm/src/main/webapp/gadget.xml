@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs title="Fetch JSON 8">
+    <Require feature="opensocial-0.7"/>
+    <Require feature="sharedmap"/>
+  </ModulePrefs>
+  <Content type="html">
+  <![CDATA[
+    <div id="content_div"></div>
+    <script type="text/javascript">
+
+    function makeJSONRequest() {    
+      var params = {};
+      alert(1);
+      params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+      alert(2);
+      // This URL returns a JSON-encoded string that represents a JavaScript object
+      var url = "http://graargh.returnstrue.com/buh/fetchme.php";
+      gadgets.io.makeRequest(url, response, params);
+    };
+
+    function response(obj) { 
+      var jsondata = obj.data;
+      var html = "<strong>Values: </strong><br /><br />";
+      // Returned JS object can be processed as an associative array
+      for (var key in jsondata) {    
+        var item = jsondata[key];
+        html += key + ": ";
+        html += item + "<br />";
+      }         
+      document.getElementById('content_div').innerHTML = html;
+     };
+     makeJSONRequest();
+     </script>
+  ]]>
+  </Content>
+</Module>

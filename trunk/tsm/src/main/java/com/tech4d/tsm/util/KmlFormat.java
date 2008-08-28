@@ -45,7 +45,7 @@ public class KmlFormat {
 	private static final String POLY_OPACITY = "6f";
 	private static final String POLY_COLOR = POLY_OPACITY + "0000FF";
     private static final String LINE_OPACITY = "9f";
-	private static final String LINE_COLOR = LINE_OPACITY + "FFFFFF"; //slightly opaque
+	private static final String LINE_COLOR = LINE_OPACITY + "FF0000"; //slightly opaque
 	private static final String LINE_WIDTH = "4";
 	private static final String COORDINATES = "coordinates";
 	private static final String DEFAULT_STYLES = "defaultStyles";
@@ -147,7 +147,10 @@ public class KmlFormat {
 		
 		//icon
 		Element iconStyle = new Element("IconStyle");
-		iconStyle.addContent(simpleElement("scale", "1"));
+		Element scale = new Element("scale");
+		scale.addContent(simpleElement("x", "1"));
+		scale.addContent(simpleElement("y", "1"));
+		iconStyle.addContent(scale);
 		Element icon = new Element("Icon");
 		icon.addContent(simpleElement("href", getBasepath() + "/images/icons/marker-clk.png"));
 		iconStyle.addContent(icon);
