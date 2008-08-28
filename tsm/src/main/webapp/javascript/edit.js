@@ -40,12 +40,12 @@
 	/* the main initialize function */
 	function initialize() {
 		initializeVars();
-		initializeMap();
+		_mapManager.initializeMap();
 
 		var mapType = document.getElementById("eventForm").mapType.value;
 		/* set map type from the event */			
 		if (mapType != '') {
-			map.setMapType(MAP_TYPES[mapType]);				
+			map.setMapType(_mapManager.MAP_TYPES[mapType]);				
 		}
 		
 		//The current search results
@@ -53,7 +53,7 @@
 		if (eventsJSON != '') {
 			var excludeEventId = document.getElementById("eventForm").eventId.value;
 			var events = eventsJSON.evalJSON();
-			createOverlays(events, excludeEventId);
+			_overlayManager.createOverlays(events, excludeEventId);
 		}
 		
 		//The editable overlay
@@ -71,7 +71,7 @@
 				 the centroid of the polyline may be nowhere near the border in which 
 				 case you won't see the line at all.*/
 		if (!isEmpty(_editablePoly) && _editablePoly.getVertexCount() >0) {
-			fitToPoly(_editablePoly, true);
+			_mapHelper.fitToPoly(_editablePoly, true);
 		} 
 		
 	}
@@ -84,8 +84,8 @@
 			var vertex = new GLatLng(line[i].lat, line[i].lng);
 			points.push(vertex);
 		}
-		var poly = newPoly(points, event.gtype);
-		var html = createInfoWindowHtml(index, event);
+		var poly = _overlayManager.newPoly(points, event.gtype);
+		var html = _overlayManager.createInfoWindowHtml(index, event);
 		GEvent.addListener(poly, "click", function(point) {
 			if (_clickListener == null) {
 		    map.openInfoWindowHtml(point, html);
@@ -102,7 +102,7 @@
 	function createMarker(index, event, totalEvents) {
 		var point = new GLatLng(event.geom.lat, event.geom.lng);
 		var marker = new GMarker(point, {icon:_markerIcon});  
-		marker.bindInfoWindowHtml(createInfoWindowHtml(index, event));
+		marker.bindInfoWindowHtml(_overlayManager.createInfoWindowHtml(index, event));
 		map.addOverlay(marker);
 	}
 	
@@ -163,7 +163,7 @@
 	
 	function makePreviewHtml() {
 	  	var event = getPreviewEvent();
-			return createInfoWindowHtml(null, event);
+			return _overlayManager.createInfoWindowHtml(null, event);
 	}
 	//--------------------------------
 	/* create an editable poly from a json poly object */
@@ -186,7 +186,7 @@
   function createEditablePolyFromPoints(points) {
     if (points != null) {
       /* we create the editable poly */
-      _editablePoly = newPoly(points, getGeometryType());
+      _editablePoly = _overlayManager.newPoly(points, getGeometryType());
       goToPoly(_editablePoly);
 	    map.addOverlay(_editablePoly);
       _editablePoly.enableEditing();
@@ -206,7 +206,7 @@
 		if (poly) {
 			map.setCenter(poly.getBounds().getCenter(), getZoom());
 			/* if the map is too zoomed in, we should zoom out to fit the line */
-			fitToPoly(poly);
+			_mapHelper.fitToPoly(poly);
 		}
 	}
 	
@@ -220,7 +220,7 @@
 		if (null == poly) {
 	    map.openInfoWindowHtml(map.getCenter(), html);
 		} else {
-			var point = findClosestVertex(map.getCenter(), poly)
+			var point = _mapHelper.findClosestVertex(map.getCenter(), poly)
 	    map.openInfoWindowHtml(point, html);
 		}
 	}
@@ -245,7 +245,7 @@
       createEditablePolyFromPoints(points);
 		} else {
 		  //there was no polyline before so we are creating one
-		  _editablePoly = newPoly(points, getGeometryType());
+		  _editablePoly = _overlayManager.newPoly(points, getGeometryType());
 		  map.addOverlay(_editablePoly);
 		  _editablePoly.enableDrawing();
       var listener = GEvent.addListener(_editablePoly, "endline", function() {
@@ -356,8 +356,8 @@
 	function submitEvent() {
 		saveGeometry();
 		document.getElementById("eventForm").zoomLevel.value = map.getZoom();
-		document.getElementById("eventForm").mapType.value = getMapTypeIndex();
-		document.getElementById("eventForm").mapCenter.value = gLatLngToJSON(map.getCenter());
+		document.getElementById("eventForm").mapType.value = _mapManager.getMapTypeIndex();
+		document.getElementById("eventForm").mapCenter.value = _overlayManager.gLatLngToJSON(map.getCenter());
 		document.event.submit();
 	}
 	
@@ -366,9 +366,9 @@
 	function saveGeometry() {
 		var geometryType = getGeometryType();
 		if (geometryType == "point") {
-			document.getElementById("eventForm").geometry.value = gLatLngToJSON(_editableMarker.getLatLng());
+			document.getElementById("eventForm").geometry.value = _overlayManager.gLatLngToJSON(_editableMarker.getLatLng());
 		} else if ((geometryType == "line") || (geometryType == "polygon")) {
-			document.getElementById("eventForm").geometry.value = polyToJSON(_editablePoly, geometryType);
+			document.getElementById("eventForm").geometry.value = _overlayManager.polyToJSON(_editablePoly, geometryType);
 		}
 	}
 
@@ -383,9 +383,9 @@
 	                        place.Point.coordinates[0]);
 			var accuracy = place.AddressDetails.Accuracy;
 			if (null != accuracy) {
-				map.setZoom(ACCURACY_TO_ZOOM[place.AddressDetails.Accuracy]);
+				map.setZoom(_mapManager.ACCURACY_TO_ZOOM[place.AddressDetails.Accuracy]);
 			} else {
-				map.setZoom(ZOOM_BOX_THRESHOLD); 
+				map.setZoom(_mapManager.ZOOM_BOX_THRESHOLD); 
 			}
 			map.setCenter(point);
 			if (null != _editableMarker) {

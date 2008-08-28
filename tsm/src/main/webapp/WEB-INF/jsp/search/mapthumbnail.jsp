@@ -14,9 +14,9 @@
 
 	<%-- the main initialize function --%>
 	function initialize_embedded() {
-		initializeMap(new GSmallMapControl());
+		_mapManager.initializeMap(new GSmallMapControl());
 		addEvent();
-   	var height = getHeight();
+   	var height = _mapManager.getHeight();
    	document.getElementById("map").style.height=height+"px";
 	}		
 
@@ -54,11 +54,11 @@
 			var vertex = new GLatLng(line[i].lat, line[i].lng);
 			points.push(vertex);
 		}
-		var poly = newPoly(points, event.geom.gtype);
+		var poly = _overlayManager.newPoly(points, event.geom.gtype);
 		if (poly) {
 			map.addOverlay(poly);
 		}
-		fitToPoly(poly);
+		_mapHelper.fitToPoly(poly);
 		map.setCenter(poly.getBounds().getCenter());
 	}
 		//]]>

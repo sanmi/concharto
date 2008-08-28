@@ -18,7 +18,7 @@
 		<jsp:include page="include/messages.jsp"/>
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">map.css,wiki.css,header.css,search.css</jsp:attribute>
-	<jsp:attribute name="script">prototype.js,map.js,control.modal.js,help.js,searchcommon.js,eventsearch.js</jsp:attribute>
+	<jsp:attribute name="script">prototype.js,map.js,effects.js,dragdrop.js,resizable.js,livepipe.js,window.js,help.js,searchcommon.js,eventsearch.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="init()" onunload="GUnload();" class="mapedit" id="searchpage" onresize="adjustSidebarIE();"</jsp:attribute>
 	<jsp:attribute name="nohead">true</jsp:attribute>
 
@@ -143,7 +143,7 @@
                           so we replace 'qu'ran' with 'qu\'ran' before the final substitution --%>
 						          	  <c:set var="tag" value="${fn:replace(userTag.tag,'\\'','\\\\\\'')}"/>
                           <%-- note the following needs to all be on one line for proper HTML format --%>
-                          <a href="#" onclick="goToTag('<c:out value="${tag}"/>'); return false;"><c:out value="${userTag.tag}"/></a><c:if test="${status.index != (fn:length(event.userTags)-1)}">, </c:if>
+                          <a href="#" onclick="_mapManager.goToTag('<c:out value="${tag}"/>'); return false;"><c:out value="${userTag.tag}"/></a><c:if test="${status.index != (fn:length(event.userTags)-1)}">, </c:if>
 						          	</c:forEach>
 						          </div>
 					          </c:if>

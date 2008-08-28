@@ -33,7 +33,7 @@
   /* Main initialization function */
 	function initialize(mapControl) {
 		adjustSidebarIE();
-		initializeMap(mapControl);
+		_mapManager.initializeMap(mapControl);
 		/* map center and map zoom */
 		
 		var zoomTxt = $('mapZoom').value;
@@ -44,7 +44,7 @@
 		/* set map type from the event */
 		var mapType = $('mapType').value;
 		if (mapType != '') {
-			map.setMapType(MAP_TYPES[mapType]);
+			map.setMapType(_mapManager.MAP_TYPES[mapType]);
 		}
 		
 		var mapCenter = getMapCenterFromJSON();
@@ -55,9 +55,10 @@
 			var eventsJSON = $('searchResults').value;
 			if (eventsJSON != '') {
 				var events = eventsJSON.evalJSON();
-				createOverlays(events);
+				_overlayManager.createOverlays(events);
 			}
 		}		
+		
 		adjustSidebarIE();
 		if ($('embed').value == 'true') {
 			/* always fit to results for embedded maps */
@@ -241,7 +242,7 @@
 				updateFitToPolygon(vertex);
 			} 
 		}
-		var poly = newPoly(points, event.geom.gtype);
+		var poly = _overlayManager.newPoly(points, event.geom.gtype);
 		if (poly) {
 			/* record so the user can click on the sidebar and see a popup in the map */
 			var html = makeOverlayHtml(index, event, totalEvents);
@@ -290,7 +291,7 @@
 		} else {
 			var overlay = _overlays[index].overlay;
 			unhighlightOverlay();
-			var point = findClosestVertex(map.getCenter(), overlay);
+			var point = _mapHelper.findClosestVertex(map.getCenter(), overlay);
 			map.openInfoWindow(point, _overlays[index].html);
 			highlightOverlay(_overlays[index]);
 		}
@@ -311,7 +312,7 @@
 	
 	/* Highlight the overlay by changing its color */
 	function highlightOverlay(overlayItem) {
-		var newOverlay = redrawOverlay(overlayItem, LINE_WEIGHT_HIGHLIGHT, LINE_COLOR_HIGHLIGHT, POLY_COLOR_HIGHLIGHT);
+		var newOverlay = redrawOverlay(overlayItem, _overlayManager.LINE_WEIGHT_HIGHLIGHT, _overlayManager.LINE_COLOR_HIGHLIGHT, _overlayManager.POLY_COLOR_HIGHLIGHT);
 		overlayItem.isHighlighted = true;
 		overlayItem.overlay = newOverlay;
 		addOverlayClickListener(overlayItem);
@@ -324,7 +325,7 @@
 		for (var i=0; i<overlay.getVertexCount(); i++) {
 			points[i] = overlay.getVertex(i);
 		}
-		overlay = newPoly(points, overlayItem.type, weight, lineColor, polyColor);
+		overlay = _overlayManager.newPoly(points, overlayItem.type, weight, lineColor, polyColor);
 		map.addOverlay(overlay);
 		return overlay;
 	}
@@ -332,7 +333,7 @@
 	function unhighlightOverlay() {
 		for (var ov=0; ov<_overlays.length; ov++) {
 			if (_overlays[ov].isHighlighted == true) {
-				_overlays[ov].overlay = redrawOverlay(_overlays[ov], LINE_WEIGHT, LINE_COLOR, POLY_COLOR);
+				_overlays[ov].overlay = redrawOverlay(_overlays[ov], _overlayManager.LINE_WEIGHT, _overlayManager.LINE_COLOR, _overlayManager.POLY_COLOR);
 				_overlays[ov].isHighlighted = false;
 				addOverlayClickListener(_overlays[ov]);
 			} 
@@ -373,12 +374,12 @@
 	/* user has clicked on 'add to map' */
 	function editEvent(eventId) {
 		document.getElementById("eventSearchForm").editEventId.value = eventId; 
-		document.getElementById("eventSearchForm").mapType.value = getMapTypeIndex();
+		document.getElementById("eventSearchForm").mapType.value = _mapManager.getMapTypeIndex();
 		if (eventId == '') {
 			document.getElementById("eventSearchForm").isAddEvent.value = 'true';
 		}		
 		/* don't geocode, but do everything else.  */
-		document.getElementById("eventSearchForm").mapCenter.value = gLatLngToJSON(map.getCenter());
+		document.getElementById("eventSearchForm").mapCenter.value = _overlayManager.gLatLngToJSON(map.getCenter());
 		saveAndSubmit();		
 	}
 
@@ -394,7 +395,7 @@
 	function search() {
 		/* set the map center, in case we aren't geocoding or the geocode 
 		     doesn't succeed */
-	 	document.getElementById("eventSearchForm").mapCenter.value = gLatLngToJSON(map.getCenter());
+	 	document.getElementById("eventSearchForm").mapCenter.value = _overlayManager.gLatLngToJSON(map.getCenter());
   	/* Geocode before submitting so that we can get the map extent first!	 */
 		geocode(document.getElementById("eventSearchForm").where.value);
 	}			
@@ -413,7 +414,7 @@
 	function processGeocode(response) {
 	  if (!response || response.Status.code != 200) {
 	 		document.getElementById("eventSearchForm").isGeocodeSuccess.value = "false"; 
-	 		document.getElementById("eventSearchForm").mapCenter.value = gLatLngToJSON(map.getCenter());
+	 		document.getElementById("eventSearchForm").mapCenter.value = _overlayManager.gLatLngToJSON(map.getCenter());
 	  } else {
 	    place = response.Placemark[0];
 	    latLng = new GLatLng(place.Point.coordinates[1],
@@ -426,7 +427,7 @@
 			if ((where != '') && (isEdit != "true")) {
 				map.setZoom(_accuracy_to_zoom[accuracy]); /* TODO infer this from the geocode results!! */
 			}
-			document.getElementById("eventSearchForm").mapCenter.value = gLatLngToJSON(latLng);
+			document.getElementById("eventSearchForm").mapCenter.value = _overlayManager.gLatLngToJSON(latLng);
 		}
 		saveAndSubmit();
 	}
@@ -435,13 +436,13 @@
 	function saveAndSubmit() {
 		var boundingBox = map.getBounds();
 		document.getElementById("eventSearchForm").boundingBoxSW.value = 
-			gLatLngToJSON(boundingBox.getSouthWest());
+			_overlayManager.gLatLngToJSON(boundingBox.getSouthWest());
 		document.getElementById("eventSearchForm").boundingBoxNE.value = 
-			gLatLngToJSON(boundingBox.getNorthEast());
+			_overlayManager.gLatLngToJSON(boundingBox.getNorthEast());
 		/* if the geocode failed, we will get a null.  Pass this back to the controller to indicate
 		     that the geocode failed */
 
-		document.getElementById("eventSearchForm").mapType.value = getMapTypeIndex();
+		document.getElementById("eventSearchForm").mapType.value = _mapManager.getMapTypeIndex();
 		document.getElementById("eventSearchForm").mapZoom.value = map.getZoom();
 		document.event.submit();
 	}

@@ -77,6 +77,10 @@ request.setAttribute("hostprefix", (String)request.getSession().getAttribute(Log
 	  </div>
   </c:if>
 
+	<c:forTokens var="item" items="${script}" delims=",">
+	  <script type="text/javascript" src="${basePath}javascript/${item}"></script>
+	</c:forTokens>    
+	
 	<!--  <spring:message code="app.version"/> -->
 	<%-- the parameter 'nc', short for nocount is a private signal to not count the page hits to embedded iframes --%>
 	<c:if test="${param.nc == null}">
@@ -90,6 +94,3 @@ request.setAttribute("hostprefix", (String)request.getSession().getAttribute(Log
 
   </body>
 </html>
- <c:forTokens var="item" items="${script}" delims=",">
-   <script type="text/javascript" src="${basePath}javascript/${item}"></script>
- </c:forTokens>    

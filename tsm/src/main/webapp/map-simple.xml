@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="Concharto 80" 
+                description="Test Concharto Maplet"
+                author="Concharto.com"
+                author_email="frank@concharto.com"
+                height="150">
+  <Require feature="sharedmap"/>
+  <Require feature="opensocial-0.7"/>
+</ModulePrefs>
+<Content type="html"><![CDATA[
+
+<form id="eventSearchForm">
+Where: <input id="where" name="where" type="text" value="lala" size="22"/>
+<input type="button" value="Search" onclick="doSearch()"/>
+<br/>
+<input id="limitWithinMapBounds1" name="limitWithinMapBounds" type="checkbox" value="true"/>
+<input type="hidden" name="_limitWithinMapBounds" value="on"/>
+Search current map shown.
+<br/>
+<input id="excludeTimeRangeOverlaps1" name="excludeTimeRangeOverlaps" type="checkbox" value="true"/>
+<input type="hidden" name="_excludeTimeRangeOverlaps" value="on"/>
+<input type="hidden" id="basePath" value="http://www.test.timespacemap.com/"/>
+
+Find events that occurred only <em>within</em> the time frame specified.
+
+</form>
+
+
+<script src="http://www.test.timespacemap.com/javascript/prototype.js" type="text/javascript"></script>
+<script src="http://www.test.timespacemap.com/javascript/map.js?4" type="text/javascript"></script>
+<script src="http://www.test.timespacemap.com/javascript/searchcommon.js?2" type="text/javascript"></script>
+<script src="http://www.test.timespacemap.com/javascript/eventsearch.js?2" type="text/javascript"></script>
+
+
+<script type="text/javascript">
+  var _msg_newdiscuss = "Create a new discussion";
+  var _msg_discuss = "Join the discussion";
+  var _msg_edit = "Edit this event!";
+  var _msg_changes = "View changes to this event";
+  var _msg_flag = "Flag this event for administrator attention";
+  var _msg_accy = new Array();
+    _msg_accy[1] = 'Unspecified'; 
+    _msg_accy[2] = 'Region'; 
+    _msg_accy[3] = 'City'; 
+    _msg_accy[4] = 'Neighborhood'; 
+    _msg_accy[5] = 'Address'; 
+    _msg_accy[6] = 'Pinpoint (+/- 10m)';
+     
+  //Load points from the server
+  function doSearch(where, when, what) {
+    var url = "http://www.test.timespacemap.com/search/jsonsearch.htm?_what=mecca";
+    _IG_FetchContent(url, function(jsondata) {
+        var events = jsondata.evalJSON();
+        createOverlays(events);
+    });
+  }
+  
+  
+
+</script>    
+
+<script type="text/javascript">
+  
+  // Center the map in the Mediterranean and zoom out to a world view
+  var map = new GMap2();
+  var point = new GLatLng(37.71859, 6.679688);
+  //map.setCenter(point, 2);
+
+  
+  //Add some points
+  var geo1 = "http://www.concharto.com/search/conchartosearch.kml?_what=inca&_zoom=13&_maptype=0&_kml=1";
+  var geo2 = "http://www.test.timespacemap.com/search/conchartosearch.kml?_what=poly&_zoom=13&_maptype=0&_kml=1";
+  var geo3 = "http://www.test.timespacemap.com:81/search/conchartosearch.kml?_what=poly&_withinMap=true&_zoom=13&_maptype=0&_kml=1";
+  //var geoXml = new GGeoXml(geo2 + '&_rand=' + Math.random());
+
+  //http://maps.google.com/maps/mm?ie=UTF8&hl=en&ll=37.125286,-122.124023&spn=10.889885,14.875488&t=p&z=6
+  map.setCenter(new GLatLng(37, -122), 6);
+  //map.addOverlay(geoXml);
+  
+  initializeMapVars();
+  //doSearch();
+  
+</script>
+
+]]></Content>
+</Module>

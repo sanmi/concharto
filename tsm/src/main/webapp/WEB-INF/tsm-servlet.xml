@@ -42,6 +42,7 @@
           <prop key="edit/flageventsuccess.htm">flagEventController</prop>
 
           <prop key="search/conchartosearch.kml">kmlExportController</prop>
+          <prop key="search/jsonsearch.htm">jsonSearchController</prop>
           <prop key="search/eventsearch.htm">eventSearchController</prop>
           <prop key="search/embeddedsearch.htm">embeddedSearchController</prop>
 
@@ -72,6 +73,10 @@
           <prop key="404.htm">urlFilenameViewController</prop>
           <prop key="500.htm">urlFilenameViewController</prop>
           <prop key="/help.htm">urlFilenameViewController</prop>
+          
+          <!-- javascript files -->
+          <prop key="messages.htm">messagesController</prop>
+          
       </props>
 		</property>		
 	</bean>
@@ -84,7 +89,7 @@
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/jsp/" />
-		<property name="suffix" value=".jsp" />
+    <property name="suffix" value=".jsp" />
 	</bean>
 
 	<bean id="baseEventController" abstract="true">
@@ -92,6 +97,10 @@
 	</bean>
 
 	<!-- Controller  -->
+	<bean id="messagesController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+	  <property name="viewName" value="search/include/messages"/>
+	</bean>
+	
 	<bean id="homeController" class="com.tech4d.tsm.web.home.HomeController" parent="baseEventController">
 		<property name="commandName" value="eventSearch" />
 		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
@@ -234,6 +243,12 @@
   <bean id="kmlExportController" class="com.tech4d.tsm.web.eventsearch.EventSearchController" parent="eventSearchController">
     <!--  no cache -->
     <property name="cacheSeconds" value="0"/>  
+  </bean>
+	
+  <bean id="jsonSearchController" class="com.tech4d.tsm.web.eventsearch.EventSearchController" parent="eventSearchController">
+    <!--  no cache -->
+    <property name="cacheSeconds" value="0"/>  
+    <property name="successView" value="search/jsonsearch" />
   </bean>
 	
 	

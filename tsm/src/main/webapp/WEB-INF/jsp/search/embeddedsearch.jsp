@@ -25,13 +25,13 @@
 		  if ($('embeddedHeader') != null) {
 		     headerHeight = 23;
 		  }
-	   	var height = getHeight() - headerHeight; 
+	   	var height = _mapManager.getHeight() - headerHeight; 
 	   	document.getElementById("map").style.height=height+"px";		
 		}
 	
 		<%-- override create html for info bubbles --%>	
 		function makeOverlayHtml(index, event, totalEvents) {
-			return createInfoWindowHtml(index, event, 350, 150);
+			return _overlayManager.createInfoWindowHtml(index, event, 350, 150);
 		}
 	
 		<%-- override this function to do nothing --%>
