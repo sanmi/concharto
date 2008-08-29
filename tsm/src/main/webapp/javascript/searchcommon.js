@@ -141,6 +141,12 @@
     this.parent = parent;
     this.highlightSidebarItem = function(overlayItem) {/* do nothing */};
     this.adjustSidebar = function() {/* do nothing */};
+    
+    //override, only use the superclass method 
+    this.makeOverlayHtml = function(index, event, totalEvents) {
+      return this.parent.makeOverlayHtml(index, event, totalEvents);
+    }
+    
   } 
   EmbeddedSearchEventOverlayManager.prototype = new SearchEventOverlayManager();  //inherit with override
 
