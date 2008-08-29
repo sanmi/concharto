@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-  <ModulePrefs title="Fetch JSON 8">
+  <ModulePrefs title="Fetch JSON 9">
     <Require feature="opensocial-0.7"/>
     <Require feature="sharedmap"/>
   </ModulePrefs>

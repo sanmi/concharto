@@ -18,8 +18,8 @@
 		<jsp:include page="include/messages.jsp"/>
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">map.css,wiki.css,header.css,search.css</jsp:attribute>
-	<jsp:attribute name="script">prototype.js,map.js,effects.js,dragdrop.js,resizable.js,livepipe.js,window.js,help.js,searchcommon.js,eventsearch.js</jsp:attribute>
-	<jsp:attribute name="bodyattr">onload="init()" onunload="GUnload();" class="mapedit" id="searchpage" onresize="adjustSidebarIE();"</jsp:attribute>
+	<jsp:attribute name="script">prototype.js,effects.js,dragdrop.js,resizable.js,livepipe.js,window.js,map.js,help.js,searchcommon.js,eventsearch.js</jsp:attribute>
+	<jsp:attribute name="bodyattr">onload="init()" onunload="GUnload();" class="mapedit" id="searchpage" onresize="_overlayManager.adjustSidebar();"</jsp:attribute>
 	<jsp:attribute name="nohead">true</jsp:attribute>
 
 	<jsp:body>
@@ -96,7 +96,7 @@
 								<display:setProperty name="paging.banner.some_items_found"> </display:setProperty>
 
 								<display:column autolink="true" class="iconcol">
-									<a href="#"><img alt="marker" height='20' width='20' src="${basePath}images/icons/<c:out value='${fn:substring(test,event_rowNum-1,event_rowNum)}'/>_label.gif" onclick="openMarker(<c:out value='${event_rowNum-1}'/>); return false;"/></a>
+									<a href="#"><img alt="marker" height='20' width='20' src="${basePath}images/icons/<c:out value='${fn:substring(test,event_rowNum-1,event_rowNum)}'/>_label.gif" onclick="_overlayManager.openMarker(<c:out value='${event_rowNum-1}'/>); return false;"/></a>
 								</display:column>
 								
 								<display:column autolink="true">
@@ -105,7 +105,7 @@
 				          	<c:if test="${event.hasUnresolvedFlag}">
 					          	<a class="errorLabel" href="${basePath}event/changehistory.htm?id=${event.id}">Flagged! </a>
 				          	</c:if>
-					          <a class="summary" href="#" onclick="openMarker(<c:out value='${event_rowNum-1}'/>); return false;">
+					          <a class="summary" href="#" onclick="_overlayManager.openMarker(<c:out value='${event_rowNum-1}'/>); return false;">
 					          	<c:out value="${event.summary}"/></a></div>
 					          <div class="when"><c:out value="${event.when.asText}"/></div>
 					          <span class="where">
@@ -120,7 +120,7 @@
 					          <c:choose>
 						          <c:when test="${fn:length(event.description) > 300}">
 							          <wiki:render wikiText="${description} '''. . .'''"/>
-							          <a class="more" href="#" onclick="openMarker(<c:out value='${event_rowNum-1}'/>); return false;">... more</a>
+							          <a class="more" href="#" onclick="_overlayManager.openMarker(<c:out value='${event_rowNum-1}'/>); return false;">... more</a>
 						          </c:when>
 						          <c:otherwise>
 							          <wiki:render wikiText="${description}"/>
@@ -196,7 +196,7 @@
 		
 		</form:form>	
 
-		<div id="linkhere" class="linkbox" style="visibility: hidden">
+		<div id="linkhere" class="linkbox">
 		    <div class='bd' style="margin:0; padding:0;">
 		    	<div class="tl"><a href="#" onclick="Control.Modal.close(); return false;"><img alt="close" src="../images/12xclose.gif"></img></a></div>
 		    	<div class="label">Paste this text to link back to this map</div>		    	

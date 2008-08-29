@@ -13,74 +13,21 @@
   
 	function init() {
 		setupHelpPanels();
-		initialize();
-		new Control.Modal('link_linkhere',{
+		_overlayManager = new SearchEventOverlayManager(new EventOverlayManager);
+		_overlayManager.initialize();
+		//initialize();
+		new Control.Modal('link_linkhere', {
 				className: 'linkbox',
-        opacity: 0.2,
+				position: 'center',
+        overlayOpacity: 0.9,
         afterOpen: getLinkUrls
         });
 	}
 
-	/* create html for info bubbles */	
-	function makeOverlayHtml(index, event, totalEvents) {
-	  var overlaysIndex = getOverlaysIndex(event.id);
-		var html = _overlayManager.createInfoWindowHtml(index, event);  
-    html += 
-    '<div style="width:' + _overlayManager.INFO_WIDTH + 'px;"><span  style="float:right">';
-    if (overlaysIndex > 0) {
-      html +='<a href="" onclick="showEvent(' + event.id + ', -1); return false;">&laquo; prev</a>&nbsp;&nbsp; '; 
-    } 
-    if (overlaysIndex < (totalEvents - 1)) {
-      html += '<a href="" onclick="showEvent(' + event.id + ', 1); return false;">next &raquo;</a>';
-    }
-    html += '</span>';
-		html += '<div class="infolinkbar linkbar"><a class="links" href="#" onclick="editEvent(' + event.id + ')" title="' + _msg_edit + '">edit</a>';
-			  
-	  if (event.hasDiscuss) {
-			html += '<a class="links" href="'+ _basePath + 'event/discuss.htm?id=' + event.id + '" title="' + _msg_discuss + '">discuss</a>';
-	  } else {
-	  	html += '<span class="new_links"><a href="'+ _basePath + 'edit/discussedit.htm?id=' + event.id + '" title="' + _msg_newdiscuss + '">discuss</a></span>';
-	  }
-		html += '<a class="links" href="' + _basePath + 'event/changehistory.htm?id=' + event.id + '" title="' + _msg_changes + '">changes</a>';
-		html += '<a class="links" href="' + _basePath + 'edit/flagevent.htm?id=' + event.id + '" title="' + _msg_flag + '">flag</a>' +
-			'<a class="links" href="#" onclick="zoomTo(' + event.id + ')">zoom in</a>' +
-		  '<br/>'+
-		  '</div></div>';
-		return html;
-	}
-	
-	
   /* END PRE FUNCTIONS (initialization) ============================= */
 
   /* BEGIN WHILE FUNCTIONS  ============================= */
-  /* Get the index to the _overlays array for a given event id */ 
-	function getOverlaysIndex(id) {
-   var i;
-   for (i=0; i<_overlays.length; i++) {
-     if (_overlays[i].id == id) {
-       break;
-     }
-   }
-   return i;
-	}
-
-	function showEvent(id, incr) {
-	 var i = getOverlaysIndex(id);
-	 var next = i + incr;
-	 if ((next >= 0) && (next < _overlays.length)) {
-	   openMarker(next); 
-	 }
-	}
 	
-	function adjustSidebarIE() {
-		/* adjust the map */
-		_mapManager.setMapExtent();
-   	var top = document.getElementById("map").offsetTop;
-   	var height = _mapManager.getHeight() - top - _currResultsNudge;
-   	document.getElementById("results").style.height=height+"px";
-   	/* DEBUG the following is a Kludge! for an IE 6 rendering problem argh!*/
-   	document.getElementById("results").style.width = _currResultsWidth + "px"; 
-	}
 	
 	function selectThis(element) {
 		element.focus();
@@ -133,7 +80,6 @@
 		url = url.escapeHTML();
 		return url;
 	}
-	
 	
 	var hasQuery;
 	function getLinkHereUrl() {
@@ -233,7 +179,7 @@
     
 
 	  //adjust the map
-    adjustSidebarIE();
+    _overlayManager.adjustSidebar();
     map.checkResize();
 
 	  //remove the "hide"
@@ -268,7 +214,7 @@
     } 
     
     //adjust the map
-    adjustSidebarIE();
+    _overlayManager.adjustSidebar();
     map.checkResize();
     
     //remove the "show"

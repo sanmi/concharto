@@ -27,10 +27,10 @@ Find events that occurred only <em>within</em> the time frame specified.
 </form>
 
 
-<script src="http://www.test.timespacemap.com/javascript/prototype.js" type="text/javascript"></script>
-<script src="http://www.test.timespacemap.com/javascript/map.js?4" type="text/javascript"></script>
-<script src="http://www.test.timespacemap.com/javascript/searchcommon.js?2" type="text/javascript"></script>
-<script src="http://www.test.timespacemap.com/javascript/eventsearch.js?2" type="text/javascript"></script>
+<script src="http://www.test.timespacemap.com/javascript/prototype.js" type="text/javascript"/></script>
+<script src="http://www.test.timespacemap.com/javascript/map.js?11" type="text/javascript"></script>
+<script src="http://www.test.timespacemap.com/javascript/searchcommon.js?4" type="text/javascript"></script>
+<script src="http://www.test.timespacemap.com/javascript/eventsearch.js?4" type="text/javascript"></script>
 
 
 <script type="text/javascript">
@@ -40,32 +40,46 @@ Find events that occurred only <em>within</em> the time frame specified.
   var _msg_changes = "View changes to this event";
   var _msg_flag = "Flag this event for administrator attention";
   var _msg_accy = new Array();
-    _msg_accy[1] = 'Unspecified'; 
-    _msg_accy[2] = 'Region'; 
-    _msg_accy[3] = 'City'; 
-    _msg_accy[4] = 'Neighborhood'; 
-    _msg_accy[5] = 'Address'; 
-    _msg_accy[6] = 'Pinpoint (+/- 10m)';
+  _msg_accy[1] = 'Unspecified'; 
+  _msg_accy[2] = 'Region'; 
+  _msg_accy[3] = 'City'; 
+  _msg_accy[4] = 'Neighborhood'; 
+  _msg_accy[5] = 'Address'; 
+  _msg_accy[6] = 'Pinpoint (+/- 10m)';
      
-  //Load points from the server
-  function doSearch(where, when, what) {
-    var url = "http://www.test.timespacemap.com/search/jsonsearch.htm?_what=mecca";
-    _IG_FetchContent(url, function(jsondata) {
-        var events = jsondata.evalJSON();
-        createOverlays(events);
-    });
-  }
-  
-  
 
 </script>    
 
 <script type="text/javascript">
   
-  // Center the map in the Mediterranean and zoom out to a world view
-  var map = new GMap2();
+  //Setup a special map manager for maplets
+  function MapletMapManager() {
+    //initialize
+    this.initializeMap = function(control) {
+      initializeMapVars();
+      // map and its equipment
+      map = new GMap2();
+
+      geocoder = new GClientGeocoder();
+      //FSM DBEUG this.showDefault(); 
+    }
+    
+    /* default map coordinates */
+    this.showDefault = function() {    
+      this.m_diagonal.getBoundsAsync(function(bounds) {
+        map.setCenter(bounds.getCenter());  
+        map.setZoom(map.getBoundsZoomLevel(bounds));
+      });
+    }
+    
+  }
+  MapletMapManager.prototype = new MapManager();  //inherit with override
+  _mapManager = new MapletMapManager();
+
+  // Center the map in 
   var point = new GLatLng(37.71859, 6.679688);
-  //map.setCenter(point, 2);
+  _mapManager.initializeMap();
+  map.setCenter(new GLatLng(37, -122), 6);
 
   
   //Add some points
@@ -75,11 +89,20 @@ Find events that occurred only <em>within</em> the time frame specified.
   //var geoXml = new GGeoXml(geo2 + '&_rand=' + Math.random());
 
   //http://maps.google.com/maps/mm?ie=UTF8&hl=en&ll=37.125286,-122.124023&spn=10.889885,14.875488&t=p&z=6
-  map.setCenter(new GLatLng(37, -122), 6);
   //map.addOverlay(geoXml);
   
-  initializeMapVars();
-  //doSearch();
+  doSearch();
+  
+  //Load points from the server
+  function doSearch(where, when, what) {
+    alert(1);
+    var url = "http://www.test.timespacemap.com/search/jsonsearch.htm?_what=%22poly+point%22";
+    _IG_FetchContent(url, function(jsondata) {
+        var events = jsondata.evalJSON();
+        alert (events[0].summary );
+        _overlayManager.createOverlays(events);
+    });
+  }
   
 </script>
 

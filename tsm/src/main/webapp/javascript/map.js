@@ -1,6 +1,7 @@
-/* NEW FSM TODO REMOVEME */
-var map;
-var geocoder = null;
+
+var map; /* TODO refactor to remove map as a global variable */
+var geocoder = null; /* TODO refactor to remove geocoder as a global variable */
+
 var _overlayManager = new EventOverlayManager();
 var _mapManager = new MapManager();
 var _mapHelper = new MapHelper();
@@ -33,53 +34,89 @@ function EventOverlayManager() {
   this.INFO_HEIGHT = 375;
   this.ALPHA_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   
+    /* global array and index for dealing with overlays */
+  var _overlays = [];
+  var _overlayIndex = 0;
+  var _fitToPolygon = [];
+  var _fitToPolygonIndex = 0;
+  var _accuracy_to_zoom = [4, 5, 7, 10, 11, 12, 13, 14, 15];
+  var _initialZoom;
+  var _initialCenter;
+  
+  this.overlays = _overlays;
+  this.fitToPolygon = _fitToPolygon;
 
-  this.createInfoWindowHtml = function(index, event, width /* optional */, height /* optional */) {
-    if (width==null || width=='null' || width=='') { width = this.INFO_WIDTH};
-    if (height==null || height=='null' || height=='') {
-      height = 'max-height:' + this.INFO_HEIGHT + ';';
-    } else {
-      height = 'height:' + height + 'px;'
-    }
-    var html = '<div class="result inforesult wikitext" style="width:' + width +'px;'+ height +'margin-bottom:10px">';
-    if (event.flagged) {
-      html += '<a target="_top" class="errorLabel" href="/event/changehistory.htm?id=' + event.id +'">Flagged! </a>'; 
-    }
-    //if there is an index, then put the marker icon in the bubble
-    if (index != null) {
-         var letter = this.ALPHA_CHARS.substring(index,index+1);
-         html += '<img alt="marker" style="margin-right:4px;" src="' + _basePath + 'images/icons/' + letter + '_label.png' + '"/>';
-        }
-      html += '<span class="summary">' + event.summary.escapeHTML() +'</span><br/>' + 
-        '<span class="when">' + event.when + '</span><br/>' + 
-    '<span class="where">' + event.where.escapeHTML();
-    if (!isEmpty(event.accy)) {
-       html += ' (Accuracy: ' + _msg_accy[event.accy] + ')'; 
-    }
-    html += '</span><br/>' + event.description;
+  //abstract - please implement
+  this.highlightSidebarItem = function(overlayItem) { /*do nothing*/};
+  
+  //default implementation, displays a simple info window
+  this.makeOverlayHtml = function(index, event, totalEvents) {
+    return this.createInfoWindowHtml(index, event, 350, 150);
+  }
+  
+  //default implementation, please override
+  this.limitWithinMapBounds = function() {
+    return false;
+  };
+  
+  this.initialize = function() {
+    /* to unhighlight polygons if there are any */
+    this.hideZoomedPolygons(3);
     
-    var tags = event.tags.split( "," );
-    var taglink = new Array();
-    tags.each( function(tag, index){
-      //encode ant apostrophes in the tag because that will mess up the call from HTML
-      //we will have to decode them later in goToTag()
-      var encodedtag = tag.gsub('\'', '%27');
-         //embedded search is wierd with following tags using document.location so we will use a regular href
-         if (-1 == document.location.pathname.indexOf('embedded')) {
-           taglink[index] = '<a target="_top" href="" onclick="_mapManager.goToTag(\'' + encodedtag + '\'); return false;">' + tag +'</a>';
-         } else {
-           //this is embedded
-           taglink[index] = '<a target="_top" href="'
-             + '/search/eventsearch.htm?_tag='+ encodedtag + '&_maptype=' + _mapManager.getMapTypeIndex()
-             + '">'+ tag +'</a>';
-         }
+    GEvent.addListener(map, "infowindowclose", function() {
+      _overlayManager.unhighlightOverlay();
     });
-        html += '<div class="usertags"><b>Tags: </b>' + taglink.join(', ') + '</div>';   
-    html += '<span class="source"><b>Source: </b>' + event.source + '</span>';
-    html += '</div>';
-        
-    return html;
-  } 
+    //listeners for hiding polygons when you are zoomed way in
+    GEvent.addListener(map, "zoomend", function() {
+      _overlayManager.hideZoomedPolygons(1);
+    });
+    GEvent.addListener(map, "moveend", function() {
+      _overlayManager.hideZoomedPolygons(2);
+    });
+  }
+
+  this.createOverlays = function(events, excludeEventId) {
+    for (var i =0; i<events.length; i++) {
+      var event = events[i];
+      if ((excludeEventId === null) || (event.id != excludeEventId)) {
+        if (event.gtype == 'point') {
+          this.createMarker(i, event, events.length);
+        } else if ((event.gtype == 'line') || (event.gtype == 'polygon')) {
+          this.createPoly(i, event, events.length);          
+        }
+      }
+    } 
+    this.hideZoomedPolygons(3);
+  }
+
+  /* Don't show polygons when we are zoomed so far in that we can't see them 
+   * @param return - a variable for debugging event triggers.  Normally not used. 
+   */
+  this.hideZoomedPolygons = function(from) {
+    _overlays.each( function(item, index){
+      if (item.type == 'polygon') {
+        var overlay = item.overlay;
+        var hide = true;
+        for (var i=0; i<overlay.getVertexCount(); i++) {
+          var vertex = overlay.getVertex(i);
+          //if vertex within the map OR
+          //if a line between this vertex and the last intersects the map
+          if ((map.getBounds().contains(vertex)) ||
+              ((i+1 < overlay.getVertexCount()) && _overlayManager.intersectsMap(vertex, overlay.getVertex(i+1)))) 
+          {
+            hide = false;
+            break;
+          } 
+        }
+        if (hide) {
+          //ok, there are no vertexes within the map, so we should hide this overlay
+          map.removeOverlay(overlay);
+        } else {
+          map.addOverlay(overlay);
+        }
+      }
+    });
+  }
 
   this.gLatLngToJSON = function( point ) {
     return '{"gtype":"point","lat":' + point.lat() + ',"lng":' + point.lng() + '}';
@@ -109,17 +146,127 @@ function EventOverlayManager() {
     return str;
   }
 
-  this.createOverlays = function(events, excludeEventId) {
-    for (var i =0; i<events.length; i++) {
-      var event = events[i];
-      if ((excludeEventId === null) || (event.id != excludeEventId)) {
-        if (event.gtype == 'point') {
-          createMarker(i, event, events.length);
-        } else if ((event.gtype == 'line') || (event.gtype == 'polygon')) {
-          createPoly(i, event, events.length);          
-        }
+  /* called by createOverlay */
+  this.createPoly = function(index, event, totalEvents) {
+    var points = [];
+    var line = event.geom.line;
+    
+    for (i=0; i<line.length; i++) {
+      var vertex = new GLatLng(line[i].lat, line[i].lng);
+      points.push(vertex);
+      /*if the user specified "where", then we should not try to fit the map to all
+        polygons or lines in the search results, otherwise very large polys or lines could force
+        the map to be zoomed way out (e.g. an explorer path that crosses the ocean, but passes 
+        nearby New York City)
+      */ 
+      if (isEmpty($('where').value)) {
+        this.updateFitToPolygon(vertex);
+      } 
+    }
+    var poly = this.newPoly(points, event.geom.gtype);
+    if (poly) {
+      /* record so the user can click on the sidebar and see a popup in the map */
+      var html = this.makeOverlayHtml(index, event, totalEvents);
+      var overlayItem = this.recordOverlay(poly, html, event.gtype, event.id)
+      this.addOverlayClickListener(overlayItem);
+      //NOTE: if the overlay is a poly it will be added to the map when/if the hideZoomedPolygons() 
+      //decides it is appropriate
+      if (event.gtype == 'line') {
+        map.addOverlay(poly);
+      } 
+    }
+  }
+
+  /* Add to a global polygon object that is used to fit the map to the
+   * search results.   */
+  this.updateFitToPolygon = function(gll) {
+    if ((this.limitWithinMapBounds() == false) ) {
+      _fitToPolygon[_fitToPolygonIndex] = gll;
+      _fitToPolygonIndex++;
+    }
+  }
+
+  /* construct the marker icon */
+  this.getMarkerIcon = function() {
+    /* Create a lettered icon for this point using our icon class */
+    var letter = String.fromCharCode("A".charCodeAt(0) + _overlayIndex);
+    var letteredIcon = new GIcon(_baseIcon);
+    letteredIcon.image = _basePath+"images/icons/" + letter + ".png";
+    return letteredIcon;
+  }
+  
+  /* called by createOverlay */
+  this.createMarker = function(index, event, totalEvents) { 
+    this.updateFitToPolygon(new GLatLng(event.geom.lat, event.geom.lng));
+    markerIcon = this.getMarkerIcon();
+    
+    /* Set up our GMarkerOptions object */
+    var markerOptions = { icon:markerIcon };
+    var marker = new GMarker(new GLatLng(event.geom.lat, event.geom.lng), markerOptions);
+    var html = this.makeOverlayHtml(index, event, totalEvents);
+    marker.bindInfoWindowHtml(html);
+    map.addOverlay(marker);
+    
+    /* record so the user can click on the sidebar and see a popup in the map */
+    var overlayItem = this.recordOverlay( marker, html, "point", event.id);
+    this.addOverlayClickListener(overlayItem);
+  }  
+  
+  /* record overlay and html so we can pop up a window when the user clicks
+     on info in the sidebar s*/
+  this.recordOverlay = function( overlay, html, type, id) {
+    var item = new overlayItem(overlay, html, type, id);
+    _overlays[_overlayIndex] = item;
+    _overlayIndex++;
+    return item;
+  }
+
+  /* Listener for polys and lines */
+  //FSM TODO event listeners probably should be in a different place because they need 
+  //to access "_overlayManager." rather than "this."  Not sure what to do about it
+  this.addOverlayClickListener = function(overlayItem) {
+    //first turn stuff off
+    GEvent.addListener(overlayItem.overlay, "click", function(point) {
+      //for points, we only want to highlight the sidebar item. the
+      //infowindow is handled elsewhere
+      if (overlayItem.type != 'point') {
+        map.openInfoWindowHtml(point, overlayItem.html);
+        //NOTE: order is important here.  The highlight must come AFTER the openInfoWindowHtml
+        //otherwise, events will fire and the overlay will be hidden after we show it
+        _overlayManager.highlightOverlay(overlayItem);
       }
-    } 
+      _overlayManager.highlightSidebarItem(overlayItem); 
+    });
+  }
+
+  /* Highlight the overlay by changing its color */
+  this.highlightOverlay = function(overlayItem) {
+    var newOverlay = this.redrawOverlay(overlayItem, _overlayManager.LINE_WEIGHT_HIGHLIGHT, _overlayManager.LINE_COLOR_HIGHLIGHT, _overlayManager.POLY_COLOR_HIGHLIGHT);
+    overlayItem.isHighlighted = true;
+    overlayItem.overlay = newOverlay;
+    this.addOverlayClickListener(overlayItem);
+  }
+  
+  this.redrawOverlay = function(overlayItem, weight /* optional */, lineColor /* optional */, polyColor /* optional */) {
+    var overlay = overlayItem.overlay;
+    map.removeOverlay(overlay);
+    var points = new Array();
+    for (var i=0; i<overlay.getVertexCount(); i++) {
+      points[i] = overlay.getVertex(i);
+    }
+    overlay = this.newPoly(points, overlayItem.type, weight, lineColor, polyColor);
+    map.addOverlay(overlay);
+    return overlay;
+  }
+  
+  this.unhighlightOverlay = function() {
+    for (var ov=0; ov<_overlays.length; ov++) {
+      if (_overlays[ov].isHighlighted == true) {
+        _overlays[ov].overlay = this.redrawOverlay(_overlays[ov], _overlayManager.LINE_WEIGHT, _overlayManager.LINE_COLOR, _overlayManager.POLY_COLOR);
+        _overlays[ov].isHighlighted = false;
+        this.addOverlayClickListener(_overlays[ov]);
+      } 
+    }
   }
   
   this.newPoly = function(points, geometryType, weight /* optional */, 
@@ -178,6 +325,147 @@ function EventOverlayManager() {
       return ((g1.lat() == g2.lat()) && (g1.lng() == g1.lng()));
     } 
   }
+  
+  /* returns true if a line from v1 to v2 intersects the current map bounds at any point */
+  this.intersectsMap = function(v0, v1) {
+    var testLine = new Line(v0, v1);
+    var bounds = map.getBounds();
+    
+    var sw = bounds.getSouthWest();
+    var ne = bounds.getNorthEast()
+    var nw = new GLatLng(ne.lat(), sw.lng());
+    var se = new GLatLng(sw.lat(), ne.lng());
+    var diag1 = new Line(sw, ne);
+    var diag2 = new Line(nw, se);
+    //if the line intersects either diagonal line, then it intersects the rectangle
+    return this.intersectsLine(testLine, diag1) || this.intersectsLine(testLine, diag2);  
+  }
+  
+  /* returns true if line1 intersects line2 
+   * from: http://en.wikipedia.org/wiki/Line-line_intersection */
+  this.intersectsLine = function(l0, l1) {
+    var a1 = new Point2D(l0.v0.lng(), l0.v0.lat());  
+    var a2 = new Point2D(l0.v1.lng(), l0.v1.lat());  
+    var b1 = new Point2D(l1.v0.lng(), l1.v0.lat());  
+    var b2 = new Point2D(l1.v1.lng(), l1.v1.lat());  
+
+    var intersection = intersectLineLine(a1, a2, b1, b2);   
+
+    return intersection.status == 'Intersection';
+  }
+
+  /* Fit the map center and zoom level to the search results */
+  this.fitToResults = function() {
+    var boundsPoly = new GPolyline(_fitToPolygon);
+    var zoom; 
+    if (_fitToPolygon.length >= 2){             
+      zoom = map.getBoundsZoomLevel(boundsPoly.getBounds());
+      /* if they specified a place name, then we only want to zoom out to fit,
+           not zoom in (e.g. only one place matching the criteria in England, we still
+           want to show England */
+      if (!isEmpty($('where').value) && (zoom > map.getZoom())) {
+        zoom = map.getZoom();
+      }
+    } else if (_fitToPolygon.length == 1) {
+      zoom=12; //city level
+    }
+    if (_fitToPolygon.length >0) {
+      map.setZoom(zoom);
+      map.setCenter(this.getBoundsCenter(boundsPoly));
+    }
+  }
+
+  /* return the center of the given GOverlay object */
+  this.getBoundsCenter = function(boundsPoly) {
+    /* if there is only one point, we don't do a fit, we just zoom to the point 
+       TODO - fix this hack */    
+    if (_fitToPolygon == 1) {
+      return _fitToPolygon[0];
+    } else {
+      return boundsPoly.getBounds().getCenter();
+    }
+  }
+  /* Get the index to the _overlays array for a given event id */ 
+  this.getOverlaysIndex = function(id) {
+   var i;
+   for (i=0; i<_overlays.length; i++) {
+     if (_overlays[i].id == id) {
+       break;
+     }
+   }
+   return i;
+  }
+
+  /** Open an event marker window.  If incr is specificied, then we show the event 
+    * with an event[id + incr] */
+  this.showEvent = function(id, incr) {
+   var i = this.getOverlaysIndex(id);
+   var next = i + incr;
+   if ((next >= 0) && (next < _overlays.length)) {
+     this.openMarker(next); 
+   }
+  }
+
+   this.openMarker = function(index) {  
+    if (_overlays[index].type == "point") {
+      _overlays[index].overlay.openInfoWindowHtml(_overlays[index].html);
+    } else {
+      var overlay = _overlays[index].overlay;
+      _overlayManager.unhighlightOverlay();
+      var point = _mapHelper.findClosestVertex(map.getCenter(), overlay);
+      map.openInfoWindow(point, _overlays[index].html);
+      _overlayManager.highlightOverlay(_overlays[index]);
+    }
+    this.highlightSidebarItem(_overlays[index]); 
+  }
+    
+  /* Main function for info windows */  
+  this.createInfoWindowHtml = function(index, event, width /* optional */, height /* optional */) {
+    if (width==null || width=='null' || width=='') { width = this.INFO_WIDTH};
+    if (height==null || height=='null' || height=='') {
+      height = 'max-height:' + this.INFO_HEIGHT + ';';
+    } else {
+      height = 'height:' + height + 'px;'
+    }
+    var html = '<div class="result inforesult wikitext" style="width:' + width +'px;'+ height +'margin-bottom:10px">';
+    if (event.flagged) {
+      html += '<a target="_top" class="errorLabel" href="/event/changehistory.htm?id=' + event.id +'">Flagged! </a>'; 
+    }
+    //if there is an index, then put the marker icon in the bubble
+    if (index != null) {
+         var letter = this.ALPHA_CHARS.substring(index,index+1);
+         html += '<img alt="marker" style="margin-right:4px;" src="' + _basePath + 'images/icons/' + letter + '_label.png' + '"/>';
+        }
+      html += '<span class="summary">' + event.summary.escapeHTML() +'</span><br/>' + 
+        '<span class="when">' + event.when + '</span><br/>' + 
+    '<span class="where">' + event.where.escapeHTML();
+    if (!isEmpty(event.accy)) {
+       html += ' (Accuracy: ' + _msg_accy[event.accy] + ')'; 
+    }
+    html += '</span><br/>' + event.description;
+    
+    var tags = event.tags.split( "," );
+    var taglink = new Array();
+    tags.each( function(tag, index){
+      //encode ant apostrophes in the tag because that will mess up the call from HTML
+      //we will have to decode them later in goToTag()
+      var encodedtag = tag.gsub('\'', '%27');
+         //embedded search is wierd with following tags using document.location so we will use a regular href
+         if (-1 == document.location.pathname.indexOf('embedded')) {
+           taglink[index] = '<a target="_top" href="" onclick="_mapManager.goToTag(\'' + encodedtag + '\'); return false;">' + tag +'</a>';
+         } else {
+           //this is embedded
+           taglink[index] = '<a target="_top" href="'
+             + '/search/eventsearch.htm?_tag='+ encodedtag + '&_maptype=' + _mapManager.getMapTypeIndex()
+             + '">'+ tag +'</a>';
+         }
+    });
+        html += '<div class="usertags"><b>Tags: </b>' + taglink.join(', ') + '</div>';   
+    html += '<span class="source"><b>Source: </b>' + event.source + '</span>';
+    html += '</div>';
+        
+    return html;
+  } 
   
 	/* was GooglePack - from  http://www.polyarc.us/google/packer.js */   
 	this.encodePoly = function(poly)
@@ -240,8 +528,12 @@ function MapManager() {
   this.ZOOM_COUNTRY = 5;
   this.ZOOM_USA = 4;
   this.ZOOM_WORLD = 2;
-  this.MAP_TYPES = [G_NORMAL_MAP, G_SATELLITE_MAP, G_HYBRID_MAP, G_PHYSICAL_MAP]; 
-  
+  this.MAP_TYPES = [G_NORMAL_MAP, G_SATELLITE_MAP, G_HYBRID_MAP, G_PHYSICAL_MAP];
+  var m_diagonal = new GPolyline([
+      new GLatLng(86,-180),
+      new GLatLng(-86,180)
+    ]);
+    
   //initialize
   this.initializeMap = function(control) {
     if (GBrowserIsCompatible()) {
@@ -273,11 +565,7 @@ function MapManager() {
   
   /* default map coordinates */
   this.showDefault = function() {    
-    diagonal = new GPolyline([
-      new GLatLng(86,-180),
-      new GLatLng(-86,180)
-    ]);
-    var bounds = diagonal.getBounds();
+    var bounds = m_diagonal.getBounds();
     map.setCenter(bounds.getCenter());  
     map.setZoom(map.getBoundsZoomLevel(bounds));
   }
@@ -388,13 +676,20 @@ function MapHelper() {
 }
 
 //---------------------------------------------------------------
-
-
-
+  /* BEGIN DATA OBJECT DEFINITIONS ============================= */
+  function overlayItem(overlay, html, type, id ) {
+    this.overlay = overlay;
+    this.html = html;
+    this.type = type;
+    this.id = id;
+    this.isHighlighted = false;
+  }
   
-  function isEmpty(value) {
-		return ((null == value) || ('' == value));
-	}
+  /* line object */
+  function Line(vertex0, vertex1) {
+    this.v0 = vertex0;
+    this.v1 = vertex1;
+  } 
 
   function Point2D(x, y) {
     this.x = x;
@@ -406,10 +701,14 @@ function MapHelper() {
     this.points = new Array();
   }
 
-	/*****
-	*   intersectLineLine.  From http://www.kevlindev.com/gui/math/intersection/
-	*****/
-	function intersectLineLine(a1, a2, b1, b2) {
+  
+  /* END OBJECT DEFINITIONS ============================= */
+
+
+  /*****
+  *   intersectLineLine.  From http://www.kevlindev.com/gui/math/intersection/
+  *****/
+  intersectLineLine = function(a1, a2, b1, b2) {
     var result;
     
     var ua_t = (b2.x - b1.x) * (a1.y - b1.y) - (b2.y - b1.y) * (a1.x - b1.x);
@@ -440,5 +739,8 @@ function MapHelper() {
     }
 
     return result;
-  }	
-
+  } 
+  
+  function isEmpty(value) {
+		return ((null == value) || ('' == value));
+	}

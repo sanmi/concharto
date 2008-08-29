@@ -18,15 +18,6 @@
 		_markerIcon.iconAnchor = new GPoint(6, 20);
 		_markerIcon.infoWindowAnchor = new GPoint(6, 2);
 		_markerIcon.infoShadowAnchor = new GPoint(18, 18);
-		
-		_entPointIcon = new GIcon();
-		_entPointIcon.image = basePath+"images/icons/square.png";
-		_entPointIcon.shadow = basePath+"images/icons/square_shadow.png";
-		_entPointIcon.iconSize = new GSize(10, 10);
-		_entPointIcon.shadowSize = new GSize(12, 12);
-		_entPointIcon.iconAnchor = new GPoint(5, 5);
-		_entPointIcon.infoWindowAnchor = new GPoint(0, 0);
-		_entPointIcon.infoShadowAnchor = new GPoint(12, 12);
 	
 	  //NOTE: this is a work around for a draggable problem with the current google map api.
 	  //when you try to substitute any draggable icon other than G_DEFAULT_ICON, AND there is 
@@ -36,11 +27,28 @@
     G_DEFAULT_ICON.shadow = basePath+"images/icons/00shadow.png";
 	}	
 	
+	function EditEventOverlayManager(parent) {
+    this.parent = parent;
+
+    this.initialize = function() {
+      this.parent.initialize();
+    }
+
+	  /* construct the marker icon */
+	  this.getMarkerIcon = function() {
+	    return _markerIcon;
+	  }
+  } 
+  EditEventOverlayManager.prototype = new EventOverlayManager();  //inherit with override
+	
   /* BEGIN PRE FUNCTIONS (initialization) ============================= */
 	/* the main initialize function */
 	function initialize() {
 		initializeVars();
+		
 		_mapManager.initializeMap();
+		_overlayManager = new EditEventOverlayManager(new EventOverlayManager);
+		_overlayManager.initialize();
 
 		var mapType = document.getElementById("eventForm").mapType.value;
 		/* set map type from the event */			
@@ -76,36 +84,6 @@
 		
 	}
 		
-	/* create a non-editable poly from an event */
-	function createPoly(index, event, totalEvents) {
-		var points = [];
-		var line = event.geom.line;
-		for (var i=0; i<line.length; i++) {
-			var vertex = new GLatLng(line[i].lat, line[i].lng);
-			points.push(vertex);
-		}
-		var poly = _overlayManager.newPoly(points, event.gtype);
-		var html = _overlayManager.createInfoWindowHtml(index, event);
-		GEvent.addListener(poly, "click", function(point) {
-			if (_clickListener == null) {
-		    map.openInfoWindowHtml(point, html);
-	    } else {
-	      addVertex(point); 
-	    }
-	  });
-	  if (poly) {
-			map.addOverlay(poly);
-	  }
-	}
-	
-	/* create a non-editable marker from an event */
-	function createMarker(index, event, totalEvents) {
-		var point = new GLatLng(event.geom.lat, event.geom.lng);
-		var marker = new GMarker(point, {icon:_markerIcon});  
-		marker.bindInfoWindowHtml(_overlayManager.createInfoWindowHtml(index, event));
-		map.addOverlay(marker);
-	}
-	
 	/* create and draw the editable overlay */
 	function createEditableOverlay() {
 		var geometryType = getGeometryType();

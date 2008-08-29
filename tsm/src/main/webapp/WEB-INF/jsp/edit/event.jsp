@@ -14,7 +14,7 @@
 		<jsp:include page="../search/include/messages.jsp"/>
 	</jsp:attribute>
 	<jsp:attribute name="stylesheet">map.css,wiki.css,header.css</jsp:attribute>
-	<jsp:attribute name="script">prototype.js,map.js,effects.js,dragdrop.js,resizable.js,livepipe.js,window.js,help.js,edit.js</jsp:attribute>
+	<jsp:attribute name="script">prototype.js,map.js,effects.js,dragdrop.js,resizable.js,livepipe.js,window.js,help.js,searchcommon.js,edit.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize()" onunload="GUnload();" class="mapedit" onresize="_mapManager.setMapExtent();"</jsp:attribute>
 
 	<jsp:body>
