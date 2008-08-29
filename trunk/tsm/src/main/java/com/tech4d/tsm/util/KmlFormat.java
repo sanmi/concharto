@@ -147,10 +147,7 @@ public class KmlFormat {
 		
 		//icon
 		Element iconStyle = new Element("IconStyle");
-		Element scale = new Element("scale");
-		scale.addContent(simpleElement("x", "1"));
-		scale.addContent(simpleElement("y", "1"));
-		iconStyle.addContent(scale);
+		iconStyle.addContent(simpleElement("scale", "1"));
 		Element icon = new Element("Icon");
 		icon.addContent(simpleElement("href", getBasepath() + "/images/icons/marker-clk.png"));
 		iconStyle.addContent(icon);

@@ -3,343 +3,151 @@
 	(e.g. eventsearch, embeddedsearch) 
 */
 
-	/* global array and index for dealing with overlays */
-	var _overlays = [];
-	var _overlayIndex = 0;
-	var _fitToPolygon = [];
-	var _fitToPolygonIndex = 0;
-	var _accuracy_to_zoom = [4, 5, 7, 10, 11, 12, 13, 14, 15];
-	var _initialZoom;
-	var _initialCenter;
 	
-  /* BEGIN OBJECT DEFINITIONS ============================= */
-  function overlayItem(overlay, html, type, id ) {
-  	this.overlay = overlay;
-  	this.html = html;
-  	this.type = type;
-  	this.id = id;
-  	this.isHighlighted = false;
-  }
-  
-  /* line object */
-  function Line(vertex0, vertex1) {
-	  this.v0 = vertex0;
-	  this.v1 = vertex1;
-  } 
-  
-  /* END OBJECT DEFINITIONS ============================= */
   /* BEGIN PRE FUNCTIONS (initialization) ============================= */
   
-  /* Main initialization function */
-	function initialize(mapControl) {
-		adjustSidebarIE();
-		_mapManager.initializeMap(mapControl);
-		/* map center and map zoom */
-		
-		var zoomTxt = $('mapZoom').value;
-		var mapZoom;
-		if (!isEmpty(zoomTxt)) {
-			mapZoom = parseInt(zoomTxt);
-		}
-		/* set map type from the event */
-		var mapType = $('mapType').value;
-		if (mapType != '') {
-			map.setMapType(_mapManager.MAP_TYPES[mapType]);
-		}
-		
-		var mapCenter = getMapCenterFromJSON();
-		if (null != mapCenter) {
-			/* recenter the map */
-			map.setCenter(new GLatLng(mapCenter.lat,mapCenter.lng), mapZoom);			
+    //Setup a special map manager for maplets
+  function SearchEventOverlayManager(parent) {
+    this.parent = parent;
+    
+    //initialize
+    this.initialize = function(mapControl) {
+	    this.adjustSidebar();
+	    _mapManager.initializeMap(mapControl);
+	    /* map center and map zoom */
+	    
+	    var zoomTxt = $('mapZoom').value;
+	    var mapZoom;
+	    if (!isEmpty(zoomTxt)) {
+	      mapZoom = parseInt(zoomTxt);
+	    }
+	    /* set map type from the event */
+	    var mapType = $('mapType').value;
+	    if (mapType != '') {
+	      map.setMapType(_mapManager.MAP_TYPES[mapType]);
+	    }
+	    
+      this.parent.initialize();
+	    
+	    var mapCenter = this.getMapCenterFromJSON();
+	    if (null != mapCenter) {
+	      /* recenter the map */
+	      map.setCenter(new GLatLng(mapCenter.lat,mapCenter.lng), mapZoom);     
+	
+	      var eventsJSON = $('searchResults').value;
+	      if (eventsJSON != '') {
+	        var events = eventsJSON.evalJSON();
+	        _overlayManager.createOverlays(events);
+	      }
+	    }   
+	    
+	    this.adjustSidebar();
+	    if ($('embed').value == 'true') {
+	      /* always fit to results for embedded maps */
+	      _overlayManager.fitToResults();
+	    } else if (this.limitWithinMapBounds() == false)  {
+	      if (!($('mapCenterOverride').value == 'true') || !($('zoomOverride').value == 'true')) {
+	        _overlayManager.fitToResults();
+	      } else {
+	        if (($('mapCenterOverride').value == 'true') && ((0 != this.parent.fitToPolygon.length))) {
+	          $('mapCenterOverride').value = 'false';
+	        } 
+	        if ($('zoomOverride').value == 'true') {
+	          /* reset it */
+	          $('zoomOverride').value = 'false'; 
+	        }
+	      }
+	    }
+	    /* This is for creating links.  We only override zoom and center if the user has
+	         changed the map since the page was rendered (e.g. initialize() was called) */
+	    _initialZoom = map.getZoom();
+	    _initialCenter = map.getCenter();
+	  }
+  
+	  /** override from base class */
+	  this.limitWithinMapBounds = function() {
+	    return document.getElementById("eventSearchForm").limitWithinMapBounds.checked ; 
+	  }
+  
+	  /* Get the map center from the html form, return null if none was provided */
+	  this.getMapCenterFromJSON = function() {
+	    var mapCenterJSON = $('mapCenter').value;
+	    if (mapCenterJSON != "") {
+	      return mapCenterJSON.evalJSON();
+	    } else {
+	      return null;
+	    }       
+	  }
 
-			var eventsJSON = $('searchResults').value;
-			if (eventsJSON != '') {
-				var events = eventsJSON.evalJSON();
-				_overlayManager.createOverlays(events);
-			}
-		}		
-		
-		adjustSidebarIE();
-		if ($('embed').value == 'true') {
-			/* always fit to results for embedded maps */
-			fitToResults();
-		} else if (limitWithinMapBounds() == false)  {
-			if (!($('mapCenterOverride').value == 'true') || !($('zoomOverride').value == 'true')) {
-				fitToResults();
-			} else {
-				if (($('mapCenterOverride').value == 'true') && ((0 != _fitToPolygon.length))) {
-					$('mapCenterOverride').value = 'false';
-				} 
-				if ($('zoomOverride').value == 'true') {
-					/* reset it */
-					$('zoomOverride').value = 'false'; 
-				}
-			}
-		}
-		/* This is for creating links.  We only override zoom and center if the user has
-		     changed the map since the page was rendered (e.g. initialize() was called) */
-		_initialZoom = map.getZoom();
-		_initialCenter = map.getCenter();
-		
-		/* to unhighlight polygons if there are any */
-		GEvent.addListener(map, "infowindowclose", function() {
-		  unhighlightOverlay();
-		});
+    /* Resize map to fit the current window */
+	  this.adjustSidebar = function() {
+	    /* adjust the map */
+	    _mapManager.setMapExtent();
+	    var top = document.getElementById("map").offsetTop;
+	    var height = _mapManager.getHeight() - top - _currResultsNudge;
+	    document.getElementById("results").style.height=height+"px";
+	    /* DEBUG the following is a Kludge! for an IE 6 rendering problem argh!*/
+	    document.getElementById("results").style.width = _currResultsWidth + "px"; 
+	  }
+	  
 
-		//listeners for hiding polygons when you are zoomed way in
-		GEvent.addListener(map, "zoomend", function() {
-		  hideZoomedPolygons(1);
-		});
-		GEvent.addListener(map, "moveend", function() {
-		  hideZoomedPolygons(2);
-		});
+	  /* Add a subtle highlight to the sidebar item when */
+	  this.highlightSidebarItem = function(overlayItem) {
+	    //highlight our one if it exists (e.g. we are on the search page, not the embedded page
+	    if ($(overlayItem.id.toString()) != null) {
+	      //unhighlight others
+	      $$('.highlight').each(function(item){
+	       $(item).removeClassName('highlight');
+	      });
+	      $(overlayItem.id.toString()).addClassName('highlight');
+	    }   
+	  }
 
-		hideZoomedPolygons(3);
-	}
-	
-	/* Don't show polygons when we are zoomed so far in that we can't see them */
-	function hideZoomedPolygons(from) { 
-		_overlays.each( function(item, index){
-			if (item.type == 'polygon') {
-				var overlay = item.overlay;
-				var hide = true;
-				for (var i=0; i<overlay.getVertexCount(); i++) {
-					var vertex = overlay.getVertex(i);
-					//if vertex within the map OR
-					//if a line between this vertex and the last intersects the map
-					if ((map.getBounds().contains(vertex)) ||
-							((i+1 < overlay.getVertexCount()) && intersectsMap(vertex, overlay.getVertex(i+1)))) 
-					{
-					  hide = false;
-						break;
-					} 
-				}
-				if (hide) {
-          //ok, there are no vertexes within the map, so we should hide this overlay
-          map.removeOverlay(overlay);
-				} else {
-          map.addOverlay(overlay);
-				}
-			}
-		});
-	}
-	
-	/* returns true if a line from v1 to v2 intersects the current map bounds at any point */
-	function intersectsMap(v0, v1) {
-		var testLine = new Line(v0, v1);
-		var bounds = map.getBounds();
-		
-		var sw = bounds.getSouthWest();
-		var ne = bounds.getNorthEast()
-		var nw = new GLatLng(ne.lat(), sw.lng());
-		var se = new GLatLng(sw.lat(), ne.lng());
-		var diag1 = new Line(sw, ne);
-		var diag2 = new Line(nw, se);
-		//if the line intersects either diagonal line, then it intersects the rectangle
-		return intersectsLine(testLine, diag1) || intersectsLine(testLine, diag2);  
-	}
-	
-	/* returns true if line1 intersects line2 
-	 * from: http://en.wikipedia.org/wiki/Line-line_intersection */
-	function intersectsLine(l0, l1) {
-		
-		var a1 = new Point2D(l0.v0.lng(), l0.v0.lat());  
-		var a2 = new Point2D(l0.v1.lng(), l0.v1.lat());  
-		var b1 = new Point2D(l1.v0.lng(), l1.v0.lat());  
-		var b2 = new Point2D(l1.v1.lng(), l1.v1.lat());  
+	  /* create html for info bubbles */  
+	  this.makeOverlayHtml = function(index, event, totalEvents) {
+	    var overlaysIndex = _overlayManager.getOverlaysIndex(event.id);
+	    var html = _overlayManager.createInfoWindowHtml(index, event);  
+	    html += 
+	    '<div style="width:' + _overlayManager.INFO_WIDTH + 'px;"><span  style="float:right">';
+	    if (overlaysIndex > 0) {
+	      html +='<a href="" onclick="_overlayManager.showEvent(' + event.id + ', -1); return false;">&laquo; prev</a>&nbsp;&nbsp; '; 
+	    } 
+	    if (overlaysIndex < (totalEvents - 1)) {
+	      html += '<a href="" onclick="_overlayManager.showEvent(' + event.id + ', 1); return false;">next &raquo;</a>';
+	    }
+	    html += '</span>';
+	    html += '<div class="infolinkbar linkbar"><a class="links" href="#" onclick="editEvent(' + event.id + ')" title="' + _msg_edit + '">edit</a>';
+	        
+	    if (event.hasDiscuss) {
+	      html += '<a class="links" href="'+ _basePath + 'event/discuss.htm?id=' + event.id + '" title="' + _msg_discuss + '">discuss</a>';
+	    } else {
+	      html += '<span class="new_links"><a href="'+ _basePath + 'edit/discussedit.htm?id=' + event.id + '" title="' + _msg_newdiscuss + '">discuss</a></span>';
+	    }
+	    html += '<a class="links" href="' + _basePath + 'event/changehistory.htm?id=' + event.id + '" title="' + _msg_changes + '">changes</a>';
+	    html += '<a class="links" href="' + _basePath + 'edit/flagevent.htm?id=' + event.id + '" title="' + _msg_flag + '">flag</a>' +
+	      '<a class="links" href="#" onclick="zoomTo(' + event.id + ')">zoom in</a>' +
+	      '<br/>'+
+	      '</div></div>';
+	    return html;
+	  }
+	  
+  }
+  SearchEventOverlayManager.prototype = new EventOverlayManager();  //inherit with override
 
-		var intersection = intersectLineLine(a1, a2, b1, b2);		
-
-		return intersection.status == 'Intersection';
-	}
-
-	
-	/* Get the map center from the html form, return null if none was provided */
-	function getMapCenterFromJSON() {
-		var mapCenterJSON = $('mapCenter').value;
-		if (mapCenterJSON != "") {
-			return mapCenterJSON.evalJSON();
-		} else {
-			return null;
-		} 			
-	}
-	
-	/* Fit the map center and zoom level to the search results */
-	function fitToResults() {
-		var boundsPoly = new GPolyline(_fitToPolygon);
-		var zoom; 
-		if (_fitToPolygon.length >= 2){							
-			zoom = map.getBoundsZoomLevel(boundsPoly.getBounds());
-			/* if they specified a place name, then we only want to zoom out to fit,
-			     not zoom in (e.g. only one place matching the criteria in England, we still
-			     want to show England */
-			if (!isEmpty($('where').value) && (zoom > map.getZoom())) {
-				zoom = map.getZoom();
-			}
-		} else if (_fitToPolygon.length == 1) {
-			zoom=12; //city level
-		}
-		if (_fitToPolygon.length >0) {
-			map.setZoom(zoom);
-			map.setCenter(getBoundsCenter(boundsPoly));
-		}
-	}
-	
-	/* return the center of the given GOverlay object */
-	function getBoundsCenter(boundsPoly) {
-		/* if there is only one point, we don't do a fit, we just zoom to the point 
-		   TODO - fix this hack */		
-		if (_fitToPolygon == 1) {
-			return _fitToPolygon[0];
-		} else {
-			return boundsPoly.getBounds().getCenter();
-		}
-	}
-	
-	/* called by createOverlay */
-	function createMarker(index, event, totalEvents) { 
-		updateFitToPolygon(new GLatLng(event.geom.lat, event.geom.lng));
-		
-	  /* Create a lettered icon for this point using our icon class */
-	  var letter = String.fromCharCode("A".charCodeAt(0) + _overlayIndex);
-	  var letteredIcon = new GIcon(_baseIcon);
-	  letteredIcon.image = _basePath+"images/icons/" + letter + ".png";
-	
-	  /* Set up our GMarkerOptions object */
-	  var markerOptions = { icon:letteredIcon };
-		var marker = new GMarker(new GLatLng(event.geom.lat, event.geom.lng), markerOptions);
-		var html = makeOverlayHtml(index, event, totalEvents);
-		marker.bindInfoWindowHtml(html);
-		map.addOverlay(marker);
-		
-		/* record so the user can click on the sidebar and see a popup in the map */
-		var overlayItem = recordOverlay( marker, html, "point", event.id);
-		addOverlayClickListener(overlayItem);
-	}
-	
-	/* Add to a global polygon object that is used to fit the map to the
-	 * search results.	 */
-	function updateFitToPolygon(gll) {
-		if ((limitWithinMapBounds() == false) ) {
-			_fitToPolygon[_fitToPolygonIndex] = gll;
-			_fitToPolygonIndex++;
-		}
-	}
-	/* called by createOverlay */
-	function createPoly(index, event, totalEvents) {
-		var points = [];
-		var line = event.geom.line;
-		
-		for (i=0; i<line.length; i++) {
-			var vertex = new GLatLng(line[i].lat, line[i].lng);
-			points.push(vertex);
-			/*if the user specified "where", then we should not try to fit the map to all
-			  polygons or lines in the search results, otherwise very large polys or lines could force
-			  the map to be zoomed way out (e.g. an explorer path that crosses the ocean, but passes 
-			  nearby New York City)
-			*/ 
-			if (isEmpty($('where').value)) {
-				updateFitToPolygon(vertex);
-			} 
-		}
-		var poly = _overlayManager.newPoly(points, event.geom.gtype);
-		if (poly) {
-			/* record so the user can click on the sidebar and see a popup in the map */
-			var html = makeOverlayHtml(index, event, totalEvents);
-			var overlayItem = recordOverlay(poly, html, event.gtype, event.id)
-			addOverlayClickListener(overlayItem);
-			//NOTE: if the overlay is a poly it will be added to the map when/if the hideZoomedPolygons() 
-			//decides it is appropriate
-			if (event.gtype == 'line') {
-			  map.addOverlay(poly);
-			} 
-		}
-	}
-	
-	/* Listener for polys and lines */
-	function addOverlayClickListener(overlayItem) {
-    //first turn stuff off
-		GEvent.addListener(overlayItem.overlay, "click", function(point) {
-		  //for points, we only want to highlight the sidebar item. the
-		  //infowindow is handled elsewhere
-	    if (overlayItem.type != 'point') {
-	      map.openInfoWindowHtml(point, overlayItem.html);
-        //NOTE: order is important here.  The highlight must come AFTER the openInfoWindowHtml
-        //otherwise, events will fire and the overlay will be hidden after we show it
-        highlightOverlay(overlayItem);
-      }
-	    highlightSidebarItem(overlayItem);
-	  });
-	}
-	
-	/* record overlay and html so we can pop up a window when the user clicks
-	     on info in the sidebar s*/
-	function recordOverlay( overlay, html, type, id) {
-		var item = new overlayItem(overlay, html, type, id);
-		_overlays[_overlayIndex] = item;
-		_overlayIndex++;
-		return item;
-	}
+  /* Overlay manager for embedded maps - info bubbles are smaller and we don't worry about the sidebar 
+   * TODO we could probably do a better job at decomposing / inheritance to avoid do-nothing sidebar 
+   * methods */
+  function EmbeddedSearchEventOverlayManager(parent) {
+    this.parent = parent;
+    this.highlightSidebarItem = function(overlayItem) {/* do nothing */};
+    this.adjustSidebar = function() {/* do nothing */};
+  } 
+  EmbeddedSearchEventOverlayManager.prototype = new SearchEventOverlayManager();  //inherit with override
 
 
   /* END PRE FUNCTIONS (initialization) ============================= */
 
   /* BEGIN WHILE FUNCTIONS  ============================= */
-	function openMarker(index) {	
-		if (_overlays[index].type == "point")	{
-			_overlays[index].overlay.openInfoWindowHtml(_overlays[index].html);
-		} else {
-			var overlay = _overlays[index].overlay;
-			unhighlightOverlay();
-			var point = _mapHelper.findClosestVertex(map.getCenter(), overlay);
-			map.openInfoWindow(point, _overlays[index].html);
-			highlightOverlay(_overlays[index]);
-		}
-    highlightSidebarItem(_overlays[index]);
-	}
-	
-	/* Add a subtle highlight to the sidebar item when */
-	function highlightSidebarItem(overlayItem) {
-    //highlight our one if it exists (e.g. we are on the search page, not the embedded page
-    if ($(overlayItem.id.toString()) != null) {
-	    //unhighlight others
-	    $$('.highlight').each(function(item){
-	     $(item).removeClassName('highlight');
-	    });
-      $(overlayItem.id.toString()).addClassName('highlight');
-    }	  
-	}
-	
-	/* Highlight the overlay by changing its color */
-	function highlightOverlay(overlayItem) {
-		var newOverlay = redrawOverlay(overlayItem, _overlayManager.LINE_WEIGHT_HIGHLIGHT, _overlayManager.LINE_COLOR_HIGHLIGHT, _overlayManager.POLY_COLOR_HIGHLIGHT);
-		overlayItem.isHighlighted = true;
-		overlayItem.overlay = newOverlay;
-		addOverlayClickListener(overlayItem);
-	}
-	
-	function redrawOverlay(overlayItem, weight /* optional */, lineColor /* optional */, polyColor /* optional */) {
-		var overlay = overlayItem.overlay;
-		map.removeOverlay(overlay);
-		var points = new Array();
-		for (var i=0; i<overlay.getVertexCount(); i++) {
-			points[i] = overlay.getVertex(i);
-		}
-		overlay = _overlayManager.newPoly(points, overlayItem.type, weight, lineColor, polyColor);
-		map.addOverlay(overlay);
-		return overlay;
-	}
-	
-	function unhighlightOverlay() {
-		for (var ov=0; ov<_overlays.length; ov++) {
-			if (_overlays[ov].isHighlighted == true) {
-				_overlays[ov].overlay = redrawOverlay(_overlays[ov], _overlayManager.LINE_WEIGHT, _overlayManager.LINE_COLOR, _overlayManager.POLY_COLOR);
-				_overlays[ov].isHighlighted = false;
-				addOverlayClickListener(_overlays[ov]);
-			} 
-		}
-	}
-	
 	function zoomTo(id) {
 		var index;
 		for (var i=0; i<_overlays.length; i++) {
@@ -383,10 +191,6 @@
 		saveAndSubmit();		
 	}
 
-	function limitWithinMapBounds() {
-		return document.getElementById("eventSearchForm").limitWithinMapBounds.checked ; 
-	}
-	
 	function setLimitWithinMapBounds(value) {
 		document.getElementById("eventSearchForm").limitWithinMapBounds.value = value;
 	}

@@ -9,7 +9,7 @@
 <tsm:page title="Embedded Map">
 	<jsp:attribute name="stylesheet">map.css,wiki.css,search.css</jsp:attribute>
 	<jsp:attribute name="script">prototype.js,map.js,searchcommon.js</jsp:attribute>
-	<jsp:attribute name="bodyattr">onload="initialize_embedded()" onunload="GUnload();" class="mapedit" onresize="adjustSidebarIE();"</jsp:attribute>
+	<jsp:attribute name="bodyattr">onload="initialize_embedded()" onunload="GUnload();" class="mapedit" onresize="_overlayManager.adjustSidebar();"</jsp:attribute>
 	<jsp:attribute name="stripped">true</jsp:attribute>
 	<jsp:attribute name="head">
 		<jsp:include page="../include/mapkey.js.jsp" />
@@ -17,9 +17,12 @@
 		<jsp:include page="../search/include/messages.jsp" />
 		<script type="text/javascript">
 		//<![CDATA[
+		
 		<%-- the main initialize function --%>
 		function initialize_embedded() {
-			initialize(new GSmallMapControl());
+			_overlayManager = new EmbeddedSearchEventOverlayManager(new EventOverlayManager);
+      _overlayManager.initialize(new GSmallMapControl());
+			
 	   	var top = document.getElementById("map").offsetTop;
 	   	var headerHeight = 0;
 		  if ($('embeddedHeader') != null) {
@@ -29,15 +32,6 @@
 	   	document.getElementById("map").style.height=height+"px";		
 		}
 	
-		<%-- override create html for info bubbles --%>	
-		function makeOverlayHtml(index, event, totalEvents) {
-			return _overlayManager.createInfoWindowHtml(index, event, 350, 150);
-		}
-	
-		<%-- override this function to do nothing --%>
-		function adjustSidebarIE() {
-		}
-		
 		//]]>
 		</script>
 		<style type="text/css">
