@@ -6,7 +6,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.tech4d.tsm.web.util.UrlFormat;
 
-
+/**
+ * Create a wikimodel given the request
+ * @author frank
+ *
+ */
 public class WikiModelFactory {
 
 	public static WikiModel newWikiModel(HttpServletRequest request) {

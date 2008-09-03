@@ -47,6 +47,8 @@
 		initializeVars();
 		
 		_mapManager.initializeMap();
+      _mapManager.showDefault();
+    
 		_overlayManager = new EditEventOverlayManager(new EventOverlayManager);
 		_overlayManager.initialize();
 
@@ -79,7 +81,7 @@
 				 the centroid of the polyline may be nowhere near the border in which 
 				 case you won't see the line at all.*/
 		if (!isEmpty(_editablePoly) && _editablePoly.getVertexCount() >0) {
-			_mapHelper.fitToPoly(_editablePoly, true);
+			_overlayManager.fitToPoly(_editablePoly, true);
 		} 
 		
 	}
@@ -184,7 +186,7 @@
 		if (poly) {
 			map.setCenter(poly.getBounds().getCenter(), getZoom());
 			/* if the map is too zoomed in, we should zoom out to fit the line */
-			_mapHelper.fitToPoly(poly);
+			_overlayManager.fitToPoly(poly);
 		}
 	}
 	
@@ -198,7 +200,7 @@
 		if (null == poly) {
 	    map.openInfoWindowHtml(map.getCenter(), html);
 		} else {
-			var point = _mapHelper.findClosestVertex(map.getCenter(), poly)
+			var point = _overlayManager.findClosestVertex(map.getCenter(), poly)
 	    map.openInfoWindowHtml(point, html);
 		}
 	}

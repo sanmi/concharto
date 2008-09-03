@@ -7,22 +7,36 @@ import org.htmlcleaner.ContentToken;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.Utils;
 
-public class TsmWikiModel extends WikiModel {
+/**
+ * Renders wikipedia markup to HTML.  
+ * NOTE: There may be some cross site scripting vulnerabilities in doing this.  
+ * See note on TagNode.java and http://openmya.hacker.jp/hasegawa/security/expression.txt
+ * 
+ * In order to avoid XSS all together, we can simply add the following:
+ * <code>
+ * static {	
+ *   config.getTokenMap().clear();
+ * }
+ * </code>
+ * But that would exclude all additional HTML tags from the content
+ * 
+ * @author frank
+ *
+ */
+public class TsmWikiModel extends WikiModel  {
 	private String basePath; //full base url plus port number
 	private static final Configuration config = Configuration.DEFAULT_CONFIGURATION;
-	static {
-		
-		config.getTokenMap().clear();
+	static {	
+		//don't allow <a href>.  Google kml and maplets don't allow it.
+		config.getTokenMap().remove("a"); 
 	}
-	
 	public TsmWikiModel(String basePath, String imageBaseURL, String linkBaseURL) {
-		super(config, imageBaseURL, linkBaseURL);
+		super(imageBaseURL, linkBaseURL);
 		this.basePath = basePath;
 	}
 
 	@Override
 	public String render(String rawWikiText) {
-		// TODO Auto-generated method stub
 		String substituted = SubstitutionMacro.postSignature(basePath, rawWikiText);
 		String rendered = super.render(substituted);
 		return rendered;
@@ -48,13 +62,11 @@ public class TsmWikiModel extends WikiModel {
 		}
 		TagNode aTagNode = new TagNode("a");
 		append(aTagNode);
-		aTagNode.addAttribute("href", link);
-		aTagNode.addAttribute("class", "externallink");
-		aTagNode.addAttribute("title", link);
-		aTagNode.addAttribute("rel", "nofollow");
-		aTagNode.addAttribute("target", "_top");
+		aTagNode.addAttribute("href", link, true);
+		aTagNode.addAttribute("class", "externallink", true);
+		aTagNode.addAttribute("title", link, true);
+		aTagNode.addAttribute("rel", "nofollow", true);
+		aTagNode.addAttribute("target", "_top", true);
 		aTagNode.addChild(new ContentToken(linkName));
 	}
-
-
 }

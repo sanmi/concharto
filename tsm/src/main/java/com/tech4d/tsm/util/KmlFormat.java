@@ -27,6 +27,7 @@ import com.tech4d.tsm.model.Event;
 import com.tech4d.tsm.model.UserTag;
 import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.model.time.VariablePrecisionDate;
+import com.tech4d.tsm.web.wiki.SubstitutionMacro;
 import com.tech4d.tsm.web.wiki.TsmWikiModel;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -214,15 +215,20 @@ public class KmlFormat {
 		//NOTE: it is not the most efficient thing to create a new wikimodel for each event, but
 		//until we are at 100,000 events it won't make a difference
     	WikiModel wikiModel = new TsmWikiModel(bpath, bpath + "images/${image}", bpath + "page.htm?page=${title}");
-		sb = addNullableField(sb, wikiModel.render(event.getDescription()));
+		sb = addNullableField(sb, renderWiki(wikiModel, event.getDescription()));
 		sb.append("Source: ");
-		sb = addNullableField(sb, wikiModel.render(event.getSource()));
+		sb = addNullableField(sb, renderWiki(wikiModel, event.getSource()));
 		addTags(sb, event);
 
 		description.addContent(new CDATA(sb.toString()));
 		placemark.addContent(description);		
 	}
 	
+	private static String renderWiki(WikiModel wikiModel, String rawWikiText) {
+		String rendered = wikiModel.render(rawWikiText);
+		return SubstitutionMacro.explicitStyles(rendered);
+	}
+
 	/**
 	 * Add snippet
 	 * @param placemark

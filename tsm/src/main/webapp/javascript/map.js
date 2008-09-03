@@ -4,22 +4,20 @@ var geocoder = null; /* TODO refactor to remove geocoder as a global variable */
 
 var _overlayManager = new EventOverlayManager();
 var _mapManager = new MapManager();
-var _mapHelper = new MapHelper();
 
-  //variables
-  var _baseIcon = new GIcon();
-  var _basePath;
+//variables
+var _baseIcon = new GIcon();
+var _basePath;
 
-  //Initialize global variables
-  function initializeMapVars() {
-    _basePath = $('basePath').value;
-    _baseIcon.shadow = _basePath+"images/icons/00shadow.png";
-    _baseIcon.iconSize = new GSize(20, 32);
-    _baseIcon.shadowSize = new GSize(40, 35);
-    _baseIcon.iconAnchor = new GPoint(10, 32);
-    _baseIcon.infoWindowAnchor = new GPoint(12, 3);
-  }
-  
+//Initialize global variables
+function initializeMapVars() {
+  _basePath = $('basePath').value;
+  _baseIcon.shadow = _basePath+"images/icons/00shadow.png";
+  _baseIcon.iconSize = new GSize(20, 32);
+  _baseIcon.shadowSize = new GSize(40, 35);
+  _baseIcon.iconAnchor = new GPoint(10, 32);
+  _baseIcon.infoWindowAnchor = new GPoint(12, 3);
+}
 
 /** Manages creating, display and events for all points and overlays */
 function EventOverlayManager() {
@@ -82,7 +80,7 @@ function EventOverlayManager() {
         if (event.gtype == 'point') {
           this.createMarker(i, event, events.length);
         } else if ((event.gtype == 'line') || (event.gtype == 'polygon')) {
-          this.createPoly(i, event, events.length);          
+          this.createPoly(i, event, events.length);   
         }
       }
     } 
@@ -90,19 +88,22 @@ function EventOverlayManager() {
   }
 
   /* Don't show polygons when we are zoomed so far in that we can't see them 
-   * @param return - a variable for debugging event triggers.  Normally not used. 
+   * @param from, a variable for debugging event triggers.  Normally not used. 
    */
   this.hideZoomedPolygons = function(from) {
-    _overlays.each( function(item, index){
+    _overlays.each( function(item, index) {
+      bounds = map.getBounds();
       if (item.type == 'polygon') {
         var overlay = item.overlay;
         var hide = true;
-        for (var i=0; i<overlay.getVertexCount(); i++) {
-          var vertex = overlay.getVertex(i);
+        var vertexes = item.points;       
+        var vertexCount = vertexes.length;
+        for (var i = 0; i < vertexCount; i++) {
+          var vertex = vertexes[i];
           //if vertex within the map OR
           //if a line between this vertex and the last intersects the map
-          if ((map.getBounds().contains(vertex)) ||
-              ((i+1 < overlay.getVertexCount()) && _overlayManager.intersectsMap(vertex, overlay.getVertex(i+1)))) 
+          if ((bounds.contains(vertex)) ||
+              ((i+1 < vertexCount) && _overlayManager.intersectsMap(bounds, vertex, vertexes[i+1]))) 
           {
             hide = false;
             break;
@@ -167,7 +168,7 @@ function EventOverlayManager() {
     if (poly) {
       /* record so the user can click on the sidebar and see a popup in the map */
       var html = this.makeOverlayHtml(index, event, totalEvents);
-      var overlayItem = this.recordOverlay(poly, html, event.gtype, event.id)
+      var overlayItem = this.recordOverlay(poly, html, event.gtype, event.id, points)
       this.addOverlayClickListener(overlayItem);
       //NOTE: if the overlay is a poly it will be added to the map when/if the hideZoomedPolygons() 
       //decides it is appropriate
@@ -204,7 +205,7 @@ function EventOverlayManager() {
     var markerOptions = { icon:markerIcon };
     var marker = new GMarker(new GLatLng(event.geom.lat, event.geom.lng), markerOptions);
     var html = this.makeOverlayHtml(index, event, totalEvents);
-    marker.bindInfoWindowHtml(html);
+    marker.bindInfoWindow(html);
     map.addOverlay(marker);
     
     /* record so the user can click on the sidebar and see a popup in the map */
@@ -214,8 +215,8 @@ function EventOverlayManager() {
   
   /* record overlay and html so we can pop up a window when the user clicks
      on info in the sidebar s*/
-  this.recordOverlay = function( overlay, html, type, id) {
-    var item = new overlayItem(overlay, html, type, id);
+  this.recordOverlay = function( overlay, html, type, id, points) {
+    var item = new overlayItem(overlay, html, type, id, points);
     _overlays[_overlayIndex] = item;
     _overlayIndex++;
     return item;
@@ -250,10 +251,7 @@ function EventOverlayManager() {
   this.redrawOverlay = function(overlayItem, weight /* optional */, lineColor /* optional */, polyColor /* optional */) {
     var overlay = overlayItem.overlay;
     map.removeOverlay(overlay);
-    var points = new Array();
-    for (var i=0; i<overlay.getVertexCount(); i++) {
-      points[i] = overlay.getVertex(i);
-    }
+    var points = overlayItem.points;
     overlay = this.newPoly(points, overlayItem.type, weight, lineColor, polyColor);
     map.addOverlay(overlay);
     return overlay;
@@ -269,6 +267,7 @@ function EventOverlayManager() {
     }
   }
   
+  /* Create a new polygon */
   this.newPoly = function(points, geometryType, weight /* optional */, 
                     lineColor /* optional */, polyColor /* optional */) {
     if (weight == undefined) {
@@ -293,7 +292,6 @@ function EventOverlayManager() {
             numLevels: 4
         });
         return encodedPolyline;
-        return new GPolyline();
       } else if (geometryType == 'polygon') {
         return new GPolygon(points, polyColor, weight, .8, lineColor, .25);
       }
@@ -327,10 +325,8 @@ function EventOverlayManager() {
   }
   
   /* returns true if a line from v1 to v2 intersects the current map bounds at any point */
-  this.intersectsMap = function(v0, v1) {
+  this.intersectsMap = function(bounds, v0, v1) {
     var testLine = new Line(v0, v1);
-    var bounds = map.getBounds();
-    
     var sw = bounds.getSouthWest();
     var ne = bounds.getNorthEast()
     var nw = new GLatLng(ne.lat(), sw.lng());
@@ -412,7 +408,7 @@ function EventOverlayManager() {
     } else {
       var overlay = _overlays[index].overlay;
       _overlayManager.unhighlightOverlay();
-      var point = _mapHelper.findClosestVertex(map.getCenter(), overlay);
+      var point = this.findClosestVertex(map.getCenter(), overlay);
       map.openInfoWindow(point, _overlays[index].html);
       _overlayManager.highlightOverlay(_overlays[index]);
     }
@@ -423,7 +419,7 @@ function EventOverlayManager() {
   this.createInfoWindowHtml = function(index, event, width /* optional */, height /* optional */) {
     if (width==null || width=='null' || width=='') { width = this.INFO_WIDTH};
     if (height==null || height=='null' || height=='') {
-      height = 'max-height:' + this.INFO_HEIGHT + ';';
+      height = 'max-height:' + this.INFO_HEIGHT + 'px;';
     } else {
       height = 'height:' + height + 'px;'
     }
@@ -443,22 +439,22 @@ function EventOverlayManager() {
        html += ' (Accuracy: ' + _msg_accy[event.accy] + ')'; 
     }
     html += '</span><br/>' + event.description;
-    
+
     var tags = event.tags.split( "," );
     var taglink = new Array();
     tags.each( function(tag, index){
       //encode ant apostrophes in the tag because that will mess up the call from HTML
       //we will have to decode them later in goToTag()
       var encodedtag = tag.gsub('\'', '%27');
-         //embedded search is wierd with following tags using document.location so we will use a regular href
-         if (-1 == document.location.pathname.indexOf('embedded')) {
-           taglink[index] = '<a target="_top" href="" onclick="_mapManager.goToTag(\'' + encodedtag + '\'); return false;">' + tag +'</a>';
-         } else {
-           //this is embedded
-           taglink[index] = '<a target="_top" href="'
-             + '/search/eventsearch.htm?_tag='+ encodedtag + '&_maptype=' + _mapManager.getMapTypeIndex()
-             + '">'+ tag +'</a>';
-         }
+      //embedded search is wierd with following tags using document.location so we will use a regular href
+      if (-1 == document.location.pathname.indexOf('embedded')) {
+        taglink[index] = '<a target="_top" href="" onclick="_mapManager.goToTag(\'' + encodedtag + '\'); return false;">' + tag +'</a>';
+      } else {
+        //this is embedded
+        taglink[index] = '<a target="_top" href="'
+          + '/search/eventsearch.htm?_tag='+ encodedtag + '&_maptype=' + _mapManager.getMapTypeIndex()
+          + '">'+ tag +'</a>';
+      }
     });
         html += '<div class="usertags"><b>Tags: </b>' + taglink.join(', ') + '</div>';   
     html += '<span class="source"><b>Source: </b>' + event.source + '</span>';
@@ -467,56 +463,78 @@ function EventOverlayManager() {
     return html;
   } 
   
-	/* was GooglePack - from  http://www.polyarc.us/google/packer.js */   
-	this.encodePoly = function(poly)
-	{
-	  var i,j,k,l,u,v,w,z;
-	
-	  w=[];
-	  z=[];
-	
-	  u={x:0,y:0};
-	  v={x:0,y:0};
-	
-	  for (i=0;poly[i];i++)
-	  {
-	    w[i]="B";
-	
-	    u.x=(poly[i].x*1e5)<<1;
-	    u.y=(poly[i].y*1e5)<<1;
-	
-	    v.x=u.x-v.x;
-	    v.y=u.y-v.y;
-	
-	    v.x^=v.x>>31;
-	    v.y^=v.y>>31;
-	
-	    z.push(v.y.toString(32));
-	    z.push(v.x.toString(32));
-	
-	    v.x=u.x;
-	    v.y=u.y;
-	  }
-	
-	  for (i=0;z[i];i++)
-	  {
-	    k=[];
-	
-	    for (j=0;z[i].charAt(j);j++)
-	    {
-	    k[j]=String.fromCharCode(parseInt(z[i].charAt(j),32)+(j ? 95 : 63));
-	    }
-	
-	    z[i]=k.reverse().join("");
-	  }
-	
-	  w=w.join("");
-	  z=z.join("");
-	
-	  return {levels:w,points:z};
-	}
+  /* was GooglePack - from  http://www.polyarc.us/google/packer.js */   
+  this.encodePoly = function(poly)
+  {
+    var i,j,k,l,u,v,w,z;
+  
+    w=[];
+    z=[];
+  
+    u={x:0,y:0};
+    v={x:0,y:0};
+  
+    for (i=0;poly[i];i++)
+    {
+      w[i]="B";
+  
+      u.x=(poly[i].x*1e5)<<1;
+      u.y=(poly[i].y*1e5)<<1;
+  
+      v.x=u.x-v.x;
+      v.y=u.y-v.y;
+  
+      v.x^=v.x>>31;
+      v.y^=v.y>>31;
+  
+      z.push(v.y.toString(32));
+      z.push(v.x.toString(32));
+  
+      v.x=u.x;
+      v.y=u.y;
+    }
+  
+    for (i=0;z[i];i++)
+    {
+      k=[];
+  
+      for (j=0;z[i].charAt(j);j++)
+      {
+      k[j]=String.fromCharCode(parseInt(z[i].charAt(j),32)+(j ? 95 : 63));
+      }
+  
+      z[i]=k.reverse().join("");
+    }
+  
+    w=w.join("");
+    z=z.join("");
+  
+    return {levels:w,points:z};
+  }
 
-      
+  this.fitToPoly = function(poly, force /* optional */) {
+    if (force == null) force = false;
+    var bounds = poly.getBounds();
+    var zoom = map.getBoundsZoomLevel(bounds);
+    if ((zoom > map.getZoom()) || (force == true)) {
+      map.setZoom(zoom);
+    }
+  }
+
+  /* Find the closest vertex on the overlay to the given point */          
+  this.findClosestVertex = function(point, overlay) {
+    var minDistance = 9999999;
+    var closest = 0;
+    for (var i=0; i<overlay.getVertexCount(); i++) {
+      distance = point.distanceFrom(overlay.getVertex(i));
+      if (distance < minDistance) {
+        closest = i;
+        minDistance = distance;
+      }
+    }
+    return overlay.getVertex(closest);
+  }
+
 }  //end EventOverlayManager
 
 //-------------------------------------------------------------------------------
@@ -559,15 +577,17 @@ function MapManager() {
       //map.setCenter(new GLatLng(40.879721,-76.998322),10);  //la la land, PA
       this.setMapExtent();
       map.checkResize(); //tell the map that we have resized it
-      this.showDefault(); 
+      //TODO DEBUG FSM this.showDefault(); 
     }
   }
   
   /* default map coordinates */
   this.showDefault = function() {    
-    var bounds = m_diagonal.getBounds();
-    map.setCenter(bounds.getCenter());  
-    map.setZoom(map.getBoundsZoomLevel(bounds));
+    if (null == map.getCenter()) {
+      var bounds = m_diagonal.getBounds();
+      map.setCenter(bounds.getCenter());  
+      map.setZoom(map.getBoundsZoomLevel(bounds));
+    }
   }
   
   this.setMapExtent = function() {
@@ -621,7 +641,6 @@ function MapManager() {
   
   this.getMapTypeIndex = function() {
     var mapTypeIndex = 0;
-        
     for (i=0; i<this.MAP_TYPES.length; i++) {
       if (this.MAP_TYPES[i].getName() == map.getCurrentMapType().getName()) {
         mapTypeIndex = i;
@@ -647,42 +666,16 @@ function MapManager() {
   
 } //end MapManager
 
-//-------------------------------------------------------------------------------
-/** Helper utility for common map tasks */
-function MapHelper() {
-
-  this.fitToPoly = function(poly, force /* optional */) {
-    if (force == null) force = false;
-    var bounds = poly.getBounds();
-    var zoom = map.getBoundsZoomLevel(bounds);
-    if ((zoom > map.getZoom()) || (force == true)) {
-      map.setZoom(zoom);
-    }
-  }
-          
-  this.findClosestVertex = function(point, overlay) {
-    var minDistance = 9999999;
-    var closest = 0;
-    for (var i=0; i<overlay.getVertexCount(); i++) {
-      distance = point.distanceFrom(overlay.getVertex(i));
-      if (distance < minDistance) {
-        closest = i;
-        minDistance = distance;
-      }
-    }
-    return overlay.getVertex(closest);
-  }
-    
-}
 
 //---------------------------------------------------------------
   /* BEGIN DATA OBJECT DEFINITIONS ============================= */
-  function overlayItem(overlay, html, type, id ) {
+  function overlayItem(overlay, html, type, id, points ) {
     this.overlay = overlay;
     this.html = html;
     this.type = type;
     this.id = id;
     this.isHighlighted = false;
+    this.points = points;
   }
   
   /* line object */
@@ -743,4 +736,4 @@ function MapHelper() {
   
   function isEmpty(value) {
 		return ((null == value) || ('' == value));
-	}
+	}    

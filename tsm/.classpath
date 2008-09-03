@@ -81,9 +81,13 @@
 			<attribute name="javadoc_location" value="http://www.jdom.org/docs/apidocs/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/local/bliki-3.0.1.jar" sourcepath="C:/apps/lib/bliki-3.0.1/info.bliki.wiki.svn/src"/>
 	<classpathentry kind="lib" path="lib/deploy/quartz.jar"/>
 	<classpathentry kind="lib" path="lib/deploy/jdom.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="lib/local/bliki-3.0.7.jar" sourcepath="C:/apps/lib/bliki-3.0.7/info.bliki.wiki.svn/src">
+		<attributes>
+			<attribute name="javadoc_location" value="http://matheclipse.org/doc/bliki/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="src/main/webapp/WEB-INF/classes"/>
 </classpath>

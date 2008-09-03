@@ -11,7 +11,7 @@
 <Content type="html"><![CDATA[
 
 <form id="eventSearchForm">
-Where: <input id="where" name="where" type="text" value="lala" size="22"/>
+Where: <input id="where" name="where" type="text" value="" size="22"/>
 <input type="button" value="Search" onclick="doSearch()"/>
 <br/>
 <input id="limitWithinMapBounds1" name="limitWithinMapBounds" type="checkbox" value="true"/>
@@ -26,11 +26,17 @@ Find events that occurred only <em>within</em> the time frame specified.
 
 </form>
 
+<link href="http://www.dev.concharto.com/css/style.css" rel="stylesheet" type="text/css" media="screen">
+<link href="http://www.dev.concharto.com/css/map.css" rel="stylesheet" type="text/css" media="screen">
+<link href="http://www.dev.concharto.com/css/wiki.css" rel="stylesheet" type="text/css" media="screen">
+<link href="http://www.dev.concharto.com/css/header.css" rel="stylesheet" type="text/css" media="screen">
+<link href="http://www.dev.concharto.com/css/search.css" rel="stylesheet" type="text/css" media="screen">
 
 <script src="http://www.test.timespacemap.com/javascript/prototype.js" type="text/javascript"/></script>
-<script src="http://www.test.timespacemap.com/javascript/map.js?11" type="text/javascript"></script>
-<script src="http://www.test.timespacemap.com/javascript/searchcommon.js?4" type="text/javascript"></script>
-<script src="http://www.test.timespacemap.com/javascript/eventsearch.js?4" type="text/javascript"></script>
+<script src="http://www.test.timespacemap.com/javascript/map.js?53" type="text/javascript"></script>
+<script src="http://www.test.timespacemap.com/javascript/searchcommon.js?6" type="text/javascript"></script>
+<script src="http://www.test.timespacemap.com/javascript/eventsearch.js?6" type="text/javascript"></script>
+<script src="http://www.test.timespacemap.com/javascript/maplet.js?6" type="text/javascript"></script>
 
 
 <script type="text/javascript">
@@ -46,40 +52,136 @@ Find events that occurred only <em>within</em> the time frame specified.
   _msg_accy[4] = 'Neighborhood'; 
   _msg_accy[5] = 'Address'; 
   _msg_accy[6] = 'Pinpoint (+/- 10m)';
-     
-
 </script>    
 
 <script type="text/javascript">
   
-  //Setup a special map manager for maplets
-  function MapletMapManager() {
-    //initialize
-    this.initializeMap = function(control) {
-      initializeMapVars();
-      // map and its equipment
-      map = new GMap2();
 
-      geocoder = new GClientGeocoder();
-      //FSM DBEUG this.showDefault(); 
-    }
+  //Override Setup a special map manager for search
+  function MapletEventOverlayManager(parent) {
+    this.parent = parent;
     
-    /* default map coordinates */
-    this.showDefault = function() {    
-      this.m_diagonal.getBoundsAsync(function(bounds) {
-        map.setCenter(bounds.getCenter());  
-        map.setZoom(map.getBoundsZoomLevel(bounds));
+    this.makeOverlayHtml = function(index, event, totalEvents) {
+      var html = '<div style="font-size:10pt;'
+        + 'margin: 1em -.4em 0 1.3em;margin-bottom:10px">';
+      if (index != null) {
+         var letter = this.ALPHA_CHARS.substring(index,index+1);
+         html += '<img alt="marker" style="margin-right:4px;" src="' + _basePath + 'images/icons/' + letter + '_label.png' + '"/>';
+      }
+      html += '<span style="font-weight: bold;">' + event.summary.escapeHTML() +'</span><br/>'  
+        + '<span style="font-weight:bold;">' + event.when + '</span><br/>'  
+        + '<span style="font-style: italic;">' + event.where.escapeHTML();
+      if (!isEmpty(event.accy)) {
+        html += ' (Accuracy: ' + _msg_accy[event.accy] + ')'; 
+      }
+      html += '</span><br/>' 
+        + event.description; 
+      
+      var tags = event.tags.split( "," );
+      var taglink = new Array();
+      tags.each( function(tag, index){
+        //encode ant apostrophes in the tag because that will mess up the call from HTML
+        //we will have to decode them later in goToTag()
+        var encodedtag = tag.gsub('\'', '%27');
+        //embedded search is wierd with following tags using document.location so we will use a regular href
+        taglink[index] = '<a href="'
+          + 'http://www.concharto.com/search/eventsearch.htm?_tag='+ encodedtag + '&_maptype=0' 
+          + '">'+ tag +'</a>';
+      });
+      
+      html += '<div class="usertags"><b>Tags: </b>' + taglink.join(', ') + '</div>';   
+      html += '<div class="source"><b>Source: </b>' + event.source + '</div>';
+      html += '</div>';
+          
+      html += '</div>';
+      return html;
+    }
+  
+    /* Override Fit the map center and zoom level to the search results */
+    this.fitToResults = function() {
+      var boundsPoly = new GPolyline(this.fitToPolygon);
+      boundsPoly.getBoundsAsync(function(bounds) {
+        GAsync(map, 'getZoom', 'getBoundsZoomLevel', [bounds], function(currentZoom, zoom) {
+          if (_overlayManager.fitToPolygon.length >= 2){                         
+            /* if they specified a place name, then we only want to zoom out to fit,
+               not zoom in (e.g. only one place matching the criteria in England, we still
+               want to show England */
+            if (!isEmpty($('where').value) && (zoom > currentZoom)) {
+              zoom = currentZoom;
+            }
+          } else if (_overlayManager.fitToPolygon.length == 1) {
+            zoom=12; //city level
+          } 
+          if (_overlayManager.fitToPolygon.length >0) {
+            map.setZoom(zoom);                
+            map.setCenter(bounds.getCenter());
+          }       
+        });      
       });
     }
-    
-  }
-  MapletMapManager.prototype = new MapManager();  //inherit with override
-  _mapManager = new MapletMapManager();
+  
+    /* Override create a new polygon */ 
+    this.newPoly = function(points, geometryType, weight /* optional */, 
+                      lineColor /* optional */, polyColor /* optional */) {
+      if (weight == undefined) {
+        weight = this.LINE_WEIGHT;
+      }
+      if (lineColor == undefined) {
+        lineColor = this.LINE_COLOR;
+      }
+      if (polyColor == undefined) {
+        polyColor = this.POLY_COLOR;
+      }
+      //adjust closure of the poly based on geomType
+      points = this.setPolyClosure(geometryType, points);
+      if (points != null) { 
+        if ((geometryType == 'line')){
+          var polyline = new GPolyline(points, lineColor, weight);
+          return polyline;
+        } else if (geometryType == 'polygon') {
+          return new GPolygon(points, polyColor, weight, .8, lineColor, .25);
+        }
+      } 
+      return null;
+    }
 
+    /* override TODO remove cut/paste */
+    this.hideZoomedPolygons = function(from) {
+      map.getBoundsAsync(function(bounds) {
+        _overlayManager.overlays.each( function(item, index) {
+          if (item.type == 'polygon') {
+            var overlay = item.overlay;
+            var hide = true;
+            var vertexes = item.points;       
+            var vertexCount = vertexes.length;
+            for (var i = 0; i < vertexCount; i++) {
+              var vertex = vertexes[i];
+              //if vertex within the map OR
+              //if a line between this vertex and the last intersects the map
+              if ((bounds.contains(vertex)) ||
+                  ((i+1 < vertexCount) && _overlayManager.intersectsMap(bounds, vertex, vertexes[i+1]))) 
+              {
+                hide = false;
+                break;
+              } 
+            }
+            if (hide) {
+              //ok, there are no vertexes within the map, so we should hide this overlay
+              map.removeOverlay(overlay);
+            } else {
+              map.addOverlay(overlay);
+            }
+          }
+        });
+      });
+    }  
+  }
+  MapletEventOverlayManager.prototype = new EventOverlayManager();  //inherit with override
+  
   // Center the map in 
   var point = new GLatLng(37.71859, 6.679688);
   _mapManager.initializeMap();
-  map.setCenter(new GLatLng(37, -122), 6);
+  //map.setCenter(new GLatLng(37, -122), 6);
 
   
   //Add some points
@@ -90,17 +192,19 @@ Find events that occurred only <em>within</em> the time frame specified.
 
   //http://maps.google.com/maps/mm?ie=UTF8&hl=en&ll=37.125286,-122.124023&spn=10.889885,14.875488&t=p&z=6
   //map.addOverlay(geoXml);
-  
+  _overlayManager = new MapletEventOverlayManager(new EventOverlayManager);
+  _overlayManager.initialize();
   doSearch();
   
   //Load points from the server
-  function doSearch(where, when, what) {
-    alert(1);
-    var url = "http://www.test.timespacemap.com/search/jsonsearch.htm?_what=%22poly+point%22";
+  function doSearch() {
+    var url = "http://www.test.timespacemap.com/search/jsonsearch.htm?_style=explicit&_what=\"poly\"&_rand=47";
+//    var url = "http://www.test.timespacemap.com/search/jsonsearch.htm?_style=explicit";
+//    url += '&_where=' + $('where').value ;
     _IG_FetchContent(url, function(jsondata) {
         var events = jsondata.evalJSON();
-        alert (events[0].summary );
         _overlayManager.createOverlays(events);
+        _overlayManager.fitToResults();
     });
   }
   
