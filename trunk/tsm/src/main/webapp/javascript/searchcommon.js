@@ -6,7 +6,7 @@
 	
   /* BEGIN PRE FUNCTIONS (initialization) ============================= */
   
-    //Setup a special map manager for maplets
+  //Setup a special map manager for search
   function SearchEventOverlayManager(parent) {
     this.parent = parent;
     

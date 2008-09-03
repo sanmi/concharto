@@ -44,6 +44,7 @@ import com.tech4d.tsm.web.util.CatalogUtil;
 import com.tech4d.tsm.web.util.DisplayTagHelper;
 import com.tech4d.tsm.web.util.GeometryPropertyEditor;
 import com.tech4d.tsm.web.util.TimeRangePropertyEditor;
+import com.tech4d.tsm.web.wiki.SubstitutionMacro;
 import com.tech4d.tsm.web.wiki.WikiModelFactory;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -71,6 +72,10 @@ public class SearchHelper {
 	public static final String QUERY_EXCLUDE_TIMERANGE_OVERLAPS = "_timeoverlaps";
 	public static final String QUERY_EMBED = "_embed";
 	public static final String QUERY_KML = "_kml";
+	/** if _style=explicit we render wiki styles right in the html rather than using a style sheet
+	 *  This is useful for HTML shown in other containers such as google earth or google maplets */
+	public static final String QUERY_STYLE = "_style";
+	public static final String QUERY_STYLE_EXPLICIT = "explicit";
     public static final String MODEL_EVENTS = "events";
     public static final String MODEL_TOTAL_RESULTS = "totalResults";
     public static final String MODEL_CURRENT_RECORD = "currentRecord";
@@ -377,8 +382,12 @@ public class SearchHelper {
 		for (Event event : events) {
 			try {
 				Event renderedEvent = (Event) BeanUtils.cloneBean(event);
-				renderedEvent.setDescription(wikiModel.render(event.getDescription()));
-				renderedEvent.setSource(wikiModel.render(event.getSource()));
+				boolean explicitStyle = false; //use css style sheets
+				if (QUERY_STYLE_EXPLICIT.equals(request.getParameter(QUERY_STYLE))) {
+					explicitStyle = true;
+				}
+				renderedEvent.setDescription(renderWiki(wikiModel, event.getDescription(), explicitStyle));
+				renderedEvent.setSource(renderWiki(wikiModel, event.getSource(), explicitStyle));
 				renderedEvents.add(renderedEvent);
 			} catch (IllegalAccessException e) {
 				log.error(e);
@@ -391,6 +400,21 @@ public class SearchHelper {
 			}
 		}
 		return renderedEvents;
+	}
+
+	/**
+	 * Render the raw wiki text.  If explicitStyle is set, then add explicit styles to the html tags.
+	 * @param wikiModel
+	 * @param rawWikiText
+	 * @param explicitStyle
+	 * @return
+	 */
+	private String renderWiki(WikiModel wikiModel, String rawWikiText, boolean explicitStyle) {
+		String rendered = wikiModel.render(rawWikiText);
+		if (explicitStyle) {
+			rendered = SubstitutionMacro.explicitStyles(rendered);
+		}
+		return rendered;
 	}
 
 	@SuppressWarnings("unchecked")
