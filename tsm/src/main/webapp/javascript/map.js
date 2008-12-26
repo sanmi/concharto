@@ -41,8 +41,22 @@ function EventOverlayManager() {
   var _initialZoom;
   var _initialCenter;
   
-  this.overlays = _overlays;
-  this.fitToPolygon = _fitToPolygon;
+  /** get the overlay array
+    * @return an array containing overlayItem objects */ 
+  this.getOverlays = function() {
+    return _overlays; 
+  };
+  
+  /** clear all overlay storage */
+  this.clearOverlays = function() { 
+    _overlays = [];
+    _overlayIndex = 0;
+    _fitToPolygon = [];
+    _fitToPolygonIndex = 0;
+  };
+  
+  /** get the fitToPolygon state */
+  this.getFitToPolygon = function() {return _fitToPolygon; };
 
   //abstract - please implement
   this.highlightSidebarItem = function(overlayItem) { /*do nothing*/};
@@ -56,14 +70,17 @@ function EventOverlayManager() {
   this.limitWithinMapBounds = function() {
     return false;
   };
-  
+
+  /** Main initialization function */  
   this.initialize = function() {
+  
+    this.clearOverlays();
+  
     /* to unhighlight polygons if there are any */
     this.hideZoomedPolygons(3);
-    
-    GEvent.addListener(map, "infowindowclose", function() {
-      _overlayManager.unhighlightOverlay();
-    });
+
+    this.infoWindowListener();    
+
     //listeners for hiding polygons when you are zoomed way in
     GEvent.addListener(map, "zoomend", function() {
       _overlayManager.hideZoomedPolygons(1);
@@ -73,6 +90,18 @@ function EventOverlayManager() {
     });
   }
 
+  /** Listener to unhighlight overlays when the user clicks away from one 
+   *  Override this for asynchronous behavior (e.g. maplets) 
+   */
+  this.infoWindowListener = function() {
+    GEvent.addListener(map, "infowindowclose", function() {
+      //only unhighlight if there are no windows open
+      if (this.getInfoWindow().isHidden()) {
+        _overlayManager.unhighlightOverlay();
+      }
+    });
+  }
+  
   this.createOverlays = function(events, excludeEventId) {
     for (var i =0; i<events.length; i++) {
       var event = events[i];
@@ -230,6 +259,7 @@ function EventOverlayManager() {
     GEvent.addListener(overlayItem.overlay, "click", function(point) {
       //for points, we only want to highlight the sidebar item. the
       //infowindow is handled elsewhere
+      _overlayManager.unhighlightOverlay();
       if (overlayItem.type != 'point') {
         map.openInfoWindowHtml(point, overlayItem.html);
         //NOTE: order is important here.  The highlight must come AFTER the openInfoWindowHtml
@@ -238,6 +268,7 @@ function EventOverlayManager() {
       }
       _overlayManager.highlightSidebarItem(overlayItem); 
     });
+
   }
 
   /* Highlight the overlay by changing its color */
