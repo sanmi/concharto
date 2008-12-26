@@ -10,30 +10,39 @@
 </ModulePrefs>
 <Content type="html"><![CDATA[
 
-<form id="eventSearchForm">
-Where: <input id="where" name="where" type="text" value="" size="22"/>
-<input type="button" value="Search" onclick="doSearch()"/>
-<br/>
-<input id="limitWithinMapBounds1" name="limitWithinMapBounds" type="checkbox" value="true"/>
-<input type="hidden" name="_limitWithinMapBounds" value="on"/>
-Search current map shown.
-<br/>
-<input id="excludeTimeRangeOverlaps1" name="excludeTimeRangeOverlaps" type="checkbox" value="true"/>
-<input type="hidden" name="_excludeTimeRangeOverlaps" value="on"/>
+<form action="javascript:void 0" onSubmit="doSearch();" id="eventSearchForm" >
+<table>
+  <tr>
+    <td class="eg">
+      What
+    </td>
+    <td class="eg">
+      When
+    </td>
+  </tr>
+  <tr>
+    <td >
+      <input id="what" name="what" type="text" value="" style="width:160px"/>
+    </td>
+    <td>
+      <input id="when" name="when" type="text" value="" style="width:125px"/>
+    </td>
+  </tr>
+</table>
+<input type="submit" value="Search"/>
+<span id="where" style="display:none"></span>
+
 <input type="hidden" id="basePath" value="http://www.test.timespacemap.com/"/>
-
-Find events that occurred only <em>within</em> the time frame specified.
-
 </form>
 
-<link href="http://www.dev.concharto.com/css/style.css" rel="stylesheet" type="text/css" media="screen">
-<link href="http://www.dev.concharto.com/css/map.css" rel="stylesheet" type="text/css" media="screen">
-<link href="http://www.dev.concharto.com/css/wiki.css" rel="stylesheet" type="text/css" media="screen">
-<link href="http://www.dev.concharto.com/css/header.css" rel="stylesheet" type="text/css" media="screen">
-<link href="http://www.dev.concharto.com/css/search.css" rel="stylesheet" type="text/css" media="screen">
+<link href="http://www.test.timespacemap.com/css/style.css" rel="stylesheet" type="text/css" media="screen">
+<link href="http://www.test.timespacemap.com/css/map.css" rel="stylesheet" type="text/css" media="screen">
+<link href="http://www.test.timespacemap.com/css/wiki.css" rel="stylesheet" type="text/css" media="screen">
+<link href="http://www.test.timespacemap.com/css/header.css" rel="stylesheet" type="text/css" media="screen">
+<link href="http://www.test.timespacemap.com/css/search.css" rel="stylesheet" type="text/css" media="screen">
 
 <script src="http://www.test.timespacemap.com/javascript/prototype.js" type="text/javascript"/></script>
-<script src="http://www.test.timespacemap.com/javascript/map.js?53" type="text/javascript"></script>
+<script src="http://www.test.timespacemap.com/javascript/map.js?74" type="text/javascript"></script>
 <script src="http://www.test.timespacemap.com/javascript/searchcommon.js?6" type="text/javascript"></script>
 <script src="http://www.test.timespacemap.com/javascript/eventsearch.js?6" type="text/javascript"></script>
 <script src="http://www.test.timespacemap.com/javascript/maplet.js?6" type="text/javascript"></script>
@@ -60,7 +69,34 @@ Find events that occurred only <em>within</em> the time frame specified.
   //Override Setup a special map manager for search
   function MapletEventOverlayManager(parent) {
     this.parent = parent;
-    
+
+    this.setRefreshFunction = function(refreshFunction) {
+      //listener for clearing data before searching
+      GEvent.addListener(map, "clearoverlays", refreshFunction);  
+    }
+   
+    /** Clear all overlays and points */
+    this.refresh = function() {
+      console.log('overlays: ' + this.getOverlays().length);
+      map.clearOverlays();
+      this.clearOverlays();
+      console.log('overlays: ' + this.getOverlays().length);
+    }
+        
+    /** Override for asynchronous behavior */
+    this.infoWindowListener = function() {
+      GEvent.addListener(map, "infowindowclose", function() {
+        this.getInfoWindowAsync(function(window) {
+          window.isHiddenAsync(function(hidden){
+            if (hidden) {
+              //only unhighlight if there are no windows open
+              _overlayManager.unhighlightOverlay();
+            }
+          });
+        });
+      });
+    }
+  
     this.makeOverlayHtml = function(index, event, totalEvents) {
       var html = '<div style="font-size:10pt;'
         + 'margin: 1em -.4em 0 1.3em;margin-bottom:10px">';
@@ -99,20 +135,20 @@ Find events that occurred only <em>within</em> the time frame specified.
   
     /* Override Fit the map center and zoom level to the search results */
     this.fitToResults = function() {
-      var boundsPoly = new GPolyline(this.fitToPolygon);
+      var boundsPoly = new GPolyline(this.getFitToPolygon());
       boundsPoly.getBoundsAsync(function(bounds) {
         GAsync(map, 'getZoom', 'getBoundsZoomLevel', [bounds], function(currentZoom, zoom) {
-          if (_overlayManager.fitToPolygon.length >= 2){                         
+          if (_overlayManager.getFitToPolygon().length >= 2){                         
             /* if they specified a place name, then we only want to zoom out to fit,
                not zoom in (e.g. only one place matching the criteria in England, we still
                want to show England */
             if (!isEmpty($('where').value) && (zoom > currentZoom)) {
               zoom = currentZoom;
             }
-          } else if (_overlayManager.fitToPolygon.length == 1) {
+          } else if (_overlayManager.getFitToPolygon().length == 1) {
             zoom=12; //city level
           } 
-          if (_overlayManager.fitToPolygon.length >0) {
+          if (_overlayManager.getFitToPolygon().length >0) {
             map.setZoom(zoom);                
             map.setCenter(bounds.getCenter());
           }       
@@ -148,7 +184,7 @@ Find events that occurred only <em>within</em> the time frame specified.
     /* override TODO remove cut/paste */
     this.hideZoomedPolygons = function(from) {
       map.getBoundsAsync(function(bounds) {
-        _overlayManager.overlays.each( function(item, index) {
+        _overlayManager.getOverlays().each( function(item, index) {
           if (item.type == 'polygon') {
             var overlay = item.overlay;
             var hide = true;
@@ -179,35 +215,42 @@ Find events that occurred only <em>within</em> the time frame specified.
   MapletEventOverlayManager.prototype = new EventOverlayManager();  //inherit with override
   
   // Center the map in 
-  var point = new GLatLng(37.71859, 6.679688);
+  //var point = new GLatLng(37.71859, 6.679688);
   _mapManager.initializeMap();
   //map.setCenter(new GLatLng(37, -122), 6);
 
-  
-  //Add some points
-  var geo1 = "http://www.concharto.com/search/conchartosearch.kml?_what=inca&_zoom=13&_maptype=0&_kml=1";
-  var geo2 = "http://www.test.timespacemap.com/search/conchartosearch.kml?_what=poly&_zoom=13&_maptype=0&_kml=1";
-  var geo3 = "http://www.test.timespacemap.com:81/search/conchartosearch.kml?_what=poly&_withinMap=true&_zoom=13&_maptype=0&_kml=1";
-  //var geoXml = new GGeoXml(geo2 + '&_rand=' + Math.random());
-
-  //http://maps.google.com/maps/mm?ie=UTF8&hl=en&ll=37.125286,-122.124023&spn=10.889885,14.875488&t=p&z=6
-  //map.addOverlay(geoXml);
   _overlayManager = new MapletEventOverlayManager(new EventOverlayManager);
   _overlayManager.initialize();
-  doSearch();
-  
+  _overlayManager.setRefreshFunction(fetchAndDisplay);
+    
   //Load points from the server
   function doSearch() {
-    var url = "http://www.test.timespacemap.com/search/jsonsearch.htm?_style=explicit&_what=\"poly\"&_rand=47";
-//    var url = "http://www.test.timespacemap.com/search/jsonsearch.htm?_style=explicit";
-//    url += '&_where=' + $('where').value ;
-    _IG_FetchContent(url, function(jsondata) {
-        var events = jsondata.evalJSON();
-        _overlayManager.createOverlays(events);
-        _overlayManager.fitToResults();
-    });
+    if (hasSearchTerms()) {
+      //clear overlays is asynchronous, so we have to pass the fetachAndDisplay to an event handler
+      _overlayManager.refresh();
+    }
   }
   
+  
+  /** Fetch search data and display it on the map */
+  function fetchAndDisplay() {
+    //var url = "http://www.test.timespacemap.com/search/jsonsearch.htm?_style=explicit&_what=inca&_rand=48";
+    var url = "http://www.test.timespacemap.com/search/jsonsearch.htm?_style=explicit&_withinMap=true";
+    url += '&_what=' + encodeURIComponent($('what').value);
+    console.log(url);
+    _IG_FetchContent(url, function(jsondata) {
+      console.log("fetching...");
+      var events = jsondata.evalJSON();
+      console.log("fetched " + events.length + " events");
+      _overlayManager.createOverlays(events);
+      _overlayManager.fitToResults();
+      console.log('fetch overlays: ' + _overlayManager.getOverlays().length);
+    });
+  }
+  /** returns true if the user has entered search terms */
+  function hasSearchTerms() {
+   return !isEmpty($('what').value) || !isEmpty($('where').value);
+  }
 </script>
 
 ]]></Content>
