@@ -27,7 +27,7 @@
 	}
 	
 	function editEvent() {
-		document.location='${basePath}edit/event.htm?add';
+		document.locaRtion='${basePath}edit/event.htm?add';
 	}
 	//]]>
 	</script>
