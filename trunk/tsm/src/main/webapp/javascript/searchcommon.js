@@ -49,7 +49,7 @@
 	      if (!($('mapCenterOverride').value == 'true') || !($('zoomOverride').value == 'true')) {
 	        _overlayManager.fitToResults();
 	      } else {
-	        if (($('mapCenterOverride').value == 'true') && ((0 != this.parent.fitToPolygon.length))) {
+	        if (($('mapCenterOverride').value == 'true') && ((0 != this.parent.getFitToPolygon().length))) {
 	          $('mapCenterOverride').value = 'false';
 	        } 
 	        if ($('zoomOverride').value == 'true') {
