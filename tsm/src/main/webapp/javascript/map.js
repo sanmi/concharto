@@ -37,7 +37,6 @@ function EventOverlayManager() {
   var _overlayIndex = 0;
   var _fitToPolygon = [];
   var _fitToPolygonIndex = 0;
-  var _accuracy_to_zoom = [4, 5, 7, 10, 11, 12, 13, 14, 15];
   var _initialZoom;
   var _initialCenter;
   
