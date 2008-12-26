@@ -244,7 +244,7 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
     	eventDao.save(event);
     	assertEquals(1, eventDao.findRecent(catalog, 10, 0).size());
     	assertEquals(3, eventDao.findRecent(CatalogUtil.CATALOG_WWW, 10, 0).size());    	
-    	assertEquals(1, eventDao.getTotalCount(catalog));
-    	assertEquals(3, eventDao.getTotalCount(CatalogUtil.CATALOG_WWW));
+    	assertEquals(new Integer(1), eventDao.getTotalCount(catalog));
+    	assertEquals(new Integer(3), eventDao.getTotalCount(CatalogUtil.CATALOG_WWW));
     }
 }
