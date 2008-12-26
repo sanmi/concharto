@@ -36,13 +36,12 @@
 			<artifact name="activation-1.1.1" type="jar" url="http://download.java.net/maven/1/javax.activation/jars/activation-1.1.1.jar"/>
       <include name="*"/>
     </dependency>
-		<dependency org="jdom" name="jdom" rev="1.0" conf="deploy->default; build->default"/> 
-		<dependency org="quartz" name="quartz" rev="1.5.2" conf="deploy->default; build->default"/> 
-       
+	<dependency org="jdom" name="jdom" rev="1.0" conf="deploy->default; build->default"/> 
+	<dependency org="quartz" name="quartz" rev="1.5.2" conf="deploy->default; build->default"/> 
+    
     <!--  Problem with json-lib at the maven repository because of the jdk15 addition at the end of the version -->
     <dependency org="net.sf.json-lib" name="json-lib" rev="2.0" conf="deploy->default; build->default">
      <artifact name="json-lib-2.0-jdk15" type="jar" url="http://repo1.maven.org/maven2/net/sf/json-lib/json-lib/2.0/json-lib-2.0-jdk15.jar"/>
-     <include name="*"/>
     </dependency>
     <dependency org="commons-beanutils" name="commons-beanutils" rev="1.7.0" conf="deploy->default; build->default"/>
     <dependency org="net.sf.ezmorph" name="ezmorph" rev="1.0.2" conf="deploy->default; build->default"/>

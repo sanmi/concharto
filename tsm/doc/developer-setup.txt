@@ -29,7 +29,7 @@ edit your /etc/hosts file like so:
 5. deploy
 * edit your build.properties to point to your locatl mysql and tomcat instance
 * deploy
-$ ant deploy
+$ ant deploy-test
 
 6. start
 * start tomcat
