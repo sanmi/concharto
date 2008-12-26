@@ -235,7 +235,7 @@
 			var where = document.getElementById("eventSearchForm").where.value;
 			var isEdit = (document.getElementById("eventSearchForm").editEventId.value != null);
 			if ((where != '') && (isEdit != "true")) {
-				map.setZoom(_accuracy_to_zoom[accuracy]); /* TODO infer this from the geocode results!! */
+				map.setZoom(_mapManager.ACCURACY_TO_ZOOM[accuracy]); /* TODO infer this from the geocode results!! */
 			}
 			document.getElementById("eventSearchForm").mapCenter.value = _overlayManager.gLatLngToJSON(latLng);
 		}
