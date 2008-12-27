@@ -15,10 +15,10 @@
 
 	<%-- the main initialize function --%>
 	function initialize_embedded() {
-    var height = _mapManager.getHeight();
-    document.getElementById("map").style.height=height+"px";
 	  _mapManager.initializeMap(new GSmallMapControl());
     _overlayManager.initialize();
+    var height = _mapManager.getHeight();
+    document.getElementById("map").style.height=height+"px";
 		addEvent();
 	}		
 
