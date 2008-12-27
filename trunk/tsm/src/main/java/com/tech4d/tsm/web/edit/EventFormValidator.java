@@ -18,6 +18,7 @@ public class EventFormValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "summary", "empty.event.summary");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "when", "empty.event.when");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "geometry", "empty.event.geometry");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "source", "empty.event.source");
         
         ValidationHelper.rejectIfTooLong(errors, "description", EventForm.SZ_DESCRIPTION, "tooLong");
 
