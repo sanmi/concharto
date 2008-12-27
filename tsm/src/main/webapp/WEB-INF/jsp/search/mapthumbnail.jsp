@@ -19,6 +19,7 @@
     _overlayManager.initialize();
     var height = _mapManager.getHeight();
     document.getElementById("map").style.height=height+"px";
+    map.checkResize();
 		addEvent();
 	}		
 
@@ -37,9 +38,9 @@
     markerIcon = _baseIcon;
     markerIcon.image = _basePath+"images/icons/marker-clk.png";
     var marker = new GMarker(point, {icon:markerIcon});  
+    map.setCenter(point);
+    map.setZoom(11);
 		map.addOverlay(marker);
-		map.setCenter(point);
-		map.setZoom(11);
 	}
 	
 	function createPoly(event, totalEvents) {
