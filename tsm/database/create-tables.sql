@@ -36,12 +36,12 @@
         positive integer,
         _where varchar(512),
         zoomLevel integer,
-        when_id bigint,
-        tsGeometry_id bigint,
+        eventSearchText_id bigint,
         positionalAccuracy_id bigint,
         styleSelector_id bigint,
-        eventSearchText_id bigint,
+        when_id bigint,
         discussion_id bigint,
+        tsGeometry_id bigint,
         primary key (id)
     );
 
@@ -239,16 +239,16 @@
         references EventSearchText (id);
 
     alter table Event 
-        add index FK_EVENT_STYLE (styleSelector_id), 
-        add constraint FK_EVENT_STYLE 
-        foreign key (styleSelector_id) 
-        references StyleSelector (id);
-
-    alter table Event 
         add index FK_EVENT_GEOM (tsGeometry_id), 
         add constraint FK_EVENT_GEOM 
         foreign key (tsGeometry_id) 
         references TsGeometry (id);
+
+    alter table Event 
+        add index FK_EVENT_STYLE (styleSelector_id), 
+        add constraint FK_EVENT_STYLE 
+        foreign key (styleSelector_id) 
+        references StyleSelector (id);
 
     alter table Event 
         add index FK_EVENT_DISCUSS (discussion_id), 
