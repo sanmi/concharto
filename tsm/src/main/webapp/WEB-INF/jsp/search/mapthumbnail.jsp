@@ -7,6 +7,7 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 
 <tsm:page title="Map Thumbnail">
+  <jsp:attribute name="script">prototype.js,map.js</jsp:attribute>
 	<jsp:attribute name="head">
 		<jsp:include page="../include/mapkey.js.jsp"/>
 		<script type="text/javascript">
@@ -14,10 +15,11 @@
 
 	<%-- the main initialize function --%>
 	function initialize_embedded() {
-		_mapManager.initializeMap(new GSmallMapControl());
+    var height = _mapManager.getHeight();
+    document.getElementById("map").style.height=height+"px";
+	  _mapManager.initializeMap(new GSmallMapControl());
+    _overlayManager.initialize();
 		addEvent();
-   	var height = _mapManager.getHeight();
-   	document.getElementById("map").style.height=height+"px";
 	}		
 
 	function addEvent() {
@@ -30,7 +32,6 @@
 		}
 	}
 	
-		<%-- called by createOverlay --%>
 	function createMarker(event, totalEvents) {
 		var point = new GLatLng(event.geom.lat, event.geom.lng);
     markerIcon = _baseIcon;
@@ -41,7 +42,6 @@
 		map.setZoom(11);
 	}
 	
-	<%-- called by createOverlay --%>
 	function createPoly(event, totalEvents) {
 		var points = [];
 		var line = event.geom.line;
@@ -54,8 +54,8 @@
 		if (poly) {
 			map.addOverlay(poly);
 		}
-		_overlayManager.fitToPoly(poly);
 		map.setCenter(poly.getBounds().getCenter());
+    _overlayManager.fitToPoly(poly);
 	}
 		//]]>
 		</script>
@@ -65,7 +65,6 @@
 			}
 		</style>
 	</jsp:attribute>
-	<jsp:attribute name="script">prototype.js,map.js</jsp:attribute>
 	<jsp:attribute name="bodyattr">onload="initialize_embedded()" onunload="GUnload();" class="mapedit" </jsp:attribute>
 	<jsp:attribute name="stripped">true</jsp:attribute>
 
