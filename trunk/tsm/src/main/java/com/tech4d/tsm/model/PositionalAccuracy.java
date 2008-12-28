@@ -2,6 +2,10 @@ package com.tech4d.tsm.model;
 
 import javax.persistence.Entity;
 
+/**
+ * Describes the accuracy of a geographic feature.  E.g. "neighborhood", "city", 
+ * "pinpoint", etc.
+ */
 @Entity
 public class PositionalAccuracy extends BaseEntity {
 	private String name;

@@ -201,6 +201,7 @@ public class TestTimeRangeFormat {
         assertEquals("56 BC - 100 AD", formatTimeRange(1,1,-56,1,1,101));
         assertEquals("1900 BC - 1800", formatTimeRange(1,1,-1900,1,1,1801));  //TSM-158
 
+        assertEquals("20000 BC", formatTimeRange(1,1,-20000,1,1,-19999));
         assertEquals("941 BC", formatTimeRange(1,1,-941,1,1,-940));
         assertEquals("March, 941 BC", formatTimeRange(3,1,-941,4,1,-941));
         

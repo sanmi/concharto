@@ -130,7 +130,6 @@ public class Event extends BaseAuditableEntity {
         this.summary = summary;
     }
     
-    //TODO change this to source
     @Column(length= SZ_SOURCE)
     public String getSource() {
         return source;
@@ -170,13 +169,22 @@ public class Event extends BaseAuditableEntity {
 		this.flags = flags;
 	}
 	
+	/** 
+	 * Traverses the list of flags to find out whether there are any
+	 * flags that have not disposition.
+	 * TODO fixme.  two methods with practically the same name but different
+	 * implementations...
+	 * @return true if there are any flags with empty dispositions.
+	 */
 	@Transient
 	public boolean getHasUnresolvedFlags() {
-		for (Flag flag : flags) {
-			if (StringUtils.isEmpty(flag.getDisposition()) ) {
-				return true;
-			}
-		}
+	    if (flags != null) {
+    		for (Flag flag : flags) {
+    			if (StringUtils.isEmpty(flag.getDisposition()) ) {
+    				return true;
+    			}
+    		}
+	    }
 		return false;
 	}
 

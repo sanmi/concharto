@@ -325,17 +325,21 @@ public class TimeRangeFormat  {
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(date);
         String year = Integer.toString(cal.get(Calendar.YEAR));
-        //find the start pos of the year.  If the year is 0093, we will get
-        //year = '93' so the start of year = pos of '93' minus 2.
-        int yearPos = text.indexOf(year) - DIGITS_IN_YEAR + year.length();
-        StringBuffer adjusted = new StringBuffer();
-        if (yearPos != 0) {
-            adjusted.append(text.substring(0, yearPos));
+        //only do this for four digit years (e.g. no need to do it for 20000 BC)
+        if (year.length() <= DIGITS_IN_YEAR) {
+	        //find the start pos of the year.  If the year is 0093, we will get
+	        //year = '93' so the start of year = pos of '93' minus 2.
+	        int yearPos = text.indexOf(year) - DIGITS_IN_YEAR + year.length();
+	        StringBuffer adjusted = new StringBuffer();
+	        if (yearPos != 0) {
+	            adjusted.append(text.substring(0, yearPos));
+	        }
+	        adjusted.append(year);
+	        adjusted.append(text.substring(yearPos+DIGITS_IN_YEAR, text.length()));
+	        return adjusted.toString();
+        } else {
+        	return text;
         }
-        adjusted.append(year);
-        adjusted.append(text.substring(yearPos+DIGITS_IN_YEAR, text.length()));
-
-        return adjusted.toString();
     }
 
     /**
