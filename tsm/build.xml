@@ -3,6 +3,7 @@
 <project name="tsm" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<import file="macros-and-presets.xml" />
+  <property file="user.build.properties" />
 	<property file="build.properties" />
 
 	<property name="name" value="${ant.project.name}" />
@@ -257,14 +258,13 @@
 	  <attribute name="include"/> 
 	  <attribute name="exclude"/> 
 	  <sequential>
-			<junit
+			<junit printsummary="yes"
 			>
 				<!-- Default Formatter - brain-dead text file with almost 
 				no information, only prints failures and errors -->
-				<formatter type="brief" usefile="true"
+				<formatter type="brief" usefile="true" 
 					unless="junit.formatter.plain" />
 				<classpath refid="test-classpath" />
-	
 				<batchtest todir="${target.test.reports.dir}" fork="no" 
              failureproperty="junit.failure.property"
              errorproperty="junit.error.property">

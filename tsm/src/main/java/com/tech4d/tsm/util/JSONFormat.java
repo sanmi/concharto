@@ -18,7 +18,10 @@ import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * For formatting events and geometries.  
- * TODO split this into two classes.
+ * TODO split this into two classes.  
+ * TODO investigate using a simpler way to do this, perhaps using dynabeans.  
+ * NOTE: because this stuff gets used in a repetitive way inside HTML page, it should be fairly terse, so
+ * using verbose attribute names should be avoided.
  * 
  * @author frank
  */
