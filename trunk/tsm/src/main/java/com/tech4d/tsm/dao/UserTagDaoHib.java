@@ -18,16 +18,16 @@ public class UserTagDaoHib extends BaseDaoHib <UserTag> implements UserTagDao {
 
     private static final String SQL_TAG_COUNTS = 
         "Select t.tag, count(*) FROM UserTag AS t " +
-        "LEFT JOIN event_usertag as eut ON t.id = eut.userTags_id " +
-        "LEFT JOIN event as e ON e.id = eut.Event_id " +
+        "LEFT JOIN Event_UserTag as eut ON t.id = eut.userTags_id " +
+        "LEFT JOIN Event as e ON e.id = eut.Event_id " +
         "WHERE (e.visible = true  OR e.visible is null) " +
         "AND ((t.created > :start) AND (t.created <= :end)) " +
         "GROUP BY t.tag " +
         "ORDER BY t.tag asc "; 
 
     private static final String SQL_TAG_COUNTS_BY_EVENT_DATE = 
-        "Select t.tag, count(*) FROM event e " +
-        "LEFT JOIN Event_usertag as eut ON e.id = eut.Event_id " +
+        "Select t.tag, count(*) FROM Event e " +
+        "LEFT JOIN Event_UserTag as eut ON e.id = eut.Event_id " +
         "LEFT JOIN UserTag AS t ON eut.userTags_id = t.id " +
         "LEFT JOIN TimePrimitive as tp ON e.when_id = tp.id " +
         "WHERE (e.visible = true  OR e.visible is null) " +
