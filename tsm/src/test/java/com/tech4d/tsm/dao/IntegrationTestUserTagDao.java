@@ -3,6 +3,7 @@ package com.tech4d.tsm.dao;
 import static org.junit.Assert.assertEquals;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.List;
 
@@ -52,8 +53,8 @@ public class IntegrationTestUserTagDao {
         
         List<Object[]> tagCounts = userTagDao.getTagCounts(20);
         //results are in alphabetic order
-        assertEquals(2, tagCounts.get(0)[1]);
-        assertEquals(1, tagCounts.get(1)[1]);
+        assertEquals(BigInteger.valueOf(2), tagCounts.get(0)[1]);
+        assertEquals(BigInteger.valueOf(1), tagCounts.get(1)[1]);
         
         assertEquals(4, userTagDao.findAll(50).size());
         
