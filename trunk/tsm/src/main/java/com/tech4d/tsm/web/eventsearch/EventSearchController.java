@@ -151,7 +151,11 @@ public class EventSearchController extends AbstractFormController {
         //reset zoom and map center overrides, they are only used for get strings
         eventSearchForm.setMapCenterOverride(false);
         eventSearchForm.setZoomOverride(false);
-        eventSearchForm.setUserTag(null);
+        //reset the tag (which is a hidden form input) unless we are paging with display tag, in which
+        //case we need to remember the tag
+        if (null == DisplayTagHelper.getPageParameterId(request, SearchHelper.DISPLAYTAG_TABLE_ID)) {
+            eventSearchForm.setUserTag(null);  
+        }
         eventSearchForm.setKml(false);
         ModelAndView returnModelAndView;
         if (errors.hasErrors()) {
