@@ -8,6 +8,7 @@
         <property name="triggers">
             <list>
                 <!-- <ref local="kmlExportTriggerStartup"/> -->
+                <ref local="tagIndexTrigger"/> 
                 <ref local="kmlExportTriggerNightly"/>
             </list>
         </property>
@@ -33,13 +34,24 @@
             <value>5000</value>
         </property>
         <property name="repeatInterval">
-            <value>10000</value>
+            <value>10000</value> 
         </property>
         <property name="repeatCount">
-            <value>0</value>
+            <value>0</value> <!-- repeat indefinitely -->
         </property>
     </bean>
 
+    <bean id="tagIndexTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail">
+            <ref bean="tagIndexJob"/>
+        </property>
+        <property name="startDelay">
+            <value>7000</value> 
+        </property>
+        <property name="repeatInterval">
+            <value>3600000</value> <!-- repeat every hour -->
+        </property>
+    </bean>
 
     <!--  job definitions  -->
     <!-- threaded email processing job -->
@@ -68,4 +80,8 @@
         </property>
     </bean>
 
+		<bean id="tagIndexJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		  <property name="targetObject" ref="tagAggregateService" />
+		  <property name="targetMethod" value="refresh" />
+		</bean>
 </beans>

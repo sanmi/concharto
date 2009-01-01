@@ -186,7 +186,6 @@ public class AuditEntryDaoHib implements AuditEntryDao {
 			String user, Class<?> clazz, int firstResult, int maxResults ) {
 
 		AuditEntryQueryHandler handler = new AuditEntryQueryHandler(sessionFactory, user, clazz, firstResult, maxResults) {
-			@SuppressWarnings("unchecked")
 			public Query getAuditEntriesQuery(Session session, String sql) {
 				return session.createSQLQuery(sql)
 	        	.addEntity("a", AuditEntry.class)
@@ -208,7 +207,6 @@ public class AuditEntryDaoHib implements AuditEntryDao {
 			int firstResult, int maxResults) {
 
 		AuditEntryQueryHandler handler = new AuditEntryQueryHandler(sessionFactory, null, clazz, firstResult, maxResults) {
-			@SuppressWarnings("unchecked")
 			public Query getAuditEntriesQuery(Session session, String sql) {		
 				return session.createSQLQuery(sql)
 	        	.addEntity("a", AuditEntry.class)
@@ -226,7 +224,6 @@ public class AuditEntryDaoHib implements AuditEntryDao {
 
 		AuditEntryQueryHandler handler = 
 			new AuditEntryQueryHandler(sessionFactory, null, Event.class, firstResult, maxResults, catalog) {
-			@SuppressWarnings("unchecked")
 			public Query getAuditEntriesQuery(Session session, String sql) {		
 				Query query = session.createSQLQuery(sql)
 	        	.addEntity("a", AuditEntry.class)

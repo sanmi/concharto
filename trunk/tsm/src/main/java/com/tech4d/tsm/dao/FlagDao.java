@@ -1,18 +1,19 @@
 package com.tech4d.tsm.dao;
 
-import java.io.Serializable;
-
 import com.tech4d.tsm.model.Flag;
 
-public interface FlagDao {
-    public Serializable save(Flag flag);
+/**
+ * For accessing Flag objects
+ *
+ */
+public interface FlagDao extends BaseDao <Flag> {
 
-	public abstract void deleteFlag(Long id);
-
-	public abstract void delete(Flag flag);
-
+    /**
+     * Set the disposition of a flag
+     * @param flagId
+     * @param disposition
+     * @return
+     */
 	public abstract Flag setFlagDisposition(Long flagId, String disposition);
-
-	public Flag find(Long id);
 
 }

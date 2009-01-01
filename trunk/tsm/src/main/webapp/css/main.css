@@ -2,41 +2,46 @@
 /* CSS Document */
 	#home {
 	background: #FFFFFF url(../images/home-backg.png) repeat-x;
+	background-color: #F3F3ED;
 	}
-	#headerhome{
-	height:213px;
-	width:100%;
-  background: url(../images/title-home.png) no-repeat;
-	}  
-	
+	#heading {
+	position: absolute;
+	width: 100%;
+	z-index: 0;
+	}
+	#eventSearchForm {
+	position:absolute;z-index:1;top:48px;width:100%;
+	}
 	#searchboxcontent {
+	position: static;
 	text-align:left;
-	position:relative;
 	margin: 0;
 	padding: 0;
-	top: -152px;
-  top: expression('-156px');    /* any IE */
 	width: 855px;
 	margin-right:auto;
 	margin-left:auto;
 	}
-	
 	#main {
-	position:relative;
-	top:-74px;
+	background-color: #FFFFFF;
 	}
-	#main h1 {
+	#main-pad {
+	height:208px;
+	}
+	#main h1,h2 {
 	margin: .2em 0;
 	padding: .2em 0;
+	}
+	#main h2 {
+	 font-size: 12pt;
 	}
 	#main table {
 	width:100%;
 	}
 	#main #left {
-	padding: 15px 10px 0 25px;
+	padding: 15px 0 0 25px;
 	}
 	#main #right {
-	padding: 25px 25px 0 10px;
+	padding: 15px 25px 0 10px;
 	width: 500px;
 	}
 	#main p{
@@ -53,7 +58,7 @@
 	}
 	#spotlightbox {
 	background: url(../images/spotlight-backg.png) repeat-x;
-	height:496px;
+	height:400px;
 	width:491px;
 	padding: 6px 0;
 	}
@@ -67,6 +72,9 @@
 	}
 	#spotlightbox small{
 	margin-left: 18px;
+	}
+	.spotlighthelp {
+	float:right;padding-right:18px
 	}
 	#main #borderbox {
 	text-align:center
@@ -84,10 +92,8 @@
 	}
 	#main .recent {
 	background: url(../images/recent-backg.png) repeat-x;
-	width: 100%;
-	padding: 1em .4em;
-	margin: 0;
-	font-weight:bold;
+  margin: 0;
+	padding: 1em;
 	}
 	#main .rightwidth {
 	width:320px;
@@ -111,39 +117,20 @@
 	border-bottom: #5197DC solid 1px;
 	width: 100%;
 	}
-	#maintab .left {
-	margin: 0 0 0 45px;	
-	}
-	#maintab .selected, #maintab .unselected  {
-	padding: 6px 20px 0px 20px;
-	margin: 0 3px;
-	border-left:white solid 1px;
-	border-right:white solid 1px;
-	border-top:white solid 1px;
-	}
-	#maintab .selected {
-	padding: 6px 20px 1px 20px;
-	background-color: white;
-	border-bottom:white solid 1px;
-	}
-	#maintab .unselected {
-	padding: 6px 20px 0px 20px;
-	background-color: #C4DEF9;
-	border-bottom:#AECDE9 solid 1px;
-	}
-	#maintab a:link, #maintab a:visited {
-	color: #033898;
-	}
-
 	#home #searchbox {
-	top: 72px;
+	position: static;
+	top: 0;
+	left: -10px;
+	}
+	#home #addbox {
+	margin-top: 20px;
+	top:0;
 	}
 	#tagline, #totals{
 	color: #4D4D4D;
 	font:italic 700 9pt Georgia, "Times New Roman", Times, serif;
 	text-align:left;
 	position:relative;
-	top: -30px;
 	left: 380px;
 	width: 42em;
 	padding: 0;
@@ -174,3 +161,22 @@
 	padding:.5em 1em;
 	width: 60%;
 	}
+	
+	.mainTabBar {
+  margin : 4px 0 4px 0;
+	}
+  .mainTab {
+  position: relative;
+  font-size: 12pt;
+  height: 40px;
+  font-weight: bold;
+  padding : 4px 14px 4px 14px;
+  margin: 0;
+  background : #BBD5F4;
+  }
+  .mainTabLSpace {
+  margin-left : 22px; 
+  }
+  .mainTabSelected {
+  background : #E0ECFA;
+  } 

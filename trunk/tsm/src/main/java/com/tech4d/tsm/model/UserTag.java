@@ -3,7 +3,7 @@ package com.tech4d.tsm.model;
 import javax.persistence.Entity;
 
 @Entity
-public class UserTag extends BaseEntity {
+public class UserTag extends BaseAuditableEntity {
     String tag;
 
     public UserTag() {

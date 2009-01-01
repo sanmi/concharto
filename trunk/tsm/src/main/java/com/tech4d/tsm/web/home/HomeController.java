@@ -1,7 +1,9 @@
 package com.tech4d.tsm.web.home;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.SortedMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,104 +18,147 @@ import org.springframework.web.util.WebUtils;
 
 import com.tech4d.tsm.dao.EventDao;
 import com.tech4d.tsm.model.Spotlight;
+import com.tech4d.tsm.model.time.TimeRange;
 import com.tech4d.tsm.service.SpotlightService;
+import com.tech4d.tsm.service.TagAggregateService;
+import com.tech4d.tsm.service.TagCloudEntry;
 import com.tech4d.tsm.web.eventsearch.SearchHelper;
 import com.tech4d.tsm.web.util.CatalogUtil;
 
 public class HomeController extends SimpleFormController {
+
+
     protected final Log log = LogFactory.getLog(getClass());
 
-	private static final int MAX_RECENT_EVENTS = 6;
-	public static final String MODEL_TOTAL_EVENTS = "totalEvents";
-	public static final String MODEL_RECENT_EVENTS = "recentEvents";
-	private static final Object MODEL_SPOTLIGHT_LABEL = "spotlightLabel";
-	private static final Object MODEL_SPOTLIGHT_LINK = "spotlightLink";
-	private static final Object MODEL_SPOTLIGHT_EMBED_LINK = "spotlightEmbedLink";
+    private static final int MAX_RECENT_EVENTS = 6;
+    public static final String MODEL_TOTAL_EVENTS = "totalEvents";
+    public static final String MODEL_RECENT_EVENTS = "recentEvents";
+    private static final Object MODEL_SPOTLIGHT_LABEL = "spotlightLabel";
+    private static final Object MODEL_SPOTLIGHT_LINK = "spotlightLink";
+    private static final Object MODEL_SPOTLIGHT_EMBED_LINK = "spotlightEmbedLink";
+    private static final String MODEL_TAG_CLOUD = "tagCloud";
+    private static final String MODEL_TAG_DAYS_BACK = "tagsDaysBack";
+    private static final String MODEL_TAG_INDEX = "tagIndex";
+    private static final String SESSION_SPOTLIGHT_INDEX = "spotlightIndex";
 
-	private static final String SESSION_SPOTLIGHT_INDEX = "spotlightIndex";
-	
-	private EventDao eventDao;
-	private SpotlightService spotlightService;
-	
-	public void setEventDao(EventDao eventDao) {
-		this.eventDao = eventDao;
-	}
-	public void setSpotlightService(SpotlightService spotlightService) {
-		this.spotlightService = spotlightService;
-	}
 
-	/**
-	 * Some requests are submitted via POST to defeat the browser cache of certain browsers (Safari 2, IE 6) 
-	 */
-	@Override
-	protected boolean isFormSubmission(HttpServletRequest request) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	protected ModelAndView showForm(HttpServletRequest request,
-			HttpServletResponse response, BindException errors, Map controlModel)
-			throws Exception {
-		Map model = errors.getModel();
-		model.put(MODEL_RECENT_EVENTS, eventDao.findRecent(CatalogUtil.getCatalog(request), MAX_RECENT_EVENTS, 0));
-		model.put(MODEL_TOTAL_EVENTS, eventDao.getTotalCount(CatalogUtil.getCatalog(request)));
-		setupSpotlight(request, model);
-		//clear out the eventSearchForm session if there is one
-		WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_FORM, null);
-		return new ModelAndView(getFormView(), model);
-	}
-	
-	/**
-	 * Find the next spotlight, add it to the model and save the index in the session so
-	 * we can show the next one next time.
-	 * 
-	 * @param request
-	 * @param model
-	 */
-	@SuppressWarnings("unchecked")
-	private void setupSpotlight(HttpServletRequest request, Map model) {
-		Integer spotlightIndex = (Integer) WebUtils.getSessionAttribute(request, SESSION_SPOTLIGHT_INDEX);
-		if (spotlightIndex == null) {
-			//setup the new counter.  Any old integer will do.
-			spotlightIndex = Math.abs((new Random()).nextInt());
-		}
-		Spotlight spotlight = spotlightService.getSpotlight(spotlightIndex, CatalogUtil.getCatalog(request));
-		spotlightIndex++;
-		WebUtils.setSessionAttribute(request, SESSION_SPOTLIGHT_INDEX, spotlightIndex);
-		if (null == spotlight) {
-			log.warn("no spotlight, using default");
-			spotlight = new Spotlight();
-			spotlight.setLink("search/eventsearch.htm?_what=");
-			spotlight.setLabel("Items [[on the map so far]]");
-		}
-		model.put(MODEL_SPOTLIGHT_LABEL, formatLabel(spotlight));
-		model.put(MODEL_SPOTLIGHT_LINK, spotlight.getLink());
-		model.put(MODEL_SPOTLIGHT_EMBED_LINK, formatEmbedLabel(spotlight));
-	}
-	private String formatLabel(Spotlight spotlight) {
-		String link = URLEncode(spotlight.getLink());
-		String label = null;
-		label = StringUtils.replace(spotlight.getLabel(),"[[","<a href='" + link + "'>");
-		label = StringUtils.replace(label,"]]","</a>");
-		return label;
-	}
-	private String formatEmbedLabel(Spotlight spotlight) {
-		String label = StringUtils.replace(spotlight.getLink(),"search/eventsearch.htm","search/embeddedsearch.htm");
-		return URLEncode(label);
-	}
-	
-	/**
-	 * A simple URLencoder that doesn't do the bad stuff that the URLEncoder class does (e.g. replace : and / chars)
-	 * NOTE: it doesn't do everything according to the spec. because we don't need it at the moment.  
-	 * @param str
-	 * @return  encoded string
-	 */
-	private String URLEncode(String str) {
-		str = StringUtils.replace(str, "&", "&amp;");
-		str = StringUtils.replace(str, "\"", "%22");
-		str = StringUtils.replace(str, "\'", "%27");
-		return str;
-	}
+    private EventDao eventDao;
+    private SpotlightService spotlightService;
+    private TagAggregateService tagAggregateService;
+
+    public void setEventDao(EventDao eventDao) {
+        this.eventDao = eventDao;
+    }
+
+    public void setSpotlightService(SpotlightService spotlightService) {
+        this.spotlightService = spotlightService;
+    }
+
+    public void setTagAggregateService(TagAggregateService tagAggregateService) {
+        this.tagAggregateService = tagAggregateService;
+    }
+
+    /**
+     * Some requests are submitted via POST to defeat the browser cache of
+     * certain browsers (Safari 2, IE 6)
+     */
+    @Override
+    protected boolean isFormSubmission(HttpServletRequest request) {
+        return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected ModelAndView showForm(HttpServletRequest request,
+            HttpServletResponse response, BindException errors, Map controlModel)
+            throws Exception {
+        Map model = errors.getModel();
+        model.put(MODEL_RECENT_EVENTS, eventDao.findRecent(CatalogUtil
+                .getCatalog(request), MAX_RECENT_EVENTS, 0));
+        model.put(MODEL_TOTAL_EVENTS, eventDao.getTotalCount(CatalogUtil
+                .getCatalog(request)));
+        setupSpotlight(request, model);
+        setupTagCloud(request, model);
+        setupTagIndex(request, model);
+        // clear out the eventSearchForm session if there is one
+        WebUtils.setSessionAttribute(request,
+                SearchHelper.SESSION_EVENT_SEARCH_FORM, null);
+        return new ModelAndView(getFormView(), model);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setupTagIndex(HttpServletRequest request, Map model) {
+        SortedMap<TimeRange, List<TagCloudEntry>> tagIndex = tagAggregateService.getTagIndex();
+        model.put(MODEL_TAG_INDEX, tagIndex);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setupTagCloud(HttpServletRequest request, Map model) {
+        List<TagCloudEntry> tagCloud = tagAggregateService.getTagCloud();
+        SortedMap<TimeRange, List<TagCloudEntry>> tagIndex = tagAggregateService.getTagIndex();
+        model.put(MODEL_TAG_CLOUD, tagCloud);
+        model.put(MODEL_TAG_INDEX, tagIndex);
+        model.put(MODEL_TAG_DAYS_BACK, tagAggregateService.getDefaultDaysBack());
+    }
+
+    /**
+     * Find the next spotlight, add it to the model and save the index in the
+     * session so we can show the next one next time.
+     * 
+     * @param request
+     * @param model
+     */
+    @SuppressWarnings("unchecked")
+    private void setupSpotlight(HttpServletRequest request, Map model) {
+        Integer spotlightIndex = (Integer) WebUtils.getSessionAttribute(
+                request, SESSION_SPOTLIGHT_INDEX);
+        if (spotlightIndex == null) {
+            // setup the new counter. Any old integer will do.
+            spotlightIndex = Math.abs((new Random()).nextInt());
+        }
+        Spotlight spotlight = spotlightService.getSpotlight(spotlightIndex,
+                CatalogUtil.getCatalog(request));
+        spotlightIndex++;
+        WebUtils.setSessionAttribute(request, SESSION_SPOTLIGHT_INDEX,
+                spotlightIndex);
+        if (null == spotlight) {
+            log.warn("no spotlight, using default");
+            spotlight = new Spotlight();
+            spotlight.setLink("search/eventsearch.htm?_what=");
+            spotlight.setLabel("Items [[on the map so far]]");
+        }
+        model.put(MODEL_SPOTLIGHT_LABEL, formatLabel(spotlight));
+        model.put(MODEL_SPOTLIGHT_LINK, spotlight.getLink());
+        model.put(MODEL_SPOTLIGHT_EMBED_LINK, formatEmbedLabel(spotlight));
+    }
+
+    private String formatLabel(Spotlight spotlight) {
+        String link = URLEncode(spotlight.getLink());
+        String label = null;
+        label = StringUtils.replace(spotlight.getLabel(), "[[", "<a href='"
+                + link + "'>");
+        label = StringUtils.replace(label, "]]", "</a>");
+        return label;
+    }
+
+    private String formatEmbedLabel(Spotlight spotlight) {
+        String label = StringUtils.replace(spotlight.getLink(),
+                "search/eventsearch.htm", "search/embeddedsearch.htm");
+        return URLEncode(label);
+    }
+
+    /**
+     * A simple URLencoder that doesn't do the bad stuff that the URLEncoder
+     * class does (e.g. replace : and / chars) NOTE: it doesn't do everything
+     * according to the spec. because we don't need it at the moment.
+     * 
+     * @param str
+     * @return encoded string
+     */
+    private String URLEncode(String str) {
+        str = StringUtils.replace(str, "&", "&amp;");
+        str = StringUtils.replace(str, "\"", "%22");
+        str = StringUtils.replace(str, "\'", "%27");
+        return str;
+    }
 }

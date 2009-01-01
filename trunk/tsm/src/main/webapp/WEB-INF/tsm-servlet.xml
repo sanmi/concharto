@@ -108,6 +108,7 @@
 		<property name="successView" value="home" />
 		<property name="eventDao" ref="eventDao" />
 		<property name="spotlightService" ref="spotlightService" />	
+		<property name="tagAggregateService" ref="tagAggregateService" />	
 	</bean>
 
 	<bean id="urlFilenameViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" parent="baseEventController">

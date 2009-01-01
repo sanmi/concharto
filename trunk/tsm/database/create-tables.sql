@@ -36,11 +36,11 @@
         positive integer,
         _where varchar(512),
         zoomLevel integer,
-        eventSearchText_id bigint,
-        positionalAccuracy_id bigint,
         styleSelector_id bigint,
-        when_id bigint,
         discussion_id bigint,
+        eventSearchText_id bigint,
+        when_id bigint,
+        positionalAccuracy_id bigint,
         tsGeometry_id bigint,
         primary key (id)
     );
@@ -199,6 +199,9 @@
 
     create table UserTag (
         id bigint not null auto_increment,
+        created datetime,
+        lastModified datetime,
+        version bigint,
         tag varchar(255),
         primary key (id)
     );
@@ -251,16 +254,16 @@
         references StyleSelector (id);
 
     alter table Event 
-        add index FK_EVENT_DISCUSS (discussion_id), 
-        add constraint FK_EVENT_DISCUSS 
-        foreign key (discussion_id) 
-        references WikiText (id);
-
-    alter table Event 
         add index FK_EVENT_TIMEPR (when_id), 
         add constraint FK_EVENT_TIMEPR 
         foreign key (when_id) 
         references TimePrimitive (id);
+
+    alter table Event 
+        add index FK_EVENT_DISCUSS (discussion_id), 
+        add constraint FK_EVENT_DISCUSS 
+        foreign key (discussion_id) 
+        references WikiText (id);
 
     alter table Event 
         add index FK_EVENT_POSACCURACY (positionalAccuracy_id), 
