@@ -26,13 +26,14 @@ import com.vividsolutions.jts.geom.Geometry;
 /**
  * For searching for events.  We can't use hql or criteria queries because the
  * geo and text stuff is so specialized and the indexes only work if you have it
- * just right.
+ * just right to get the desired indexing performance.
  * @author frank
  *
  */
 @Transactional
 public class EventSearchServiceHib implements EventSearchService {
-	
+    public static final String UNTAGGED = "untagged";
+
     private static final String PARAM_GEOM_TEXT = "geom_text";
 	private static final String PARAM_SEARCH_TEXT = "search_text";
 	private static final String PARAM_LATEST = "latest";
@@ -46,11 +47,13 @@ public class EventSearchServiceHib implements EventSearchService {
     private static final String SQL_PREFIX_SEARCH = "SELECT * "; 
     private static final String SQL_SELECT_STUB = " FROM Event ev ";
      
-    private static final String SQL_GEO_JOIN ="INNER JOIN TsGeometry AS g ON ev.tsgeometry_id = g.id ";
-    private static final String SQL_SEARCH_JOIN ="INNER JOIN EventSearchText AS es ON ev.eventsearchtext_id = es.id ";
-    private static final String SQL_TIME_JOIN="INNER JOIN TimePrimitive AS t ON ev.when_id = t.id ";
-    private static final String SQL_TAG_JOIN="INNER JOIN Event_UserTag AS ev_tag ON ev.id =ev_tag.Event_id " + 
-    	" INNER JOIN UserTag AS tag ON tag.id = ev_tag.userTags_id"; 
+    private static final String SQL_GEO_JOIN = "INNER JOIN TsGeometry AS g ON ev.tsgeometry_id = g.id ";
+    private static final String SQL_SEARCH_JOIN = "INNER JOIN EventSearchText AS es ON ev.eventsearchtext_id = es.id ";
+    private static final String SQL_TIME_JOIN = "INNER JOIN TimePrimitive AS t ON ev.when_id = t.id ";
+    private static final String SUB_SQL_TAG_JOIN = " JOIN Event_UserTag AS ev_tag ON ev.id =ev_tag.Event_id "; 
+    private static final String SUB_SQL_TAG_JOIN2 = " JOIN UserTag AS tag ON tag.id = ev_tag.userTags_id"; 
+    private static final String SQL_TAG_JOIN = "INNER" + SUB_SQL_TAG_JOIN + "INNER" + SUB_SQL_TAG_JOIN2;
+    private static final String SQL_TAG_EMPTY_JOIN = "LEFT" + SUB_SQL_TAG_JOIN + "LEFT" + SUB_SQL_TAG_JOIN2;
     private static final String SQL_WHERE = " WHERE ";
     private static final String SQL_AND = " AND ";
     
@@ -67,6 +70,7 @@ public class EventSearchServiceHib implements EventSearchService {
     private static final String SQL_FLAGGED_CLAUSE = " ev.hasUnresolvedFlag = true ";
     //TODO I think this will be a performance problem when the DB gets large!!
     private static final String SQL_TAG_CLAUSE = " upper(tag.tag) = upper(:tag) ";
+    private static final String SQL_TAG_EMPTY_CLAUSE = " tag.tag is null";
     	
     private static final String SQL_MBRWITHIN_CLAUSE = 
         " MBRIntersects(geometryCollection, Envelope(GeomFromText(:geom_text))) ";
@@ -317,8 +321,14 @@ public class EventSearchServiceHib implements EventSearchService {
         	}
         }
         if (!StringUtils.isEmpty(params.getUserTag())) {
-        	select.append(SQL_TAG_JOIN);
-        	hasConjuncted = addClause(hasConjuncted, clause, SQL_TAG_CLAUSE);
+            //special case for empty tags
+            if (!UNTAGGED.equals(params.getUserTag())) {
+                select.append(SQL_TAG_JOIN);
+                hasConjuncted = addClause(hasConjuncted, clause, SQL_TAG_CLAUSE);
+            } else {
+                select.append(SQL_TAG_EMPTY_JOIN);
+                hasConjuncted = addClause(hasConjuncted, clause, SQL_TAG_EMPTY_CLAUSE);
+            }
         }
         if (!StringUtils.isEmpty(params.getCatalog())) {
         	hasConjuncted = addClause(hasConjuncted, clause, SQL_CATALOG_CLAUSE);
@@ -337,7 +347,10 @@ public class EventSearchServiceHib implements EventSearchService {
             sqlQuery.setString(PARAM_SEARCH_TEXT, params.getTextFilter());
         }
         if (!StringUtils.isEmpty(params.getUserTag())) {
-        	sqlQuery.setString(PARAM_TAG, StringUtils.trim(params.getUserTag()));
+            //special case for empty tags
+            if (!UNTAGGED.equals(params.getUserTag())) {
+                sqlQuery.setString(PARAM_TAG, StringUtils.trim(params.getUserTag()));
+            }  
         }
         if (!StringUtils.isEmpty(params.getCatalog())) {
         	sqlQuery.setString(PARAM_CATALOG, StringUtils.trim(params.getCatalog()));

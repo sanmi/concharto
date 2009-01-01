@@ -21,8 +21,7 @@ public class StyleDaoHib implements StyleDao {
      * 
      * @see com.tech4d.tsm.lab.StyleDao#save(com.tech4d.tsm.model.lab.Style)
      */
-    public Serializable save(com.tech4d.tsm.model.kml.Style style) {
-
+    public Serializable save(Style style) {
         return this.sessionFactory.getCurrentSession().save(style);
     }
 
@@ -31,7 +30,7 @@ public class StyleDaoHib implements StyleDao {
      * 
      * @see com.tech4d.tsm.lab.StyleDao#delete(com.tech4d.tsm.model.lab.Style)
      */
-    public void delete(com.tech4d.tsm.model.kml.Style style) {
+    public void delete(Style style) {
         this.sessionFactory.getCurrentSession().delete(style);
     }
 
@@ -78,8 +77,8 @@ public class StyleDaoHib implements StyleDao {
      * 
      * @see com.tech4d.tsm.lab.StyleDao#findById(java.lang.Long)
      */
-    public com.tech4d.tsm.model.kml.Style find(Long id) {
-        return (com.tech4d.tsm.model.kml.Style) this.sessionFactory.getCurrentSession().get(
+    public Style find(Long id) {
+        return (Style) this.sessionFactory.getCurrentSession().get(
                 Style.class, id);
     }
 }

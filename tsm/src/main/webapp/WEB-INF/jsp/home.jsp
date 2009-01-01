@@ -8,145 +8,167 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tsm"%>
 
 <%
-	//for defeating browser caches of iframes
-	Random rand = new Random();
-	request.setAttribute("rand", rand.nextInt());
+  //for defeating browser caches of iframes
+  Random rand = new Random();
+  request.setAttribute("rand", rand.nextInt());
  %>
 <tsm:page title="Home">
-		<jsp:attribute name="head">
-			<script type="text/javascript">
-	//<![CDATA[
 
-	function init() {
-		setupHelpPanels();
-	}
-	
-	function search() {
-			document.getElementById("eventSearchForm").limitWithinMapBounds.value = 'false';
-			document.event.submit();
-	}
-	
-	function editEvent() {
-		document.locaRtion='${basePath}edit/event.htm?add';
-	}
-	//]]>
-	</script>
-	</jsp:attribute>	
-	<jsp:attribute name="stylesheet">header.css,main.css</jsp:attribute>
-	<jsp:attribute name="bodyattr">onload="init()" id="home"</jsp:attribute>
-	<jsp:attribute name="nohead">true</jsp:attribute>
-	<jsp:attribute name="nohomemenu">true</jsp:attribute>
-	<jsp:attribute name="script">prototype.js,effects.js,dragdrop.js,resizable.js,livepipe.js,window.js,help.js</jsp:attribute>
-	
-	<jsp:body>
+  <jsp:attribute name="stylesheet">header.css,main.css</jsp:attribute>
+  <jsp:attribute name="bodyattr">onload="init()" id="home"</jsp:attribute>
+  <jsp:attribute name="nohead">true</jsp:attribute>
+  <jsp:attribute name="nohomemenu">true</jsp:attribute>
+  <jsp:attribute name="script">prototype.js,effects.js,dragdrop.js,resizable.js,livepipe.js,window.js,help.js</jsp:attribute>
+  <jsp:attribute name="head">
+    <script type="text/javascript">
+  //<![CDATA[
 
-		<div id="heading" >
-			<img alt="title-home" src="images/${hostprefix}title-home.png" />	
-		</div>
-		
-		<form:form name="event" id="eventSearchForm" action="search/eventsearch.htm" commandName="eventSearch" onsubmit="search(); return false">
-			<form:hidden path="boundingBoxSW" htmlEscape="true"/>
-			<form:hidden path="boundingBoxNE" htmlEscape="true"/>
-			<form:hidden path="mapCenter" htmlEscape="true"/>
-			<form:hidden path="mapCenterOverride"/>
-			<form:hidden path="searchResults" htmlEscape="true"/>
-			<form:hidden path="mapZoom"/>
-			<form:hidden path="zoomOverride"/>
-			<form:hidden path="mapType"/>
-			<form:hidden path="isGeocodeSuccess"/>
-			<form:hidden path="isAddEvent"/>
-			<form:hidden path="editEventId"/>
-			<form:hidden path="displayEventId"/>
-			<form:hidden path="linkHereEventId"/>
-			<form:hidden path="embed"/>
-	  	<c:if test="${isFirstView != null}">
-				<input type="hidden" id="isFirstView" value="true"/>					
-	  	</c:if>
-	  	<div id="searchboxcontent">			  	  		
-	  		<jsp:include page="search/include/searchbar.jsp">
-	  			<jsp:param name="showSearchOptions" value="false"/>
-	  			<jsp:param name="showAdminBar" value="false"/>
-	  		</jsp:include>
-				<div id="tagline">
-			    An encyclopedic atlas of history and happenings that anyone can edit.<%-- TODO finish this <a href="#">anyone can edit.</a>--%></div>
-			  <div id="totals"> <a href='${basePath}search/eventsearch.htm?_what='><b>${totalEvents}</b> events and counting...</a> </div>
-	  	</div>
-	  </form:form>
-	  
-		<div id="main">
-			<table>
-		    <col id="leftbar"/>
-		    <col id="rightbar"/>
-		    <tr>
-		    <td id="left" >
-		      <h1>An Atlas of History and Happenings</h1>
-		      <p>Concharto is an encyclopedic atlas of history and happenings that anyone can edit.  It is a geographic wiki. </p>
-		      <table><tr>
-		      	<td>
-				      <ul>
-								<li><a href="http://wiki.concharto.com/wiki/Tour">Take a tour</a></li>
-								<li><a href="http://wiki.concharto.com/wiki/Guidelines">Policies and guidelines</a></li>
-								<li><a href="http://wiki.concharto.com/wiki/About">About Concharto</a></li>
-				      </ul>
-		      	</td>
-		      	<td>
-				      <ul>
-				      	<li><a href="${basePath}list/recent.htm">Recently added</a></li>
-								<li><a href="${basePath}event/latestchanges.htm">Latest changes</a></li>
-				      </ul>
-		      	</td>
-		      </tr></table>
-		      <h1>Recently Added</h1>
-		      <div class="recent" >
-		      	<ul>
-							<c:forEach items="${recentEvents}" var="event" varStatus="status">
-		  					<li> 
-			          	<c:if test="${event.hasUnresolvedFlag}">
-				          	<a class="errorLabel" href="${basePath}event/changehistory.htm?id=${event.id}">Flagged! </a>
-			          	</c:if>
-			            <a  href='${basePath}search/eventsearch.htm?_id=${event.id}'><c:out value="${event.summary}" escapeXml="true"/></a> <br/>
-			            ${event.when.asText} <br/>
-			            <em><c:if test="${event.where != null && event.where != ''}"><c:out value="${event.where}" escapeXml="true"/></c:if></em>
-			            <hr/>
-			          </li>
-		  				</c:forEach>
-	  					<li>
-	  						<em><a href="${basePath}list/recent.htm">More recently added ...</a></em>
-	  					</li>	  					
-						</ul>        
-		      </div>
-		      <div class="rightwidth"></div>
-		    </td>
-		    <td id="right" >
-		    	<%-- this form is a hack to defeat the browser cache on home.htm.  We need the cache for 
-		    	     properly handling back buttons to the home page (otherwise the spotlight iframe won't match the page
-		    	     content), but we want to be able to click next and see a new spotlight.  This problem
-		    	     is most obvious on MacOS Safari, and intermittently so on IE 6, Windows --%>
-		    	<form name="nextForm" method="post" action="${basePath}home.htm"></form>
-		    	
-			    <div id="spotlightbox">
-		        <div class="next"><a href="#" onclick="document.nextForm.submit(); return false;">next</a></div>
-		        <p>${spotlightLabel}</p>
-		        <div class="clearfloat"></div>
-		        <small style="float:right;padding-right:18px">Click on red icons, lines or areas</small>
-		        <small>View a <a href='<c:out value="${spotlightLink}"/>'>larger map</a></small>
-		        <div class="clearfloat"></div>
-		        <div id="borderbox">
-		          <iframe id="embeddedmap" 
-		          	<%-- &nc means don't count this as a page hit in google analytics 
-		          			 &r is to defeat certain types of browser iframe page caching 
-		          			 &h is to indicate to the embedded page that this is from the home page --%>
-		          	src='${spotlightEmbedLink}&amp;r=${rand}&amp;h=1&amp;nc'
-		            height="330" width="450" frameborder="0" scrolling="no">
-		           	This browser doesn't support embedding a map.
-		          </iframe>
-		         </div>
-		      </div>
-		    </td>
-		    </tr>
-		  </table>
-		</div>
-		
-	</jsp:body>
+  function init() {
+
+	  //display the last tab that the user selected
+    var selected = getCookie('selectedTab');
+    if (selected != '') {
+        selectTab(selected);
+    } else {
+        selectTab('info');
+    }
+    setupHelpPanels();
+  }
+  
+  function search() {
+      document.getElementById("eventSearchForm").limitWithinMapBounds.value = 'false';
+      document.event.submit();
+  }
+  
+  function editEvent() {
+    document.location='${basePath}edit/event.htm?add';
+  }
+   
+  function selectTab(tab) {
+    var tabName = 'tab'+tab;
+    $$('.infopane').each(function(item) {
+        $(item).style.display = 'none';
+    });
+    $$('.mainTab').each(function(item) {
+    	Element.removeClassName(item, 'mainTabSelected');
+    });
+    $(tab).style.display = 'inline';
+    //special case for index
+    if (tab == 'index') {
+    	  $('right').style.display = 'none';    
+    } else {
+        if (getCookie('selectedTab') == 'index') {
+            $('right').style.display = 'block';    
+        }
+    }
+    Element.toggleClassName(tabName, 'mainTabSelected');
+    setCookie('selectedTab', tab, 20);
+  }
+  
+  
+  //]]>
+  </script>
+  </jsp:attribute>  
+  
+  <jsp:body>
+    <div id="heading">
+      <img class="centerdiv" alt="title-home" src="images/${hostprefix}title-home.png" /> 
+    </div>
+    <form:form name="event" id="eventSearchForm" action="search/eventsearch.htm" commandName="eventSearch" onsubmit="search(); return false">
+      <form:hidden path="boundingBoxSW" htmlEscape="true"/>
+      <form:hidden path="boundingBoxNE" htmlEscape="true"/>
+      <form:hidden path="mapCenter" htmlEscape="true"/>
+      <form:hidden path="mapCenterOverride"/>
+      <form:hidden path="searchResults" htmlEscape="true"/>
+      <form:hidden path="mapZoom"/>
+      <form:hidden path="zoomOverride"/>
+      <form:hidden path="mapType"/>
+      <form:hidden path="isGeocodeSuccess"/>
+      <form:hidden path="isAddEvent"/>
+      <form:hidden path="editEventId"/>
+      <form:hidden path="displayEventId"/>
+      <form:hidden path="linkHereEventId"/>
+      <form:hidden path="embed"/>
+      <c:if test="${isFirstView != null}">
+        <input type="hidden" id="isFirstView" value="true"/>          
+      </c:if>
+      <div id="searchboxcontent" class="centerdiv">               
+        <div id="tagline">
+          An encyclopedic atlas of history and happenings that anyone can edit.<%-- TODO finish this <a href="#">anyone can edit.</a>--%></div>
+        <div id="totals"> <a href='${basePath}search/eventsearch.htm?_what='><b>${totalEvents}</b> events and counting...</a> </div>
+        <jsp:include page="search/include/searchbar.jsp">
+          <jsp:param name="showSearchOptions" value="false"/>
+          <jsp:param name="showAdminBar" value="false"/>
+        </jsp:include>
+      </div>
+    </form:form>
+    <div id="main-pad"></div>
+    <div id="main">
+      <table>
+        <col id="leftbar"/>
+        <col id="rightbar"/>
+        <tr>
+        <%-- Note: setting display style must be done in jsp and javascript to enable both 
+             setting the default tab at page load time and also once the page has been loaded.
+             ugh! 
+        --%>
+        <td id="left" >
+          <div class="mainTabBar">
+            <span id="tabinfo" class="mainTab ${cookie.selectedTab.value == 'info' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('info'); return false;">Info</a></span>
+            <span id="tablatest" class="mainTab ${cookie.selectedTab.value == 'latest' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('latest'); return false;">Latest</a></span>
+            <span id="tabtags" class="mainTab ${cookie.selectedTab.value == 'tags' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('tags'); return false;">Tags</a></span>
+            <span id="tabindex" class="mainTab ${cookie.selectedTab.value == 'index' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('index'); return false;">Index</a></span>
+          </div>
+          <div style="width:100%;">
+          <div class="recent" >
+            <div class="infopane" id="info" style="display: ${cookie.selectedTab.value == 'info' ? 'inline' : 'none'}">
+              <jsp:include page="include/maininfo.jsp"/>
+            </div>
+            <div class="infopane" id="latest" style="display: ${cookie.selectedTab.value == 'latest' ? 'inline' : 'none'}">
+              <jsp:include page="include/mainlatest.jsp"/>
+            </div>
+            <div class="infopane" id="tags" style="display: ${cookie.selectedTab.value == 'tags' ? 'inline' : 'none'}">
+              <jsp:include page="include/maintags.jsp"/>
+            </div>
+            <div class="infopane" id="index" style="display: ${cookie.selectedTab.value == 'index' ? 'inline' : 'none'}">
+              <jsp:include page="include/mainindex.jsp"/>
+            </div>
+          </div>
+          </div>      
+          <!--  this is here to prevent the left column from collapsing too far when the window is not wide -->
+          <div class="rightwidth"></div>
+        </td>
+        <td id="right">
+          <%-- this form is a hack to defeat the browser cache on home.htm.  We need the cache for 
+               properly handling back buttons to the home page (otherwise the spotlight iframe won't match the page
+               content), but we want to be able to click next and see a new spotlight.  This problem
+               is most obvious on MacOS Safari, and intermittently so on IE 6, Windows --%>
+          <form name="nextForm" method="post" action="${basePath}home.htm"></form>
+          
+          <div id="spotlightbox">
+            <div class="next"><a href="#" onclick="document.nextForm.submit(); return false;">next</a></div>
+            <p>${spotlightLabel}</p>
+            <div class="clearfloat"></div>
+            <small class="spotlighthelp">Click on red icons, lines or areas</small>
+            <small>View a <a href='<c:out value="${spotlightLink}"/>'>larger map</a></small>
+            <div class="clearfloat"></div>
+            <div id="borderbox">
+              <iframe id="embeddedmap" 
+                <%-- &nc means don't count this as a page hit in google analytics 
+                     &r is to defeat certain types of browser iframe page caching 
+                     &h is to indicate to the embedded page that this is from the home page --%>
+                src='${spotlightEmbedLink}&amp;r=${rand}&amp;h=1&amp;nc'
+                height="330" width="450" frameborder="0" scrolling="no">
+                This browser doesn't support embedding a map.
+              </iframe>
+             </div>
+          </div>
+          <div style="height: 15px;"></div>
+        </td>
+        </tr>
+      </table>
+    </div>
+    
+  </jsp:body>
 </tsm:page>
 

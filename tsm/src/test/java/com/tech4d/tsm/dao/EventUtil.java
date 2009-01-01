@@ -148,5 +148,9 @@ public class EventUtil {
             + ", end: " + tr.getEnd().getDate().getTime());
     }
 
+    public Event createEvent(TimeRange tr) {
+        return createEvent(defaultGeometry, tr);
+    }
+
 
 }

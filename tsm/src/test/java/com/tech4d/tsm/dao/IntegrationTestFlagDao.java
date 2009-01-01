@@ -59,7 +59,7 @@ public class IntegrationTestFlagDao extends OpenSessionInViewIntegrationTest {
         getSessionFactory().getCurrentSession().evict(event);
         
         //now delete one
-        flagDao.deleteFlag(returned.getFlags().get(0).getId());
+        flagDao.delete(returned.getFlags().get(0).getId());
         //in order to check, we will add the flag to our event
         event.getFlags().remove(0);
         returned = eventDao.findById((Long)id);

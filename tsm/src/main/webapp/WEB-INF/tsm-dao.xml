@@ -59,6 +59,11 @@
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
+  <bean id="userTagDao" class="com.tech4d.tsm.dao.UserTagDaoHib">
+    <property name="sessionFactory">
+      <ref bean="mySessionFactory"/>
+    </property>
+  </bean>
 	<!-- End Daos -->  
 	
 	<!-- enable the configuration of transactional behavior based on annotations 
@@ -101,6 +106,12 @@
   
   <bean id="spotlightService" class="com.tech4d.tsm.service.SpotlightService">
   	<property name="spotlightDao" ref="spotlightDao"/>
+  </bean>
+  <bean id="tagAggregateService" class="com.tech4d.tsm.service.TagAggregateService">
+  	<property name="defaultDaysBack" value="60"/>
+  	<property name="maxFont" value="25"/>
+  	<property name="minFont" value="10"/>
+    <property name="userTagDao" ref="userTagDao"/>
   </bean>
 
   <bean id="sessionHelper" class="com.tech4d.tsm.web.util.SessionHelper">
