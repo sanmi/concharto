@@ -2,7 +2,6 @@ package com.tech4d.tsm.dao;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.Serializable;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.List;
