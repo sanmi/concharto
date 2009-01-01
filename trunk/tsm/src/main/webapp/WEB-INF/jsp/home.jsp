@@ -53,14 +53,6 @@
     	Element.removeClassName(item, 'mainTabSelected');
     });
     $(tab).style.display = 'inline';
-    //special case for index
-    if (tab == 'index') {
-    	  $('right').style.display = 'none';    
-    } else {
-        if (getCookie('selectedTab') == 'index') {
-            $('right').style.display = 'block';    
-        }
-    }
     Element.toggleClassName(tabName, 'mainTabSelected');
     setCookie('selectedTab', tab, 20);
   }
@@ -104,22 +96,15 @@
     </form:form>
     <div id="main-pad"></div>
     <div id="main">
-      <table>
-        <col id="leftbar"/>
-        <col id="rightbar"/>
-        <tr>
-        <%-- Note: setting display style must be done in jsp and javascript to enable both 
-             setting the default tab at page load time and also once the page has been loaded.
-             ugh! 
-        --%>
-        <td id="left" >
-          <div class="mainTabBar">
-            <span id="tabinfo" class="mainTab ${cookie.selectedTab.value == 'info' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('info'); return false;">Info</a></span>
-            <span id="tablatest" class="mainTab ${cookie.selectedTab.value == 'latest' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('latest'); return false;">Latest</a></span>
-            <span id="tabtags" class="mainTab ${cookie.selectedTab.value == 'tags' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('tags'); return false;">Tags</a></span>
-            <span id="tabindex" class="mainTab ${cookie.selectedTab.value == 'index' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('index'); return false;">Index</a></span>
-          </div>
-          <div style="width:100%;">
+      <div id="left">          
+        <div class="mainTabBar">
+          <span id="tabinfo" class="mainTab ${cookie.selectedTab.value == 'info' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('info'); return false;">Info</a></span>
+          <span id="tablatest" class="mainTab ${cookie.selectedTab.value == 'latest' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('latest'); return false;">Latest</a></span>
+          <span id="tabtags" class="mainTab ${cookie.selectedTab.value == 'tags' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('tags'); return false;">Tags</a></span>
+          <span id="tabindex" class="mainTab ${cookie.selectedTab.value == 'index' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('index'); return false;">Index</a></span>
+        </div>
+        <div id="mainpane">
+        <jsp:include page="include/mainspotlight.jsp"/>
           <div class="recent" >
             <div class="infopane" id="info" style="display: ${cookie.selectedTab.value == 'info' ? 'inline' : 'none'}">
               <jsp:include page="include/maininfo.jsp"/>
@@ -134,40 +119,11 @@
               <jsp:include page="include/mainindex.jsp"/>
             </div>
           </div>
-          </div>      
-          <!--  this is here to prevent the left column from collapsing too far when the window is not wide -->
-          <div class="rightwidth"></div>
-        </td>
-        <td id="right">
-          <%-- this form is a hack to defeat the browser cache on home.htm.  We need the cache for 
-               properly handling back buttons to the home page (otherwise the spotlight iframe won't match the page
-               content), but we want to be able to click next and see a new spotlight.  This problem
-               is most obvious on MacOS Safari, and intermittently so on IE 6, Windows --%>
-          <form name="nextForm" method="post" action="${basePath}home.htm"></form>
-          
-          <div id="spotlightbox">
-            <div class="next"><a href="#" onclick="document.nextForm.submit(); return false;">next</a></div>
-            <p>${spotlightLabel}</p>
-            <div class="clearfloat"></div>
-            <small class="spotlighthelp">Click on red icons, lines or areas</small>
-            <small>View a <a href='<c:out value="${spotlightLink}"/>'>larger map</a></small>
-            <div class="clearfloat"></div>
-            <div id="borderbox">
-              <iframe id="embeddedmap" 
-                <%-- &nc means don't count this as a page hit in google analytics 
-                     &r is to defeat certain types of browser iframe page caching 
-                     &h is to indicate to the embedded page that this is from the home page --%>
-                src='${spotlightEmbedLink}&amp;r=${rand}&amp;h=1&amp;nc'
-                height="330" width="450" frameborder="0" scrolling="no">
-                This browser doesn't support embedding a map.
-              </iframe>
-             </div>
-          </div>
-          <div style="height: 15px;"></div>
-        </td>
-        </tr>
-      </table>
+          <div class="clearfloat"/>
+        </div>      
+      </div>
     </div>
+
     
   </jsp:body>
 </tsm:page>
