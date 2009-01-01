@@ -3,8 +3,8 @@ ALTER TABLE UserTag ADD lastModified datetime;
 ALTER TABLE UserTag ADD version bigint;
 
 UPDATE  UserTag AS t
-RIGHT JOIN event_usertag as eut ON t.id = eut.userTags_id
-RIGHT JOIN event as e ON e.id = eut.Event_id
+RIGHT JOIN Event_UserTag as eut ON t.id = eut.userTags_id
+RIGHT JOIN Event as e ON e.id = eut.Event_id
 SET t.created = e.created;
 
 -- a few tags have a null created date
