@@ -1,0 +1,20 @@
+#Fri Jan 02 11:18:57 EST 2009
+eclipse.preferences.version=1
+encoding//src/lab/html/maplet/marker-simple.xml=UTF-8
+encoding//src/main/webapp/WEB-INF/hibernate.cfg.xml=UTF-8
+encoding//src/main/webapp/WEB-INF/quartz.xml=UTF-8
+encoding//src/main/webapp/WEB-INF/tsm-application.xml=UTF-8
+encoding//src/main/webapp/WEB-INF/tsm-dao.xml=UTF-8
+encoding//src/main/webapp/WEB-INF/tsm-datasource.xml=UTF-8
+encoding//src/main/webapp/WEB-INF/tsm-servlet.xml=UTF-8
+encoding//src/main/webapp/WEB-INF/web.xml=UTF-8
+encoding//src/main/webapp/gadget.xml=UTF-8
+encoding//src/main/webapp/map-simple.xml=UTF-8
+encoding//src/main/webapp/marker-simple.xml=UTF-8
+encoding//src/main/webapp/sitemap.xml=UTF-8
+encoding//src/test/conf/tsm-integrationtest-dao.xml=UTF-8
+encoding//src/test/conf/tsm-integrationtest-datasource.xml=UTF-8
+encoding/build.xml=UTF-8
+encoding/ivy.xml=UTF-8
+encoding/macros-and-presets.xml=UTF-8
+encoding/pom.xml=UTF-8
