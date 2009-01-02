@@ -1,78 +1,46 @@
-This is a skeleton application that I've mashed up from spring and hibernate.
-For an practicing java developer, I think it gets pretty close to the developer 
-productivity of Ruby on Rails.  
-
-LICENSE.  This software is licensed under the Apache License
-
-General requirements were:
-1. Hosting costs = Support high traffic web sites with a low number of 
-   CPU's needed per million unique visitors per month.
-2. Developer productivity = approach the ease of Ruby on Rails.
-3. Complexity = The less disparate parts, the better
-4. Learning curve = Knowing java, jsp and web apps should be good enough to 
-   get moving quickly.
-5. Maximize third party tools and components = maximize the available choices 
-   of UI widgets, AJAX libaries, etc.
-
-Skeleton application mashed up from:
-* Spring 2.0.6 MVC-convention sample webapp
-* Hibernate 3.0 annotations example application
-* jsp tag examle pagetag: 
-  http://fforw.de/post/Creating_JSP_Layouts_with_Page_Tags/anonreply.save
-
-Also demonstrates:
-* MyEclipse/eclipse hot deploy capabilities
-* Ivy and ant (or Maven and ant if you uncomment out some sections in build.xml)
-* ant script for generation of the schema and installation on the datbase server
-* auto generation of ant script for dao "integration" tests
-
-Tools I used:
-* MyEclipse
-* Jdk 1.5.0.10
-* Ant 1.7.0
-* maven 2.0.7 (optional)
-* Ivy 2.0.0-alpha2-incubating
-* MySQL 5.0.27
-* Apache Tomcat 5.5
-* source code packages for the following (so you can have javadocs and step into 
-  the source while debugging - optional)
-** spring 2.0.6
-** hibernate 3.0.2
+Developer Setup and Build instructions
+NOTE: This project does not include an installer or any sort of tool to make it easy for
+people who are not java software developers to install and use.  The following instructions
+assume the user is an experienced java software developer with familiarity with J2EE, MySQL and
+web development in general.
 
 Prerequisites
-1. Install ivy by copying the ivy jar file to your ANT_HOME/lib dir
+* Mysql 5.x, installed with innodb as the default engine and UTF8 as the default encoding
+* JDK 5.x
+* Apache Ant 7.x
+* Apache Ivy 2.0
+* Apache Tomcat 5.5, installed on port 80
 
-Installation and running:
+Optional
+* MyEclipse IDE 
 
-1. Create the database
-* Generate the schema and deploy
-** create a database in MySQL called "tsm_test" and a user called "tsm_test_user"
-** edit build.properties with username and password
-** edit src/main/webapp/WEB-INF/tsm-datasource.xml with database username and password
+1. Install Prerequisites
 
-2. BUILD with ant/ivy
-* from the project directory
-* type ant integration-test
+2. Create databases
+mysql> create database tsm_dev;
+mysql> create database tsm_test;
+mysql> grant all privileges on tsm_dev.* to 'tsm_dev_user'@'localhost' identified by 'tsm_dev_user';
+mysql> grant all privileges on tsm_test.* to 'tsm_test_user'@'localhost' identified by 'tsm_test_user';
 
-2.1 BUILD with maven (optional)
-* Uncomment the maven sections in build.xml.  Note you can either use maven or ivy, but not both.
-* Update the maven repository with Sun Jars
-Due to sun licensing, maven can't host jta jars.  Instead do this:
-{code}
- mvn install:install-file -Dfile=lib/local/jta.jar -DgroupId=javax.transaction -DartifactId=jta -Dversion=1.0.1B -Dpackaging=jar
-{code}
+3. create the shema
+$ ant create-db-dev
+$ ant create-db-test
 
-* from the project directory
-* type "mvn war:exploded"
+4. Install your google maps key 
+* create an alias for your local machine or use one in the map.properties file.  For instance, you can 
+edit your /etc/hosts file like so:
+127.0.0.1       localhost www.map4d.com
+* when you open the application from your browser you will use this new alias: http://www.map4d.com:8080 
 
-3. Generate the database schema
-* type ant create-db-test
+5. deploy
+* create a file called user.build.properties and edit it to point to your local mysql and tomcat instance
+* deploy
+$ ant deploy-test
 
-4. Deploy the webapp
-* you can do this from MyEclipse or by copying the target/tsm to the tomcat webapps directory.
+6. start
+* start tomcat
+* errors are logged to catalina.out
+* navigate to your webapp http://www.map4d.com:8080 
 
-5. Run
-* start tomcat 
-* open the main page: http://<hostname>/tsm/ (e.g. http://localhost:8080/tsm/)
-
-
+7. Login
+* the create-db-test script creates an admin user called "frank" with the password "cat"
