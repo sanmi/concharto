@@ -32,7 +32,9 @@
     content), but we want to be able to click next and see a new spotlight.  This problem
     is most obvious on MacOS Safari, and intermittently so on IE 6, Windows
     --> 
-    <form name="nextForm" method="post" action="${basePath}home.htm"></form>
+    <form name="nextForm" id="nextForm" method="post" action="${basePath}home.htm">
+      <input type="hidden" name="tagindex" value="0"/>
+    </form>
   
     <div id="spotlightbox">
       <div class="next"><a href="#" onclick="document.nextForm.submit(); return false;">next</a></div>
