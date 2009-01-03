@@ -25,7 +25,7 @@
  ***** END LICENSE BLOCK *****
 --%>
 <h1>An Atlas of History and Happenings</h1>
-<p>Concharto is an encyclopedic atlas of history and happenings that anyone can edit.  It is a geographic wiki. </p>
+<p>Concharto is an encyclopedic atlas of history and happenings that anyone can edit. </p>
 <table><tr>
   <td>
     <ul>
@@ -50,7 +50,20 @@
   </a>
   
 </p>
-<h2>Concharto is open source </h2>
+<h2>Concharto is a Geographic Wiki</h2>
 <p>
-  Concharto source code is available to anyone.  You can find our open source initiative <a href="http://code.google.com/p/concharto">here</a>
-</p>
+Unlike many mapping sites on the internet today, Concharto is not about places - it is about events. 
+Unlike Wikipedia, it is about small discrete bits of information, rather than comprehensive articles. 
+Like Wikipedia, there is a complete history of changes to events. Anyone can add or edit information. </p>
+
+<h2>Some Guidelines</h2>
+<p>Wikipedia has shown how to harness the energy and intelligence of large groups of people in order to 
+improve human knowledge. Because the aim of Concharto is similar, we don't have to re-invent all 
+of the innovations of Wikipedia. Instead, we emulate them and follow their policies and guidelines 
+where possible. The most important of the Guidelines are:</p>
+<ul>
+<li>Neutral Point of View</li>
+<li>Verifiability</li>
+<li>No original research</li>
+</ul>
+See our <a href="http://wiki.concharto.com/wiki/Guidelines">guidelines page</a> for more details.

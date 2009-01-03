@@ -135,7 +135,7 @@
           <span id="tabindex" class="mainTab ${cookie.selectedTab.value == 'index' ? 'mainTabSelected' : ''}"><a href="#" onClick="reloadWithIndex('index'); return false;">Index</a></span>
         </div>
         <div id="mainpane">
-        <jsp:include page="include/spotlight.jsp"/>
+          <jsp:include page="include/spotlight.jsp"/>
           <div class="recent" >
             <div class="infopane" id="info" style="display: ${cookie.selectedTab.value == 'info' ? 'inline' : 'none'}">
               <jsp:include page="include/info.jsp"/>
