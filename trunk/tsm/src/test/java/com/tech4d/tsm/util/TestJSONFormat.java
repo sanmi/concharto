@@ -73,8 +73,8 @@ public class TestJSONFormat {
         assertEquals(event.getSource(), json.getString(JSONFormat.FIELD_SOURCE));
         assertEquals(event.getHasUnresolvedFlag(), json.getBoolean(JSONFormat.FIELD_FLAGGED));
         assertEquals(GeometryType.getGeometryType(event.getTsGeometry().getGeometry()), json.get(JSONFormat.FIELD_GEOMETRYTYPE));
-        assertEquals(((Point)geom).getY(), json.getJSONObject(JSONFormat.FIELD_GEOMETRY).getDouble(JSONFormat.FIELD_LAT));
-        assertEquals(((Point)geom).getX(), json.getJSONObject(JSONFormat.FIELD_GEOMETRY).getDouble(JSONFormat.FIELD_LNG));
+        assertEquals(((Point)geom).getY(), json.getJSONObject(JSONFormat.FIELD_GEOMETRY).getDouble(JSONFormat.FIELD_LAT), .01);
+        assertEquals(((Point)geom).getX(), json.getJSONObject(JSONFormat.FIELD_GEOMETRY).getDouble(JSONFormat.FIELD_LNG), .01);
         assertEquals((int)event.getZoomLevel(), json.getInt(JSONFormat.FIELD_ZOOM));
         assertEquals(event.getDiscussion() != null ,json.getBoolean(JSONFormat.FIELD_HAS_DISCUSSION));
 
