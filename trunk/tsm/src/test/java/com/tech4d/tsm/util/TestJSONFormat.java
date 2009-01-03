@@ -85,8 +85,8 @@ public class TestJSONFormat {
         json = JSONObject.fromObject(jsonEvent);
         System.out.println(json);
         JSONArray points = json.getJSONObject(JSONFormat.FIELD_GEOMETRY).getJSONArray(JSONFormat.FIELD_LINE);
-        assertEquals(12.0, points.getJSONObject(0).getDouble(JSONFormat.FIELD_LAT));
-        assertEquals(20.0, points.getJSONObject(1).getDouble(JSONFormat.FIELD_LNG));
+        assertEquals(12.0, points.getJSONObject(0).getDouble(JSONFormat.FIELD_LAT), .01);
+        assertEquals(20.0, points.getJSONObject(1).getDouble(JSONFormat.FIELD_LNG), .01);
         assertEquals(GeometryType.getGeometryType(event.getTsGeometry().getGeometry()), json.get(JSONFormat.FIELD_GEOMETRYTYPE));
         
     }
