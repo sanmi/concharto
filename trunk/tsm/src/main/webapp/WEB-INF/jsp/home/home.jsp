@@ -82,8 +82,13 @@
     Element.toggleClassName(tabName, 'mainTabSelected');
     setCookie('selectedTab', tab, 20);
   }
-  
-  
+
+  function reloadWithIndex(tab) {
+      setCookie('selectedTab', tab, 20);
+    $('nextForm').tagindex.value = 1;
+    $('nextForm').submit();
+  }
+    
   //]]>
   </script>
   </jsp:attribute>  
@@ -114,7 +119,7 @@
         <div id="tagline">
           An encyclopedic atlas of history and happenings that anyone can edit.<%-- TODO finish this <a href="#">anyone can edit.</a>--%></div>
         <div id="totals"> <a href='${basePath}search/eventsearch.htm?_what='><b>${totalEvents}</b> events and counting...</a> </div>
-        <jsp:include page="search/include/searchbar.jsp">
+        <jsp:include page="../search/include/searchbar.jsp">
           <jsp:param name="showSearchOptions" value="false"/>
           <jsp:param name="showAdminBar" value="false"/>
         </jsp:include>
@@ -127,22 +132,22 @@
           <span id="tabinfo" class="mainTab ${cookie.selectedTab.value == 'info' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('info'); return false;">Info</a></span>
           <span id="tablatest" class="mainTab ${cookie.selectedTab.value == 'latest' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('latest'); return false;">Latest</a></span>
           <span id="tabtags" class="mainTab ${cookie.selectedTab.value == 'tags' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('tags'); return false;">Tags</a></span>
-          <span id="tabindex" class="mainTab ${cookie.selectedTab.value == 'index' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('index'); return false;">Index</a></span>
+          <span id="tabindex" class="mainTab ${cookie.selectedTab.value == 'index' ? 'mainTabSelected' : ''}"><a href="#" onClick="reloadWithIndex('index'); return false;">Index</a></span>
         </div>
         <div id="mainpane">
-        <jsp:include page="include/mainspotlight.jsp"/>
+        <jsp:include page="include/spotlight.jsp"/>
           <div class="recent" >
             <div class="infopane" id="info" style="display: ${cookie.selectedTab.value == 'info' ? 'inline' : 'none'}">
-              <jsp:include page="include/maininfo.jsp"/>
+              <jsp:include page="include/info.jsp"/>
             </div>
             <div class="infopane" id="latest" style="display: ${cookie.selectedTab.value == 'latest' ? 'inline' : 'none'}">
-              <jsp:include page="include/mainlatest.jsp"/>
+              <jsp:include page="include/latest.jsp"/>
             </div>
             <div class="infopane" id="tags" style="display: ${cookie.selectedTab.value == 'tags' ? 'inline' : 'none'}">
-              <jsp:include page="include/maintags.jsp"/>
+              <jsp:include page="include/tags.jsp"/>
             </div>
             <div class="infopane" id="index" style="display: ${cookie.selectedTab.value == 'index' ? 'inline' : 'none'}">
-              <jsp:include page="include/mainindex.jsp"/>
+              <jsp:include page="include/tagindex.jsp"/>
             </div>
           </div>
           <div class="clearfloat"/>

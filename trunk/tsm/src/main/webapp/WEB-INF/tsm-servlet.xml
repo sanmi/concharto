@@ -29,27 +29,27 @@
         "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
 <beans>
 
-	<!-- PropertyPlaceholderConfigurer allows text from property files to be injected into beans  -->
+  <!-- PropertyPlaceholderConfigurer allows text from property files to be injected into beans  -->
   <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-  	<property name="systemPropertiesMode" value="2"/> <!-- allow system properties to override -->
+    <property name="systemPropertiesMode" value="2"/> <!-- allow system properties to override -->
     <property name="locations">
       <list>
         <value>classpath:application.properties</value>
         <value>classpath:server.properties</value>
       </list>
     </property>
-	</bean>
+  </bean>
 
-	<!-- map controllers to URLs -->
-	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-		<property name="interceptors">
-			<list>
-				<!-- so we can traverse hibernate lazy loaded collections, etc -->
-				<ref bean="openSessionInViewInterceptor" /> 
-			</list>
-		</property>
-		<property name="mappings">
-			<props>
+  <!-- map controllers to URLs -->
+  <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="interceptors">
+      <list>
+        <!-- so we can traverse hibernate lazy loaded collections, etc -->
+        <ref bean="openSessionInViewInterceptor" /> 
+      </list>
+    </property>
+    <property name="mappings">
+      <props>
           <prop key="login.htm">loginController</prop>
           <prop key="forgot.htm">forgotController</prop>
           <prop key="reset.htm">resetController</prop>
@@ -104,293 +104,293 @@
           <prop key="messages.htm">messagesController</prop>
           
       </props>
-		</property>		
-	</bean>
+    </property>   
+  </bean>
 
-	<!-- this bean with the well known name generates view names for us -->
-	<!-- not strictly required since we just want to accept the defaults-->
-	<bean id="viewNameTranslator"
-		class="org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator" />
+  <!-- this bean with the well known name generates view names for us -->
+  <!-- not strictly required since we just want to accept the defaults-->
+  <bean id="viewNameTranslator"
+    class="org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator" />
 
-	<bean id="viewResolver"
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/WEB-INF/jsp/" />
+  <bean id="viewResolver"
+    class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="prefix" value="/WEB-INF/jsp/" />
     <property name="suffix" value=".jsp" />
-	</bean>
+  </bean>
 
-	<bean id="baseEventController" abstract="true">
-		<property name="cacheSeconds" value="3600"/>  
-	</bean>
+  <bean id="baseEventController" abstract="true">
+    <property name="cacheSeconds" value="3600"/>  
+  </bean>
 
-	<!-- Controller  -->
-	<bean id="messagesController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
-	  <property name="viewName" value="search/include/messages"/>
-	</bean>
-	
-	<bean id="homeController" class="com.tech4d.tsm.web.home.HomeController" parent="baseEventController">
-		<property name="commandName" value="eventSearch" />
-		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
-		<property name="formView" value="home" />
-		<property name="successView" value="home" />
-		<property name="eventDao" ref="eventDao" />
-		<property name="spotlightService" ref="spotlightService" />	
-		<property name="tagAggregateService" ref="tagAggregateService" />	
-	</bean>
+  <!-- Controller  -->
+  <bean id="messagesController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+    <property name="viewName" value="search/include/messages"/>
+  </bean>
+  
+  <bean id="homeController" class="com.tech4d.tsm.web.home.HomeController" parent="baseEventController">
+    <property name="commandName" value="eventSearch" />
+    <property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
+    <property name="formView" value="home/home" />
+    <property name="successView" value="home/home" />
+    <property name="eventDao" ref="eventDao" />
+    <property name="spotlightService" ref="spotlightService" /> 
+    <property name="tagAggregateService" ref="tagAggregateService" /> 
+  </bean>
 
-	<bean id="urlFilenameViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" parent="baseEventController">
-	</bean>
-	<bean id="switchBoardController" class="com.tech4d.tsm.web.SwitchBoardController" parent="baseEventController" >
-		<property name="eventDao" ref="eventDao" />
-		<property name="auditEntryDao" ref="auditEntryDao" />
-	</bean>
+  <bean id="urlFilenameViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" parent="baseEventController">
+  </bean>
+  <bean id="switchBoardController" class="com.tech4d.tsm.web.SwitchBoardController" parent="baseEventController" >
+    <property name="eventDao" ref="eventDao" />
+    <property name="auditEntryDao" ref="auditEntryDao" />
+  </bean>
 
-	<bean id="eventAdminController" class="com.tech4d.tsm.web.changehistory.EventAdminController" parent="baseEventController" >
-		<property name="eventDao" ref="eventDao" />
-		<property name="flagDao" ref="flagDao" />
-		<property name="detailsView" value="event/changehistory"/>
-	</bean>
+  <bean id="eventAdminController" class="com.tech4d.tsm.web.changehistory.EventAdminController" parent="baseEventController" >
+    <property name="eventDao" ref="eventDao" />
+    <property name="flagDao" ref="flagDao" />
+    <property name="detailsView" value="event/changehistory"/>
+  </bean>
 
-	<bean id="loginFormValidator" class="com.tech4d.tsm.web.login.LoginFormValidator"/>
-	<bean id="loginController" class="com.tech4d.tsm.web.login.LoginController" parent="baseEventController">
-		<property name="commandName" value="login"/>
-		<property name="commandClass" value="com.tech4d.tsm.web.signup.SignupForm"/>
-		<property name="formView" value="login" />
-		<property name="successView" value="redirect:/" />
-		<property name="validator" ref="loginFormValidator"/>
-		<property name="userDao" ref="userDao"/>
-		<property name="sessionHelper" ref="sessionHelper"/>
-	</bean>
-	
-	<bean id="forgotValidator" class="com.tech4d.tsm.web.forgot.ForgotValidator"/>
-	<bean id="forgotController" class="com.tech4d.tsm.web.forgot.ForgotController" parent="baseEventController">
-		<property name="commandName" value="forgot"/>
-		<property name="commandClass" value="com.tech4d.tsm.web.forgot.ForgotForm"/>
-		<property name="formView" value="public/forgot" />
-		<property name="successView" value="public/forgotsent" />
-		<property name="validator" ref="forgotValidator"/>
-		<property name="userDao" ref="userDao"/>
-		<property name="emailService" ref="emailService"/>
-	</bean>
+  <bean id="loginFormValidator" class="com.tech4d.tsm.web.login.LoginFormValidator"/>
+  <bean id="loginController" class="com.tech4d.tsm.web.login.LoginController" parent="baseEventController">
+    <property name="commandName" value="login"/>
+    <property name="commandClass" value="com.tech4d.tsm.web.signup.SignupForm"/>
+    <property name="formView" value="login" />
+    <property name="successView" value="redirect:/" />
+    <property name="validator" ref="loginFormValidator"/>
+    <property name="userDao" ref="userDao"/>
+    <property name="sessionHelper" ref="sessionHelper"/>
+  </bean>
+  
+  <bean id="forgotValidator" class="com.tech4d.tsm.web.forgot.ForgotValidator"/>
+  <bean id="forgotController" class="com.tech4d.tsm.web.forgot.ForgotController" parent="baseEventController">
+    <property name="commandName" value="forgot"/>
+    <property name="commandClass" value="com.tech4d.tsm.web.forgot.ForgotForm"/>
+    <property name="formView" value="public/forgot" />
+    <property name="successView" value="public/forgotsent" />
+    <property name="validator" ref="forgotValidator"/>
+    <property name="userDao" ref="userDao"/>
+    <property name="emailService" ref="emailService"/>
+  </bean>
 
-	<bean id="resetController" class="com.tech4d.tsm.web.forgot.ResetController" parent="baseEventController">
-		<property name="commandName" value="reset"/>
-		<property name="commandClass" value="com.tech4d.tsm.web.util.AuthForm"/>
-		<property name="formView" value="public/reset" />
-		<property name="successView" value="public/resetsuccess" />
-		<property name="userDao" ref="userDao"/>
-		<property name="sessionHelper" ref="sessionHelper"/>
-	</bean>
-	
-	<bean id="feedbackValidator" class="com.tech4d.tsm.web.feedback.FeedbackValidator"/>
-	<bean id="feedbackController" class="com.tech4d.tsm.web.feedback.FeedbackController" parent="baseEventController">
-		<property name="commandName" value="feedback"/>
-		<property name="commandClass" value="com.tech4d.tsm.web.feedback.FeedbackForm"/>
-		<property name="formView" value="public/feedback" />
-		<property name="successView" value="public/feedbacksuccess" />
-		<property name="validator" ref="feedbackValidator"/>
-		<property name="emailService" ref="emailService"/>
-		<property name="sendFeedbackToAddress" value="${app.sendFeedbackToAddress}"/>
-	</bean>
+  <bean id="resetController" class="com.tech4d.tsm.web.forgot.ResetController" parent="baseEventController">
+    <property name="commandName" value="reset"/>
+    <property name="commandClass" value="com.tech4d.tsm.web.util.AuthForm"/>
+    <property name="formView" value="public/reset" />
+    <property name="successView" value="public/resetsuccess" />
+    <property name="userDao" ref="userDao"/>
+    <property name="sessionHelper" ref="sessionHelper"/>
+  </bean>
+  
+  <bean id="feedbackValidator" class="com.tech4d.tsm.web.feedback.FeedbackValidator"/>
+  <bean id="feedbackController" class="com.tech4d.tsm.web.feedback.FeedbackController" parent="baseEventController">
+    <property name="commandName" value="feedback"/>
+    <property name="commandClass" value="com.tech4d.tsm.web.feedback.FeedbackForm"/>
+    <property name="formView" value="public/feedback" />
+    <property name="successView" value="public/feedbacksuccess" />
+    <property name="validator" ref="feedbackValidator"/>
+    <property name="emailService" ref="emailService"/>
+    <property name="sendFeedbackToAddress" value="${app.sendFeedbackToAddress}"/>
+  </bean>
 
-	<bean id="signupFormValidator" class="com.tech4d.tsm.web.signup.SignupFormValidator">
-		<property name="userDao" ref="userDao"/>
-	</bean>
-	<bean id="signupController" class="com.tech4d.tsm.web.signup.SignupController" parent="baseEventController">
-		<property name="commandName" value="login"/>
-		<property name="commandClass" value="com.tech4d.tsm.web.signup.SignupForm"/>
-		<property name="formView" value="login" />
-		<property name="successView" value="redirect:/" />
-		<property name="userDao" ref="userDao"/>
-		<property name="emailService" ref="emailService"/>
-		<property name="sessionHelper" ref="sessionHelper"/>
-		<property name="validator" ref="signupFormValidator"/>
-	</bean>
-	
-	<bean id="eventFormValidator" class="com.tech4d.tsm.web.edit.EventFormValidator"/>
-	<bean id="eventController" class="com.tech4d.tsm.web.edit.EventController" parent="baseEventController">
-		<property name="bindOnNewForm" value="true" />
-		<property name="commandName" value="event" />
-		<property name="commandClass" value="com.tech4d.tsm.web.edit.EventForm" />
-		<property name="formView" value="edit/event" />
-		<property name="successView" value="redirect:/search/eventsearch.htm" />
-		<property name="eventDao" ref="eventDao" />
-		<property name="validator" ref="eventFormValidator"/>
-	</bean>
+  <bean id="signupFormValidator" class="com.tech4d.tsm.web.signup.SignupFormValidator">
+    <property name="userDao" ref="userDao"/>
+  </bean>
+  <bean id="signupController" class="com.tech4d.tsm.web.signup.SignupController" parent="baseEventController">
+    <property name="commandName" value="login"/>
+    <property name="commandClass" value="com.tech4d.tsm.web.signup.SignupForm"/>
+    <property name="formView" value="login" />
+    <property name="successView" value="redirect:/" />
+    <property name="userDao" ref="userDao"/>
+    <property name="emailService" ref="emailService"/>
+    <property name="sessionHelper" ref="sessionHelper"/>
+    <property name="validator" ref="signupFormValidator"/>
+  </bean>
+  
+  <bean id="eventFormValidator" class="com.tech4d.tsm.web.edit.EventFormValidator"/>
+  <bean id="eventController" class="com.tech4d.tsm.web.edit.EventController" parent="baseEventController">
+    <property name="bindOnNewForm" value="true" />
+    <property name="commandName" value="event" />
+    <property name="commandClass" value="com.tech4d.tsm.web.edit.EventForm" />
+    <property name="formView" value="edit/event" />
+    <property name="successView" value="redirect:/search/eventsearch.htm" />
+    <property name="eventDao" ref="eventDao" />
+    <property name="validator" ref="eventFormValidator"/>
+  </bean>
 
-	<bean id="changeHistoryControllerHelper" class="com.tech4d.tsm.web.changehistory.ChangeHistoryControllerHelper">
-		<property name="auditEntryDao" ref="auditEntryDao" />
-		<property name="eventDao" ref="eventDao" />
-		<property name="wikiTextDao" ref="wikiTextDao" />
-	</bean>
-	<bean id="contributionsController" class="com.tech4d.tsm.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
-		<property name="formView" value="event/contributions" />
-		<property name="pageSize" value="25"/>
-		<property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
-		<property name="auditableClass" value="com.tech4d.tsm.model.Event" />
-	</bean>
-	<bean id="latestchangesController" class="com.tech4d.tsm.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
-		<property name="formView" value="event/latestchanges" />
-		<property name="pageSize" value="25"/>
-		<property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
-		<property name="auditableClass" value="com.tech4d.tsm.model.Event" />
-	</bean>
+  <bean id="changeHistoryControllerHelper" class="com.tech4d.tsm.web.changehistory.ChangeHistoryControllerHelper">
+    <property name="auditEntryDao" ref="auditEntryDao" />
+    <property name="eventDao" ref="eventDao" />
+    <property name="wikiTextDao" ref="wikiTextDao" />
+  </bean>
+  <bean id="contributionsController" class="com.tech4d.tsm.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
+    <property name="formView" value="event/contributions" />
+    <property name="pageSize" value="25"/>
+    <property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
+    <property name="auditableClass" value="com.tech4d.tsm.model.Event" />
+  </bean>
+  <bean id="latestchangesController" class="com.tech4d.tsm.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
+    <property name="formView" value="event/latestchanges" />
+    <property name="pageSize" value="25"/>
+    <property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
+    <property name="auditableClass" value="com.tech4d.tsm.model.Event" />
+  </bean>
 
-	<bean id="eventHistoryController" class="com.tech4d.tsm.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
-		<property name="formView" value="event/changehistory" />
-		<property name="pageSize" value="10"/>
-		<property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
-		<property name="auditableClass" value="com.tech4d.tsm.model.Event" />
-	</bean>
+  <bean id="eventHistoryController" class="com.tech4d.tsm.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
+    <property name="formView" value="event/changehistory" />
+    <property name="pageSize" value="10"/>
+    <property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
+    <property name="auditableClass" value="com.tech4d.tsm.model.Event" />
+  </bean>
 
-	<bean id="wikiTextHistoryController" class="com.tech4d.tsm.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
-		<property name="formView" value="event/discusshistory" />
-		<property name="pageSize" value="10"/>
-		<property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
-		<property name="auditableClass" value="com.tech4d.tsm.model.wiki.WikiText" />
-	</bean>
+  <bean id="wikiTextHistoryController" class="com.tech4d.tsm.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
+    <property name="formView" value="event/discusshistory" />
+    <property name="pageSize" value="10"/>
+    <property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
+    <property name="auditableClass" value="com.tech4d.tsm.model.wiki.WikiText" />
+  </bean>
 
-	<bean id="wikiPageHistoryController" class="com.tech4d.tsm.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
-		<property name="formView" value="public/pagehistory" />
-		<property name="pageSize" value="10"/>
-		<property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
-		<property name="auditableClass" value="com.tech4d.tsm.model.wiki.WikiText" />
-	</bean>
+  <bean id="wikiPageHistoryController" class="com.tech4d.tsm.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
+    <property name="formView" value="public/pagehistory" />
+    <property name="pageSize" value="10"/>
+    <property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
+    <property name="auditableClass" value="com.tech4d.tsm.model.wiki.WikiText" />
+  </bean>
 
-	<bean id="eventSearchFormValidator" class="com.tech4d.tsm.web.eventsearch.EventSearchFormValidator"/>
-	<bean id="eventSearchController" class="com.tech4d.tsm.web.eventsearch.EventSearchController" parent="baseEventController">
-		<property name="commandName" value="eventSearch" />
-		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
-		<property name="formView" value="search/eventsearch" />
-		<property name="successView" value="search/eventsearch" />
-		<property name="kmlView" value="search/exportkml" />
-		<property name="searchHelper" ref="searchHelper" />
-		<property name="validator" ref="eventSearchFormValidator"/>
-	</bean>
+  <bean id="eventSearchFormValidator" class="com.tech4d.tsm.web.eventsearch.EventSearchFormValidator"/>
+  <bean id="eventSearchController" class="com.tech4d.tsm.web.eventsearch.EventSearchController" parent="baseEventController">
+    <property name="commandName" value="eventSearch" />
+    <property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
+    <property name="formView" value="search/eventsearch" />
+    <property name="successView" value="search/eventsearch" />
+    <property name="kmlView" value="search/exportkml" />
+    <property name="searchHelper" ref="searchHelper" />
+    <property name="validator" ref="eventSearchFormValidator"/>
+  </bean>
   
   <bean id="kmlExportController" class="com.tech4d.tsm.web.eventsearch.EventSearchController" parent="eventSearchController">
     <!--  no cache -->
     <property name="cacheSeconds" value="0"/>  
   </bean>
-	
+  
   <bean id="jsonSearchController" class="com.tech4d.tsm.web.eventsearch.EventSearchController" parent="eventSearchController">
     <!--  no cache -->
     <property name="cacheSeconds" value="0"/>  
     <property name="successView" value="search/jsonsearch" />
   </bean>
-	
-	
-	<bean id="embeddedSearchController" class="com.tech4d.tsm.web.eventsearch.EmbeddedSearchController" parent="baseEventController">
-		<property name="commandName" value="eventSearch" />
-		<property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
-		<property name="formView" value="search/embeddedsearch" />
-		<property name="successView" value="search/embeddedsearch" />
-		<property name="searchHelper" ref="searchHelper" />
-	</bean>
+  
+  
+  <bean id="embeddedSearchController" class="com.tech4d.tsm.web.eventsearch.EmbeddedSearchController" parent="baseEventController">
+    <property name="commandName" value="eventSearch" />
+    <property name="commandClass" value="com.tech4d.tsm.web.eventsearch.EventSearchForm" />
+    <property name="formView" value="search/embeddedsearch" />
+    <property name="successView" value="search/embeddedsearch" />
+    <property name="searchHelper" ref="searchHelper" />
+  </bean>
 
-	<bean id="settingsFormValidator" class="com.tech4d.tsm.web.member.SettingsFormValidator"/>
-	<bean id="settingsController" class="com.tech4d.tsm.web.member.SettingsController" parent="baseEventController">
-		<property name="commandName" value="settings"/>
-		<property name="commandClass" value="com.tech4d.tsm.web.member.SettingsForm"/>
-		<property name="formView" value="member/settings" />
-		<property name="successView" value="member/settings" />
-		<property name="validator" ref="settingsFormValidator"/>
-		<property name="userDao" ref="userDao"/>
-	</bean>
+  <bean id="settingsFormValidator" class="com.tech4d.tsm.web.member.SettingsFormValidator"/>
+  <bean id="settingsController" class="com.tech4d.tsm.web.member.SettingsController" parent="baseEventController">
+    <property name="commandName" value="settings"/>
+    <property name="commandClass" value="com.tech4d.tsm.web.member.SettingsForm"/>
+    <property name="formView" value="member/settings" />
+    <property name="successView" value="member/settings" />
+    <property name="validator" ref="settingsFormValidator"/>
+    <property name="userDao" ref="userDao"/>
+  </bean>
 
-	<bean id="flagEventFormValidator" class="com.tech4d.tsm.web.flagevent.FlagEventFormValidator"/>
-	<bean id="flagEventController" class="com.tech4d.tsm.web.flagevent.FlagEventController" parent="baseEventController">
-		<property name="commandName" value="flagEvent"/>
-		<property name="commandClass" value="com.tech4d.tsm.web.flagevent.FlagEventForm"/>
-		<property name="formView" value="edit/flagevent" />
-		<property name="successView" value="edit/flageventsuccess" />
-		<property name="validator" ref="flagEventFormValidator"/>
-		<property name="userDao" ref="userDao"/>
-		<property name="eventDao" ref="eventDao" />
-		<property name="flagDao" ref="flagDao" />
-		<property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
-	</bean>
+  <bean id="flagEventFormValidator" class="com.tech4d.tsm.web.flagevent.FlagEventFormValidator"/>
+  <bean id="flagEventController" class="com.tech4d.tsm.web.flagevent.FlagEventController" parent="baseEventController">
+    <property name="commandName" value="flagEvent"/>
+    <property name="commandClass" value="com.tech4d.tsm.web.flagevent.FlagEventForm"/>
+    <property name="formView" value="edit/flagevent" />
+    <property name="successView" value="edit/flageventsuccess" />
+    <property name="validator" ref="flagEventFormValidator"/>
+    <property name="userDao" ref="userDao"/>
+    <property name="eventDao" ref="eventDao" />
+    <property name="flagDao" ref="flagDao" />
+    <property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
+  </bean>
 
-	<bean id="discussControllerBase" class="com.tech4d.tsm.web.discuss.DiscussController" parent="baseEventController">
-		<property name="commandName" value="discussForm" />
-		<property name="commandClass" value="com.tech4d.tsm.web.discuss.WikiTextForm" />
-		<property name="eventDao" ref="eventDao" />
-	</bean>
-	<bean id="discussController" class="com.tech4d.tsm.web.discuss.DiscussController" parent="discussControllerBase">
-		<property name="formView" value="event/discuss" />
-	</bean>
-	<bean id="discussEditController" class="com.tech4d.tsm.web.discuss.DiscussController" parent="discussControllerBase">
-		<property name="formView" value="edit/discussedit" />
-		<property name="successView" value="event/discuss" />
-	</bean>
-	
-	<bean id="wikiPageControllerBase" class="com.tech4d.tsm.web.wiki.UserWikiPageController" parent="baseEventController">
-		<property name="commandName" value="wikiTextForm" />
-		<property name="commandClass" value="com.tech4d.tsm.web.wiki.WikiTextForm" />
-		<property name="userDao" ref="userDao" />
-		<property name="wikiTextDao" ref="wikiTextDao" />
-		<property name="notificationService" ref="notificationService" />
-		<property name="sessionHelper" ref="sessionHelper" />
-	</bean>
-	<bean id="wikiPageController" class="com.tech4d.tsm.web.wiki.UserWikiPageController" parent="wikiPageControllerBase">
-		<property name="formView" value="public/showpage" />
-		<property name="successView" value="public/showpage" />
-	</bean>
-	<bean id="wikiPageEditController" class="com.tech4d.tsm.web.wiki.UserWikiPageController" parent="wikiPageControllerBase">
-		<property name="formView" value="page/editpage" />
-		<property name="successView" value="public/showpage" />
-	</bean>
-	
-	<bean id="eventUndoController" class="com.tech4d.tsm.web.changehistory.AuditableUndoController" >
+  <bean id="discussControllerBase" class="com.tech4d.tsm.web.discuss.DiscussController" parent="baseEventController">
+    <property name="commandName" value="discussForm" />
+    <property name="commandClass" value="com.tech4d.tsm.web.discuss.WikiTextForm" />
+    <property name="eventDao" ref="eventDao" />
+  </bean>
+  <bean id="discussController" class="com.tech4d.tsm.web.discuss.DiscussController" parent="discussControllerBase">
+    <property name="formView" value="event/discuss" />
+  </bean>
+  <bean id="discussEditController" class="com.tech4d.tsm.web.discuss.DiscussController" parent="discussControllerBase">
+    <property name="formView" value="edit/discussedit" />
+    <property name="successView" value="event/discuss" />
+  </bean>
+  
+  <bean id="wikiPageControllerBase" class="com.tech4d.tsm.web.wiki.UserWikiPageController" parent="baseEventController">
+    <property name="commandName" value="wikiTextForm" />
+    <property name="commandClass" value="com.tech4d.tsm.web.wiki.WikiTextForm" />
+    <property name="userDao" ref="userDao" />
+    <property name="wikiTextDao" ref="wikiTextDao" />
+    <property name="notificationService" ref="notificationService" />
+    <property name="sessionHelper" ref="sessionHelper" />
+  </bean>
+  <bean id="wikiPageController" class="com.tech4d.tsm.web.wiki.UserWikiPageController" parent="wikiPageControllerBase">
+    <property name="formView" value="public/showpage" />
+    <property name="successView" value="public/showpage" />
+  </bean>
+  <bean id="wikiPageEditController" class="com.tech4d.tsm.web.wiki.UserWikiPageController" parent="wikiPageControllerBase">
+    <property name="formView" value="page/editpage" />
+    <property name="successView" value="public/showpage" />
+  </bean>
+  
+  <bean id="eventUndoController" class="com.tech4d.tsm.web.changehistory.AuditableUndoController" >
     <property name="commandName" value="undo"/>
     <property name="commandClass" value="com.tech4d.tsm.web.changehistory.UndoForm"/>
     <property name="successView" value="event/changehistory" />
     <property name="formView" value="event/changehistory" />
-		<property name="revertEventService" ref="revertEventService" />
-		<property name="auditableClass" value="com.tech4d.tsm.model.Event" />
-	</bean>
-	<bean id="discussUndoController" class="com.tech4d.tsm.web.changehistory.AuditableUndoController">
+    <property name="revertEventService" ref="revertEventService" />
+    <property name="auditableClass" value="com.tech4d.tsm.model.Event" />
+  </bean>
+  <bean id="discussUndoController" class="com.tech4d.tsm.web.changehistory.AuditableUndoController">
     <property name="commandName" value="undo"/>
     <property name="commandClass" value="com.tech4d.tsm.web.changehistory.UndoForm"/>
-		<property name="successView" value="event/discusshistory" />
-		<property name="revertEventService" ref="revertEventService" />
-		<property name="auditableClass" value="com.tech4d.tsm.model.wiki.WikiText" />
-	</bean>
-	<bean id="wikiPageUndoController" class="com.tech4d.tsm.web.changehistory.AuditableUndoController">
+    <property name="successView" value="event/discusshistory" />
+    <property name="revertEventService" ref="revertEventService" />
+    <property name="auditableClass" value="com.tech4d.tsm.model.wiki.WikiText" />
+  </bean>
+  <bean id="wikiPageUndoController" class="com.tech4d.tsm.web.changehistory.AuditableUndoController">
     <property name="commandName" value="undo"/>
     <property name="commandClass" value="com.tech4d.tsm.web.changehistory.UndoForm"/>
-		<property name="successView" value="pagehistory" />
-		<property name="revertEventService" ref="revertEventService" />
-		<property name="auditableClass" value="com.tech4d.tsm.model.wiki.WikiText" />
-	</bean>
-	
-	<bean id="spotlightListController" class="com.tech4d.tsm.web.spotlight.SpotlightListController" parent="baseEventController">
-		<property name="formView" value="admin/spotlightlist" />
-		<property name="spotlightDao" ref="spotlightDao" />
-		<property name="spotlightService" ref="spotlightService" />
-	</bean>
+    <property name="successView" value="pagehistory" />
+    <property name="revertEventService" ref="revertEventService" />
+    <property name="auditableClass" value="com.tech4d.tsm.model.wiki.WikiText" />
+  </bean>
+  
+  <bean id="spotlightListController" class="com.tech4d.tsm.web.spotlight.SpotlightListController" parent="baseEventController">
+    <property name="formView" value="admin/spotlightlist" />
+    <property name="spotlightDao" ref="spotlightDao" />
+    <property name="spotlightService" ref="spotlightService" />
+  </bean>
 
-	<bean id="spotlightValidator" class="com.tech4d.tsm.web.spotlight.SpotlightValidator"/>
-	<bean id="spotlightEditController" class="com.tech4d.tsm.web.spotlight.SpotlightEditController" parent="baseEventController">
-		<property name="commandName" value="spotlight"/>
-		<property name="commandClass" value="com.tech4d.tsm.model.Spotlight"/>
-		<property name="formView" value="admin/spotlightedit" />
-		<property name="successView" value="redirect:/admin/spotlightlist.htm" />
-		<property name="validator" ref="spotlightValidator"/>
-		<property name="spotlightDao" ref="spotlightDao" />
-		<property name="userDao" ref="userDao" />
-		<property name="spotlightService" ref="spotlightService" />
-	</bean>
+  <bean id="spotlightValidator" class="com.tech4d.tsm.web.spotlight.SpotlightValidator"/>
+  <bean id="spotlightEditController" class="com.tech4d.tsm.web.spotlight.SpotlightEditController" parent="baseEventController">
+    <property name="commandName" value="spotlight"/>
+    <property name="commandClass" value="com.tech4d.tsm.model.Spotlight"/>
+    <property name="formView" value="admin/spotlightedit" />
+    <property name="successView" value="redirect:/admin/spotlightlist.htm" />
+    <property name="validator" ref="spotlightValidator"/>
+    <property name="spotlightDao" ref="spotlightDao" />
+    <property name="userDao" ref="userDao" />
+    <property name="spotlightService" ref="spotlightService" />
+  </bean>
 
-	<bean id="recentController" class="com.tech4d.tsm.web.list.RecentController" parent="baseEventController">
-		<property name="formView" value="list/recent" />
-		<property name="eventDao" ref="eventDao" />
-	</bean>
+  <bean id="recentController" class="com.tech4d.tsm.web.list.RecentController" parent="baseEventController">
+    <property name="formView" value="list/recent" />
+    <property name="eventDao" ref="eventDao" />
+  </bean>
 
   <!-- Controller Services -->
   <bean id="searchHelper" class="com.tech4d.tsm.web.eventsearch.SearchHelper">
-  	<property name="eventSearchService" ref="eventSearchService"/>
-  	<property name="eventDao" ref="eventDao"/>
+    <property name="eventSearchService" ref="eventSearchService"/>
+    <property name="eventDao" ref="eventDao"/>
   </bean>
   
-  	
+    
 </beans>

@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.SortedMap;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -54,6 +55,10 @@ import com.tech4d.tsm.web.util.CatalogUtil;
 public class HomeController extends SimpleFormController {
 
 
+    private static final String PARAM_TAGINDEX_SELECTED = "1";
+
+    private static final String PARAM_TAGINDEX = "tagindex";
+
     protected final Log log = LogFactory.getLog(getClass());
 
     private static final int MAX_RECENT_EVENTS = 6;
@@ -66,6 +71,8 @@ public class HomeController extends SimpleFormController {
     private static final String MODEL_TAG_DAYS_BACK = "tagsDaysBack";
     private static final String MODEL_TAG_INDEX = "tagIndex";
     private static final String SESSION_SPOTLIGHT_INDEX = "spotlightIndex";
+    private static final String COOKIE_SELECTED_TAB = "selectedTab";
+    private static final Object COOKIE_SELECTED_TAB_INDEX = "index";
 
 
     private EventDao eventDao;
@@ -103,9 +110,20 @@ public class HomeController extends SimpleFormController {
                 .getCatalog(request), MAX_RECENT_EVENTS, 0));
         model.put(MODEL_TOTAL_EVENTS, eventDao.getTotalCount(CatalogUtil
                 .getCatalog(request)));
-        setupSpotlight(request, model);
+        Cookie cookie = WebUtils.getCookie(request, COOKIE_SELECTED_TAB);
+        //The index is so large that we don't normally want to send all of that data 
+        //in the HTTP message, so we only setup the index if the user selected 'index' tab.
+        //Also, when that happens, we don't want to increment the spotlight
+        if (COOKIE_SELECTED_TAB_INDEX.equals(cookie.getValue())) {
+            setupTagIndex(request, model);
+        } 
+        if (PARAM_TAGINDEX_SELECTED.equals(request.getParameter(PARAM_TAGINDEX))) {
+            //clicked on the index tab, so we don't need to increment the spotlight
+            setupSpotlight(request, model, false);
+        } else {
+            setupSpotlight(request, model, true);
+        }
         setupTagCloud(request, model);
-        setupTagIndex(request, model);
         // clear out the eventSearchForm session if there is one
         WebUtils.setSessionAttribute(request,
                 SearchHelper.SESSION_EVENT_SEARCH_FORM, null);
@@ -121,9 +139,7 @@ public class HomeController extends SimpleFormController {
     @SuppressWarnings("unchecked")
     private void setupTagCloud(HttpServletRequest request, Map model) {
         List<TagCloudEntry> tagCloud = tagAggregateService.getTagCloud();
-        SortedMap<TimeRange, List<TagCloudEntry>> tagIndex = tagAggregateService.getTagIndex();
         model.put(MODEL_TAG_CLOUD, tagCloud);
-        model.put(MODEL_TAG_INDEX, tagIndex);
         model.put(MODEL_TAG_DAYS_BACK, tagAggregateService.getDefaultDaysBack());
     }
 
@@ -133,18 +149,21 @@ public class HomeController extends SimpleFormController {
      * 
      * @param request
      * @param model
+     * @param increment true if the spotlight index should be incremented
      */
     @SuppressWarnings("unchecked")
-    private void setupSpotlight(HttpServletRequest request, Map model) {
+    private void setupSpotlight(HttpServletRequest request, Map model, boolean increment) {
         Integer spotlightIndex = (Integer) WebUtils.getSessionAttribute(
                 request, SESSION_SPOTLIGHT_INDEX);
         if (spotlightIndex == null) {
             // setup the new counter. Any old integer will do.
             spotlightIndex = Math.abs((new Random()).nextInt());
         }
+        if (increment) {
+            spotlightIndex++;
+        }
         Spotlight spotlight = spotlightService.getSpotlight(spotlightIndex,
                 CatalogUtil.getCatalog(request));
-        spotlightIndex++;
         WebUtils.setSessionAttribute(request, SESSION_SPOTLIGHT_INDEX,
                 spotlightIndex);
         if (null == spotlight) {
