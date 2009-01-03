@@ -83,10 +83,10 @@ public class IntegrationTestTagAggregateService extends OpenSessionInViewIntegra
         tagAggregateService.refreshRecent();
         List<TagCloudEntry> tagCloud = tagAggregateService.getTagCloud();
         assertEquals(4, tagCloud.size());
-        assertEquals(12, tagCloud.get(0).getFontSize());
-        assertEquals(20, tagCloud.get(1).getFontSize());
-        assertEquals(10, tagCloud.get(2).getFontSize());
-        assertEquals(30, tagCloud.get(3).getFontSize());
+        assertEquals((Integer)12, tagCloud.get(0).getFontSize());
+        assertEquals((Integer)20, tagCloud.get(1).getFontSize());
+        assertEquals((Integer)10, tagCloud.get(2).getFontSize());
+        assertEquals((Integer)30, tagCloud.get(3).getFontSize());
     }
 
     private void createTags(int count, String tagName) {
