@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta name="description" content="an encyclopedic atlas of history and happenings that anyone can edit. It is a geographic wiki" />
+  <meta name="keywords" lang="en" content="history, historical maps, historical events, geographic wiki, happenings, atlas, places, maps, locations, sharing, biography, neogeography, geospatial, collective mapping, collaborative mapping, metadata, tagging, groupmaps, mashups, web2.0, google, tools, geotagging, googlemaps, community, cartography"/>
+  <title>Concharto - poly line  </title>
+  <link href="http://www.dev.concharto.com/css/style.css" rel="stylesheet" type="text/css" media="screen">
+     <link href="http://www.dev.concharto.com/css/map.css" rel="stylesheet" type="text/css" media="screen">
+     <link href="http://www.dev.concharto.com/css/wiki.css" rel="stylesheet" type="text/css" media="screen">
+     <link href="http://www.dev.concharto.com/css/header.css" rel="stylesheet" type="text/css" media="screen">
+     <link href="http://www.dev.concharto.com/css/search.css" rel="stylesheet" type="text/css" media="screen">
+<script
+  src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=ABQIAAAA1DZDDhaKApTfIDHGfvo13hRp9Gof46g2qbPXhDtel9bdKV7VJhTTEbNBHsywyc_n-XwL7s0iWTlWYg"
+  type="text/javascript">
+</script>   
+
+    
+
+<script type="text/javascript">
+//<![CDATA[
+  
+  var _msg_newdiscuss = "Create a new discussion";
+  var _msg_discuss = "Join the discussion";
+  var _msg_edit = "Edit this event!";
+  var _msg_changes = "View changes to this event";
+  var _msg_flag = "Flag this event for administrator attention";
+  var _msg_accy = new Array();
+    _msg_accy[1] = 'Unspecified'; 
+    _msg_accy[2] = 'Region'; 
+    _msg_accy[3] = 'City'; 
+    _msg_accy[4] = 'Neighborhood'; 
+    _msg_accy[5] = 'Address'; 
+    _msg_accy[6] = 'Pinpoint (+/- 10m)'; 
+//]]>
+</script>     
+
+  <link rel="shortcut icon" href="/favicon.ico" />
+</head>
+
+<body onload="init()" onunload="GUnload();" class="mapedit" id="searchpage" onresize="adjustSidebarIE();">
+
+  
+<div class="clearfloat"></div>
+
+    
+    
+    
+      <div id="homemenu"> 
+        <a href="http://www.dev.concharto.com/" id="home"><i>Home</i></a>
+
+      </div>
+        
+  
+  <div id="content">
+    
+    <form id="eventSearchForm" name="event" method="post" action="http://www.dev.concharto.com/search/eventsearch.htm" onsubmit="search(); return false">
+      <input id="boundingBoxSW" name="boundingBoxSW" type="hidden" value=""/>
+      <input id="boundingBoxNE" name="boundingBoxNE" type="hidden" value=""/>
+      <input id="mapCenter" name="mapCenter" type="hidden" value="{&quot;lat&quot;:33.67415129193924,&quot;lng&quot;:-121.11373427222766,&quot;gtype&quot;:&quot;point&quot;}"/>
+      <input id="mapCenterOverride" name="mapCenterOverride" type="hidden" value="false"/>
+      <input id="searchResults" name="searchResults" type="hidden" value="[{&quot;flagged&quot;:false,&quot;geom&quot;:{&quot;line&quot;:[{&quot;lat&quot;:33.594030000000004,&quot;lng&quot;:-121.71203000000001,&quot;gtype&quot;:&quot;point&quot;},{&quot;lat&quot;:33.64434,&quot;lng&quot;:-120.89355,&quot;gtype&quot;:&quot;point&quot;},{&quot;lat&quot;:33.795120000000004,&quot;lng&quot;:-120.74523,&quot;gtype&quot;:&quot;point&quot;},{&quot;lat&quot;:33.831630000000004,&quot;lng&quot;:-120.69030000000001,&quot;gtype&quot;:&quot;point&quot;},{&quot;lat&quot;:33.89777,&quot;lng&quot;:-120.56945,&quot;gtype&quot;:&quot;point&quot;}],&quot;gtype&quot;:&quot;line&quot;},&quot;summary&quot;:&quot;poly line&quot;,&quot;when&quot;:&quot;2000&quot;,&quot;accy&quot;:&quot;1&quot;,&quot;where&quot;:&quot;&quot;,&quot;description&quot;:&quot;\n&lt;p&gt;asfdasdfasdf&lt;\/p&gt;&quot;,&quot;tags&quot;:&quot;&quot;,&quot;source&quot;:&quot;&quot;,&quot;hasDiscuss&quot;:false,&quot;id&quot;:10062,&quot;gtype&quot;:&quot;line&quot;}]"/>
+      <input id="mapZoom" name="mapZoom" type="hidden" value="9"/>
+
+      <input id="zoomOverride" name="zoomOverride" type="hidden" value="false"/>
+      <input id="mapType" name="mapType" type="hidden" value="0"/>
+      <input id="isGeocodeSuccess" name="isGeocodeSuccess" type="hidden" value=""/>
+      <input id="isAddEvent" name="isAddEvent" type="hidden" value=""/>
+      <input id="editEventId" name="editEventId" type="hidden" value=""/>
+      <input id="displayEventId" name="displayEventId" type="hidden" value=""/>
+      <input id="linkHereEventId" name="linkHereEventId" type="hidden" value="10062"/>
+      <input id="userTag" name="userTag" type="hidden" value=""/>
+      <input id="embed" name="embed" type="hidden" value=""/>
+
+      
+      <input type="hidden" id="basePath" value="http://www.dev.concharto.com/"/>
+      
+      
+
+
+
+<table id="headerbar">
+  <tr>
+    <td>
+      <div id="addbox">
+        <span class="biglink"><a href="#" onclick="editEvent(''); return false;">Add to the Map...</a></span>
+      </div>
+      
+        <div id="search_tagline">
+
+          An encyclopedic atlas of history and happenings <br/>that anyone can edit.
+        </div>      
+      
+      <div id="searchbox">
+        <table>
+          <tr>
+            <td>
+              
+              Where <span class="eg">e.g. Gettysburg, PA <a href="http://www.dev.concharto.com/help.htm?name=where" class="link_help">hint</a></span>
+              
+            </td>
+
+            <td>
+              
+              When <span class="eg">e.g. 1962; Oct 14,1066; 1880-1886 <a href="http://www.dev.concharto.com/help.htm?name=when" class="link_help" >hint</a></span>
+              
+            </td>
+            <td>
+              What <span class="eg">e.g. Battle <a href="http://www.dev.concharto.com/help.htm?name=what" class="link_help">hint</a></span>
+            </td>
+
+            <td></td>
+          </tr>
+          <tr>
+            <td><input id="where" name="where" type="text" value="" size="22"/></td>
+            <td><input id="when" name="when" type="text" value="" size="35"/></td>
+            <td><input id="what" name="what" type="text" value="" size="22"/></td>
+            <td><input type="submit" name="Search" value="Search" /></td>
+          </tr>
+          
+            
+              <tr>
+
+                <td>
+                  <span class="options">
+                    <input id="limitWithinMapBounds1" name="limitWithinMapBounds" type="checkbox" value="true"/><input type="hidden" name="_limitWithinMapBounds" value="on"/>
+                    Search current map shown.
+                  </span>
+                </td>
+                <td colspan="2">
+                  <span class="options">
+                    <input id="excludeTimeRangeOverlaps1" name="excludeTimeRangeOverlaps" type="checkbox" value="true"/><input type="hidden" name="_excludeTimeRangeOverlaps" value="on"/>
+
+                    Find events that occurred only <em>within</em> the time frame specified.
+                  </span>
+                </td>
+                <td></td>
+              </tr>
+            
+            
+          
+        </table>
+      </div>
+    </td>
+
+  </tr>
+  <tr>
+    <td style="vertical-align: bottom;">
+      
+        <div id="linkhere_bar" class="linkBox" style="margin:.3em;float:right">
+          <a href="#" onclick="exportKml(); return false;">kml</a>
+        </div>
+        <div id="linkhere_bar" class="linkBox" style="margin:.3em;float:right">
+          <a id="link_linkhere" href="#linkhere">Link to here</a>
+
+        </div>
+      
+    </td>
+  </tr>
+</table>
+
+
+  
+
+
+
+
+
+<div class="clearfloat"></div>
+
+  
+      
+      
+     
+      <table class="mainarea"><tbody><tr>     
+        <td id="sidebar">
+          <div id="sidebarSize"><a href="#" onclick="hideSidebar(); return false;">hide sidebar</a></div>
+          <div id="results" >
+            <div class="resultcount">
+              
+                
+                  Displaying events <b>1  - 1</b>  
+                  of <b>1</b>
+
+                
+                
+              
+              
+            </div>    
+            
+            
+            
+            
+            
+            <!--  start -->
+                
+<table id="event">
+<thead>
+<tr>
+<th></th>
+<th></th></tr></thead>
+<tbody>
+<tr class="odd">
+<td class="iconcol">
+                  <a href="#"><img alt="marker" height='20' width='20' src="http://www.dev.concharto.com/images/icons/A_label.gif" onclick="openMarker(0); return false;"/></a>
+                </td>
+<td>
+
+                  <div id="10062" class="result wikitext">
+                    <div>                    
+                    
+                    <a class="summary" href="#" onclick="openMarker(0); return false;">
+                      poly line</a></div>
+                    <div class="when">2000</div>
+                    <span class="where">
+                      
+                      
+                        (Accuracy: Unspecified)
+                       
+                    </span> 
+                    <br/>
+
+                     
+                    
+                    
+                      
+                      
+                        
+<p>asfdasdfasdf</p>
+                       
+                    
+                    
+                    
+                    <div class="linkbar">
+                      <a class="links" href="#" onclick="editEvent(10062); return false;" 
+                         title="Edit this event!" >edit</a>
+                      
+                        
+                          <span class="new_links">
+                            <a href="http://www.dev.concharto.com/edit/discussedit.htm?id=10062" 
+                               title="Create a new discussion" >discuss</a>
+                          </span>
+                        
+                        
+                      
+                     
+                      <a class="links" href="http://www.dev.concharto.com/event/changehistory.htm?id=10062" 
+                         title="View changes to this event" >changes</a>
+
+                      <a class="links" href="http://www.dev.concharto.com/edit/flagevent.htm?id=10062" 
+                         title="Flag this event for administrator attention" >flag</a>
+                      
+                    </div>
+                  </div>
+                </td></tr></tbody></table>  
+                                  
+          </div>
+        </td>
+        <td>
+          <div id="map">
+            <br/><br/>Map coming...
+            <noscript>
+              <p>
+                JavaScript must be enabled to get the map.
+              </p>
+            </noscript>
+
+          </div>
+        </td>
+      </tr></tbody></table>
+    
+    </form> 
+
+    <div id="linkhere" class="linkbox" style="visibility: hidden">
+        <div class='bd' style="margin:0; padding:0;">
+          <div class="tl"><a href="#" onclick="Control.Modal.close(); return false;"><img alt="close" src="../images/12xclose.gif"></img></a></div>
+          <div class="label">Paste this text to link back to this map</div>         
+          <input id="linkhere_url" type="text" class="textinput" onclick="selectThis(this); return false;" />
+
+          <div class="label">Paste this text to embed this map into a web page</div>
+          <input id="embedmap_html" type="text" class="textinput" onclick="selectThis(this); return false;" />
+        </div>
+    </div>    
+
+  
+  </div>
+  
+  
+
+  </body>
+</html>
+ 
+   <script type="text/javascript" src="http://www.dev.concharto.com/javascript/prototype.js"></script>
+   <script type="text/javascript" src="http://www.dev.concharto.com/javascript/map.js"></script>
+   <script type="text/javascript" src="http://www.dev.concharto.com/javascript/control.modal.js"></script>
+   <script type="text/javascript" src="http://www.dev.concharto.com/javascript/help.js"></script>
+   <script type="text/javascript" src="http://www.dev.concharto.com/javascript/searchcommon.js"></script>
+   <script type="text/javascript" src="http://www.dev.concharto.com/javascript/eventsearch.js"></script>
+     
+

@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>controlModalTest.html</title>
+	
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+    
+    <link rel="stylesheet" type="text/css" href="../../../main/webapp/css/style.css">
+<script type="text/javascript">
+
+	function closeIt() {
+		parent.window.Control.Modal.close();
+	}
+
+</script>
+</head>
+  
+  <body>
+
+<div id="modal_contents">
+	<div class="nav">
+		<ul><li><a href="#" onclick="closeIt()">X CLOSE</a></li></ul>
+	</div> 
+	<div class="modalForm">
+		<h2>Flag an Event</h2>
+  	<table>
+  		<tr>
+  			<td colspan="2">
+  			Before flagging a item, please review the 
+  			<a href="#" onclick="alert('Not Implemented')">deletion policy</a>   
+  			</td>
+  		</tr>
+  		<tr>
+  			<td class="formLabel" colspan="2">Reason</td>
+  		</tr>
+  		<tr>
+  			<td  colspan="2">
+  				<input type="checkbox" /> It belongs in personal history<br/>	  			
+  				<input type="checkbox" /> It belongs in fictional literature<br/>	  			
+  				<input type="checkbox" /> It is totally fake, just remove it<br/>	  			
+			</td>
+  		</tr>
+  		<tr>
+  			<td>Comment</td>
+  			<td>
+  				<form:password path="password"/>
+  			</td>
+  		</tr>
+  		
+  	</table>
+		<input type="button" value="Submit to Administrators" onclick="document.location='form2.html'"/>
+	</div>
+</div>
+</body>
+</html>

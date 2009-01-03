@@ -1,0 +1,26 @@
+#simpleTable .action {
+	width: 9em;
+}
+#simpleTable .added {
+	width: 10em;
+}
+#simpleTable .label {
+	width: 5em;
+	font-weight: bold;
+	padding-right: .4em;
+}
+.textpanel .textInput 
+{
+	width: 80%;
+}
+#simpleTable .none {
+	width: 100%
+}
+#simpleTable .none td {
+	border:none;
+	border-bottom: 1px solid #e0e0e0;
+	margin:.2em;
+	padding:0;
+}
+#simpleTable .none tr {
+}

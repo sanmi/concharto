@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<title>Wheelzoom</title>
+		<link href="css/mapedit.css" rel="stylesheet" type="text/css" />
+    <style type="text/css"> 
+		<!-- 
+			body {
+				font-family: Arial;
+				font-size: small;
+				background-color: #E9E9E9;
+			}
+			#outline {
+				margin:20px;
+				float:left;
+				width:512px;
+				height:440px;
+				-moz-outline-radius:20px;
+				-moz-outline-style:solid;
+				-moz-outline-color:#9FB6CD;
+				-moz-outline-width:10px;
+			}
+			#inputcaption {
+				margin:5px;
+				float:left;
+			}
+			#inputfields {
+				margin:0 0 0 80px;
+			}
+			
+			#map {
+				width:512px;
+				height:440px;
+				float:left;
+			}
+			#forehead {
+				background-color: #E9E9E9;
+				height:40px;
+				text-align:left;
+				margin:20px;
+				font-size:150%;
+			}
+			#novel {
+				margin:20px;
+			}
+			A:hover {
+				text-decoration:underline overline;
+			}
+			td {
+				vertical-align:top;
+			}
+			small {
+				color: grey;
+			}
+		-->
+		</style>
+		<script
+			src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=ABQIAAAA1DZDDhaKApTfIDHGfvo13hQHaMf-gMmgKgj1cacwLLvRJWUPcRTWzCG3PTSVLKG0PgyzHQthDg5BUw"
+			type="text/javascript">
+		</script>
+		<script type="text/javascript"><!--
+
+//some of the globals
+var map;
+var geocoder = null;
+
+function initialize() {
+	if (GBrowserIsCompatible()) {
+		// map and its equipment
+		map = new GMap2(document.getElementById("map"));
+		map.enableContinuousZoom();
+		map.setCenter(new GLatLng(40.879721,-76.998322),11);  //la la land, PA 
+		map.addControl(new GMapTypeControl(1));
+		map.addControl(new GLargeMapControl());
+		map.enableDoubleClickZoom();
+		map.enableScrollWheelZoom();
+		geocoder = new GClientGeocoder();
+	}
+}
+
+function addPoint() {
+  var point = map.getCenter();
+	var marker = new GMarker(point, {draggable: true});
+	map.addOverlay(marker);
+	var html='<b>Lappeenranta</b><br>';
+	html+='<a href=http://www.polttoaine.net/index2.php?kaupunki=169 target=_blank>Bensan hinta</a><br> ';
+	html+= '<br><br><br><br><br><br><br><br><br><br><br>';
+	marker.openInfoWindowHtml(html);
+	marker.enableDragging();
+
+	GEvent.addListener(marker, "drag", function(){
+		document.getElementById("location").value=markerD.getPoint().toUrlValue();
+	});
+	
+  GEvent.addListener(marker, "dragstart", function() {
+    map.closeInfoWindow();
+  });
+
+//  GEvent.addListener(marker, "dragend", function() {
+//    marker.openInfoWindowHtml(html);
+//  });
+
+  GEvent.addListener(marker, "click", function() {
+    marker.openInfoWindowHtml(html);
+  });
+}
+
+function showAddress(address) {
+	if (geocoder) {
+		geocoder.getLatLng(
+			address,
+			function(point) {
+				if (!point) {
+					alert(address + " not found");
+				} else {
+					map.setCenter(point, 13);
+				}
+			}
+		);
+	}
+}
+
+
+///prevent page scroll
+
+function wheelevent(e)
+{
+if(document.getElementById("prevent").checked){
+if (!e){
+e = window.event
+}
+if (e.preventDefault){
+e.preventDefault()
+}
+e.returnValue = false;
+}}
+GEvent.addDomListener(map.getContainer(), "DOMMouseScroll", wheelevent);
+map.getContainer().onmousewheel = wheelevent; 
+
+
+
+/// Automatic zoomOut from 'sorry..' tiles
+function esasZoomOut(){
+var paragraphs = map.getContainer().getElementsByTagName('p').length;
+if(paragraphs > 6){
+map.zoomOut();
+}}
+interval = setInterval("esasZoomOut()",500);
+
+--></script>
+  </head>
+	<body onload="initialize()" onunload="GUnload();">
+	<table>
+			<tr>
+				<td colspan="2">
+					<div id="forehead">
+						<h3 id="head">
+							Add an event to the map
+						</h3>
+					</div>
+				</td>
+			</tr>
+      
+<tr>
+				<td rowspan="2">
+					<div id="novel">
+						<h3>
+							Event Details
+						</h3>
+						Address: <input tabindex="1" name="addr" size="30"/>
+						<input tabindex="2" type="button" name="Find" value="go" onclick="addPoint()"/> <br/>
+						Time Range: <input tabindex="1" name="timerange" size="30"/><br/>
+						Summary: <input tabindex="1" name="summary" size="30"/><br/>
+						Description: <textarea rows="3" cols="30"></textarea><br/>
+						
+						<input tabindex="2" type="button" name="Add" value="go" onclick="showAddress(this.address.value); return false"/>
+						
+					</div>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+          asdfa sdf asdf asdf sdf<br/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<form action="#"
+						onsubmit="showAddress(this.address.value); return false">
+						<p>
+							<input type="text" size="60" name="address"
+								value="1600 Amphitheatre Pky, Mountain View, CA" />
+							<input type="submit" value="Go!" />
+						</p>
+					</form>
+					<div id="outline">
+						<div id="map">
+							Map coming...
+							<noscript>
+								<p>
+									JavaScript must be enabled to get the map.
+								</p>
+							</noscript>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+			</tr>
+		</table>
+	</body>
+</html>

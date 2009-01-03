@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ***** BEGIN LICENSE BLOCK *****
+  Version: MPL 1.1
+  
+  The contents of this file are subject to the Mozilla Public License Version 
+  1.1 (the "License"); you may not use this file except in compliance with 
+  the License. You may obtain a copy of the License at 
+  http://www.mozilla.org/MPL/
+  
+  Software distributed under the License is distributed on an "AS IS" basis,
+  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+  for the specific language governing rights and limitations under the
+  License.
+  
+  The Original Code is Concharto.
+  
+  The Initial Developer of the Original Code is
+  Time Space Map, LLC
+  Portions created by the Initial Developer are Copyright (C) 2007 - 2009
+  the Initial Developer. All Rights Reserved.
+  
+  Contributor(s):
+  Time Space Map, LLC
+  
+  ***** END LICENSE BLOCK *****
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+	
+	<bean id="eventDao" class="com.tech4d.tsm.dao.EventDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="eventSearchService" class="com.tech4d.tsm.service.EventSearchServiceHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="styleDao" class="com.tech4d.tsm.dao.StyleDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="auditEntryDao" class="com.tech4d.tsm.dao.AuditEntryDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="auditLogWriter" class="com.tech4d.tsm.dao.AuditLogWriterHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="userDao" class="com.tech4d.tsm.dao.UserDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="flagDao" class="com.tech4d.tsm.dao.FlagDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="spotlightDao" class="com.tech4d.tsm.dao.SpotlightDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="wikiTextDao" class="com.tech4d.tsm.dao.WikiTextDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="notificationDao" class="com.tech4d.tsm.dao.NotificationDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+  <bean id="userTagDao" class="com.tech4d.tsm.dao.UserTagDaoHib">
+    <property name="sessionFactory">
+      <ref bean="mySessionFactory"/>
+    </property>
+  </bean>
+	<!-- End Daos -->  
+	
+	<!-- enable the configuration of transactional behavior based on annotations 
+			TODO not sure if this is working properly with the openSessionInViewInteceptor -->
+	<tx:annotation-driven transaction-manager="txManager"/>
+	
+		<!-- for handling hibernate lazy loading -->
+	<bean name="openSessionInViewInterceptor"
+		class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+		<property name="entityInterceptor" ref="auditInterceptor"/>
+	</bean>
+	
+
+	<bean id="auditInterceptor" class="com.tech4d.tsm.audit.AuditInterceptor">
+  	<property name="sessionFactory" ref="mySessionFactory"/>
+  	<property name="auditLogWriter" ref="auditLogWriter"/>
+  	<property name="auditFieldChangeFormatters">
+  		<set>
+  			<value>com.tech4d.tsm.audit.EventFieldChangeFormatter</value>
+  			<value>com.tech4d.tsm.audit.WikiTextChangeFormatter</value>
+  		</set>
+  	</property>
+  </bean>
+	<!-- End Transaction config -->
+
+	<!--  begin services -->
+  <bean id="revertEventService" class="com.tech4d.tsm.service.RevertEventServiceHib">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+  	<property name="eventDao" ref="eventDao"/>
+  	<property name="auditEntryDao" ref="auditEntryDao"/>
+  	<property name="auditFieldChangeFormatters">
+  		<set>
+  			<value>com.tech4d.tsm.audit.EventFieldChangeFormatter</value>
+  			<value>com.tech4d.tsm.audit.WikiTextChangeFormatter</value>
+  		</set>
+  	</property>
+  	 
+  </bean>
+  
+  <bean id="spotlightService" class="com.tech4d.tsm.service.SpotlightService">
+  	<property name="spotlightDao" ref="spotlightDao"/>
+  </bean>
+  <bean id="tagAggregateService" class="com.tech4d.tsm.service.TagAggregateService">
+  	<property name="defaultDaysBack" value="60"/>
+  	<property name="maxFont" value="25"/>
+  	<property name="minFont" value="10"/>
+    <property name="userTagDao" ref="userTagDao"/>
+  </bean>
+
+  <bean id="sessionHelper" class="com.tech4d.tsm.web.util.SessionHelper">
+  	<property name="wikiTextDao" ref="wikiTextDao"/>
+  </bean>
+<!-- TODO
+	<bean id="kmlExportService" class="com.tech4d.tsm.service.KmlExportService">
+		<property name="eventDao" ref="eventDao"/>
+		<property name="eventSearchService" ref="eventSearchService"/>
+		<property name="kmlFileName" value="events1.kml"/>
+	</bean>  
+-->	
+	<!-- end services -->
+	
+	<!-- Scheduled Tasks -->
+<!-- TODO
+	<bean id="kmlExportTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+     wait 10 seconds before starting repeated execution 
+    <property name="delay" value="1000" />
+     run every 24 hours 
+    <property name="period" value="86400000" />
+    <property name="timerTask" ref="kmlExportService" />
+	</bean>
+	
+	<bean id="timerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
+    <property name="scheduledTimerTasks">
+        <list>
+            <ref bean="kmlExportTask" />
+        </list>
+    </property>
+	</bean>
+-->	
+
+	<!-- end Scheduled Tasks -->
+	
+</beans>

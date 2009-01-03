@@ -1,0 +1,102 @@
+
+<!--
+  ***** BEGIN LICENSE BLOCK *****
+  Version: MPL 1.1
+  
+  The contents of this file are subject to the Mozilla Public License Version 
+  1.1 (the "License"); you may not use this file except in compliance with 
+  the License. You may obtain a copy of the License at 
+  http://www.mozilla.org/MPL/
+  
+  Software distributed under the License is distributed on an "AS IS" basis,
+  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+  for the specific language governing rights and limitations under the
+  License.
+  
+  The Original Code is Concharto.
+  
+  The Initial Developer of the Original Code is
+  Time Space Map, LLC
+  Portions created by the Initial Developer are Copyright (C) 2007 - 2009
+  the Initial Developer. All Rights Reserved.
+  
+  Contributor(s):
+  Time Space Map, LLC
+  
+  ***** END LICENSE BLOCK *****
+-->
+<project name="macros-and-presets" >
+
+  <macrodef name="run-db-script">
+    <attribute name="dbdriver" default="${db.driver}"/>
+    <attribute name="dburl" default="${db.url}"/>
+    <attribute name="dbuserid"/>
+    <attribute name="dbpassword"/>
+    <attribute name="scriptname"/>
+    <attribute name="scriptdir"/>
+    <attribute name="outputdir"/>
+    <attribute name="onerror" default="continue"/>
+    <sequential>
+      <echo level="verbose">
+        db.userid= '@{dbuserid}'
+        db.password= '@{dbpassword}'
+      </echo>
+      <sql
+          driver="@{dbdriver}"
+          url="@{dburl}"
+          userid="@{dbuserid}"
+          password="@{dbpassword}"
+          print="yes"
+          src="@{scriptdir}/@{scriptname}"
+          output="@{outputdir}/@{scriptname}-results.txt"
+          onerror="@{onerror}">
+        <classpath refid="tools-classpath"/>
+      </sql>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="run-db-command">
+  	<text name="text"/>
+    <attribute name="dbdriver" default="${db.driver}"/>
+    <attribute name="dburl" default="${db.url}"/>
+    <attribute name="dbuserid"/>
+    <attribute name="dbpassword"/>
+    <attribute name="scriptdir"/>
+    <attribute name="outputdir"/>
+    <attribute name="outputfile"/>
+    <attribute name="onerror" default="continue"/>
+    <sequential>
+      <echo level="verbose">
+        db.userid= '@{dbuserid}'
+        db.password= '@{dbpassword}'
+      </echo>
+      <sql
+          driver="@{dbdriver}"
+          url="@{dburl}"
+          userid="@{dbuserid}"
+          password="@{dbpassword}"
+          print="yes"
+          output="@{outputdir}/@{outputfile}-results.txt"
+          onerror="@{onerror}">
+        <classpath refid="tools-classpath"/>
+      	@{text}
+      </sql>
+    </sequential>
+  </macrodef>
+
+	<macrodef name="are-you-sure">
+	  <sequential>
+	    <input
+	        message="Are you sure?"
+	        validargs="y,n"
+	        addproperty="answer"
+	        />
+	    <condition property="do.abort">
+	      <equals arg1="n" arg2="${answer}"/>
+	    </condition>
+	    <fail if="do.abort">aborted by user.</fail>	
+	  </sequential>
+	</macrodef>
+
+
+</project>
