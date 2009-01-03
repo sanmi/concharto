@@ -64,18 +64,18 @@ public class TestJSONFormat {
         String jsonEvent = JSONFormat.toJSON(event);
         JSONObject json = JSONObject.fromObject(jsonEvent);
         Geometry geom = event.getTsGeometry().getGeometry();
-        assertEquals(event.getId(), json.getLong(JSONFormat.FIELD_ID));
+        assertEquals((long)event.getId(), json.getLong(JSONFormat.FIELD_ID));
         assertEquals(event.getSummary(), json.getString(JSONFormat.FIELD_SUMMARY));
         assertEquals(event.getDescription(), json.getString(JSONFormat.FIELD_DESCRIPTION));
         assertEquals(event.getWhere(), json.getString(JSONFormat.FIELD_WHERE));
-        assertEquals(event.getPositionalAccuracy().getId(), json.getLong(JSONFormat.FIELD_ACCURACY));
+        assertEquals((long)event.getPositionalAccuracy().getId(), json.getLong(JSONFormat.FIELD_ACCURACY));
         assertEquals(TimeRangeFormat.format(event.getWhen()), json.getString(JSONFormat.FIELD_WHEN));
         assertEquals(event.getSource(), json.getString(JSONFormat.FIELD_SOURCE));
         assertEquals(event.getHasUnresolvedFlag(), json.getBoolean(JSONFormat.FIELD_FLAGGED));
         assertEquals(GeometryType.getGeometryType(event.getTsGeometry().getGeometry()), json.get(JSONFormat.FIELD_GEOMETRYTYPE));
         assertEquals(((Point)geom).getY(), json.getJSONObject(JSONFormat.FIELD_GEOMETRY).getDouble(JSONFormat.FIELD_LAT));
         assertEquals(((Point)geom).getX(), json.getJSONObject(JSONFormat.FIELD_GEOMETRY).getDouble(JSONFormat.FIELD_LNG));
-        assertEquals(event.getZoomLevel(), json.getInt(JSONFormat.FIELD_ZOOM));
+        assertEquals((int)event.getZoomLevel(), json.getInt(JSONFormat.FIELD_ZOOM));
         assertEquals(event.getDiscussion() != null ,json.getBoolean(JSONFormat.FIELD_HAS_DISCUSSION));
 
         //an event with a line geometry feature
