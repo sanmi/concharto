@@ -81,12 +81,16 @@
     $(tab).style.display = 'inline';
     Element.toggleClassName(tabName, 'mainTabSelected');
     setCookie('selectedTab', tab, 20);
+    <!-- a hack for webkit browsers that cache the home page (safari, chrome) -->
+    if ((tab == 'index') && ('' == $('index').textContent.strip())) {
+        reloadWithIndex('index');
+    }
   }
 
   function reloadWithIndex(tab) {
       setCookie('selectedTab', tab, 20);
     $('nextForm').tagindex.value = 1;
-    $('nextForm').submit();
+    $('nextForm').submit();    
   }
     
   //]]>
@@ -132,7 +136,8 @@
           <span id="tabinfo" class="mainTab ${cookie.selectedTab.value == 'info' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('info'); return false;">Info</a></span>
           <span id="tablatest" class="mainTab ${cookie.selectedTab.value == 'latest' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('latest'); return false;">Latest</a></span>
           <span id="tabtags" class="mainTab ${cookie.selectedTab.value == 'tags' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('tags'); return false;">Tags</a></span>
-          <span id="tabindex" class="mainTab ${cookie.selectedTab.value == 'index' ? 'mainTabSelected' : ''}"><a href="#" onClick="reloadWithIndex('index'); return false;">Index</a></span>
+          <%-- note: the extra &nbsp; is for safari display.  If you take it away, the background color on the tab top and bottom margins disappear --%>
+          <span id="tabindex" class="mainTab ${cookie.selectedTab.value == 'index' ? 'mainTabSelected' : ''}"><a href="#" onClick="reloadWithIndex('index'); return false;">Index</a>&nbsp;</span>
         </div>
         <div id="mainpane">
           <jsp:include page="include/spotlight.jsp"/>
@@ -150,7 +155,7 @@
               <jsp:include page="include/tagindex.jsp"/>
             </div>
           </div>
-          <div class="clearfloat"/>
+          <div class="clearfloat"></div>
         </div>      
       </div>
     </div>
