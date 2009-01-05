@@ -114,7 +114,7 @@ public class HomeController extends SimpleFormController {
         //The index is so large that we don't normally want to send all of that data 
         //in the HTTP message, so we only setup the index if the user selected 'index' tab.
         //Also, when that happens, we don't want to increment the spotlight
-        if (COOKIE_SELECTED_TAB_INDEX.equals(cookie.getValue())) {
+        if ((cookie != null) && (COOKIE_SELECTED_TAB_INDEX.equals(cookie.getValue()))) {
             setupTagIndex(request, model);
         } 
         if (PARAM_TAGINDEX_SELECTED.equals(request.getParameter(PARAM_TAGINDEX))) {
