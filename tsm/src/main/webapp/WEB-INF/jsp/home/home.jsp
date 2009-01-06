@@ -82,7 +82,8 @@
     Element.toggleClassName(tabName, 'mainTabSelected');
     setCookie('selectedTab', tab, 20);
     <!-- a hack for webkit browsers that cache the home page (safari, chrome) -->
-    if ((tab == 'index') && ('' == $('index').textContent.strip())) {
+    if ((tab == 'index') && 
+        ((null == $('index').textContent) || ('' == $('index').textContent.strip()))) {
         reloadWithIndex('index');
     }
   }
