@@ -22,8 +22,7 @@
  Contributor(s):
  Time Space Map, LLC
  
- ***** END LICENSE BLOCK *****
---%>
+ ***** END LICENSE BLOCK *****--%>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -126,6 +125,9 @@
           <c:choose>
             <c:when test="${empty isIndex}">
               <c:set var="selectedTab" value="${cookie.selectedTab.value}"/>
+              <c:if test="${empty selectedTab}">
+                <c:set var="selectedTab" value="info"/>
+              </c:if>
             </c:when>
             <c:otherwise>
               <c:set var="selectedTab" value="index"/>
