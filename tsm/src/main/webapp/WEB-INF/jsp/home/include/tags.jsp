@@ -28,5 +28,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <h2>Recently created event tags:</h2>
-<jsp:include page="writeTagCloud.jsp"/>
-
+<c:forEach items="${tagCloud}" var="entry">
+<a href='${basePath}<c:url value="search/eventsearch.htm"><c:param name="_tag" value="${entry.tag}" /></c:url>'><span style="font-size: <c:out value='${entry.fontSize}'/>pt"><c:out value="${entry.tag}"/></span></a>&nbsp;&nbsp;
+</c:forEach>
