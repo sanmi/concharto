@@ -48,16 +48,11 @@
   <jsp:attribute name="head">
     <script type="text/javascript">
   //<![CDATA[
-
+  var COOKIE_SELECTED_TAB = 'selectedTab';
+  var TAB_INDEX = 'index';
+  var TAB_INFO = 'info';
+  var CLASS_TAB = 'mainTabSelected';    
   function init() {
-
-	  //display the last tab that the user selected
-    var selected = getCookie('selectedTab');
-    if (selected != '') {
-        selectTab(selected);
-    } else {
-        selectTab('info');
-    }
     setupHelpPanels();
   }
   
@@ -76,22 +71,15 @@
         $(item).style.display = 'none';
     });
     $$('.mainTab').each(function(item) {
-    	Element.removeClassName(item, 'mainTabSelected');
+    	Element.removeClassName(item, CLASS_TAB);
     });
     $(tab).style.display = 'inline';
-    Element.toggleClassName(tabName, 'mainTabSelected');
-    setCookie('selectedTab', tab, 20);
-    <!-- a hack for webkit browsers that cache the home page (safari, chrome) -->
-    if ((tab == 'index') && 
-        ((null == $('index').textContent) || ('' == $('index').textContent.strip()))) {
-        reloadWithIndex('index');
-    }
+    Element.toggleClassName(tabName, CLASS_TAB);
+    setCookie(COOKIE_SELECTED_TAB, tab, 20);
   }
 
-  function reloadWithIndex(tab) {
-      setCookie('selectedTab', tab, 20);
-    $('nextForm').tagindex.value = 1;
-    $('nextForm').submit();    
+  function goToIndex() {
+    document.location = 'index.htm';
   }
     
   //]]>
@@ -134,25 +122,35 @@
     <div id="main">
       <div id="left">          
         <div class="mainTabBar">
-          <span id="tabinfo" class="mainTab ${cookie.selectedTab.value == 'info' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('info'); return false;">Info</a></span>
-          <span id="tablatest" class="mainTab ${cookie.selectedTab.value == 'latest' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('latest'); return false;">Latest</a></span>
-          <span id="tabtags" class="mainTab ${cookie.selectedTab.value == 'tags' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('tags'); return false;">Tags</a></span>
+          <!--  special processing for the index page -->
+          <c:choose>
+            <c:when test="${empty isIndex}">
+              <c:set var="selectedTab" value="${cookie.selectedTab.value}"/>
+            </c:when>
+            <c:otherwise>
+              <c:set var="selectedTab" value="index"/>
+            </c:otherwise>
+          </c:choose>
+          <%-- Note: don't put a line break in the following lines - they need to be one line for proper html rendering --%>
+          <span id="tabinfo" class="mainTab ${selectedTab == 'info' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('info'); return false;">Info</a></span>
+          <span id="tablatest" class="mainTab ${selectedTab == 'latest' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('latest'); return false;">Latest</a></span>
+          <span id="tabtags" class="mainTab ${selectedTab == 'tags' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('tags'); return false;">Tags</a></span>
           <%-- note: the extra &nbsp; is for safari display.  If you take it away, the background color on the tab top and bottom margins disappear --%>
-          <span id="tabindex" class="mainTab ${cookie.selectedTab.value == 'index' ? 'mainTabSelected' : ''}"><a href="#" onClick="reloadWithIndex('index'); return false;">Index</a>&nbsp;</span>
+          <span id="tabindex" class="mainTab ${selectedTab == 'index' ? 'mainTabSelected' : ''}"><a href="#" onClick="goToIndex(); return false;">Index</a>&nbsp;</span>
         </div>
         <div id="mainpane">
           <jsp:include page="include/spotlight.jsp"/>
           <div class="recent" >
-            <div class="infopane" id="info" style="display: ${cookie.selectedTab.value == 'info' ? 'inline' : 'none'}">
+            <div class="infopane" id="info" style="display: ${selectedTab == 'info' ? 'inline' : 'none'}">
               <jsp:include page="include/info.jsp"/>
             </div>
-            <div class="infopane" id="latest" style="display: ${cookie.selectedTab.value == 'latest' ? 'inline' : 'none'}">
+            <div class="infopane" id="latest" style="display: ${selectedTab == 'latest' ? 'inline' : 'none'}">
               <jsp:include page="include/latest.jsp"/>
             </div>
-            <div class="infopane" id="tags" style="display: ${cookie.selectedTab.value == 'tags' ? 'inline' : 'none'}">
+            <div class="infopane" id="tags" style="display: ${selectedTab == 'tags' ? 'inline' : 'none'}">
               <jsp:include page="include/tags.jsp"/>
             </div>
-            <div class="infopane" id="index" style="display: ${cookie.selectedTab.value == 'index' ? 'inline' : 'none'}">
+            <div class="infopane" id="index" style="display: ${selectedTab == 'index' ? 'inline' : 'none'}">
               <jsp:include page="include/tagindex.jsp"/>
             </div>
           </div>

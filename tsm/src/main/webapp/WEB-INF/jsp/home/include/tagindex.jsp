@@ -30,7 +30,5 @@
 <%-- NOTE: no newlines to reduce whitespace - TODO perhaps add a whitespace servlet filter--%>
 <c:forEach items="${tagIndex}" var="entry">
 <h1><c:out value="${entry.key.asText}"/></h1>
-<c:forEach items="${entry.value}" var="cloud">
-<a href="${basePath}search/eventsearch.htm?_tag=<c:out value='${cloud.tag}'/>&x"><span style="font-size: <c:out value='${cloud.fontSize}'/>pt"><c:out value="${cloud.tag}"/></span></a>&nbsp;&nbsp;
-</c:forEach>
+<c:forEach items="${entry.value}" var="tagCloud"><jsp:include page="writeTagCloud.jsp"/></c:forEach>
 </c:forEach>

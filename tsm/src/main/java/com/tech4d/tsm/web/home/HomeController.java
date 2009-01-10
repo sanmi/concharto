@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.SortedMap;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -55,12 +54,10 @@ import com.tech4d.tsm.web.util.CatalogUtil;
 public class HomeController extends SimpleFormController {
 
 
-    private static final String PARAM_TAGINDEX_SELECTED = "1";
-
-    private static final String PARAM_TAGINDEX = "tagindex";
-
     protected final Log log = LogFactory.getLog(getClass());
 
+    private static final String INDEX_URI = "index.htm";
+    private static final String PARAM_IS_INDEX = "isIndex";
     private static final int MAX_RECENT_EVENTS = 6;
     public static final String MODEL_TOTAL_EVENTS = "totalEvents";
     public static final String MODEL_RECENT_EVENTS = "recentEvents";
@@ -71,8 +68,6 @@ public class HomeController extends SimpleFormController {
     private static final String MODEL_TAG_DAYS_BACK = "tagsDaysBack";
     private static final String MODEL_TAG_INDEX = "tagIndex";
     private static final String SESSION_SPOTLIGHT_INDEX = "spotlightIndex";
-    private static final String COOKIE_SELECTED_TAB = "selectedTab";
-    private static final Object COOKIE_SELECTED_TAB_INDEX = "index";
 
 
     private EventDao eventDao;
@@ -110,14 +105,20 @@ public class HomeController extends SimpleFormController {
                 .getCatalog(request), MAX_RECENT_EVENTS, 0));
         model.put(MODEL_TOTAL_EVENTS, eventDao.getTotalCount(CatalogUtil
                 .getCatalog(request)));
-        Cookie cookie = WebUtils.getCookie(request, COOKIE_SELECTED_TAB);
         //The index is so large that we don't normally want to send all of that data 
         //in the HTTP message, so we only setup the index if the user selected 'index' tab.
+        //So only show the index when the URL is index.htm 
         //Also, when that happens, we don't want to increment the spotlight
-        if ((cookie != null) && (COOKIE_SELECTED_TAB_INDEX.equals(cookie.getValue()))) {
+        if (StringUtils.contains(request.getRequestURI(), INDEX_URI)) {
             setupTagIndex(request, model);
-        } 
-        if (PARAM_TAGINDEX_SELECTED.equals(request.getParameter(PARAM_TAGINDEX))) {
+            
+            //tell the jsp view that this is the index page.  Apparently, you can't count on the jsp
+            //knowing the real URL because it things the url is the name of the jsp page, not the 
+            //spring binding.  E.g. Even if we got to the jsp page via index.htm, the jsp 
+            //${pageContext.request.requestURI} will say "/home/home.jsp" instead of "index.htm"
+            //since we need to notify the jsp view to display things for index instead of home
+            request.setAttribute(PARAM_IS_INDEX, true);
+
             //clicked on the index tab, so we don't need to increment the spotlight
             setupSpotlight(request, model, false);
         } else {
