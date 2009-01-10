@@ -36,9 +36,9 @@ request.setAttribute("hostprefix", (String)request.getSession().getAttribute(Log
 	<meta name="description" content="an encyclopedic atlas of history and happenings that anyone can edit. It is a geographic wiki" />
 	<meta name="keywords" lang="en" content="history, historical maps, historical events, geographic wiki, happenings, atlas, places, maps, locations, sharing, biography, neogeography, geospatial, collective mapping, collaborative mapping, metadata, tagging, groupmaps, mashups, web2.0, google, tools, geotagging, googlemaps, community, cartography"/>
 	<title>Concharto - ${title}  </title>
-  <link href="${basePath}css/style.css" rel="stylesheet" type="text/css" media="screen">
+  <link href="${basePath}css/style.css" rel="stylesheet" type="text/css" media="screen"/>
   <c:forTokens var="item" items="${stylesheet}" delims=",">
-     <link href="${basePath}css/${item}" rel="stylesheet" type="text/css" media="screen">
+     <link href="${basePath}css/${item}" rel="stylesheet" type="text/css" media="screen"/>
   </c:forTokens>    
 	<jsp:invoke fragment="head" />
 	<link rel="shortcut icon" href="/favicon.ico" />
