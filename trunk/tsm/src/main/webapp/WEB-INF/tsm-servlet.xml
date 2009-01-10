@@ -54,6 +54,7 @@
           <prop key="forgot.htm">forgotController</prop>
           <prop key="reset.htm">resetController</prop>
           <prop key="home.htm">homeController</prop>
+          <prop key="index.htm">homeController</prop>
           <prop key="feedback.htm">feedbackController</prop>
           <prop key="edit/event.htm">eventController</prop>
           <prop key="signup.htm">signupController</prop>
