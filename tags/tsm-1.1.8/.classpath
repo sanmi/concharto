@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry excluding="com/tech4d/tsm/model/test/|com.tech4d.tsm.model.test/" kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry excluding="**" kind="src" output="src/test/conf" path="src/test/conf"/>
+	<classpathentry excluding="**|classes/" kind="src" output="src/main/webapp/WEB-INF" path="src/main/webapp/WEB-INF"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/lab/java"/>
+	<classpathentry kind="src" path="src/main/properties"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
+	<classpathentry kind="con" path="com.genuitec.eclipse.j2eedt.core.J2EE14_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/deploy/antlr.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/asm-attrs.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/asm.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/cglib.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/commons-collections.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/commons-dbcp.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/commons-logging.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/commons-pool.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/dom4j.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/ehcache.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/hibernate-annotations.jar" sourcepath="C:/apps/lib/hibernate-annotations-3.3.0.GA/src">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/apps/lib/hibernate-annotations-3.3.0.GA/doc/api/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/deploy/hibernate-commons-annotations.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/hibernate.jar" sourcepath="C:/apps/lib/hibernate-3.2/src">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.hibernate.org/hib_docs/v3/api/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/deploy/log4j.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/mysql-connector-java.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/persistence-api.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/spring.jar" sourcepath="C:/apps/lib/spring-framework-2.0.6/src-combined">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/apps/lib/spring-framework-2.0.6/docs/api/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/deploy/standard.jar"/>
+	<classpathentry kind="lib" path="lib/local/jta.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/jstl.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/commons-lang.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://commons.apache.org/lang/api-release/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/local/jts-1.8.jar" sourcepath="C:/apps/lib/jts.1.8.0/src">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/apps/lib/jts.1.8.0/doc/javadoc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/deploy/aspectjweaver.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/commons-io.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/json-lib-2.0-jdk15.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://json-lib.sourceforge.net/apidocs/jdk15"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/deploy/commons-beanutils.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/ezmorph.jar"/>
+	<classpathentry kind="lib" path="lib/lab/geonames-0.5.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/commons-codec.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/icu4j.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/jasypt.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/apps/lib/jasypt-1.3.1-bin/api/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/deploy/displaytag.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/regexp.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/oro.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/mail-1.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/activation-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/localtools/jargs-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/localtools/YUIAnt.jar"/>
+	<classpathentry kind="lib" path="lib/localtools/yuicompressor-2.2.4.jar"/>
+	<classpathentry kind="lib" path="lib/local/jdom-1.1.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.jdom.org/docs/apidocs/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/deploy/quartz.jar"/>
+	<classpathentry kind="lib" path="lib/deploy/jdom.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="lib/local/bliki-3.0.7.jar" sourcepath="C:/apps/lib/bliki-3.0.7/info.bliki.wiki.svn/src">
+		<attributes>
+			<attribute name="javadoc_location" value="http://matheclipse.org/doc/bliki/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="src/main/webapp/WEB-INF/classes"/>
+</classpath>

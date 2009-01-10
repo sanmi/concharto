@@ -1,0 +1,202 @@
+@charset "utf-8";
+/* CSS Document */
+#sidebar {
+	width: 320px;
+	padding: 5px 0;
+	border:1px solid #999999;
+	background: white url(../images/results-backg.gif) repeat-y; 
+	background-position: right; 
+}
+#sidebarSize {
+	padding: 0 4px;
+	position: relative;
+	top:-4px;
+}
+#map {
+  height:1000px;
+  border:1px solid #999999; 
+}
+#embedded {
+	margin: 0 4px 4px 4px;
+}
+#embedded #map{
+  border: none;
+}
+#embeddedHeader {
+  margin-left: 4px;
+	height:20px;
+}
+.embeddedTitleLogo {
+  float:right;
+}
+.embeddedTitle {
+  margin: 3px 5px;
+  float:right;
+  font-style: italic;
+  font-weight:normal;
+  color: #4D4D4D;
+}
+.mapedit {
+	padding:0;
+	margin:0;
+}
+.mapedit table {
+  width:100%;
+	margin:0;
+	padding:0;
+}
+.mapedit .mainarea table {
+}
+.mapedit #eventForm .inputcell {    
+	border-top: 1px solid #e0e0e0;
+  padding: 10px 4px 5px 2px;
+  margin: 0 .2em 2px .2em;
+}
+#sidebar .inputcell .textInput {
+	font: 10pt Arial, Helvetica, sans-serif;
+}
+#sidebar .inputcell select {
+	margin-left: 1em;
+}
+#sidebar .expando {
+	width: 24em;
+}
+.mapedit #eventForm .inputlabel, .errorlabel {
+    font-weight: bold;
+}
+.mapedit #eventForm .errorlabel {
+	color: red;
+	font-weight: bold;
+}
+
+.mapedit #eventForm .radio {
+    padding: .4em .2em .2em .2em;
+    border: 1px solid #D7E5F2;
+    margin: .2em;
+}
+
+.mapedit h3 {
+	padding: 0;
+	margin: 0 0 4px 0;
+	font-size:x-large;
+}
+.mapedit td {
+	vertical-align:top;
+}
+.mapedit small {
+	font-size:x-small;
+	color: gray;
+}
+
+.mapedit .errorLabel, .errorHint {
+	color:red;
+	margin-bottom:.2em;
+	margin-top:.2em;
+}
+.mapedit .errorHint {
+	font-weight: normal;
+}
+.mapedit .errorHint ul {
+	margin-left:10px;
+	padding-left:10px;
+	margin-top:.2em;
+}
+.mapedit .errorHint li {
+	margin-left:5px;
+	padding-left:5px;
+}
+
+.mapedit .iconcol {
+	width: 22px;
+}
+
+.infolinkbar {
+	padding:.2em;
+	margin: 0 .1em 0 1.3em;
+}
+.result, .inforesult {
+	padding:.2em;
+	border-bottom: 1px solid #e0e0e0;
+	margin: 0 .1em 0 .1em;
+}
+#sidebar .result {
+	width: 292px
+}
+#sidebar .highlight {
+  background-color: #EDECF3;
+}
+.inforesult {
+  overflow-x:hidden; 
+  overflow-y:scroll;
+  overflow:-moz-scrollbars-vertical!important;
+	margin: 1em -.4em 0 1.3em;
+}
+.mapedit .searchbar{
+  width:auto;
+}
+
+.mapedit .action{
+  padding-right:1em;
+}
+
+.pagepanel {
+	padding: 5px 0;
+	margin: .2em;
+	border:1px solid #999999;
+	background-color: white;
+}
+.pagepanel .pagebanner {
+	margin: .6em;
+}
+.changeEntry{
+	padding: .5em;
+	margin: .2em;
+	border: 1px solid #e0e0e0;
+}
+
+#larger, #smaller {
+position:relative;
+top:-1em;
+display: inline;
+float: right;
+margin: 0 .4em 0 0;
+padding:0;
+}
+.hidden {
+	visibility: hidden;
+}
+#source {
+	height: 3.6em;
+}
+#description {
+	height: 6em;
+}
+.result .when {
+  font-weight:bold;
+}
+.result .summary {
+	font-weight: bold;
+}
+.result .where {
+	font-style: italic;
+}
+.result .more {
+	font-style: italic;
+}
+.result .source, .result .usertags {
+	color: gray;
+	margin: .1em 0;
+}
+.result .source p {
+	padding-left: .4em;
+	margin: 0;
+}
+.result .source a {
+	font-weight: normal;
+}
+.discusspanel {
+	padding:5px 20px 60px 20px;
+	margin: .2em;
+	border:1px solid #999999;
+	background-color: white;
+}

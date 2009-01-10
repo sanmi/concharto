@@ -1,0 +1,103 @@
+@charset "utf-8";
+/* CSS Document */
+	#home {
+	background: #FFFFFF url(../images/tile-backg.gif) repeat-x;
+	}
+	#main {
+	position:absolute;
+	top: 251px;
+	}
+	#main h1 {
+	font-size: 14pt;
+	margin: .2em 0;
+	padding: .2em 0;
+	}
+	#main table {
+	width:100%;
+	}
+	#main #left {
+	padding: 15px 20px 0 25px;
+	}
+	#main #right {
+	padding: 25px 25px 0 20px;
+	width: 540px;
+	}
+	#main p{
+	margin: 0 0 .8em 0;
+	padding:0;
+	font-size:11pt;
+	}
+	#main #right p{
+	padding: 0;
+	margin: 8px 0 8px 18px;
+	}
+	#main td {
+	vertical-align: top;
+	}
+	#main #spotlightbox {
+	background: url(../images/spotlight-backg.png) repeat-x;
+	height:496px;
+	width:551px;
+	}
+	#main #borderbox {
+	text-align:center
+	}
+	#main #embeddedmap {
+	background-color:white; 
+	padding:10px;
+	}
+	#main ul {
+	padding: .1em  .4em .1em 2em;
+	margin:.4em 0;
+	list-style: url(../images/raquo.gif);
+	}
+	#main .recent {
+	background: url(../images/recent-backg.png) repeat-x;
+	width: 100%;
+	padding: .4em;
+	margin: 0;
+	font-weight:bold;
+	}
+	#main .recent hr {
+	color: #BBC7D5;
+	background-color: #BBC7D5;
+	height: 1px;	
+	border: none 0; 
+	}
+	#maintabback {
+	}
+	#maintab {
+	position:absolute;
+/*	top: 232px;	 */
+	top: 222px;
+	font-size: 15px;
+	font-weight: bold;
+	padding: 0;
+	margin: 0;
+	background-color: #5197DC;
+	border-bottom: #5197DC solid 1px;
+	width: 100%;
+	}
+	#maintab .left {
+	margin: 0 0 0 45px;	
+	}
+	#maintab .selected, #maintab .unselected  {
+	padding: 6px 20px 0px 20px;
+	margin: 0 3px;
+	border-left:white solid 1px;
+	border-right:white solid 1px;
+	border-top:white solid 1px;
+	}
+	#maintab .selected {
+	padding: 6px 20px 1px 20px;
+	background-color: white;
+	border-bottom:white solid 1px;
+	}
+	#maintab .unselected {
+	padding: 6px 20px 0px 20px;
+	background-color: #C4DEF9;
+	border-bottom:#AECDE9 solid 1px;
+	}
+	#maintab a:link, #maintab a:visited {
+	color: #033898;
+	}
