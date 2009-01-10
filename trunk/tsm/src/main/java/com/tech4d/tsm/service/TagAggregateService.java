@@ -130,14 +130,24 @@ public class TagAggregateService {
                 min = count;
             }
         }
+        
+        int untaggedCount = 0;
         for (Object[] tagCount : tagCounts) {
             Long count = ((BigInteger)tagCount[1]).longValue();
             String tag = (String)tagCount[0];
+            //we don't automatically add empty tags because we want to merge nulls together
+            //with empty (both null and "" exists in the db) 
             if (StringUtils.isEmpty(tag)) {
-                tag = EventSearchServiceHib.UNTAGGED;
+                untaggedCount += count;
+            } else {
+                cloud.add(new TagCloudEntry(tag, getFontSize(count, min, max)));
             }
-            cloud.add(new TagCloudEntry(tag, getFontSize(count, min, max)));
         }
+        if (untaggedCount != 0) {
+            cloud.add(new TagCloudEntry(
+                    EventSearchServiceHib.UNTAGGED, getFontSize(untaggedCount, min, max)));
+        }
+        
         return cloud;
     }
 
