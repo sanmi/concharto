@@ -24,7 +24,7 @@
  * 
  * ***** END LICENSE BLOCK *****
  ******************************************************************************/
-//package com.tech4d.tsm.lab.diff;
+//package org.tsm.concharto.lab.diff;
 //
 //import java.util.*;
 //import junit.framework.TestCase;
