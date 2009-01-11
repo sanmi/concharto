@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ***** BEGIN LICENSE BLOCK *****
+  Version: MPL 1.1
+  
+  The contents of this file are subject to the Mozilla Public License Version 
+  1.1 (the "License"); you may not use this file except in compliance with 
+  the License. You may obtain a copy of the License at 
+  http://www.mozilla.org/MPL/
+  
+  Software distributed under the License is distributed on an "AS IS" basis,
+  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+  for the specific language governing rights and limitations under the
+  License.
+  
+  The Original Code is Concharto.
+  
+  The Initial Developer of the Original Code is
+  Time Space Map, LLC
+  Portions created by the Initial Developer are Copyright (C) 2007 - 2009
+  the Initial Developer. All Rights Reserved.
+  
+  Contributor(s):
+  Time Space Map, LLC
+  
+  ***** END LICENSE BLOCK *****
+-->
+<Module>
+<ModulePrefs title="Concharto 80" 
+                description="Test Concharto Maplet"
+                author="Concharto.com"
+                author_email="frank@concharto.com"
+                height="150">
+  <Require feature="sharedmap"/>
+  <Require feature="opensocial-0.7"/>
+</ModulePrefs>
+<Content type="html"><![CDATA[
+
+<form action="javascript:void 0" onSubmit="doSearch();" id="eventSearchForm" >
+<table>
+  <tr>
+    <td class="eg">
+      What
+    </td>
+    <td class="eg">
+      When
+    </td>
+  </tr>
+  <tr>
+    <td >
+      <input id="what" name="what" type="text" value="" style="width:160px"/>
+    </td>
+    <td>
+      <input id="when" name="when" type="text" value="" style="width:125px"/>
+    </td>
+  </tr>
+</table>
+<input type="submit" value="Search"/>
+<span id="where" style="display:none"></span>
+
+<input type="hidden" id="basePath" value="http://www.test.timespacemap.com/"/>
+</form>
+
+<link href="http://www.test.timespacemap.com/css/style.css" rel="stylesheet" type="text/css" media="screen">
+<link href="http://www.test.timespacemap.com/css/map.css" rel="stylesheet" type="text/css" media="screen">
+<link href="http://www.test.timespacemap.com/css/wiki.css" rel="stylesheet" type="text/css" media="screen">
+<link href="http://www.test.timespacemap.com/css/header.css" rel="stylesheet" type="text/css" media="screen">
+<link href="http://www.test.timespacemap.com/css/search.css" rel="stylesheet" type="text/css" media="screen">
+
+<script src="http://www.test.timespacemap.com/javascript/prototype.js" type="text/javascript"/></script>
+<script src="http://www.test.timespacemap.com/javascript/map.js?74" type="text/javascript"></script>
+<script src="http://www.test.timespacemap.com/javascript/searchcommon.js?6" type="text/javascript"></script>
+<script src="http://www.test.timespacemap.com/javascript/eventsearch.js?6" type="text/javascript"></script>
+<script src="http://www.test.timespacemap.com/javascript/maplet.js?6" type="text/javascript"></script>
+
+
+<script type="text/javascript">
+  var _msg_newdiscuss = "Create a new discussion";
+  var _msg_discuss = "Join the discussion";
+  var _msg_edit = "Edit this event!";
+  var _msg_changes = "View changes to this event";
+  var _msg_flag = "Flag this event for administrator attention";
+  var _msg_accy = new Array();
+  _msg_accy[1] = 'Unspecified'; 
+  _msg_accy[2] = 'Region'; 
+  _msg_accy[3] = 'City'; 
+  _msg_accy[4] = 'Neighborhood'; 
+  _msg_accy[5] = 'Address'; 
+  _msg_accy[6] = 'Pinpoint (+/- 10m)';
+</script>    
+
+<script type="text/javascript">
+  
+
+  //Override Setup a special map manager for search
+  function MapletEventOverlayManager(parent) {
+    this.parent = parent;
+
+    this.setRefreshFunction = function(refreshFunction) {
+      //listener for clearing data before searching
+      GEvent.addListener(map, "clearoverlays", refreshFunction);  
+    }
+   
+    /** Clear all overlays and points */
+    this.refresh = function() {
+      console.log('overlays: ' + this.getOverlays().length);
+      map.clearOverlays();
+      this.clearOverlays();
+      console.log('overlays: ' + this.getOverlays().length);
+    }
+        
+    /** Override for asynchronous behavior */
+    this.infoWindowListener = function() {
+      GEvent.addListener(map, "infowindowclose", function() {
+        this.getInfoWindowAsync(function(window) {
+          window.isHiddenAsync(function(hidden){
+            if (hidden) {
+              //only unhighlight if there are no windows open
+              _overlayManager.unhighlightOverlay();
+            }
+          });
+        });
+      });
+    }
+  
+    this.makeOverlayHtml = function(index, event, totalEvents) {
+      var html = '<div style="font-size:10pt;'
+        + 'margin: 1em -.4em 0 1.3em;margin-bottom:10px">';
+      if (index != null) {
+         var letter = this.ALPHA_CHARS.substring(index,index+1);
+         html += '<img alt="marker" style="margin-right:4px;" src="' + _basePath + 'images/icons/' + letter + '_label.png' + '"/>';
+      }
+      html += '<span style="font-weight: bold;">' + event.summary.escapeHTML() +'</span><br/>'  
+        + '<span style="font-weight:bold;">' + event.when + '</span><br/>'  
+        + '<span style="font-style: italic;">' + event.where.escapeHTML();
+      if (!isEmpty(event.accy)) {
+        html += ' (Accuracy: ' + _msg_accy[event.accy] + ')'; 
+      }
+      html += '</span><br/>' 
+        + event.description; 
+      
+      var tags = event.tags.split( "," );
+      var taglink = new Array();
+      tags.each( function(tag, index){
+        //encode ant apostrophes in the tag because that will mess up the call from HTML
+        //we will have to decode them later in goToTag()
+        var encodedtag = tag.gsub('\'', '%27');
+        //embedded search is wierd with following tags using document.location so we will use a regular href
+        taglink[index] = '<a href="'
+          + 'http://www.concharto.com/search/eventsearch.htm?_tag='+ encodedtag + '&_maptype=0' 
+          + '">'+ tag +'</a>';
+      });
+      
+      html += '<div class="usertags"><b>Tags: </b>' + taglink.join(', ') + '</div>';   
+      html += '<div class="source"><b>Source: </b>' + event.source + '</div>';
+      html += '</div>';
+          
+      html += '</div>';
+      return html;
+    }
+  
+    /* Override Fit the map center and zoom level to the search results */
+    this.fitToResults = function() {
+      var boundsPoly = new GPolyline(this.getFitToPolygon());
+      boundsPoly.getBoundsAsync(function(bounds) {
+        GAsync(map, 'getZoom', 'getBoundsZoomLevel', [bounds], function(currentZoom, zoom) {
+          if (_overlayManager.getFitToPolygon().length >= 2){                         
+            /* if they specified a place name, then we only want to zoom out to fit,
+               not zoom in (e.g. only one place matching the criteria in England, we still
+               want to show England */
+            if (!isEmpty($('where').value) && (zoom > currentZoom)) {
+              zoom = currentZoom;
+            }
+          } else if (_overlayManager.getFitToPolygon().length == 1) {
+            zoom=12; //city level
+          } 
+          if (_overlayManager.getFitToPolygon().length >0) {
+            map.setZoom(zoom);                
+            map.setCenter(bounds.getCenter());
+          }       
+        });      
+      });
+    }
+  
+    /* Override create a new polygon */ 
+    this.newPoly = function(points, geometryType, weight /* optional */, 
+                      lineColor /* optional */, polyColor /* optional */) {
+      if (weight == undefined) {
+        weight = this.LINE_WEIGHT;
+      }
+      if (lineColor == undefined) {
+        lineColor = this.LINE_COLOR;
+      }
+      if (polyColor == undefined) {
+        polyColor = this.POLY_COLOR;
+      }
+      //adjust closure of the poly based on geomType
+      points = this.setPolyClosure(geometryType, points);
+      if (points != null) { 
+        if ((geometryType == 'line')){
+          var polyline = new GPolyline(points, lineColor, weight);
+          return polyline;
+        } else if (geometryType == 'polygon') {
+          return new GPolygon(points, polyColor, weight, .8, lineColor, .25);
+        }
+      } 
+      return null;
+    }
+
+    /* override TODO remove cut/paste */
+    this.hideZoomedPolygons = function(from) {
+      map.getBoundsAsync(function(bounds) {
+        _overlayManager.getOverlays().each( function(item, index) {
+          if (item.type == 'polygon') {
+            var overlay = item.overlay;
+            var hide = true;
+            var vertexes = item.points;       
+            var vertexCount = vertexes.length;
+            for (var i = 0; i < vertexCount; i++) {
+              var vertex = vertexes[i];
+              //if vertex within the map OR
+              //if a line between this vertex and the last intersects the map
+              if ((bounds.contains(vertex)) ||
+                  ((i+1 < vertexCount) && _overlayManager.intersectsMap(bounds, vertex, vertexes[i+1]))) 
+              {
+                hide = false;
+                break;
+              } 
+            }
+            if (hide) {
+              //ok, there are no vertexes within the map, so we should hide this overlay
+              map.removeOverlay(overlay);
+            } else {
+              map.addOverlay(overlay);
+            }
+          }
+        });
+      });
+    }  
+  }
+  MapletEventOverlayManager.prototype = new EventOverlayManager();  //inherit with override
+  
+  // Center the map in 
+  //var point = new GLatLng(37.71859, 6.679688);
+  _mapManager.initializeMap();
+  //map.setCenter(new GLatLng(37, -122), 6);
+
+  _overlayManager = new MapletEventOverlayManager(new EventOverlayManager);
+  _overlayManager.initialize();
+  _overlayManager.setRefreshFunction(fetchAndDisplay);
+    
+  //Load points from the server
+  function doSearch() {
+    if (hasSearchTerms()) {
+      //clear overlays is asynchronous, so we have to pass the fetachAndDisplay to an event handler
+      _overlayManager.refresh();
+    }
+  }
+  
+  
+  /** Fetch search data and display it on the map */
+  function fetchAndDisplay() {
+    //var url = "http://www.test.timespacemap.com/search/jsonsearch.htm?_style=explicit&_what=inca&_rand=48";
+    var url = "http://www.test.timespacemap.com/search/jsonsearch.htm?_style=explicit&_withinMap=true";
+    url += '&_what=' + encodeURIComponent($('what').value);
+    console.log(url);
+    _IG_FetchContent(url, function(jsondata) {
+      console.log("fetching...");
+      var events = jsondata.evalJSON();
+      console.log("fetched " + events.length + " events");
+      _overlayManager.createOverlays(events);
+      _overlayManager.fitToResults();
+      console.log('fetch overlays: ' + _overlayManager.getOverlays().length);
+    });
+  }
+  /** returns true if the user has entered search terms */
+  function hasSearchTerms() {
+   return !isEmpty($('what').value) || !isEmpty($('where').value);
+  }
+</script>
+
+]]></Content>
+</Module>
