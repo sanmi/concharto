@@ -89,6 +89,17 @@ public class IntegrationTestTagAggregateService extends OpenSessionInViewIntegra
         assertEquals((Integer)30, tagCloud.get(3).getFontSize());
     }
 
+    @Test public void small() {
+        createTags(1, "tagA");
+        createTags(1, "tagB");
+        tagAggregateService.setMaxFont(MAX_FONT_FOR_TEST);
+        tagAggregateService.refreshRecent();
+        List<TagCloudEntry> tagCloud = tagAggregateService.getTagCloud();
+        assertEquals(2, tagCloud.size());
+        assertEquals((Integer)MAX_FONT_FOR_TEST, tagCloud.get(0).getFontSize());
+        assertEquals((Integer)MAX_FONT_FOR_TEST, tagCloud.get(1).getFontSize());
+    }
+
     private void createTags(int count, String tagName) {
         for (int i=0; i<count; i++) {
             userTagDao.save(new UserTag(tagName));
