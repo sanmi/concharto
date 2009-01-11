@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ***** BEGIN LICENSE BLOCK *****
+  Version: MPL 1.1
+  
+  The contents of this file are subject to the Mozilla Public License Version 
+  1.1 (the "License"); you may not use this file except in compliance with 
+  the License. You may obtain a copy of the License at 
+  http://www.mozilla.org/MPL/
+  
+  Software distributed under the License is distributed on an "AS IS" basis,
+  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+  for the specific language governing rights and limitations under the
+  License.
+  
+  The Original Code is Concharto.
+  
+  The Initial Developer of the Original Code is
+  Time Space Map, LLC
+  Portions created by the Initial Developer are Copyright (C) 2007 - 2009
+  the Initial Developer. All Rights Reserved.
+  
+  Contributor(s):
+  Time Space Map, LLC
+  
+  ***** END LICENSE BLOCK *****
+-->
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN"
+        "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans>
+  <bean id="messageSource"
+        class="org.springframework.context.support.ResourceBundleMessageSource">
+    <property name="basenames">
+      <list>
+        <value>errors</value>
+        <value>messages</value>
+        <value>map</value>
+        <value>application</value>
+      </list>
+    </property>
+  </bean>
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+  	<property name="systemPropertiesMode" value="2"/> <!-- allow system properties to override -->
+    <property name="locations">
+      <list>
+        <value>classpath:jdbc.properties</value>
+        <value>classpath:application.properties</value>
+        <value>classpath:server.properties</value>
+      </list>
+    </property>
+	</bean>
+	<bean id="emailService" class="com.tech4d.tsm.service.EmailService">
+		<property name="smtpHost" value="${local.email.smtp.host}"/>
+	</bean>
+	<bean id="notificationService" class="com.tech4d.tsm.service.NotificationService">
+		<property name="messageSource" ref="messageSource"/>
+		<property name="notificationDao" ref="notificationDao"/>
+	</bean>
+</beans>
