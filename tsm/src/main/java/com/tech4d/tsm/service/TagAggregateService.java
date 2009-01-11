@@ -159,7 +159,12 @@ public class TagAggregateService {
      * @return
      */
     private Integer getFontSize(long value, long min, long max) {
-        Double fontSize = minFont + ((maxFont - minFont)/ (new Double(max)-1)) * (new Double(value - min));
+        Double fontSize;
+        if (max == min) {
+            fontSize = new Double(maxFont);
+        } else {
+            fontSize = minFont + ((maxFont - minFont)/ (new Double(max)-min)) * (new Double(value - min));
+        }
         return new Long(Math.round(fontSize)).intValue();
     }
     
