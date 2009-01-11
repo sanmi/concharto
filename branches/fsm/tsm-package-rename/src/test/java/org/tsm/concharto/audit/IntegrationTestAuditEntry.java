@@ -24,7 +24,7 @@
  * 
  * ***** END LICENSE BLOCK *****
  ******************************************************************************/
-package com.tech4d.tsm.audit;
+package org.tsm.concharto.audit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
