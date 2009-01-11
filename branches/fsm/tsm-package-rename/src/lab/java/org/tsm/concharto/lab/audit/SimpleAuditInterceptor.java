@@ -24,7 +24,7 @@
  * 
  * ***** END LICENSE BLOCK *****
  ******************************************************************************/
-package com.tech4d.tsm.lab.audit;
+package org.tsm.concharto.lab.audit;
 
 import java.io.Serializable;
 import java.util.Date;
