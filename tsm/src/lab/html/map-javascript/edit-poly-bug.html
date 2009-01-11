@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Bug Demo</title>
+
+<script 
+
+src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAA1DZDDhaKApTfIDHGfvo13hTgXgmm3mKxGp2Npy6CXR8K80Y-SxQvxcanjIm8lBSBewMTGMbOF8c4sw"type="text/javascript">
+</script>
+</head>
+<body onload="set()" onunload="GUnload()">
+
+<div id="map" style="position: absolute; top:60px;left:20px;width:512px; height:440px; "></div>
+
+
+<script type="text/javascript"><!--
+//<![CDATA[
+
+
+_mSvgEnabled = true;
+_mSvgForced  = true;
+
+
+
+
+////map
+      
+
+var map = new GMap2(document.getElementById("map"));
+var start = new GLatLng(37.443109, -122.146189);
+map.setCenter(start, 16);
+map.addControl(new GMapTypeControl(1));
+map.addControl(new GLargeMapControl());
+map.addControl(new GScaleControl());
+
+
+/////////////////////// 
+
+var marker=[];
+var point=[];
+var poly=[];
+var line=[];
+
+alert (G_API_VERSION);
+
+point.push(new GLatLng(37.441218, -122.146404));
+point.push(new GLatLng(37.441882, -122.147391));
+point.push(new GLatLng(37.442478, -122.146811));
+point.push(new GLatLng(37.441524, -122.145309));
+point.push(new GLatLng(37.441218, -122.146404));
+function draw()
+{
+  var p1 = new GPolygon(point,'#FF0000', 3, .8, '#FF0000', .25);
+  p1.enableEditing();
+  map.addOverlay(p1);
+};
+
+////zoom to fit
+
+function fit(){
+var bounds = new GLatLngBounds();
+for(var i=0;i<marker.length;i++){bounds.extend(marker[i].getPoint())};
+var lngCenter = (bounds.getNorthEast().lng() + bounds.getSouthWest().lng()) / 2;
+var latCenter = (bounds.getNorthEast().lat() + bounds.getSouthWest().lat()) / 2;
+var center = new GLatLng(latCenter,lngCenter);
+map.setCenter(center, map.getBoundsZoomLevel(bounds));
+draw();
+};
+
+
+function set(){
+draw();//fit();
+};
+
+set();
+
+//]]>
+--></script>
+
+
+</body>
+</html>
