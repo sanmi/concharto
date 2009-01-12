@@ -26,7 +26,7 @@
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ page import="com.tech4d.tsm.web.wiki.WikiConstants" %>
+<%@ page import="org.tsm.concharto.web.wiki.WikiConstants" %>
 <%
 	Boolean myPageExists = (Boolean)request.getSession().getAttribute(WikiConstants.SESSION_MYPAGE_EXISTS); 
 	if ((null != myPageExists) && (myPageExists == false)) {

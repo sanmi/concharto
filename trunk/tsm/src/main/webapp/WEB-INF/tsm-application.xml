@@ -49,10 +49,10 @@
       </list>
     </property>
 	</bean>
-	<bean id="emailService" class="com.tech4d.tsm.service.EmailService">
+	<bean id="emailService" class="org.tsm.concharto.service.EmailService">
 		<property name="smtpHost" value="${local.email.smtp.host}"/>
 	</bean>
-	<bean id="notificationService" class="com.tech4d.tsm.service.NotificationService">
+	<bean id="notificationService" class="org.tsm.concharto.service.NotificationService">
 		<property name="messageSource" ref="messageSource"/>
 		<property name="notificationDao" ref="notificationDao"/>
 	</bean>

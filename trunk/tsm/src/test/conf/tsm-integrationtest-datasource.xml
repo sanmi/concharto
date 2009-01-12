@@ -61,7 +61,7 @@
 	</bean>
 	
 
-  <bean id="simpleAuditInterceptor" class="com.tech4d.tsm.lab.audit.SimpleAuditInterceptor">
+  <bean id="simpleAuditInterceptor" class="org.tsm.concharto.lab.audit.SimpleAuditInterceptor">
   </bean>
 
 	<!-- Begin Transaction config -->
