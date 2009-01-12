@@ -9,9 +9,9 @@
 <%@attribute name="stripped" required="false" type="java.lang.String"%>
 <%@attribute name="nohead" required="false" type="java.lang.String"%>
 <%@attribute name="nohomemenu" required="false" type="java.lang.String"%>
-<%@tag import="com.tech4d.tsm.auth.AuthConstants" %>
-<%@tag import="com.tech4d.tsm.web.filter.NotificationFilter" %>
-<%@tag import="com.tech4d.tsm.web.filter.LoginFilter" %>
+<%@tag import="org.tsm.concharto.auth.AuthConstants" %>
+<%@tag import="org.tsm.concharto.web.filter.NotificationFilter" %>
+<%@tag import="org.tsm.concharto.web.filter.LoginFilter" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+path;

@@ -31,8 +31,8 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 import org.junit.Test;
+import org.tsm.concharto.util.PasswordUtil;
 
-import com.tech4d.tsm.util.PasswordUtil;
 
 public class Temp {
 

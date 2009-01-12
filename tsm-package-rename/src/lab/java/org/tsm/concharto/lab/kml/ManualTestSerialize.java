@@ -41,12 +41,12 @@ import org.hibernate.SessionFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
+import org.tsm.concharto.OpenSessionInViewIntegrationTest;
+import org.tsm.concharto.dao.EventTesterDao;
+import org.tsm.concharto.model.Event;
+import org.tsm.concharto.util.ContextUtil;
+import org.tsm.concharto.util.KmlFormat;
 
-import com.tech4d.tsm.OpenSessionInViewIntegrationTest;
-import com.tech4d.tsm.dao.EventTesterDao;
-import com.tech4d.tsm.model.Event;
-import com.tech4d.tsm.util.ContextUtil;
-import com.tech4d.tsm.util.KmlFormat;
 
 public class ManualTestSerialize extends OpenSessionInViewIntegrationTest {
 	private static EventTesterDao eventTesterDao;

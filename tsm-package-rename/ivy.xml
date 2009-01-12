@@ -28,7 +28,7 @@
    Library dependencies
 -->
 <ivy-module version="1.0">
-    <info organisation="tech4d" module="tsm"/>
+    <info organisation="concharto" module="tsm"/>
     <configurations>
         <conf name="tools" visibility="private"/>
         <conf name="deploy" visibility="private"/>

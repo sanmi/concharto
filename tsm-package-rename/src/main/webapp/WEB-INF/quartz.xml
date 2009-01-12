@@ -83,7 +83,7 @@
     <!-- threaded email processing job -->
     <bean id="kmlExportJob" class="org.springframework.scheduling.quartz.JobDetailBean">
         <property name="jobClass">
-            <value>com.tech4d.tsm.service.KmlExportService</value>
+            <value>org.tsm.concharto.service.KmlExportService</value>
         </property>
         <property name="jobDataAsMap">
             <map>
