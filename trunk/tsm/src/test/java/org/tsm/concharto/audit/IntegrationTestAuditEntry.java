@@ -1,28 +1,17 @@
 /*******************************************************************************
- * ***** BEGIN LICENSE BLOCK *****
- * Version: MPL 1.1
+ * Copyright 2009 Time Space Map, LLC
  * 
- * The contents of this file are subject to the Mozilla Public License Version 
- * 1.1 (the "License"); you may not use this file except in compliance with 
- * the License. You may obtain a copy of the License at 
- * http://www.mozilla.org/MPL/
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the
- * License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
  * 
- * The Original Code is Concharto.
- * 
- * The Initial Developer of the Original Code is
- * Time Space Map, LLC
- * Portions created by the Initial Developer are Copyright (C) 2007 - 2009
- * the Initial Developer. All Rights Reserved.
- * 
- * Contributor(s):
- * Time Space Map, LLC
- * 
- * ***** END LICENSE BLOCK *****
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.tsm.concharto.audit;
 
@@ -49,7 +38,6 @@ import org.tsm.concharto.dao.AuditUserChange;
 import org.tsm.concharto.dao.EventDao;
 import org.tsm.concharto.dao.EventTesterDao;
 import org.tsm.concharto.dao.EventUtil;
-import org.tsm.concharto.dao.FlagDao;
 import org.tsm.concharto.dao.StyleUtil;
 import org.tsm.concharto.model.Event;
 import org.tsm.concharto.model.Flag;
@@ -74,7 +62,6 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
     private static EventTesterDao eventTesterDao;
     private static RevertEventService revertEventService;
     private static EventUtil eventUtil;
-	private static FlagDao flagDao;
    
 
     private Date begin;
@@ -94,7 +81,6 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
     public static void setUpClass() {
         ApplicationContext appCtx = ContextUtil.getCtx();
         eventDao = (EventDao) appCtx.getBean("eventDao");
-        flagDao = (FlagDao) appCtx.getBean("flagDao");
         eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
         auditEntryDao = (AuditEntryDao) appCtx.getBean("auditEntryDao");
         revertEventService =  (RevertEventService) appCtx.getBean("revertEventService");
