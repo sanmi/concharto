@@ -32,8 +32,8 @@ import java.util.Date;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.Transaction;
 import org.hibernate.type.Type;
+import org.tsm.concharto.model.Auditable;
 
-import com.tech4d.tsm.model.Auditable;
 
 
 public class SimpleAuditInterceptor extends EmptyInterceptor {

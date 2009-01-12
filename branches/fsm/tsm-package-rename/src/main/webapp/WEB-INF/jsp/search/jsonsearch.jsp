@@ -25,5 +25,5 @@
  ***** END LICENSE BLOCK *****
 --%>
 <%@ page language="java" contentType="text/plain" %>
-<%@ page import="com.tech4d.tsm.util.JSONFormat, com.tech4d.tsm.model.Event, com.tech4d.tsm.web.eventsearch.EventSearchForm, java.util.*" %>
+<%@ page import="org.tsm.concharto.util.JSONFormat, org.tsm.concharto.model.Event,org.tsm.concharto.web.eventsearch.EventSearchForm, java.util.*" %>
 <%=  ((EventSearchForm)(request.getSession().getAttribute("eventSearchForm"))).getSearchResults() %>

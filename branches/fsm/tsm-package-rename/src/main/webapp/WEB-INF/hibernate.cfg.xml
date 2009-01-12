@@ -36,28 +36,28 @@
         <!-- SQL dialect -->
         <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
 
-		<mapping package="com.tech4d.tsm.model"/>
-        <mapping class="com.tech4d.tsm.model.Event"/>
-        <mapping class="com.tech4d.tsm.model.geometry.TsGeometry"/>
-        <mapping class="com.tech4d.tsm.model.time.TimePrimitive"/>
-        <mapping class="com.tech4d.tsm.model.time.TimeStamp"/>
-        <mapping class="com.tech4d.tsm.model.time.TimeRange"/>
-        <mapping class="com.tech4d.tsm.model.kml.StyleSelector"/>
-        <mapping class="com.tech4d.tsm.model.kml.Style"/>
-        <mapping class="com.tech4d.tsm.model.kml.StyleMap"/>
-        <mapping class="com.tech4d.tsm.model.user.User"/>
-        <mapping class="com.tech4d.tsm.model.user.Role"/>
-        <mapping class="com.tech4d.tsm.model.user.UserNote"/>
-        <mapping class="com.tech4d.tsm.model.user.Notification"/>
-        <mapping class="com.tech4d.tsm.model.UserTag"/>
-        <mapping class="com.tech4d.tsm.model.EventSummary"/>
-        <mapping class="com.tech4d.tsm.model.Flag"/>
-        <mapping class="com.tech4d.tsm.model.EventSearchText"/>
-        <mapping class="com.tech4d.tsm.model.audit.AuditEntry"/>
-        <mapping class="com.tech4d.tsm.model.audit.AuditFieldChange"/>
-        <mapping class="com.tech4d.tsm.model.wiki.WikiText"/>
-        <mapping class="com.tech4d.tsm.model.PositionalAccuracy"/>
-        <mapping class="com.tech4d.tsm.model.Spotlight"/>
+		<mapping package="org.tsm.concharto.model"/>
+        <mapping class="org.tsm.concharto.model.Event"/>
+        <mapping class="org.tsm.concharto.model.geometry.TsGeometry"/>
+        <mapping class="org.tsm.concharto.model.time.TimePrimitive"/>
+        <mapping class="org.tsm.concharto.model.time.TimeStamp"/>
+        <mapping class="org.tsm.concharto.model.time.TimeRange"/>
+        <mapping class="org.tsm.concharto.model.kml.StyleSelector"/>
+        <mapping class="org.tsm.concharto.model.kml.Style"/>
+        <mapping class="org.tsm.concharto.model.kml.StyleMap"/>
+        <mapping class="org.tsm.concharto.model.user.User"/>
+        <mapping class="org.tsm.concharto.model.user.Role"/>
+        <mapping class="org.tsm.concharto.model.user.UserNote"/>
+        <mapping class="org.tsm.concharto.model.user.Notification"/>
+        <mapping class="org.tsm.concharto.model.UserTag"/>
+        <mapping class="org.tsm.concharto.model.EventSummary"/>
+        <mapping class="org.tsm.concharto.model.Flag"/>
+        <mapping class="org.tsm.concharto.model.EventSearchText"/>
+        <mapping class="org.tsm.concharto.model.audit.AuditEntry"/>
+        <mapping class="org.tsm.concharto.model.audit.AuditFieldChange"/>
+        <mapping class="org.tsm.concharto.model.wiki.WikiText"/>
+        <mapping class="org.tsm.concharto.model.PositionalAccuracy"/>
+        <mapping class="org.tsm.concharto.model.Spotlight"/>
     
     </session-factory>
 

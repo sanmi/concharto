@@ -37,9 +37,9 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.tsm.concharto.model.user.User;
+import org.tsm.concharto.util.PasswordUtil;
 
-import com.tech4d.tsm.model.user.User;
-import com.tech4d.tsm.util.PasswordUtil;
 
 public class LabJavaMail {
 
