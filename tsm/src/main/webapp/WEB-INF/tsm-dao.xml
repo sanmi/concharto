@@ -34,57 +34,57 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 	
-	<bean id="eventDao" class="com.tech4d.tsm.dao.EventDaoHib">
+	<bean id="eventDao" class="org.tsm.concharto.dao.EventDaoHib">
 		<property name="sessionFactory">
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
-	<bean id="eventSearchService" class="com.tech4d.tsm.service.EventSearchServiceHib">
+	<bean id="eventSearchService" class="org.tsm.concharto.service.EventSearchServiceHib">
 		<property name="sessionFactory">
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
-	<bean id="styleDao" class="com.tech4d.tsm.dao.StyleDaoHib">
+	<bean id="styleDao" class="org.tsm.concharto.dao.StyleDaoHib">
 		<property name="sessionFactory">
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
-	<bean id="auditEntryDao" class="com.tech4d.tsm.dao.AuditEntryDaoHib">
+	<bean id="auditEntryDao" class="org.tsm.concharto.dao.AuditEntryDaoHib">
 		<property name="sessionFactory">
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
-	<bean id="auditLogWriter" class="com.tech4d.tsm.dao.AuditLogWriterHib">
+	<bean id="auditLogWriter" class="org.tsm.concharto.dao.AuditLogWriterHib">
 		<property name="sessionFactory">
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
-	<bean id="userDao" class="com.tech4d.tsm.dao.UserDaoHib">
+	<bean id="userDao" class="org.tsm.concharto.dao.UserDaoHib">
 		<property name="sessionFactory">
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
-	<bean id="flagDao" class="com.tech4d.tsm.dao.FlagDaoHib">
+	<bean id="flagDao" class="org.tsm.concharto.dao.FlagDaoHib">
 		<property name="sessionFactory">
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
-	<bean id="spotlightDao" class="com.tech4d.tsm.dao.SpotlightDaoHib">
+	<bean id="spotlightDao" class="org.tsm.concharto.dao.SpotlightDaoHib">
 		<property name="sessionFactory">
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
-	<bean id="wikiTextDao" class="com.tech4d.tsm.dao.WikiTextDaoHib">
+	<bean id="wikiTextDao" class="org.tsm.concharto.dao.WikiTextDaoHib">
 		<property name="sessionFactory">
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
-	<bean id="notificationDao" class="com.tech4d.tsm.dao.NotificationDaoHib">
+	<bean id="notificationDao" class="org.tsm.concharto.dao.NotificationDaoHib">
 		<property name="sessionFactory">
 			<ref bean="mySessionFactory"/>
 		</property>
 	</bean>
-  <bean id="userTagDao" class="com.tech4d.tsm.dao.UserTagDaoHib">
+  <bean id="userTagDao" class="org.tsm.concharto.dao.UserTagDaoHib">
     <property name="sessionFactory">
       <ref bean="mySessionFactory"/>
     </property>
@@ -103,47 +103,47 @@
 	</bean>
 	
 
-	<bean id="auditInterceptor" class="com.tech4d.tsm.audit.AuditInterceptor">
+	<bean id="auditInterceptor" class="org.tsm.concharto.audit.AuditInterceptor">
   	<property name="sessionFactory" ref="mySessionFactory"/>
   	<property name="auditLogWriter" ref="auditLogWriter"/>
   	<property name="auditFieldChangeFormatters">
   		<set>
-  			<value>com.tech4d.tsm.audit.EventFieldChangeFormatter</value>
-  			<value>com.tech4d.tsm.audit.WikiTextChangeFormatter</value>
+  			<value>org.tsm.concharto.audit.EventFieldChangeFormatter</value>
+  			<value>org.tsm.concharto.audit.WikiTextChangeFormatter</value>
   		</set>
   	</property>
   </bean>
 	<!-- End Transaction config -->
 
 	<!--  begin services -->
-  <bean id="revertEventService" class="com.tech4d.tsm.service.RevertEventServiceHib">
+  <bean id="revertEventService" class="org.tsm.concharto.service.RevertEventServiceHib">
 		<property name="sessionFactory" ref="mySessionFactory"/>
   	<property name="eventDao" ref="eventDao"/>
   	<property name="auditEntryDao" ref="auditEntryDao"/>
   	<property name="auditFieldChangeFormatters">
   		<set>
-  			<value>com.tech4d.tsm.audit.EventFieldChangeFormatter</value>
-  			<value>com.tech4d.tsm.audit.WikiTextChangeFormatter</value>
+  			<value>org.tsm.concharto.audit.EventFieldChangeFormatter</value>
+  			<value>org.tsm.concharto.audit.WikiTextChangeFormatter</value>
   		</set>
   	</property>
   	 
   </bean>
   
-  <bean id="spotlightService" class="com.tech4d.tsm.service.SpotlightService">
+  <bean id="spotlightService" class="org.tsm.concharto.service.SpotlightService">
   	<property name="spotlightDao" ref="spotlightDao"/>
   </bean>
-  <bean id="tagAggregateService" class="com.tech4d.tsm.service.TagAggregateService">
+  <bean id="tagAggregateService" class="org.tsm.concharto.service.TagAggregateService">
   	<property name="defaultDaysBack" value="60"/>
   	<property name="maxFont" value="25"/>
   	<property name="minFont" value="10"/>
     <property name="userTagDao" ref="userTagDao"/>
   </bean>
 
-  <bean id="sessionHelper" class="com.tech4d.tsm.web.util.SessionHelper">
+  <bean id="sessionHelper" class="org.tsm.concharto.web.util.SessionHelper">
   	<property name="wikiTextDao" ref="wikiTextDao"/>
   </bean>
 <!-- TODO
-	<bean id="kmlExportService" class="com.tech4d.tsm.service.KmlExportService">
+	<bean id="kmlExportService" class="org.tsm.concharto.service.KmlExportService">
 		<property name="eventDao" ref="eventDao"/>
 		<property name="eventSearchService" ref="eventSearchService"/>
 		<property name="kmlFileName" value="events1.kml"/>

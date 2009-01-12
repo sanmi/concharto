@@ -30,7 +30,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page import="com.tech4d.tsm.audit.EventFieldChangeFormatter, com.tech4d.tsm.model.audit.AuditEntry" %>
+<%@ page import="org.tsm.concharto.audit.EventFieldChangeFormatter,org.tsm.concharto.model.audit.AuditEntry" %>
 <%@ taglib prefix="display" uri="http://displaytag.sf.net" %>
 <%
 int geometryField = EventFieldChangeFormatter.TSGEOMETRY;

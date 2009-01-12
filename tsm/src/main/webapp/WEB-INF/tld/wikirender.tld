@@ -14,7 +14,7 @@
 	<tag>
 		<description>Render wiki text as html</description>
 		<name>render</name>
-		<tag-class>com.tech4d.tsm.web.tags.WikiRender</tag-class>
+		<tag-class>org.tsm.concharto.web.tags.WikiRender</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<name>wikiText</name>
