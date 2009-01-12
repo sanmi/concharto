@@ -128,7 +128,7 @@ limitations under the License.
           <span id="tablatest" class="mainTab ${selectedTab == 'latest' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('latest'); return false;">Latest</a></span>
           <span id="tabtags" class="mainTab ${selectedTab == 'tags' ? 'mainTabSelected' : ''}"><a href="#" onClick="selectTab('tags'); return false;">Tags</a></span>
           <%-- note: the extra &nbsp; is for safari display.  If you take it away, the background color on the tab top and bottom margins disappear --%>
-          <span id="tabindex" class="mainTab ${selectedTab == 'index' ? 'mainTabSelected' : ''}"><a href="#" onClick="goToIndex(); return false;">Index</a>&nbsp;</span>
+          <span id="tabindex" class="mainTab ${selectedTab == 'index' ? 'mainTabSelected' : ''}"><a href="index.htm" onClick="goToIndex(); return false;">Index</a>&nbsp;</span>
         </div>
         <div id="mainpane">
           <jsp:include page="include/spotlight.jsp"/>
