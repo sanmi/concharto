@@ -38,10 +38,10 @@
         zoomLevel integer,
         styleSelector_id bigint,
         discussion_id bigint,
-        eventSearchText_id bigint,
-        when_id bigint,
-        positionalAccuracy_id bigint,
         tsGeometry_id bigint,
+        positionalAccuracy_id bigint,
+        when_id bigint,
+        eventSearchText_id bigint,
         primary key (id)
     );
 
