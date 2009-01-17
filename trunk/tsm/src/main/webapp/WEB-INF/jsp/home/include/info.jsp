@@ -31,17 +31,19 @@ limitations under the License.
   </td>
 </tr></table>
 
-<h2>Concharto is free</h2>
+<h2>Free</h2>
 <p>
   All content may be be used freely by any organization or person for any non-commercial purpose.
   <a class="links linkleftright" href="http://creativecommons.org/licenses/by-sa/3.0/us" >
     <img alt="creative commons" src="http://i.creativecommons.org/l/by-sa/3.0/us/80x15.png"/>
   </a>
-  
+<h2>Open Source</h2>
+<p>The source code for Concharto is free to anyone under the <em>Apache License, 2.0</em>.  If you would like 
+to contribute to the project, visit our <a href="http://code.google.com/p/concharto">project site</a>.
 </p>
-<h2>Concharto is a Geographic Wiki</h2>
-<p>
-Unlike many mapping sites on the internet today, Concharto is not about places - it is about events. 
+</p>
+<h2>A Geographic Wiki</h2>
+<p> Concharto is a cross between Wikipedia and Google Maps.  Unlike many mapping sites on the internet today, Concharto is not about places - it is about events. 
 Unlike Wikipedia, it is about small discrete bits of information, rather than comprehensive articles. 
 Like Wikipedia, there is a complete history of changes to events. Anyone can add or edit information. </p>
 

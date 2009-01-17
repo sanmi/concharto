@@ -57,7 +57,7 @@
 		<link>
 			<name>build classes</name>
 			<type>2</type>
-			<location>C:/home/frank/apps/eclipse/C::/dev/tsm/tmp-classes</location>
+			<location>C:/dev/comcharto/tmp-classes</location>
 		</link>
 	</linkedResources>
 </projectDescription>
