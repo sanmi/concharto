@@ -66,7 +66,9 @@ limitations under the License.
 		 
 			<table class="mainarea"><tbody><tr>			
 				<td id="sidebar">
-				  <div id="sidebarSize"><a href="#" onclick="hideSidebar(); return false;">hide sidebar</a></div>
+				  <div id="sidebarSize">
+            <a href="#" onclick="hideSidebar(); return false;">hide sidebar</a>&nbsp;
+          </div>
           <div id="results" >
 	          <div class="resultcount">
 	            <c:choose>
@@ -130,17 +132,7 @@ limitations under the License.
 					          	</c:if> 
 					          </span> 
 					          <br/>
-					           <%-- We want to keep any line breaks but escape all other html --%>
-					          <c:set var="description" value="${fn:substring(event.description,0,300)}"/>
-					          <c:choose>
-						          <c:when test="${fn:length(event.description) > 300}">
-							          <wiki:render wikiText="${description} '''. . .'''"/>
-							          <a class="more" href="#" onclick="_overlayManager.openMarker(<c:out value='${event_rowNum-1}'/>); return false;">... more</a>
-						          </c:when>
-						          <c:otherwise>
-							          <wiki:render wikiText="${description}"/>
-						          </c:otherwise> 
-					          </c:choose>
+                    <wiki:render wikiText="${event.description}"/>
 					          <c:if test="${fn:length(event.userTagsAsString) > 0}">
 						          <div class="usertags">
 						          	<b>Tags:</b>
@@ -165,8 +157,7 @@ limitations under the License.
 					          <c:if test="${fn:length(event.source) > 0}">
 						          <div class="source">
 						          	<b>Source:</b>
-							          <c:set var="source" value="${fn:substring(event.source,0,300)}"/>
-							          <wiki:render wikiText="${source}"/>
+							          <wiki:render wikiText="${event.source}"/>
 						          </div>
 					          </c:if>
 										<div class="linkbar">
