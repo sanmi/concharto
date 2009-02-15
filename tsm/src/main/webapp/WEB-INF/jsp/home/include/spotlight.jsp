@@ -30,7 +30,7 @@ limitations under the License.
       <p>${spotlightLabel}</p>
       <div class="clearfloat"></div>
       <small class="spotlighthelp">Click on red icons, lines or areas</small>
-      <small>View a <a href='<c:out value="${spotlightLink}"/>'>larger map</a></small>
+      <small>View a <a href='${spotlightLink}'>larger map</a></small>
       <div class="clearfloat"></div>
       <div id="borderbox">
         <iframe id="embeddedmap" 
