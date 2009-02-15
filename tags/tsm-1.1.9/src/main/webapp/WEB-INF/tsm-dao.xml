@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2009 Time Space Map, LLC
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+	
+	<bean id="eventDao" class="org.tsm.concharto.dao.EventDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="eventSearchService" class="org.tsm.concharto.service.EventSearchServiceHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="styleDao" class="org.tsm.concharto.dao.StyleDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="auditEntryDao" class="org.tsm.concharto.dao.AuditEntryDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="auditLogWriter" class="org.tsm.concharto.dao.AuditLogWriterHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="userDao" class="org.tsm.concharto.dao.UserDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="flagDao" class="org.tsm.concharto.dao.FlagDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="spotlightDao" class="org.tsm.concharto.dao.SpotlightDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="wikiTextDao" class="org.tsm.concharto.dao.WikiTextDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+	<bean id="notificationDao" class="org.tsm.concharto.dao.NotificationDaoHib">
+		<property name="sessionFactory">
+			<ref bean="mySessionFactory"/>
+		</property>
+	</bean>
+  <bean id="userTagDao" class="org.tsm.concharto.dao.UserTagDaoHib">
+    <property name="sessionFactory">
+      <ref bean="mySessionFactory"/>
+    </property>
+  </bean>
+	<!-- End Daos -->  
+	
+	<!-- enable the configuration of transactional behavior based on annotations 
+			TODO not sure if this is working properly with the openSessionInViewInteceptor -->
+	<tx:annotation-driven transaction-manager="txManager"/>
+	
+		<!-- for handling hibernate lazy loading -->
+	<bean name="openSessionInViewInterceptor"
+		class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+		<property name="entityInterceptor" ref="auditInterceptor"/>
+	</bean>
+	
+
+	<bean id="auditInterceptor" class="org.tsm.concharto.audit.AuditInterceptor">
+  	<property name="sessionFactory" ref="mySessionFactory"/>
+  	<property name="auditLogWriter" ref="auditLogWriter"/>
+  	<property name="auditFieldChangeFormatters">
+  		<set>
+  			<value>org.tsm.concharto.audit.EventFieldChangeFormatter</value>
+  			<value>org.tsm.concharto.audit.WikiTextChangeFormatter</value>
+  		</set>
+  	</property>
+  </bean>
+	<!-- End Transaction config -->
+
+	<!--  begin services -->
+  <bean id="revertEventService" class="org.tsm.concharto.service.RevertEventServiceHib">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+  	<property name="eventDao" ref="eventDao"/>
+  	<property name="auditEntryDao" ref="auditEntryDao"/>
+  	<property name="auditFieldChangeFormatters">
+  		<set>
+  			<value>org.tsm.concharto.audit.EventFieldChangeFormatter</value>
+  			<value>org.tsm.concharto.audit.WikiTextChangeFormatter</value>
+  		</set>
+  	</property>
+  	 
+  </bean>
+  
+  <bean id="spotlightService" class="org.tsm.concharto.service.SpotlightService">
+  	<property name="spotlightDao" ref="spotlightDao"/>
+  </bean>
+  <bean id="tagAggregateService" class="org.tsm.concharto.service.TagAggregateService">
+  	<property name="defaultDaysBack" value="60"/>
+  	<property name="maxFont" value="25"/>
+  	<property name="minFont" value="10"/>
+    <property name="userTagDao" ref="userTagDao"/>
+  </bean>
+
+  <bean id="sessionHelper" class="org.tsm.concharto.web.util.SessionHelper">
+  	<property name="wikiTextDao" ref="wikiTextDao"/>
+  </bean>
+<!-- TODO
+	<bean id="kmlExportService" class="org.tsm.concharto.service.KmlExportService">
+		<property name="eventDao" ref="eventDao"/>
+		<property name="eventSearchService" ref="eventSearchService"/>
+		<property name="kmlFileName" value="events1.kml"/>
+	</bean>  
+-->	
+	<!-- end services -->
+	
+	<!-- Scheduled Tasks -->
+<!-- TODO
+	<bean id="kmlExportTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+     wait 10 seconds before starting repeated execution 
+    <property name="delay" value="1000" />
+     run every 24 hours 
+    <property name="period" value="86400000" />
+    <property name="timerTask" ref="kmlExportService" />
+	</bean>
+	
+	<bean id="timerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
+    <property name="scheduledTimerTasks">
+        <list>
+            <ref bean="kmlExportTask" />
+        </list>
+    </property>
+	</bean>
+-->	
+
+	<!-- end Scheduled Tasks -->
+	
+</beans>

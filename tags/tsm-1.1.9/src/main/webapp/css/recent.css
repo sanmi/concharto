@@ -1,0 +1,13 @@
+@charset "utf-8";
+/* CSS Document */
+
+.recent table {
+	width: 100%;
+	padding-right: 40px;
+}
+.recent hr {
+	color: #BBC7D5;
+	background-color: #BBC7D5;
+	height: 1px;	
+	border: none 0; 
+}
