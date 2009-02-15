@@ -162,38 +162,9 @@ public class HomeController extends SimpleFormController {
             spotlight.setLink("search/eventsearch.htm?_what=");
             spotlight.setLabel("Items [[on the map so far]]");
         }
-        model.put(MODEL_SPOTLIGHT_LABEL, formatLabel(spotlight));
-        model.put(MODEL_SPOTLIGHT_LINK, spotlight.getLink());
-        model.put(MODEL_SPOTLIGHT_EMBED_LINK, formatEmbedLabel(spotlight));
+        model.put(MODEL_SPOTLIGHT_LABEL, SpotlightFormat.formatLabel(spotlight));
+        model.put(MODEL_SPOTLIGHT_LINK, SpotlightFormat.URLEncode(spotlight.getLink()));
+        model.put(MODEL_SPOTLIGHT_EMBED_LINK, SpotlightFormat.formatEmbedLabel(spotlight));
     }
 
-    private String formatLabel(Spotlight spotlight) {
-        String link = URLEncode(spotlight.getLink());
-        String label = null;
-        label = StringUtils.replace(spotlight.getLabel(), "[[", "<a href='"
-                + link + "'>");
-        label = StringUtils.replace(label, "]]", "</a>");
-        return label;
-    }
-
-    private String formatEmbedLabel(Spotlight spotlight) {
-        String label = StringUtils.replace(spotlight.getLink(),
-                "search/eventsearch.htm", "search/embeddedsearch.htm");
-        return URLEncode(label);
-    }
-
-    /**
-     * A simple URLencoder that doesn't do the bad stuff that the URLEncoder
-     * class does (e.g. replace : and / chars) NOTE: it doesn't do everything
-     * according to the spec. because we don't need it at the moment.
-     * 
-     * @param str
-     * @return encoded string
-     */
-    private String URLEncode(String str) {
-        str = StringUtils.replace(str, "&", "&amp;");
-        str = StringUtils.replace(str, "\"", "%22");
-        str = StringUtils.replace(str, "\'", "%27");
-        return str;
-    }
 }
