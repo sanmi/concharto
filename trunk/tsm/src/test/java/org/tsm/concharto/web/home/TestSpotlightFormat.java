@@ -44,13 +44,19 @@ public class TestSpotlightFormat {
         assertNotContains("\"Mongolian", spotlight);
         spotlight.setLink("http://lala.com/search/eventsearch.htm?_what=5+year's+war&_maptype=0");
         assertNotContains("year's", spotlight);
+        spotlight.setLink("_when=January%2C+1639+-+April%2C+1639&_what=First+Bishops'+War");
+        assertNotContains("&amp;amp;",spotlight);
+        spotlight.setLink("http://www.concharto.org/search/eventsearch.htm?_what=\"new+york+draft+riots\"&_maptype=0");
+        assertNotContains("%2522&amp%3bamp",spotlight);
     }
     
     private void assertNotContains(String substring, Spotlight spotlight) {
         assertNotContains(substring, SpotlightFormat.formatEmbedLabel(spotlight));
         assertNotContains(substring, SpotlightFormat.formatLabel(spotlight));
+        
     }
     private void assertNotContains(String substring, String string) {
         assertTrue(string + "CONTAINS" + substring, !StringUtils.contains(string, substring));
+        System.out.println(string);
     }
 }

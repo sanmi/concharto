@@ -55,7 +55,7 @@ public class SpotlightFormat {
      * @return encoded string
      */
     public static String URLEncode(String str) {
-        str = StringUtils.replace(str, "&", "&amp;");
+        //str = StringUtils.replace(str, "&", "&amp;");
         str = StringUtils.replace(str, "\"", "%22");
         str = StringUtils.replace(str, "\'", "%27");
         return str;
