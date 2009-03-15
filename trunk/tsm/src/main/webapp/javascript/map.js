@@ -273,8 +273,8 @@ function EventOverlayManager() {
       //for points, we only want to highlight the sidebar item. the
       //infowindow is handled elsewhere
       _overlayManager.unhighlightOverlay();
+      map.openInfoWindowHtml(point, overlayItem.html);
       if (overlayItem.type != 'point') {
-        map.openInfoWindowHtml(point, overlayItem.html);
         //NOTE: order is important here.  The highlight must come AFTER the openInfoWindowHtml
         //otherwise, events will fire and the overlay will be hidden after we show it
         _overlayManager.highlightOverlay(overlayItem);
