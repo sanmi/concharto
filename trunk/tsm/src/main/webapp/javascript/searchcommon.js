@@ -171,14 +171,14 @@
   /* BEGIN WHILE FUNCTIONS  ============================= */
 	function zoomTo(id) {
 		var index;
-		for (var i=0; i<_overlays.length; i++) {
-			if (_overlays[i].id == id) {
+		for (var i=0; i<_overlayManager.getOverlays().length; i++) {
+			if (_overlayManager.getOverlays()[i].id == id) {
 				index = i;
 			}
 		}
-		overlay = _overlays[index].overlay;
+		overlay = _overlayManager.getOverlays()[index].overlay;
 		var point;
-		if (_overlays[index].type == "point")	{
+		if (_overlayManager.getOverlays()[index].type == "point")	{
 			point = overlay.getPoint();
 		} else {
 			point = overlay.getBounds().getCenter();
