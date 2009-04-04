@@ -33,7 +33,7 @@ limitations under the License.
 
 <h2>Free</h2>
 <p>
-  All content may be be used freely by any organization or person for any non-commercial purpose.
+  All content may be be used freely by any organization or person under the terms of the creative commons license:
   <a class="links linkleftright" href="http://creativecommons.org/licenses/by-sa/3.0/us" >
     <img alt="creative commons" src="http://i.creativecommons.org/l/by-sa/3.0/us/80x15.png"/>
   </a>
