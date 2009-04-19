@@ -29,7 +29,7 @@ limitations under the License.
  %>
 <tsm:page title="Home">
 
-  <jsp:attribute name="stylesheet">header.css,main.css</jsp:attribute>
+  <jsp:attribute name="stylesheet">header.css,search.css,main.css</jsp:attribute>
   <jsp:attribute name="bodyattr">onload="init()" id="home"</jsp:attribute>
   <jsp:attribute name="nohead">true</jsp:attribute>
   <jsp:attribute name="nohomemenu">true</jsp:attribute>
@@ -76,9 +76,6 @@ limitations under the License.
   </jsp:attribute>  
   
   <jsp:body>
-    <div id="heading">
-      <img class="centerdiv" alt="title-home" src="images/${hostprefix}title-home.png" /> 
-    </div>
     <form:form name="event" id="eventSearchForm" action="search/eventsearch.htm" commandName="eventSearch" onsubmit="search(); return false">
       <form:hidden path="boundingBoxSW" htmlEscape="true"/>
       <form:hidden path="boundingBoxNE" htmlEscape="true"/>
@@ -97,17 +94,13 @@ limitations under the License.
       <c:if test="${isFirstView != null}">
         <input type="hidden" id="isFirstView" value="true"/>          
       </c:if>
-      <div id="searchboxcontent" class="centerdiv">               
-        <div id="tagline">
-          An encyclopedic atlas of history and happenings that anyone can edit.<%-- TODO finish this <a href="#">anyone can edit.</a>--%></div>
-        <div id="totals"> <a href='${basePath}search/eventsearch.htm?_what='><b>${totalEvents}</b> events and counting...</a> </div>
-        <jsp:include page="../search/include/searchbar.jsp">
-          <jsp:param name="showSearchOptions" value="false"/>
-          <jsp:param name="showAdminBar" value="false"/>
-        </jsp:include>
-      </div>
+        
+      <jsp:include page="../search/include/searchbar.jsp">
+        <jsp:param name="showSearchOptions" value="false"/>
+        <jsp:param name="showAdminBar" value="false"/>
+      </jsp:include>
     </form:form>
-    <div id="main-pad"></div>
+    
     <div id="main">
       <div id="left">          
         <div class="mainTabBar">

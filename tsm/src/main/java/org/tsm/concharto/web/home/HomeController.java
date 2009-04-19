@@ -47,7 +47,7 @@ public class HomeController extends SimpleFormController {
 
     private static final String INDEX_URI = "index.htm";
     private static final String PARAM_IS_INDEX = "isIndex";
-    private static final int MAX_RECENT_EVENTS = 6;
+    private static final int MAX_RECENT_EVENTS = 10;
     public static final String MODEL_TOTAL_EVENTS = "totalEvents";
     public static final String MODEL_RECENT_EVENTS = "recentEvents";
     private static final Object MODEL_SPOTLIGHT_LABEL = "spotlightLabel";
