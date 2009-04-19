@@ -1,7 +1,7 @@
 @charset "utf-8";
 /* CSS Document */
 	#home {
-	background: #FFFFFF url(../images/home-backg.png) repeat-x;
+  background: #FFFFFF url(../images/search-backg.png) repeat-x;
 	background-color: #F3F3ED;
 	}
 	#heading {
@@ -9,18 +9,7 @@
 	width: 100%;
 	z-index: 0;
 	}
-	#eventSearchForm {
-	position:absolute;z-index:1;top:48px;width:100%;
-	}
-	#searchboxcontent {
-	position: static;
-	text-align:left;
-	margin: 0;
-	padding: 0;
-	width: 855px;
-	margin-right:auto;
-	margin-left:auto;
-	}
+	
 	#main {
 	background-color: #FFFFFF;
   min-width: 855px
@@ -118,31 +107,17 @@
 	border-bottom: #5197DC solid 1px;
 	width: 100%;
 	}
-	#home #searchbox {
-	position: static;
-	top: 0;
-	left: -10px;
-	}
-	#home #addbox {
-	margin-top: 20px;
-	top:0;
-	}
+	
 	#tagline, #totals{
 	color: #4D4D4D;
 	font:italic 700 9pt Georgia, "Times New Roman", Times, serif;
 	text-align:left;
-	position:relative;
-	left: 380px;
-	width: 42em;
 	padding: 0;
 	}
 	#tagline {
 	margin: 0;
 	}
-	#totals {
-	margin-top: 4px;
-	margin-right:auto;
-	}
+	
 	#totals b{
 	font-style: normal;
 	font-weight: normal;
