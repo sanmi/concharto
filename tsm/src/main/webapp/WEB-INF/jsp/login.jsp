@@ -53,7 +53,10 @@ limitations under the License.
 							</c:if>
 						</div>
 						<div class="inputcell">
-							<div class="inputlabel"><form:checkbox path="rememberMe"/>Remember me next time</div>
+							<div class="inputlabel">
+                <form:checkbox path="rememberMe"/>
+                Remember me next time
+              </div>
 							<div class="inputlabel"><a href="${basePath}forgot.htm">Lost your password?</a></div>
 						</div>		  	
 					  <input type="submit" value="Login"/>
