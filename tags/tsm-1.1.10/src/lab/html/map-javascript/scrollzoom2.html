@@ -1,0 +1,335 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<title>Wheelzoom</title>
+<!--		<link href="css/mapedit.css" rel="stylesheet" type="text/css" />-->
+    <style type="text/css"> 
+		<!-- 
+			body {
+				font-family: Arial;
+				font-size: small;
+			}
+			.mapedit #container { 
+				width: 100%;
+				background: #FFFFFF;
+				text-align: left; 
+			}  
+			.mapedit #sidebar {
+				float: left; 
+				width: 340px; 
+				padding: 5px 0; 
+			}
+
+			.mapedit #eventForm table {
+				background-color: #F9FBFD;
+				color: #000000;
+				border: 1px solid #D7E5F2;
+				border-collapse: collapse;
+			}
+			
+			.mapedit #eventForm td {
+				border: 1px solid #D7E5F2;
+				padding: 10px 4px 5px 2px;
+			}
+			.mapedit #eventForm .labelcell {
+			 font: large Verdana, Geneva, Arial, Helvetica, sans-serif;
+			 color: #3670A7;
+			 background-color: transparent;
+			}
+			
+			.mapedit #eventForm .fieldcell {
+			 background-color: #F2F7FB;
+			 color: #000000;
+			 text-align: left;
+			 margin-right: 0px;
+			 padding-right: 0px;
+			} 
+			
+			.mapedit #tip {
+				background-color:#FFFF99;
+				border:thin #D7E5F2;
+			}
+			
+			.mapedit #selectedMiniTab {
+				background : ##EBEBEB;
+				border-left : 1px solid;
+				border-top : 1px solid;
+				border-right : 1px solid;
+				color : #999;
+				font-size : smaller;
+				font-weight : bold;
+				line-height : 10px;
+				margin-right : 4px;
+				padding : 2px 10px 2px 10px;
+				text-decoration : none;			
+			}
+
+			.mapedit #unselectedMiniTab {
+				background : #E6E6E6;
+				border-left : 1px solid;
+				border-top : 1px solid;
+				border-right : 1px solid;
+				color : #999;
+				font-size : smaller;
+				font-weight : bold;
+				line-height : 10px;
+				margin-right : 4px;
+				padding : 2px 10px 2px 10px;
+			}
+
+			.mapedit #map_pane {
+				margin:0 0 20px 360px;
+				padding: 5px 0 50px 0; 
+			}
+			.mapedit #outline {
+				margin:20px 4px 4px 4px;
+				width:512px;
+				height:440px;
+				-moz-outline-radius:20px;
+				-moz-outline-style:solid;
+				-moz-outline-color:#9FB6CD;
+				-moz-outline-width:10px;
+			}
+			.mapedit #map {
+				width:512px;
+				height:512px;
+			}
+			
+
+			.mapedit h3 {
+				padding: 0px;
+				margin: 0px 0px 4px 0px;
+				font-size:x-large;
+			}
+			.mapedit A:hover {
+				text-decoration:underline overline;
+			}
+			.mapedit td {
+				vertical-align:top;
+			}
+			.mapedit small {
+				font-size:xx-small;
+				color: gray;
+			}
+			.clearfloat { /* this class should be placed on a div or break element and should be the final element before the close of a container that should fully contain a float */
+				clear:both;
+				height:0;
+				font-size: 1px;
+				line-height: 0px;
+			}
+			
+		-->
+		</style>
+		<script
+			src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=ABQIAAAA1DZDDhaKApTfIDHGfvo13hQHaMf-gMmgKgj1cacwLLvRJWUPcRTWzCG3PTSVLKG0PgyzHQthDg5BUw"
+			type="text/javascript">
+		</script>
+		<script type="text/javascript"><!--
+
+//some of the globals
+var map;
+var geocoder = null;
+var marker;
+
+function initialize() {
+	if (GBrowserIsCompatible()) {
+		// map and its equipment
+		map = new GMap2(document.getElementById("map"));
+//		map.enableContinuousZoom();
+		map.setCenter(new GLatLng(40.879721,-76.998322),11);  //la la land, PA 
+		map.addControl(new GMapTypeControl(1));
+		map.addControl(new GLargeMapControl());
+		map.enableDoubleClickZoom();
+		map.enableScrollWheelZoom();
+		geocoder = new GClientGeocoder();
+
+		//prevent scrolling the window when the mouse is inside of the map
+		GEvent.addDomListener(map.getContainer(), "DOMMouseScroll", wheelevent);
+		map.getContainer().onmousewheel = wheelevent; 
+	}
+}
+
+    // addAddressToMap() is called when the geocoder returns an
+    // answer.  It adds a marker to the map with an open info window
+    // showing the nicely formatted version of the address and the country code.
+    function addAddressToMap(response) {
+      map.clearOverlays();
+      if (!response || response.Status.code != 200) {
+        alert("Sorry, we were unable to geocode that address " + response.Status.code);
+      } else {
+        place = response.Placemark[0];
+        point = new GLatLng(place.Point.coordinates[1],
+                            place.Point.coordinates[0]);
+				map.setCenter(point, 13);
+        marker = new GMarker(point, {draggable: true});
+        map.addOverlay(marker);
+				marker.enableDragging();
+        marker.openInfoWindowHtml(place.address + '<br>' +
+          '<b>Country code:</b> ' + place.AddressDetails.Country.CountryNameCode);
+
+				GEvent.addListener(marker, "dragstart", function() {
+					map.closeInfoWindow();
+				});
+			
+				GEvent.addListener(marker, "click", function() {
+					marker.openInfoWindowHtml(html);
+				});
+      }
+    }
+
+    // showAddress() is called when you click on the Search button
+    // in the form.  It geocodes the address entered into the form
+    // and adds a marker to the map at that location.
+    function showAddress(address) {
+      geocoder.getLocations(address, addAddressToMap);
+    }
+    
+
+
+function showAddress2(address) {
+	if (geocoder) {
+		geocoder.getLatLng(
+			address,
+			function(point) {
+				if (!point) {
+					alert(address + " not found");
+				} else {
+					map.setCenter(point, 13);
+					marker = new GMarker(point, {draggable: true});
+					map.addOverlay(marker);
+					marker.enableDragging();
+				
+//					GEvent.addListener(marker, "drag", function(){
+//						document.getElementById("location").value=marker.getPoint().toUrlValue();
+//					});
+					
+					GEvent.addListener(marker, "dragstart", function() {
+						map.closeInfoWindow();
+					});
+				
+					GEvent.addListener(marker, "click", function() {
+						marker.openInfoWindowHtml(html);
+					});
+				}
+			}
+		);
+	}
+}
+
+function saveEvent() {
+	document.event.lat = marker.getLatLng().lat();
+	document.event.lng = marker.getLatLng().lng();
+	alert ("Saving " + marker.getLatLng().lat());
+	document.event.submit();
+}
+
+///prevent page scroll
+
+function wheelevent(e)
+{
+		if (!e){
+			e = window.event
+		}
+		if (e.preventDefault){
+			e.preventDefault()
+		}
+		e.returnValue = false;
+}
+
+
+
+/// Automatic zoomOut from 'sorry..' tiles
+function esasZoomOut(){
+var paragraphs = map.getContainer().getElementsByTagName('p').length;
+if(paragraphs > 6){
+map.zoomOut();
+}}
+interval = setInterval("esasZoomOut()",500);
+
+--></script>
+  </head>
+	<body onload="initialize()" onunload="GUnload();" class="mapedit">
+  <div id="content">
+    <div id="head">
+      <img src="../images/logo.png" alt="" />
+      <img src="../images/banner-timeline.png" alt="" width="506" height="63" />
+    </div>
+		
+    <div id="sidebar">
+      <div id="novel">
+        <h3>
+          Add 
+        </h3>
+        <form name="event" id="eventForm"> 
+        	<input type="hidden" name="lat"/>
+        	<input type="hidden" name="lng"/>
+          <table>
+            <tr>
+            <tr>
+              <td class="labelcell">Summary <br/>
+              <input name="summary" size="50"/></td>
+            </tr>
+            <tr>
+              <td class="labelcell">Where
+                  <small>e.g., "gettysburg, pa" </small><br/>
+                  <input  name="addr" size="50"/>
+                  <br/>
+                  <input  type="button" name="Find" value="Add to map" onclick="showAddress(document.event.addr.value); return false"/>             
+                  <small id="tip"><b>Tip:</b> drag and drop the lollypop!</small>
+              </td>
+            </tr>
+            <tr>
+              <td class="labelcell">
+                When
+                <small>
+                  e.g. "1962" or "March, 1064" or "1880 - 1886" <a href="#">hints</a>
+                </small><br/>
+                <input name="timerange" size="50"/>
+              </td>
+            </tr>
+            <tr>
+              <td class="labelcell">Description<br/>
+              <textarea rows="5" cols="38"></textarea></td>
+            </tr>
+            <tr>
+              <td class="labelcell">Tags<br/>
+              <input name="tags" size="50"/></td>
+            </tr>
+            <tr>
+              <td class="labelcell">Source 
+              <small><a id="selectedMiniTab" href="#">URL</a><a id="unselectedMiniTab" href="#">Publication</a><a id="unselectedMiniTab" href="#">Other</a></small><br/>
+              <input name="source" size="50"/> 
+              
+            </td> 
+              
+            </tr>
+          </table>
+          <input type="button" name="Save" value="Save This Event" onclick="saveEvent(); return false"/>
+        </form>
+        
+      </div>
+    </div>
+
+		<div id="map_pane">
+      <div id="outline">
+        <div id="map">
+          Map coming...
+          <noscript>
+            <p>
+              JavaScript must be enabled to get the map.
+            </p>
+          </noscript>
+        </div>
+      </div>
+    </div>
+	  <br class="clearfloat"/>  
+	</div>
+
+  <div id="footer">
+	  <hr/>
+		Time Space Map
+  </div>
+    
+</body>
+</html>

@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!--
+  Copyright 2009 Time Space Map, LLC
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+    <session-factory>
+
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
+
+		<mapping package="org.tsm.concharto.model"/>
+        <mapping class="org.tsm.concharto.model.Event"/>
+        <mapping class="org.tsm.concharto.model.geometry.TsGeometry"/>
+        <mapping class="org.tsm.concharto.model.time.TimePrimitive"/>
+        <mapping class="org.tsm.concharto.model.time.TimeStamp"/>
+        <mapping class="org.tsm.concharto.model.time.TimeRange"/>
+        <mapping class="org.tsm.concharto.model.kml.StyleSelector"/>
+        <mapping class="org.tsm.concharto.model.kml.Style"/>
+        <mapping class="org.tsm.concharto.model.kml.StyleMap"/>
+        <mapping class="org.tsm.concharto.model.user.User"/>
+        <mapping class="org.tsm.concharto.model.user.Role"/>
+        <mapping class="org.tsm.concharto.model.user.UserNote"/>
+        <mapping class="org.tsm.concharto.model.user.Notification"/>
+        <mapping class="org.tsm.concharto.model.UserTag"/>
+        <mapping class="org.tsm.concharto.model.EventSummary"/>
+        <mapping class="org.tsm.concharto.model.Flag"/>
+        <mapping class="org.tsm.concharto.model.EventSearchText"/>
+        <mapping class="org.tsm.concharto.model.audit.AuditEntry"/>
+        <mapping class="org.tsm.concharto.model.audit.AuditFieldChange"/>
+        <mapping class="org.tsm.concharto.model.wiki.WikiText"/>
+        <mapping class="org.tsm.concharto.model.PositionalAccuracy"/>
+        <mapping class="org.tsm.concharto.model.Spotlight"/>
+    
+    </session-factory>
+
+</hibernate-configuration>
+

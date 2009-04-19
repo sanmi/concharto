@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="tsm"
+  id="myeclipse.1187837784328"
+  context-root="/ROOT"
+  j2ee-spec="1.4"
+  archive="tsm.war">
+  <attributes>
+    <attribute name="webrootdir" value="/src/main/webapp" />
+  </attributes>
+</project-module>
+

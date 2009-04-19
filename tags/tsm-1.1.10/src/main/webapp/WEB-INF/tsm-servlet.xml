@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2009 Time Space Map, LLC
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN"
+        "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans>
+
+  <!-- PropertyPlaceholderConfigurer allows text from property files to be injected into beans  -->
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="systemPropertiesMode" value="2"/> <!-- allow system properties to override -->
+    <property name="locations">
+      <list>
+        <value>classpath:application.properties</value>
+        <value>classpath:server.properties</value>
+      </list>
+    </property>
+  </bean>
+
+  <!-- map controllers to URLs -->
+  <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="interceptors">
+      <list>
+        <!-- so we can traverse hibernate lazy loaded collections, etc -->
+        <ref bean="openSessionInViewInterceptor" /> 
+      </list>
+    </property>
+    <property name="mappings">
+      <props>
+          <prop key="login.htm">loginController</prop>
+          <prop key="forgot.htm">forgotController</prop>
+          <prop key="reset.htm">resetController</prop>
+          <prop key="home.htm">homeController</prop>
+          <prop key="index.htm">homeController</prop>
+          <prop key="feedback.htm">feedbackController</prop>
+          <prop key="edit/event.htm">eventController</prop>
+          <prop key="signup.htm">signupController</prop>
+          <prop key="member/settings.htm">settingsController</prop>
+          
+          <prop key="event/changehistory.htm">eventHistoryController</prop>
+          <prop key="event/contributions.htm">contributionsController</prop>
+          <prop key="event/latestchanges.htm">latestchangesController</prop>
+          <prop key="event/discusshistory.htm">wikiTextHistoryController</prop>
+
+          <prop key="edit/flagevent.htm">flagEventController</prop>
+          <prop key="edit/flageventsuccess.htm">flagEventController</prop>
+
+          <prop key="search/conchartosearch.kml">kmlExportController</prop>
+          <prop key="search/jsonsearch.htm">jsonSearchController</prop>
+          <prop key="search/eventsearch.htm">eventSearchController</prop>
+          <prop key="search/embeddedsearch.htm">embeddedSearchController</prop>
+
+          <prop key="list/recent.htm">recentController</prop>
+          <prop key="list/event.htm">eventSearchController</prop>
+
+          <prop key="logout.htm">switchBoardController</prop>
+          <prop key="notauthorized.htm">switchBoardController</prop>
+          <prop key="search/mapthumbnail.htm">switchBoardController</prop>
+          <prop key="search/auditmapthumbnail.htm">switchBoardController</prop>
+
+          <prop key="admin/flagdisposition.htm">eventAdminController</prop>
+          <prop key="edit/undoevent.htm">eventUndoController</prop>
+          <prop key="edit/undodiscuss.htm">discussUndoController</prop>
+
+          <prop key="event/discuss.htm">discussController</prop>
+          <prop key="edit/discussedit.htm">discussEditController</prop>
+
+          <prop key="page.htm">wikiPageController</prop>
+          <prop key="page/edit.htm">wikiPageEditController</prop>
+          <prop key="pagehistory.htm">wikiPageHistoryController</prop>
+          <prop key="undopage.htm">wikiPageUndoController</prop>
+
+          <prop key="admin/spotlightlist.htm">spotlightListController</prop>
+          <prop key="admin/spotlightedit.htm">spotlightEditController</prop>
+
+          <prop key="admin/adminlinks.htm">urlFilenameViewController</prop>
+          <prop key="404.htm">urlFilenameViewController</prop>
+          <prop key="500.htm">urlFilenameViewController</prop>
+          <prop key="/help.htm">urlFilenameViewController</prop>
+          
+          <!-- javascript files -->
+          <prop key="messages.htm">messagesController</prop>
+          
+      </props>
+    </property>   
+  </bean>
+
+  <!-- this bean with the well known name generates view names for us -->
+  <!-- not strictly required since we just want to accept the defaults-->
+  <bean id="viewNameTranslator"
+    class="org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator" />
+
+  <bean id="viewResolver"
+    class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="prefix" value="/WEB-INF/jsp/" />
+    <property name="suffix" value=".jsp" />
+  </bean>
+
+  <bean id="baseEventController" abstract="true">
+    <property name="cacheSeconds" value="3600"/>  
+  </bean>
+
+  <!-- Controller  -->
+  <bean id="messagesController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+    <property name="viewName" value="search/include/messages"/>
+  </bean>
+  
+  <bean id="homeController" class="org.tsm.concharto.web.home.HomeController" parent="baseEventController">
+    <property name="commandName" value="eventSearch" />
+    <property name="commandClass" value="org.tsm.concharto.web.eventsearch.EventSearchForm" />
+    <property name="formView" value="home/home" />
+    <property name="successView" value="home/home" />
+    <property name="eventDao" ref="eventDao" />
+    <property name="spotlightService" ref="spotlightService" /> 
+    <property name="tagAggregateService" ref="tagAggregateService" /> 
+  </bean>
+
+  <bean id="urlFilenameViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" parent="baseEventController">
+  </bean>
+  <bean id="switchBoardController" class="org.tsm.concharto.web.SwitchBoardController" parent="baseEventController" >
+    <property name="eventDao" ref="eventDao" />
+    <property name="auditEntryDao" ref="auditEntryDao" />
+  </bean>
+
+  <bean id="eventAdminController" class="org.tsm.concharto.web.changehistory.EventAdminController" parent="baseEventController" >
+    <property name="eventDao" ref="eventDao" />
+    <property name="flagDao" ref="flagDao" />
+    <property name="detailsView" value="event/changehistory"/>
+  </bean>
+
+  <bean id="loginFormValidator" class="org.tsm.concharto.web.login.LoginFormValidator"/>
+  <bean id="loginController" class="org.tsm.concharto.web.login.LoginController" parent="baseEventController">
+    <property name="commandName" value="login"/>
+    <property name="commandClass" value="org.tsm.concharto.web.signup.SignupForm"/>
+    <property name="formView" value="login" />
+    <property name="successView" value="redirect:/" />
+    <property name="validator" ref="loginFormValidator"/>
+    <property name="userDao" ref="userDao"/>
+    <property name="sessionHelper" ref="sessionHelper"/>
+  </bean>
+  
+  <bean id="forgotValidator" class="org.tsm.concharto.web.forgot.ForgotValidator"/>
+  <bean id="forgotController" class="org.tsm.concharto.web.forgot.ForgotController" parent="baseEventController">
+    <property name="commandName" value="forgot"/>
+    <property name="commandClass" value="org.tsm.concharto.web.forgot.ForgotForm"/>
+    <property name="formView" value="public/forgot" />
+    <property name="successView" value="public/forgotsent" />
+    <property name="validator" ref="forgotValidator"/>
+    <property name="userDao" ref="userDao"/>
+    <property name="emailService" ref="emailService"/>
+  </bean>
+
+  <bean id="resetController" class="org.tsm.concharto.web.forgot.ResetController" parent="baseEventController">
+    <property name="commandName" value="reset"/>
+    <property name="commandClass" value="org.tsm.concharto.web.util.AuthForm"/>
+    <property name="formView" value="public/reset" />
+    <property name="successView" value="public/resetsuccess" />
+    <property name="userDao" ref="userDao"/>
+    <property name="sessionHelper" ref="sessionHelper"/>
+  </bean>
+  
+  <bean id="feedbackValidator" class="org.tsm.concharto.web.feedback.FeedbackValidator"/>
+  <bean id="feedbackController" class="org.tsm.concharto.web.feedback.FeedbackController" parent="baseEventController">
+    <property name="commandName" value="feedback"/>
+    <property name="commandClass" value="org.tsm.concharto.web.feedback.FeedbackForm"/>
+    <property name="formView" value="public/feedback" />
+    <property name="successView" value="public/feedbacksuccess" />
+    <property name="validator" ref="feedbackValidator"/>
+    <property name="emailService" ref="emailService"/>
+    <property name="sendFeedbackToAddress" value="${app.sendFeedbackToAddress}"/>
+  </bean>
+
+  <bean id="signupFormValidator" class="org.tsm.concharto.web.signup.SignupFormValidator">
+    <property name="userDao" ref="userDao"/>
+  </bean>
+  <bean id="signupController" class="org.tsm.concharto.web.signup.SignupController" parent="baseEventController">
+    <property name="commandName" value="login"/>
+    <property name="commandClass" value="org.tsm.concharto.web.signup.SignupForm"/>
+    <property name="formView" value="login" />
+    <property name="successView" value="redirect:/" />
+    <property name="userDao" ref="userDao"/>
+    <property name="emailService" ref="emailService"/>
+    <property name="sessionHelper" ref="sessionHelper"/>
+    <property name="validator" ref="signupFormValidator"/>
+  </bean>
+  
+  <bean id="eventFormValidator" class="org.tsm.concharto.web.edit.EventFormValidator"/>
+  <bean id="eventController" class="org.tsm.concharto.web.edit.EventController" parent="baseEventController">
+    <property name="bindOnNewForm" value="true" />
+    <property name="commandName" value="event" />
+    <property name="commandClass" value="org.tsm.concharto.web.edit.EventForm" />
+    <property name="formView" value="edit/event" />
+    <property name="successView" value="redirect:/search/eventsearch.htm" />
+    <property name="eventDao" ref="eventDao" />
+    <property name="validator" ref="eventFormValidator"/>
+  </bean>
+
+  <bean id="changeHistoryControllerHelper" class="org.tsm.concharto.web.changehistory.ChangeHistoryControllerHelper">
+    <property name="auditEntryDao" ref="auditEntryDao" />
+    <property name="eventDao" ref="eventDao" />
+    <property name="wikiTextDao" ref="wikiTextDao" />
+  </bean>
+  <bean id="contributionsController" class="org.tsm.concharto.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
+    <property name="formView" value="event/contributions" />
+    <property name="pageSize" value="25"/>
+    <property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
+    <property name="auditableClass" value="org.tsm.concharto.model.Event" />
+  </bean>
+  <bean id="latestchangesController" class="org.tsm.concharto.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
+    <property name="formView" value="event/latestchanges" />
+    <property name="pageSize" value="25"/>
+    <property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
+    <property name="auditableClass" value="org.tsm.concharto.model.Event" />
+  </bean>
+
+  <bean id="eventHistoryController" class="org.tsm.concharto.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
+    <property name="formView" value="event/changehistory" />
+    <property name="pageSize" value="10"/>
+    <property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
+    <property name="auditableClass" value="org.tsm.concharto.model.Event" />
+  </bean>
+
+  <bean id="wikiTextHistoryController" class="org.tsm.concharto.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
+    <property name="formView" value="event/discusshistory" />
+    <property name="pageSize" value="10"/>
+    <property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
+    <property name="auditableClass" value="org.tsm.concharto.model.wiki.WikiText" />
+  </bean>
+
+  <bean id="wikiPageHistoryController" class="org.tsm.concharto.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
+    <property name="formView" value="public/pagehistory" />
+    <property name="pageSize" value="10"/>
+    <property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
+    <property name="auditableClass" value="org.tsm.concharto.model.wiki.WikiText" />
+  </bean>
+
+  <bean id="eventSearchFormValidator" class="org.tsm.concharto.web.eventsearch.EventSearchFormValidator"/>
+  <bean id="eventSearchController" class="org.tsm.concharto.web.eventsearch.EventSearchController" parent="baseEventController">
+    <property name="commandName" value="eventSearch" />
+    <property name="commandClass" value="org.tsm.concharto.web.eventsearch.EventSearchForm" />
+    <property name="formView" value="search/eventsearch" />
+    <property name="successView" value="search/eventsearch" />
+    <property name="kmlView" value="search/exportkml" />
+    <property name="searchHelper" ref="searchHelper" />
+    <property name="validator" ref="eventSearchFormValidator"/>
+  </bean>
+  
+  <bean id="kmlExportController" class="org.tsm.concharto.web.eventsearch.EventSearchController" parent="eventSearchController">
+    <!--  no cache -->
+    <property name="cacheSeconds" value="0"/>  
+  </bean>
+  
+  <bean id="jsonSearchController" class="org.tsm.concharto.web.eventsearch.EventSearchController" parent="eventSearchController">
+    <!--  no cache -->
+    <property name="cacheSeconds" value="0"/>  
+    <property name="successView" value="search/jsonsearch" />
+  </bean>
+  
+  
+  <bean id="embeddedSearchController" class="org.tsm.concharto.web.eventsearch.EmbeddedSearchController" parent="baseEventController">
+    <property name="commandName" value="eventSearch" />
+    <property name="commandClass" value="org.tsm.concharto.web.eventsearch.EventSearchForm" />
+    <property name="formView" value="search/embeddedsearch" />
+    <property name="successView" value="search/embeddedsearch" />
+    <property name="searchHelper" ref="searchHelper" />
+  </bean>
+
+  <bean id="settingsFormValidator" class="org.tsm.concharto.web.member.SettingsFormValidator"/>
+  <bean id="settingsController" class="org.tsm.concharto.web.member.SettingsController" parent="baseEventController">
+    <property name="commandName" value="settings"/>
+    <property name="commandClass" value="org.tsm.concharto.web.member.SettingsForm"/>
+    <property name="formView" value="member/settings" />
+    <property name="successView" value="member/settings" />
+    <property name="validator" ref="settingsFormValidator"/>
+    <property name="userDao" ref="userDao"/>
+  </bean>
+
+  <bean id="flagEventFormValidator" class="org.tsm.concharto.web.flagevent.FlagEventFormValidator"/>
+  <bean id="flagEventController" class="org.tsm.concharto.web.flagevent.FlagEventController" parent="baseEventController">
+    <property name="commandName" value="flagEvent"/>
+    <property name="commandClass" value="org.tsm.concharto.web.flagevent.FlagEventForm"/>
+    <property name="formView" value="edit/flagevent" />
+    <property name="successView" value="edit/flageventsuccess" />
+    <property name="validator" ref="flagEventFormValidator"/>
+    <property name="userDao" ref="userDao"/>
+    <property name="eventDao" ref="eventDao" />
+    <property name="flagDao" ref="flagDao" />
+    <property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
+  </bean>
+
+  <bean id="discussControllerBase" class="org.tsm.concharto.web.discuss.DiscussController" parent="baseEventController">
+    <property name="commandName" value="discussForm" />
+    <property name="commandClass" value="org.tsm.concharto.web.discuss.WikiTextForm" />
+    <property name="eventDao" ref="eventDao" />
+  </bean>
+  <bean id="discussController" class="org.tsm.concharto.web.discuss.DiscussController" parent="discussControllerBase">
+    <property name="formView" value="event/discuss" />
+  </bean>
+  <bean id="discussEditController" class="org.tsm.concharto.web.discuss.DiscussController" parent="discussControllerBase">
+    <property name="formView" value="edit/discussedit" />
+    <property name="successView" value="event/discuss" />
+  </bean>
+  
+  <bean id="wikiPageControllerBase" class="org.tsm.concharto.web.wiki.UserWikiPageController" parent="baseEventController">
+    <property name="commandName" value="wikiTextForm" />
+    <property name="commandClass" value="org.tsm.concharto.web.wiki.WikiTextForm" />
+    <property name="userDao" ref="userDao" />
+    <property name="wikiTextDao" ref="wikiTextDao" />
+    <property name="notificationService" ref="notificationService" />
+    <property name="sessionHelper" ref="sessionHelper" />
+  </bean>
+  <bean id="wikiPageController" class="org.tsm.concharto.web.wiki.UserWikiPageController" parent="wikiPageControllerBase">
+    <property name="formView" value="public/showpage" />
+    <property name="successView" value="public/showpage" />
+  </bean>
+  <bean id="wikiPageEditController" class="org.tsm.concharto.web.wiki.UserWikiPageController" parent="wikiPageControllerBase">
+    <property name="formView" value="page/editpage" />
+    <property name="successView" value="public/showpage" />
+  </bean>
+  
+  <bean id="eventUndoController" class="org.tsm.concharto.web.changehistory.AuditableUndoController" >
+    <property name="commandName" value="undo"/>
+    <property name="commandClass" value="org.tsm.concharto.web.changehistory.UndoForm"/>
+    <property name="successView" value="event/changehistory" />
+    <property name="formView" value="event/changehistory" />
+    <property name="revertEventService" ref="revertEventService" />
+    <property name="auditableClass" value="org.tsm.concharto.model.Event" />
+  </bean>
+  <bean id="discussUndoController" class="org.tsm.concharto.web.changehistory.AuditableUndoController">
+    <property name="commandName" value="undo"/>
+    <property name="commandClass" value="org.tsm.concharto.web.changehistory.UndoForm"/>
+    <property name="successView" value="event/discusshistory" />
+    <property name="revertEventService" ref="revertEventService" />
+    <property name="auditableClass" value="org.tsm.concharto.model.wiki.WikiText" />
+  </bean>
+  <bean id="wikiPageUndoController" class="org.tsm.concharto.web.changehistory.AuditableUndoController">
+    <property name="commandName" value="undo"/>
+    <property name="commandClass" value="org.tsm.concharto.web.changehistory.UndoForm"/>
+    <property name="successView" value="pagehistory" />
+    <property name="revertEventService" ref="revertEventService" />
+    <property name="auditableClass" value="org.tsm.concharto.model.wiki.WikiText" />
+  </bean>
+  
+  <bean id="spotlightListController" class="org.tsm.concharto.web.spotlight.SpotlightListController" parent="baseEventController">
+    <property name="formView" value="admin/spotlightlist" />
+    <property name="spotlightDao" ref="spotlightDao" />
+    <property name="spotlightService" ref="spotlightService" />
+  </bean>
+
+  <bean id="spotlightValidator" class="org.tsm.concharto.web.spotlight.SpotlightValidator"/>
+  <bean id="spotlightEditController" class="org.tsm.concharto.web.spotlight.SpotlightEditController" parent="baseEventController">
+    <property name="commandName" value="spotlight"/>
+    <property name="commandClass" value="org.tsm.concharto.model.Spotlight"/>
+    <property name="formView" value="admin/spotlightedit" />
+    <property name="successView" value="redirect:/admin/spotlightlist.htm" />
+    <property name="validator" ref="spotlightValidator"/>
+    <property name="spotlightDao" ref="spotlightDao" />
+    <property name="userDao" ref="userDao" />
+    <property name="spotlightService" ref="spotlightService" />
+  </bean>
+
+  <bean id="recentController" class="org.tsm.concharto.web.list.RecentController" parent="baseEventController">
+    <property name="formView" value="list/recent" />
+    <property name="eventDao" ref="eventDao" />
+  </bean>
+
+  <!-- Controller Services -->
+  <bean id="searchHelper" class="org.tsm.concharto.web.eventsearch.SearchHelper">
+    <property name="eventSearchService" ref="eventSearchService"/>
+    <property name="eventDao" ref="eventDao"/>
+  </bean>
+  
+    
+</beans>

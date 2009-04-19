@@ -1,0 +1,67 @@
+@charset "utf-8";
+/* CSS Document */
+	#homemenu a {
+  position: absolute;
+  height: 1em;
+  top: 0px; 
+  }
+  
+  #homemenu a i { visibility: hidden; }
+
+	a#home { top:8px; left:44px; width:255px; height:58px; }
+
+	#headershort{
+	height:85px;
+	width:100%;
+  background: url(../images/title-short.png) no-repeat;
+	}  
+	
+	#addbox {
+	position:relative;
+	left: 684px;
+	top: 51px;
+  top: expression('52px');    /* any IE */
+	font-weight: bold;
+	width: 15em;
+	}
+	.biglink a{
+	font: bold 12pt Arial, Helvetica, sans-serif;
+	}
+	#searchbox {
+	position:absolute;
+	top: 68px;
+	left:40px;
+	width: 855px;
+	margin-right:auto;
+	margin-left: 40px;
+	font-weight: bold;
+	font-size:10pt;
+	width: 5em; 
+	}
+	#searchbox .biglabel {
+	font-size:14pt;
+	}
+	#searchbox .eg, #searchbox .options {
+	font-weight: normal;
+	font-size:8pt;
+	}
+	#searchbox tr td, #headerbar tr td {
+		padding: 0 .1em;
+		margin: 0;
+	}
+	#searchbox .options input{
+		margin: 0;
+		padding: 0;
+	}
+	#searchbox .button {
+		margin-bottom: 1px;
+	}
+	#searchbox input {
+	font: 10pt Arial, Helvetica, sans-serif;
+	}
+	#heading {
+	text-align:center;
+	}
+	#memberForm input{
+	font: 10pt Arial, Helvetica, sans-serif;
+	}
