@@ -20,6 +20,7 @@
   var RESULTS_NUDGE = 53;
   var SIDEBAR_WIDTH = RESULTS_WIDTH;
   var HEADERBAR_HEIGHT = 147;
+  var HEADERBAR_1_HEIGHT = 120;
   var SEARCHBOX_TOP = 68;
     
   //global variables
@@ -180,7 +181,8 @@
 
     //shorten the search bar
 	  $('headerbar').style.background = 'none';
-	  $('headerbar').style.height = '87px';
+	  $('headerbar').style.height = '65px';
+    $('headerbar_1').style.height = '65px';
 	  $('addbox').hide();
 	  $('search_tagline').hide();
 	  $('searchbox').style.top = '15px';
@@ -217,6 +219,7 @@
     //put the the search bar back
     $('headerbar').style.background = 'url(../images/title-search.png) no-repeat';
     $('headerbar').style.height = HEADERBAR_HEIGHT + 'px';
+    $('headerbar_1').style.height = HEADERBAR_1_HEIGHT + 'px';
     $('addbox').show();
     $('search_tagline').show();
     $('searchbox').style.top = SEARCHBOX_TOP + 'px';
