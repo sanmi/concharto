@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.tsm.concharto.dao;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +35,10 @@ import org.tsm.concharto.util.LapTimer;
 
 
 /**
- * class to persist audit log entities
+ * Class to persist and retturn audit log entities.  Note: the 
+ * audit framework should be refactored (too much entity specific
+ * behavior, too complex, hard to revert changes to db)  We should
+ * probably just do it the way wikipedia does it (fsm 4-25-09)
  */
 @Transactional
 public class AuditEntryDaoHib implements AuditEntryDao {
@@ -45,49 +49,60 @@ public class AuditEntryDaoHib implements AuditEntryDao {
     protected final Log log = LogFactory.getLog(getClass());
     private SessionFactory sessionFactory;
 
+    private static final String CATALOG_PLACEHOLDER = "[CATALOG_PLACEHOLDER]";
+    private static final String VISIBLE_PLACEHOLDER = "[VISIBLE_PLACEHOLDER]";
+
     private static final String SUB_AUDIT_ENTRIES_HQL = 
-    	"from AuditEntry auditEntry " +
-    	"where auditEntry.entityClass = :className ";
+        "from AuditEntry auditEntry " +
+        "where auditEntry.entityClass = :className ";
 
     private static final String SUB_AUDIT_ENTRIES_FOR_ID_HQL = 
-    	SUB_AUDIT_ENTRIES_HQL +
+        SUB_AUDIT_ENTRIES_HQL +
         "and auditEntry.entityId = :id ";
-   
+
     private static final String AUDIT_ENTRIES_HQL = 
-    	"select auditEntry " + SUB_AUDIT_ENTRIES_FOR_ID_HQL + " order by auditEntry.version desc";
+        "select auditEntry " + SUB_AUDIT_ENTRIES_FOR_ID_HQL + " order by auditEntry.version desc";
     
-    private static final String SUB_AUDIT_ENTRIES_FOR_USER_HQL = 
-    	SUB_AUDIT_ENTRIES_HQL +
-    	"and auditEntry.user = :user ";
+    private static final String ENTITY_TABLE = "[ENTITY_TABLE]";
 
-	private static final String ENTITY_TABLE = "[ENTITY_TABLE]";
-	private static final String CATALOG_PLACEHOLDER = "[CATALOG_PLACEHOLDER]";
+    private static final String SUB_SELECT_SQL_USERCHANGE = 
+        "select a.*, e.* from AuditEntry a ";
 
-    private static final String SUB_RECENT_AUDIT_ENTRIES_SQL = 
-    	"select a.*, e.* from AuditEntry a " +
-    	"left join " + ENTITY_TABLE + " e ON a.entityId = e.id " +
-    	"where a.entityClass = :className " + CATALOG_PLACEHOLDER; 
+    private static final String SUB_SELECT_SQL_AUDITENTRY_COUNT = 
+        "select count(*) from AuditEntry a ";
+    
+    private static final String SUB_JOIN_SQL =
+        "left join " + ENTITY_TABLE + " e ON a.entityId = e.id ";
 
     private static final String SUB_CLAUSE_CATALOG = 
-    	" and e.catalog = :catalog ";
-    
-    private static final String RECENT_AUDIT_ENTRIES_BY_USER_SQL = 
-		SUB_RECENT_AUDIT_ENTRIES_SQL +
+        " and e.catalog = :catalog ";
+
+    private static final String SUB_CLAUSE_VISIBLE = 
+        " and (e.visible = true or e.visible is null) ";
+
+    private static final String SUB_WHERE_SQL = 
+        "where a.entityClass = :className " + CATALOG_PLACEHOLDER + VISIBLE_PLACEHOLDER; 
+
+    private static final String SUB_AUDIT_USERCHANGE_SQL =  
+        SUB_SELECT_SQL_USERCHANGE + SUB_JOIN_SQL + SUB_WHERE_SQL;
+
+    private static final String AUDIT_ENTRY_SQL_COUNT =  
+        SUB_SELECT_SQL_AUDITENTRY_COUNT + SUB_JOIN_SQL + SUB_WHERE_SQL;
+
+    private static final String AUDIT_ENTRY_SQL_COUNT_BY_USER =  
+        SUB_SELECT_SQL_AUDITENTRY_COUNT + SUB_JOIN_SQL + SUB_WHERE_SQL + 
+        "and a.User = :user "; 
+
+    private static final String RECENT_AUDIT_USERCHANGE_BY_USER_SQL = 
+		SUB_AUDIT_USERCHANGE_SQL +
     	"and a.User = :user " + 
     	"order by a.dateCreated desc"; 
 
-    private static final String RECENT_AUDIT_ENTRIES_SQL = 
-    	SUB_RECENT_AUDIT_ENTRIES_SQL +
+    private static final String RECENT_AUDIT_USERCHANGE_SQL = 
+    	SUB_AUDIT_USERCHANGE_SQL +
     	"order by a.dateCreated desc"; 
-    
-    /**
-     * Construct the count query based on a sub-select phrase 
-     * @param subSelect hql phrase
-     * @return count
-     */
-    private String getCountHQL(String subSelect) {
-    	return "select count(auditEntry) " + subSelect; 
-    }
+
+
     /*
      * (non-Javadoc)
      * 
@@ -95,6 +110,15 @@ public class AuditEntryDaoHib implements AuditEntryDao {
      */
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+    }
+
+    /**
+     * Construct the count query based on a sub-select phrase 
+     * @param subSelect hql phrase
+     * @return count
+     */
+    private String getCountHQL(String subSelect) {
+        return "select count(auditEntry) " + subSelect; 
     }
 
     /*
@@ -134,47 +158,39 @@ public class AuditEntryDaoHib implements AuditEntryDao {
 		Class<?> clazz;
 		int firstResult, maxResults;
 		String catalog;
+		Long auditableId;
 
 
-		public AuditEntryQueryHandler(SessionFactory session, String user,
-				Class<?> clazz, int firstResult, int maxResults, String catalog) {
+		public AuditEntryQueryHandler(SessionFactory session, String catalog,
+				String user, Class<?> clazz, int firstResult, int maxResults) {
 			super();
 			this.session = session;
+            this.catalog = catalog;
 			this.user = user;
 			this.clazz = clazz;
 			this.firstResult = firstResult;
 			this.maxResults = maxResults;
-			this.catalog = catalog;
 		}
-
-		public AuditEntryQueryHandler(SessionFactory sessionFactory, String user, 
-				Class<?> clazz, int firstResult, int maxResults){
-			this.session = sessionFactory;
-			this.user = user;
-			this.clazz = clazz;
-			this.firstResult = firstResult;
-			this.maxResults = maxResults;
+		public AuditEntryQueryHandler(SessionFactory session, String catalog,
+		        String user, Class<?> clazz) {
+		    super();
+		    this.session = session;
+            this.catalog = catalog;
+		    this.user = user;
+		    this.clazz = clazz;
 		}
 
 		/**
-		 * Template method which does the work
+		 * Template method which does the work -
 		 * 
 		 * @param sql query sql to use, including some substitution text
-		 * @return
+		 * @return a List ofr AuditUserChange objects
 		 */
 		@SuppressWarnings("unchecked")
-		public List<AuditUserChange> getAuditEntriesAndLogTimingInfo(String sql){
+		public List<AuditUserChange> getAuditUserChanges(String sql){
 			LapTimer timer = new LapTimer(log);
 			
-			//The auditable table could join with a number of entities, based on the entity Class
-			//so we have to do some substitution in the select clause in order to set up the query
-			sql = StringUtils.replace(sql, ENTITY_TABLE, clazz.getSimpleName());
-			//if catalog was specified
-			if (catalog != null) {
-				sql = StringUtils.replace(sql, CATALOG_PLACEHOLDER, SUB_CLAUSE_CATALOG);
-			} else {
-				sql = StringUtils.replace(sql, CATALOG_PLACEHOLDER, "");
-			}
+			sql = doClauselReplacement(sql);
 			List<Object[]> results = getAuditEntriesQuery(sessionFactory.getCurrentSession(), sql).list();
 			
 			List<AuditUserChange> auditUserChanges = new ArrayList<AuditUserChange>();
@@ -188,57 +204,95 @@ public class AuditEntryDaoHib implements AuditEntryDao {
 		}
 
 		/**
+		 * Template function that does the work 
+		 * @param sql
+		 * @return the total count of records
+		 */
+        @SuppressWarnings("unchecked")
+		public Long getAuditableCount(String sql){
+		    LapTimer timer = new LapTimer(log);
+		    
+		    sql = doClauselReplacement(sql);
+		    List<BigInteger> results = getAuditEntriesQuery(sessionFactory.getCurrentSession(), sql).list();
+		    timer.timeIt("changes").logDebugTime();
+		    return results.get(0).longValue();
+		}
+		
+	    /**
+	     * The auditable table could join with a number of entities, based on the entity Class
+	     * so we have to do some substitution in the select clause in order to set up the query
+	     * @param sql
+	     * @return sql query with replaced values
+	     */
+	    private String doClauselReplacement(String sql) {
+	        //
+	        sql = StringUtils.replace(sql, ENTITY_TABLE, clazz.getSimpleName());
+	        //if catalog was specified (at the moment, only Event has a catalog)
+	        if ((catalog != null) && clazz.equals(Event.class)) {
+	            sql = StringUtils.replace(sql, CATALOG_PLACEHOLDER, SUB_CLAUSE_CATALOG);
+	        } else {
+	            sql = StringUtils.replace(sql, CATALOG_PLACEHOLDER, "");
+	        }
+	        if (clazz.equals(Event.class)) {
+	            sql = StringUtils.replace(sql, VISIBLE_PLACEHOLDER, SUB_CLAUSE_VISIBLE);
+	        } else {
+	            sql = StringUtils.replace(sql, VISIBLE_PLACEHOLDER, "");
+	        }
+	        return sql;
+	    }
+
+	    /**
 		 * Method to be implemented by anonymous inner class the does the specifics
 		 * @return List of audit records
 		 */
 		abstract protected Query getAuditEntriesQuery(Session session, String sql);
 	}
-	
-	/*
+
+    /*
 	 * @see org.tsm.concharto.dao.AuditEntryDao#getAuditEntries(java.lang.String, java.lang.Class, int, int)
 	 */
 	public List<AuditUserChange> getAuditEntries(
-			String user, Class<?> clazz, int firstResult, int maxResults ) {
+	        String catalog, String user, Class<?> clazz, int firstResult, int maxResults ) {
 
-		AuditEntryQueryHandler handler = new AuditEntryQueryHandler(sessionFactory, user, clazz, firstResult, maxResults) {
+		AuditEntryQueryHandler handler = new AuditEntryQueryHandler(sessionFactory, catalog, user, clazz, firstResult, maxResults) {
 			public Query getAuditEntriesQuery(Session session, String sql) {
-				return session.createSQLQuery(sql)
+				Query query = session.createSQLQuery(sql)
 	        	.addEntity("a", AuditEntry.class)
 	        	.addEntity("e", Event.class)
 	        	.setString(FIELD_CLASS_NAME, clazz.getSimpleName())
 	            .setString(FIELD_USER, user)
 	            .setFirstResult(firstResult)
 	            .setMaxResults(maxResults);
+				addCatalog(query, catalog, clazz);
+                return query;
 			}
 		};
 		
-		return handler.getAuditEntriesAndLogTimingInfo(RECENT_AUDIT_ENTRIES_BY_USER_SQL);
+		return handler.getAuditUserChanges(RECENT_AUDIT_USERCHANGE_BY_USER_SQL);
 	}
 
+	/**
+	 * Custom query addition for Events only.  One of the reasons, this audit framework
+	 * needs to be refactored 
+	 * @param query
+	 * @param catalog
+	 * @param clazz
+	 * @return Query with catalog field added, only if the class is an Event
+	 */
+	@SuppressWarnings("unchecked")
+    private Query addCatalog(Query query, String catalog, Class clazz) {
+        if ((catalog != null) && (clazz.equals(Event.class))) {
+            query.setString(FIELD_CATALOG, catalog);
+        }
+        return query;
+	}
 	/*
 	 * @see org.tsm.concharto.dao.AuditEntryDao#getLatestAuditEntries(java.lang.Class, int, int)
 	 */
-	public List<AuditUserChange> getLatestAuditEntries(Class<?> clazz,
+	public List<AuditUserChange> getLatestAuditEntries(String catalog, Class<?> clazz,
 			int firstResult, int maxResults) {
 
-		AuditEntryQueryHandler handler = new AuditEntryQueryHandler(sessionFactory, null, clazz, firstResult, maxResults) {
-			public Query getAuditEntriesQuery(Session session, String sql) {		
-				return session.createSQLQuery(sql)
-	        	.addEntity("a", AuditEntry.class)
-	        	.addEntity("e", clazz)
-	        	.setString(FIELD_CLASS_NAME, clazz.getSimpleName())
-	            .setFirstResult(firstResult)
-	            .setMaxResults(maxResults);
-			}
-		};
-			
-		return handler.getAuditEntriesAndLogTimingInfo(RECENT_AUDIT_ENTRIES_SQL);
-	}
-
-	public List<AuditUserChange> getLatestEventEntries(String catalog, int firstResult, int maxResults) {
-
-		AuditEntryQueryHandler handler = 
-			new AuditEntryQueryHandler(sessionFactory, null, Event.class, firstResult, maxResults, catalog) {
+		AuditEntryQueryHandler handler = new AuditEntryQueryHandler(sessionFactory, catalog, null, clazz, firstResult, maxResults) {
 			public Query getAuditEntriesQuery(Session session, String sql) {		
 				Query query = session.createSQLQuery(sql)
 	        	.addEntity("a", AuditEntry.class)
@@ -246,14 +300,31 @@ public class AuditEntryDaoHib implements AuditEntryDao {
 	        	.setString(FIELD_CLASS_NAME, clazz.getSimpleName())
 	            .setFirstResult(firstResult)
 	            .setMaxResults(maxResults);
-				if (catalog != null) {
-					query.setString(FIELD_CATALOG, catalog);
-				}
+				addCatalog(query, catalog, clazz);
 				return query;
 			}
 		};
 			
-		return handler.getAuditEntriesAndLogTimingInfo(RECENT_AUDIT_ENTRIES_SQL);
+		return handler.getAuditUserChanges(RECENT_AUDIT_USERCHANGE_SQL);
+	}
+
+	public List<AuditUserChange> getLatestEventEntries(String catalog, int firstResult, int maxResults) {
+
+		AuditEntryQueryHandler handler = 
+			new AuditEntryQueryHandler(sessionFactory, catalog, null, Event.class, firstResult, maxResults) {
+			public Query getAuditEntriesQuery(Session session, String sql) {		
+				Query query = session.createSQLQuery(sql)
+	        	.addEntity("a", AuditEntry.class)
+	        	.addEntity("e", clazz)
+	        	.setString(FIELD_CLASS_NAME, clazz.getSimpleName())
+	            .setFirstResult(firstResult)
+	            .setMaxResults(maxResults);
+				addCatalog(query, catalog, clazz);
+				return query;
+			}
+		};
+			
+		return handler.getAuditUserChanges(RECENT_AUDIT_USERCHANGE_SQL);
 	}
 
 	/*
@@ -275,30 +346,34 @@ public class AuditEntryDaoHib implements AuditEntryDao {
 	/*
 	 * @see org.tsm.concharto.dao.AuditEntryDao#getAuditEntriesCount(java.lang.String, java.lang.Class)
 	 */
-	@SuppressWarnings("unchecked")
-	public Long getAuditEntriesCount(String user, Class<?> clazz) {
-        LapTimer timer = new LapTimer(this.log);
-        List auditEntries = this.sessionFactory.getCurrentSession()
-            .createQuery(getCountHQL(SUB_AUDIT_ENTRIES_FOR_USER_HQL))
-            .setString(FIELD_CLASS_NAME, clazz.getSimpleName())
-            .setString(FIELD_USER, user)
-            .list();
-        timer.timeIt("count").logDebugTime();
-        return (Long) auditEntries.get(0);
+	public Long getAuditEntriesCount(String catalog, String user, Class<?> clazz) {
+
+        AuditEntryQueryHandler handler = new AuditEntryQueryHandler(sessionFactory, catalog, user, clazz) {
+            public Query getAuditEntriesQuery(Session session, String sql) {        
+                Query query = session.createSQLQuery(sql)
+                .setString(FIELD_USER, user)
+                .setString(FIELD_CLASS_NAME, clazz.getSimpleName());
+                addCatalog(query, catalog, clazz);
+                return query;
+            }
+        };
+        return handler.getAuditableCount(AUDIT_ENTRY_SQL_COUNT_BY_USER);
 	}
 
 	/*
 	 * @see org.tsm.concharto.dao.AuditEntryDao#getAuditEntriesCount(java.lang.Class)
 	 */
-	@SuppressWarnings("unchecked")
-	public Long getAuditEntriesCount(Class<?> clazz) {
-		LapTimer timer = new LapTimer(this.log);
-		List auditEntries = this.sessionFactory.getCurrentSession()
-		.createQuery(getCountHQL(SUB_AUDIT_ENTRIES_HQL))
-		.setString(FIELD_CLASS_NAME, clazz.getSimpleName())
-		.list();
-		timer.timeIt("count").logDebugTime();
-		return (Long) auditEntries.get(0);
+	public Long getAuditEntriesCount(String catalog, Class<?> clazz) {
+
+        AuditEntryQueryHandler handler = new AuditEntryQueryHandler(sessionFactory, catalog, null, clazz) {
+            public Query getAuditEntriesQuery(Session session, String sql) {        
+                Query query = session.createSQLQuery(sql)
+                .setString(FIELD_CLASS_NAME, clazz.getSimpleName());
+                addCatalog(query, catalog, clazz);
+                return query;
+            }
+        };
+        return handler.getAuditableCount(AUDIT_ENTRY_SQL_COUNT);
 	}
 
 	/*

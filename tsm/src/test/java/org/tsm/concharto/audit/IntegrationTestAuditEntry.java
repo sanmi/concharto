@@ -30,15 +30,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
-import org.tsm.concharto.OpenSessionInViewIntegrationTest;
-import org.tsm.concharto.auth.ThreadLocalUserContext;
-import org.tsm.concharto.auth.UserContext;
 import org.tsm.concharto.dao.AuditEntryDao;
 import org.tsm.concharto.dao.AuditUserChange;
-import org.tsm.concharto.dao.EventDao;
-import org.tsm.concharto.dao.EventTesterDao;
+import org.tsm.concharto.dao.BaseEventIntegrationTest;
 import org.tsm.concharto.dao.EventUtil;
-import org.tsm.concharto.dao.StyleUtil;
 import org.tsm.concharto.model.Event;
 import org.tsm.concharto.model.Flag;
 import org.tsm.concharto.model.audit.AuditEntry;
@@ -52,17 +47,14 @@ import org.tsm.concharto.web.util.CatalogUtil;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
-public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest {
+public class IntegrationTestAuditEntry extends BaseEventIntegrationTest {
 
     private static final String USERNAME = "bob";
     private static final String USERNAME2 = "joe";
     private static final int MAX_RESULTS = 100;
-    private static EventDao eventDao;
     private static AuditEntryDao auditEntryDao;
-    private static EventTesterDao eventTesterDao;
     private static RevertEventService revertEventService;
-    private static EventUtil eventUtil;
-   
+    private static final String CATALOG = CatalogUtil.CATALOG_WWW;
 
     private Date begin;
     private Date end;
@@ -79,25 +71,15 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
 
     @BeforeClass
     public static void setUpClass() {
+        baseSetUpClass();
         ApplicationContext appCtx = ContextUtil.getCtx();
-        eventDao = (EventDao) appCtx.getBean("eventDao");
-        eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
         auditEntryDao = (AuditEntryDao) appCtx.getBean("auditEntryDao");
         revertEventService =  (RevertEventService) appCtx.getBean("revertEventService");
-        eventUtil = new EventUtil(eventTesterDao.getSessionFactory());
-        eventTesterDao.deleteAll();
-        StyleUtil.setupStyle();
     }
 
     @Before public void setupUserContext() {
     	setupUserContext(USERNAME);
-        eventTesterDao.deleteAll();
-    }
-    
-    private void setupUserContext(String username) {
-        UserContext userContext = new UserContext();
-        userContext.setUsername(username);
-        ThreadLocalUserContext.setUserContext(userContext);
+        getEventTesterDao().deleteAll();
     }
     
     /**
@@ -107,29 +89,29 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
      */
     @Test
     public void testSaveAndResave() throws ParseException, InterruptedException {
-        Event event = eventUtil.createEvent(begin, end);
+        Event event = getEventUtil().createEvent(begin, end);
         event.setDescription("This is some description.");
-        Serializable id = eventDao.save(event);
+        Serializable id = getEventDao().save(event);
         getSessionFactory().getCurrentSession().evict(event); //guarantees the object gets written to the DB 
         
         Thread.sleep(1000);
-        Event returned = eventDao.findById((Long) id);
+        Event returned = getEventDao().findById((Long) id);
         returned.setDescription("sdfsdf");
-        eventDao.saveOrUpdate(returned);
+        getEventDao().saveOrUpdate(returned);
         getSessionFactory().getCurrentSession().evict(returned);
         //save, but don't make any changes.  
-        eventDao.saveOrUpdate(returned);
+        getEventDao().saveOrUpdate(returned);
         getSessionFactory().getCurrentSession().evict(returned);
-        eventDao.saveOrUpdate(returned);
+        getEventDao().saveOrUpdate(returned);
         getSessionFactory().getCurrentSession().evict(returned);
-        Event returned2 = eventDao.findById((Long) id);
+        Event returned2 = getEventDao().findById((Long) id);
         
         assertEquals(EventUtil.filterMilliseconds(event.getCreated()), returned.getCreated());
         //make sure the last modified dates are different for the two instances we edited
         assertTrue(returned.getLastModified().compareTo(returned2.getLastModified()) != 0);
         
         //create another so that there are more than 2 total audit records
-        eventDao.save(eventUtil.createEvent(begin, end));
+        getEventDao().save(getEventUtil().createEvent(begin, end));
         
         //now ensure correct number audit entries were created for this event
         List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(event, 0, MAX_RESULTS);
@@ -153,7 +135,7 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
         assertEquals(4L, (long) count);
         
         //now test getting one of the entries
-        //Session session = eventTesterDao.getSessionFactory().openSession();
+        //Session session = getEventTesterDao().getSessionFactory().openSession();
         //session.refresh(auditEntries.get(0));
         Collection<AuditFieldChange> changes = auditEntries.get(0).getAuditEntryFieldChange();
         for (AuditFieldChange auditFieldChange : changes) {
@@ -174,39 +156,39 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
   
     @Test public void testRevert() throws ParseException {
     	//create an event with five changes and revert each one
-        Event rev0 = eventUtil.createEvent(begin, end);
+        Event rev0 = getEventUtil().createEvent(begin, end);
         rev0.setDescription("r0 description");
         rev0.setSummary("r0 summary");
         rev0.setSource(null);
         rev0.setUserTagsAsString("r0 tag a, tag b");
-        Serializable id = eventDao.save(rev0);
+        Serializable id = getEventDao().save(rev0);
         freeFromSession(rev0);
         
-        Event rev1 = eventDao.findById((Long) id);
+        Event rev1 = getEventDao().findById((Long) id);
         rev1.setSummary("r1 summary");
         rev1.setSource("r1 source");
-        eventDao.saveOrUpdate(rev1);
+        getEventDao().saveOrUpdate(rev1);
         freeFromSession(rev1);
         
-        Event rev2 = eventDao.findById((Long) id);
+        Event rev2 = getEventDao().findById((Long) id);
         rev2.setDescription("r2 description");
         rev2.setSummary("r2 summary");
         rev2.setTsGeometry(new TsGeometry(new WKTReader().read("POINT (3300 3530)")));
-        eventDao.saveOrUpdate(rev2);
+        getEventDao().saveOrUpdate(rev2);
         freeFromSession(rev2);
 
-        Event rev3 = eventDao.findById((Long) id);
+        Event rev3 = getEventDao().findById((Long) id);
         rev3.setDescription("r3 description");
         rev3.setSummary("r3 summary");
         rev3.setTsGeometry(new TsGeometry(new WKTReader().read("POINT (530 530)")));
-        eventDao.saveOrUpdate(rev3);
+        getEventDao().saveOrUpdate(rev3);
         rev3.getFlags().size();
         freeFromSession(rev3);
 
-        Event rev4 = eventDao.findById((Long) id);
+        Event rev4 = getEventDao().findById((Long) id);
         rev4.setUserTagsAsString("r4tags, tag b");
         rev4.setDescription("r4 description");
-        eventDao.saveOrUpdate(rev4);
+        getEventDao().saveOrUpdate(rev4);
         freeFromSession(rev4);
         
         revertAndAssert(rev4, 4);
@@ -225,16 +207,16 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
     	makeEvents(3);
     	setupUserContext(USERNAME2);
     	makeEvents(5);
-    	assertEquals(3, auditEntryDao.getAuditEntries(USERNAME, Event.class, 0, 20).size());
-    	assertEquals(3L, (long)auditEntryDao.getAuditEntriesCount(USERNAME, Event.class));
-    	assertEquals(5, auditEntryDao.getAuditEntries(USERNAME2, Event.class, 0, 20).size());
-    	assertEquals(5L, (long)auditEntryDao.getAuditEntriesCount(USERNAME2, Event.class));
+    	assertEquals(3, auditEntryDao.getAuditEntries(CATALOG, USERNAME, Event.class, 0, 20).size());
+    	assertEquals(3L, (long)auditEntryDao.getAuditEntriesCount(CATALOG, USERNAME, Event.class));
+    	assertEquals(5, auditEntryDao.getAuditEntries(CATALOG, USERNAME2, Event.class, 0, 20).size());
+    	assertEquals(5L, (long)auditEntryDao.getAuditEntriesCount(CATALOG, USERNAME2, Event.class));
     	//limit size of results
-    	List<AuditUserChange> entries = auditEntryDao.getAuditEntries(USERNAME2, Event.class, 0, 3);
+    	List<AuditUserChange> entries = auditEntryDao.getAuditEntries(CATALOG, USERNAME2, Event.class, 0, 3);
     	AuditUserChange first = entries.get(0);
     	assertEquals(3, entries.size());
     	//limit size of results, first record is different
-    	entries = auditEntryDao.getAuditEntries(USERNAME2, Event.class, 1, 3);
+    	entries = auditEntryDao.getAuditEntries(CATALOG, USERNAME2, Event.class, 1, 3);
     	AuditUserChange second = entries.get(0);
     	assertEquals(3, entries.size());
     	//check the order
@@ -244,13 +226,13 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
     }
     
     @Test public void wikiText() throws ParseException {
-    	Event event = eventUtil.createEvent();
+    	Event event = getEventUtil().createEvent();
     	WikiText wikiText = new WikiText();
     	wikiText.setText("==header== some stuff here");
     	event.setDiscussion(wikiText);
-    	eventDao.saveOrUpdate(event);
+    	getEventDao().saveOrUpdate(event);
     	wikiText.setText("==header== some new stuff here");
-    	eventDao.saveOrUpdate(event);
+    	getEventDao().saveOrUpdate(event);
     	
     	List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(wikiText,  0, 20); 
     	assertEquals(2, auditEntries.size());
@@ -263,15 +245,15 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
     	//create an event with five changes and revert each one
     	WikiText rev0 = new WikiText();
     	rev0.setText("==header== some stuff here");
-        Serializable id = eventDao.saveAuditable(rev0);
+        Serializable id = getEventDao().saveAuditable(rev0);
 
-        WikiText rev1 = (WikiText) eventDao.findById(WikiText.class, (Long) id);
+        WikiText rev1 = (WikiText) getEventDao().findById(WikiText.class, (Long) id);
         rev1.setText("==header== some extra stuff here");
-        eventDao.saveOrUpdateAuditable(rev1);
+        getEventDao().saveOrUpdateAuditable(rev1);
 
-        WikiText rev2 = (WikiText) eventDao.findById(WikiText.class, (Long) id);
+        WikiText rev2 = (WikiText) getEventDao().findById(WikiText.class, (Long) id);
         rev2.setText("==header== some extra stuff here and here too!");
-        eventDao.saveOrUpdateAuditable(rev2);
+        getEventDao().saveOrUpdateAuditable(rev2);
         
         
         revertAndAssertWikiText(rev2, 2);
@@ -281,30 +263,30 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
 
     @Test public void testGetRecent() throws ParseException {
     	makeEvents(3);
-    	assertEquals(3, auditEntryDao.getLatestAuditEntries(Event.class, 0, 10).size());
-    	Event event = eventUtil.createEvent(begin, end);
-    	eventDao.save(event);
+    	assertEquals(3, auditEntryDao.getLatestAuditEntries(CATALOG, Event.class, 0, 10).size());
+    	Event event = getEventUtil().createEvent(begin, end);
+    	getEventDao().save(event);
     	event.setDescription("some new text here");
-    	eventDao.saveOrUpdate(event);
-    	assertEquals(5, auditEntryDao.getLatestAuditEntries(Event.class, 0, 10).size());
-    	assertEquals(5L, (long)auditEntryDao.getAuditEntriesCount(Event.class));
+    	getEventDao().saveOrUpdate(event);
+    	assertEquals(5, auditEntryDao.getLatestAuditEntries(CATALOG, Event.class, 0, 10).size());
+    	assertEquals(5L, (long)auditEntryDao.getAuditEntriesCount(CATALOG, Event.class));
     	
     	
     	//now add some wikitext
     	WikiText text = new WikiText();
     	text.setText("==header== some stuff here");
-        eventDao.saveAuditable(text);
+        getEventDao().saveAuditable(text);
         text.setText("==header== some extra stuff here");
-        eventDao.saveOrUpdateAuditable(text);
-    	assertEquals(2, auditEntryDao.getLatestAuditEntries(WikiText.class, 0, 10).size());
-    	assertEquals(2L, (long)auditEntryDao.getAuditEntriesCount(WikiText.class));
+        getEventDao().saveOrUpdateAuditable(text);
+    	assertEquals(2, auditEntryDao.getLatestAuditEntries(CATALOG, WikiText.class, 0, 10).size());
+    	assertEquals(2L, (long)auditEntryDao.getAuditEntriesCount(CATALOG, WikiText.class));
     	
     }
     
     @Test public void testFlag() throws ParseException {
     	//make an event
-    	Event event = eventUtil.createEvent();
-    	eventDao.save(event);
+    	Event event = getEventUtil().createEvent();
+    	getEventDao().save(event);
     	//add a flag
     	Flag flag = new Flag();
     	flag.setComment("sdf");
@@ -313,7 +295,7 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
     	flags.add(flag);
     	event.setFlags(flags);
     	event.setHasUnresolvedFlag(true);
-    	eventDao.saveOrUpdate(event);
+    	getEventDao().saveOrUpdate(event);
     	
         //now ensure correct number audit entries were created for this event
         List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(event, 0, MAX_RESULTS);
@@ -324,16 +306,16 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
     @Test public void testCatalog() throws ParseException {
     	//create three events, and another from another event.
     	makeEvents(3);
-    	Event event = eventUtil.createEvent();
+    	Event event = getEventUtil().createEvent();
     	String newCatalog = "sdfsdf";
     	event.setCatalog(newCatalog);
-    	eventDao.save(event);
+    	getEventDao().save(event);
 
     	//change them all
-    	List<Event> events = eventDao.findRecent(4, 0);
+    	List<Event> events = getEventDao().findRecent(4, 0);
     	for (Event e : events) {
     		e.setDescription("ee");
-    		eventDao.saveOrUpdate(e);
+    		getEventDao().saveOrUpdate(e);
     	}
     	
     	//get all of the changes for the default catalog.  There should be 
@@ -345,7 +327,7 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
     
     private void makeEvents(int numEvents) throws ParseException {
     	for (int i=0; i<numEvents; i++) {
-        	eventDao.save(eventUtil.createEvent("summary " + i));
+        	getEventDao().save(getEventUtil().createEvent("summary " + i));
     	}
     }
     private void revertAndAssertWikiText(WikiText expected, int rev) {
@@ -357,9 +339,9 @@ public class IntegrationTestAuditEntry extends OpenSessionInViewIntegrationTest 
     private void revertAndAssert(Event expected, int rev) {
         //List<AuditEntry> auditEntries = auditEntryDao.getAuditEntries(expected, 0, MAX_RESULTS);
         Event reverted = (Event) revertEventService.revertToRevision(Event.class, rev, expected.getId());
-        eventUtil.assertEquivalent(expected, reverted);
-        reverted = eventDao.findById(expected.getId());
-        eventUtil.assertEquivalent(expected, reverted);
+        getEventUtil().assertEquivalent(expected, reverted);
+        reverted = getEventDao().findById(expected.getId());
+        getEventUtil().assertEquivalent(expected, reverted);
     }
 
     /**

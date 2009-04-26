@@ -80,6 +80,7 @@ public class ChangeHistoryControllerHelper {
         }
        
         String user = ServletRequestUtils.getStringParameter(request, MODEL_USER);
+        String catalog = CatalogUtil.getCatalog(request);
         Long totalResults = 0L;
         
         //TODO - split this into two controllers one for user contribs, one for event changes
@@ -109,8 +110,8 @@ public class ChangeHistoryControllerHelper {
             }
         } else if (!StringUtils.isEmpty(user)){
         	//we are doing history for a user
-        	List<AuditUserChange> userChanges = auditEntryDao.getAuditEntries(user, clazz, firstRecord, pageSize);
-            totalResults = auditEntryDao.getAuditEntriesCount(user, clazz);
+        	List<AuditUserChange> userChanges = auditEntryDao.getAuditEntries(catalog, user, clazz, firstRecord, pageSize);
+            totalResults = auditEntryDao.getAuditEntriesCount(catalog, user, clazz);
             model.put(MODEL_USER_CHANGES, userChanges);
     		Set<String> titles = new HashSet<String>();
     		addTitle(titles, user);
@@ -118,8 +119,8 @@ public class ChangeHistoryControllerHelper {
         } else {
         	//just get everything
         	List<AuditUserChange> userChanges = 
-        		auditEntryDao.getLatestEventEntries(CatalogUtil.getCatalog(request), firstRecord, pageSize);
-            totalResults = auditEntryDao.getAuditEntriesCount(Event.class);
+        		auditEntryDao.getLatestEventEntries(catalog, firstRecord, pageSize);
+            totalResults = auditEntryDao.getAuditEntriesCount(catalog, Event.class);
             model.put(MODEL_USER_CHANGES, userChanges);
     		Set<String> titles = new HashSet<String>();
     		for (AuditUserChange auditUserChange : userChanges) {
