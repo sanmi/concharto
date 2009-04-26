@@ -220,7 +220,7 @@
   </bean>
   <bean id="latestchangesController" class="org.tsm.concharto.web.changehistory.AuditableChangeHistoryController" parent="baseEventController">
     <property name="formView" value="event/latestchanges" />
-    <property name="pageSize" value="25"/>
+    <property name="pageSize" value="50"/>
     <property name="changeHistoryControllerHelper" ref="changeHistoryControllerHelper" />
     <property name="auditableClass" value="org.tsm.concharto.model.Event" />
   </bean>

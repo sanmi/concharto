@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.tsm.concharto.dao;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,46 +24,36 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
-import org.tsm.concharto.OpenSessionInViewIntegrationTest;
-import org.tsm.concharto.dao.EventDao;
-import org.tsm.concharto.dao.FlagDao;
 import org.tsm.concharto.model.Event;
 import org.tsm.concharto.model.Flag;
 import org.tsm.concharto.util.ContextUtil;
 
 import com.vividsolutions.jts.io.ParseException;
 
-public class IntegrationTestFlagDao extends OpenSessionInViewIntegrationTest {
+public class IntegrationTestFlagDao extends BaseEventIntegrationTest {
 
-    private static EventDao eventDao;
     private static FlagDao flagDao;
-    private static EventTesterDao eventTesterDao;
-    private static EventUtil eventUtil;
 
     @BeforeClass
     public static void setUpClass() {
+        baseSetUpClass();
         ApplicationContext appCtx = ContextUtil.getCtx();
-        eventDao = (EventDao) appCtx.getBean("eventDao");
         flagDao = (FlagDao) appCtx.getBean("flagDao");
-        eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
-        eventUtil = new EventUtil(eventTesterDao.getSessionFactory());
-        eventTesterDao.deleteAll();
-        StyleUtil.setupStyle();
     }
 
     @Test
     public void testFlag() throws ParseException {
-    	Event event = eventUtil.createEvent();
-        Serializable id = eventDao.save(event);
+    	Event event = getEventUtil().createEvent();
+        Serializable id = getEventDao().save(event);
         
         Flag flag = new Flag("it is bad!", "isBad", "joe", event);
         //Save it the hard way
         List<Flag> flags = new ArrayList<Flag>();
         flags.add(flag);
         event.setFlags(flags);
-        eventDao.saveOrUpdate(event);
-        Event returned = eventDao.findById((Long)id);
-        eventUtil.assertEquivalent(event, returned);
+        getEventDao().saveOrUpdate(event);
+        Event returned = getEventDao().findById((Long)id);
+        getEventUtil().assertEquivalent(event, returned);
     	
         //Now try it the easy way
         flag = new Flag("it is really bad!", "isBad", "joe", event);
@@ -71,16 +61,16 @@ public class IntegrationTestFlagDao extends OpenSessionInViewIntegrationTest {
         
         //in order to check, we will add the flag to our event
         event.getFlags().add(flag);
-        returned = eventDao.findById((Long)id);
-        eventUtil.assertEquivalent(event, returned);
+        returned = getEventDao().findById((Long)id);
+        getEventUtil().assertEquivalent(event, returned);
         getSessionFactory().getCurrentSession().evict(event);
         
         //now delete one
         flagDao.delete(returned.getFlags().get(0).getId());
         //in order to check, we will add the flag to our event
         event.getFlags().remove(0);
-        returned = eventDao.findById((Long)id);
-        eventUtil.assertEquivalent(event, returned);
+        returned = getEventDao().findById((Long)id);
+        getEventUtil().assertEquivalent(event, returned);
     }
 
     @Test

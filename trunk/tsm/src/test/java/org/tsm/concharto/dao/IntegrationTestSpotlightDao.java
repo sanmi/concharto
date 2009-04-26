@@ -38,18 +38,7 @@ public class IntegrationTestSpotlightDao {
 	private static User user;
 	private static EventTesterDao eventTesterDao;
 	private static UserDao userDao;
-
-	/*
-	 * x public Serializable save(Spotlight spotlight); public void
-	 * x delete(Spotlight spotlight); 
-	 * x public void delete(Long id); 
-	 * x public Spotlight find(Long id); 
-	 * public Spotlight getNextAfter(Long id); 
-	 * x public List<Spotlight> find(int maxResults, int firstResult); 
-	 * x public List<Spotlight> findAll();
-	 * 
-	 */
-
+	
 	@Before
 	public void init() {
 		ApplicationContext appCtx = ContextUtil.getCtx();

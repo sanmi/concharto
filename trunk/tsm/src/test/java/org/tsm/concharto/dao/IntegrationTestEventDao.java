@@ -31,28 +31,19 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
-import org.tsm.concharto.OpenSessionInViewIntegrationTest;
-import org.tsm.concharto.dao.EventDao;
 import org.tsm.concharto.model.Event;
 import org.tsm.concharto.model.PositionalAccuracy;
 import org.tsm.concharto.model.UserTag;
 import org.tsm.concharto.model.wiki.WikiText;
-import org.tsm.concharto.util.ContextUtil;
 import org.tsm.concharto.web.util.CatalogUtil;
 
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 
 @Transactional
-public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
+public class IntegrationTestEventDao extends BaseEventIntegrationTest{
     private static final int MAX_RESULTS = 200;
-
-    private static EventDao eventDao;
-    private static EventTesterDao eventTesterDao;
-
-    private static EventUtil eventUtil;
 
     private Date begin;
     private Date end;
@@ -64,17 +55,12 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
         begin = cal.getTime();
         cal.set(Calendar.SECOND, 35);
         end = cal.getTime();
-        eventTesterDao.deleteAll();
+        getEventTesterDao().deleteAll();
     }
 
     @BeforeClass
     public static void setUpClass() {
-        ApplicationContext appCtx = ContextUtil.getCtx();
-        eventDao = (EventDao) appCtx.getBean("eventDao");
-        eventTesterDao = (EventTesterDao) appCtx.getBean("eventTesterDao");
-        eventUtil = new EventUtil(eventTesterDao.getSessionFactory());
-        eventTesterDao.deleteAll();
-        StyleUtil.setupStyle();
+        baseSetUpClass();
     }
 
     public void testFindRecent() {
@@ -85,17 +71,17 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
      */
     @Test
     public void testInitFindAll() {
-        eventTesterDao.deleteAll();
-        Collection<Event> events = eventDao.findRecent(MAX_RESULTS,0);
+        getEventTesterDao().deleteAll();
+        Collection<Event> events = getEventDao().findRecent(MAX_RESULTS,0);
         assertEquals(0, events.size());
     }
 
     @Test
     public void testSaveAndFindById() throws ParseException {
-        Event event = eventUtil.createEvent(begin, end);
-        Serializable id = eventDao.save(event);
+        Event event = getEventUtil().createEvent(begin, end);
+        Serializable id = getEventDao().save(event);
         assertNotNull(id);
-        Event returned = eventDao.findById((Long) id);
+        Event returned = getEventDao().findById((Long) id);
         if (returned.getTsGeometry().getGeometry() instanceof Point) {
             Point point = (Point) returned.getTsGeometry().getGeometry();
             assertTrue((event.getTsGeometry()).getGeometry().equals(point));
@@ -104,7 +90,7 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
             fail("should have been a point");
         }
         
-        eventUtil.assertEquivalent(event, returned);
+        getEventUtil().assertEquivalent(event, returned);
     }
 
     /*
@@ -112,17 +98,17 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
      */
     @Test
     public void testSaveAndResave() throws ParseException, InterruptedException {
-        Event event = eventUtil.createEvent(begin, end);
-        Serializable id = eventDao.save(event);
+        Event event = getEventUtil().createEvent(begin, end);
+        Serializable id = getEventDao().save(event);
         getSessionFactory().getCurrentSession().evict(event);  //only for unit testing since we are using OpenSessionInView paradigm
 
-        Event returned = eventDao.findById((Long) id);
+        Event returned = getEventDao().findById((Long) id);
         returned.setDescription("sdfsdf");
         Thread.sleep(1000);
-        eventDao.saveOrUpdate(returned);
+        getEventDao().saveOrUpdate(returned);
         getSessionFactory().getCurrentSession().evict(returned);
         
-        Event returned2 = eventDao.findById((Long) id);
+        Event returned2 = getEventDao().findById((Long) id);
         assertEquals(EventUtil.filterMilliseconds(event.getCreated()), returned.getCreated());
         //make sure the last modified dates are different for the two instances we edited
         assertTrue(returned.getLastModified().compareTo(returned2.getLastModified()) != 0);
@@ -132,13 +118,13 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
     public void findAll() throws ParseException, InterruptedException {
     	//create 3, one is invisible, so it shouldn't count in the resutls
     	//pause in between so the created dates are different
-        Event event = eventUtil.createEvent();
+        Event event = getEventUtil().createEvent();
         event.setVisible(false);
-        eventDao.save(event);
-        eventDao.save(eventUtil.createEvent());
+        getEventDao().save(event);
+        getEventDao().save(getEventUtil().createEvent());
         Thread.sleep(1000);
-        eventDao.save(eventUtil.createEvent());
-        List<Event> events = eventDao.findRecent(MAX_RESULTS,0);
+        getEventDao().save(getEventUtil().createEvent());
+        List<Event> events = getEventDao().findRecent(MAX_RESULTS,0);
         assertEquals(2, events.size());
         //ensure they are sorted in date order, newest first
         Event earlier = events.get(0);
@@ -148,60 +134,60 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
         			earlier.getCreated().after(event.getCreated()));
         	earlier = event;
         }        
-        assertEquals(2, (int)eventDao.getTotalCount());
+        assertEquals(2, (int)getEventDao().getTotalCount());
 
     }
 
     @Test
     public void testSaveOrUpdate() throws ParseException {
-        Event event = eventUtil.createEvent(begin, end);
-        eventDao.save(event);
+        Event event = getEventUtil().createEvent(begin, end);
+        getEventDao().save(event);
         String newDescription = "Sdfsdf ";
         event.setDescription(newDescription);
-        eventDao.saveOrUpdate(event);
-        Event returned = eventDao.findById(event.getId());
-        eventUtil.assertEquivalent(event, returned);
+        getEventDao().saveOrUpdate(event);
+        Event returned = getEventDao().findById(event.getId());
+        getEventUtil().assertEquivalent(event, returned);
     }
 
     @Test
     public void testDelete() throws ParseException {
-        Event event = eventUtil.createEvent();
-        Serializable id = eventDao.save(event);
-        eventDao.delete(event);
-        assertNull(eventDao.findById((Long) id));
+        Event event = getEventUtil().createEvent();
+        Serializable id = getEventDao().save(event);
+        getEventDao().delete(event);
+        assertNull(getEventDao().findById((Long) id));
     }
 
     @Test
     public void testDeleteById() throws ParseException {
-    	Event event = eventUtil.createEvent();
-        Serializable id = eventDao.save(event);
+    	Event event = getEventUtil().createEvent();
+        Serializable id = getEventDao().save(event);
         getSessionFactory().getCurrentSession().evict(event);
 
-        eventDao.delete((Long) id);
-        event = eventDao.findById((Long) id);
+        getEventDao().delete((Long) id);
+        event = getEventDao().findById((Long) id);
         assertNull(event);
     }
     
     @Test
     public void saveUpdateGetDiscussion() throws ParseException {
-    	Event event = eventUtil.createEvent();
+    	Event event = getEventUtil().createEvent();
     	WikiText discussion = new WikiText();
     	String text = "sdfgsdfgsdfgsdfg sdfg sdf gsdfg ";
     	discussion.setText(text);
     	event.setDiscussion(discussion);
-        eventDao.saveOrUpdate(event);
-        Event returned = eventDao.findById(event.getId());
+        getEventDao().saveOrUpdate(event);
+        Event returned = getEventDao().findById(event.getId());
         assertEquals(text, returned.getDiscussion().getText());    
         
         //update
         String updated = "gfdfgdfg 333";
         discussion.setText(updated);
-        eventDao.saveOrUpdate(discussion);
-        returned = eventDao.findById(event.getId());
+        getEventDao().saveOrUpdate(discussion);
+        returned = getEventDao().findById(event.getId());
         assertEquals(updated, returned.getDiscussion().getText());
         
         //get
-        discussion = eventDao.getDiscussion(returned.getId());
+        discussion = getEventDao().getDiscussion(returned.getId());
         assertEquals(updated, discussion.getText());
     }
     
@@ -209,27 +195,27 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
     public void positionalAccuracies() throws ParseException {
     	String name = "pretty good";
     	PositionalAccuracy pa = new PositionalAccuracy("first", true);
-    	eventDao.save(pa);
+    	getEventDao().save(pa);
 		pa = new PositionalAccuracy(name, true);
-    	eventDao.save(pa);
-    	assertEquals(2,eventDao.getPositionalAccuracies().size());
+    	getEventDao().save(pa);
+    	assertEquals(2,getEventDao().getPositionalAccuracies().size());
     	
-    	Event event = eventUtil.createEvent();
+    	Event event = getEventUtil().createEvent();
     	event.setPositionalAccuracy(pa);
-    	eventDao.saveOrUpdate(event);
-    	Event returned = eventDao.findById(event.getId());
+    	getEventDao().saveOrUpdate(event);
+    	Event returned = getEventDao().findById(event.getId());
     	assertEquals(name, returned.getPositionalAccuracy().getName());
     }
 
     @Test
     public void setUserTagsAsString() throws ParseException {
-    	Event event = eventUtil.createEvent();
+    	Event event = getEventUtil().createEvent();
     	
 		event.setUserTagsAsString("tag a, tag b, tag c, tag d");
-    	Long id = (Long) eventDao.save(event);
-    	Event returned = eventDao.findById(id);
-    	eventDao.saveOrUpdate(returned);
-    	assertEquals(new Long(4), eventTesterDao.getCount(UserTag.class));
+    	Long id = (Long) getEventDao().save(event);
+    	Event returned = getEventDao().findById(id);
+    	getEventDao().saveOrUpdate(returned);
+    	assertEquals(new Long(4), getEventTesterDao().getCount(UserTag.class));
     	
     	boolean found = false;
     	for(UserTag tag : returned.getUserTags()) {
@@ -241,26 +227,26 @@ public class IntegrationTestEventDao extends OpenSessionInViewIntegrationTest{
 
     	//now make sure we don't create orphaned UserTags
     	event.setUserTagsAsString("tag d, tag a, tag b, tag c");
-    	eventDao.saveOrUpdate(event);
-    	assertEquals(new Long(4), eventTesterDao.getCount(UserTag.class));
+    	getEventDao().saveOrUpdate(event);
+    	assertEquals(new Long(4), getEventTesterDao().getCount(UserTag.class));
 
     	event.setUserTagsAsString("tag d, tag a, tag b");
-    	eventDao.saveOrUpdate(event);
-    	assertEquals(new Long(3), eventTesterDao.getCount(UserTag.class));
+    	getEventDao().saveOrUpdate(event);
+    	assertEquals(new Long(3), getEventTesterDao().getCount(UserTag.class));
     }
     
     @Test
     public void testCatalog() throws ParseException {
     	for (int i=0; i<3; i++) {
-            eventDao.save(eventUtil.createEvent());
+            getEventDao().save(getEventUtil().createEvent());
     	}
-    	Event event = eventUtil.createEvent();
+    	Event event = getEventUtil().createEvent();
     	String catalog = "SDfsdf";
     	event.setCatalog(catalog);
-    	eventDao.save(event);
-    	assertEquals(1, eventDao.findRecent(catalog, 10, 0).size());
-    	assertEquals(3, eventDao.findRecent(CatalogUtil.CATALOG_WWW, 10, 0).size());    	
-    	assertEquals(new Integer(1), eventDao.getTotalCount(catalog));
-    	assertEquals(new Integer(3), eventDao.getTotalCount(CatalogUtil.CATALOG_WWW));
+    	getEventDao().save(event);
+    	assertEquals(1, getEventDao().findRecent(catalog, 10, 0).size());
+    	assertEquals(3, getEventDao().findRecent(CatalogUtil.CATALOG_WWW, 10, 0).size());    	
+    	assertEquals(new Integer(1), getEventDao().getTotalCount(catalog));
+    	assertEquals(new Integer(3), getEventDao().getTotalCount(CatalogUtil.CATALOG_WWW));
     }
 }

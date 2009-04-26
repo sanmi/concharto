@@ -44,26 +44,28 @@ public interface AuditEntryDao {
     /**
      * Get audit entries for a given user and auditable.  Paging fields allow returning
      * a subset of the results
+     * @param catalog the catalog for the entity 
      * @param user username
      * @param clazz class of auditable object (e.g. Event.class)
      * @param firstResult record to start the results at 
      * @param maxResults max results to return
      * @return list of AuditEntry objects ordered by most recent version
      */
-    public List<AuditUserChange> getAuditEntries(String user, Class<?> clazz, int firstResult, int maxResults);
+    public List<AuditUserChange> getAuditEntries(String catalog, String user, Class<?> clazz, int firstResult, int maxResults);
 
     /**
      * Get the latest changes
+     * @param catalog the catalog for the entity 
      * @param clazz class of auditable object (e.g. Event.class)
      * @param firstResult record to start the results at 
      * @param maxResults max results to return
      * @return list of AuditEntry objects ordered by most recent version
      */
-    public List<AuditUserChange> getLatestAuditEntries(Class<?> clazz, int firstResult, int maxResults);
+    public List<AuditUserChange> getLatestAuditEntries(String catalog, Class<?> clazz, int firstResult, int maxResults);
 
 	/**
 	 * Get the latest changes
-	 * @param catalog the catalog for the Event
+	 * @param catalog the catalog for the entity 
      * @param firstResult record to start the results at 
      * @param maxResults max results to return
      * @return list of AuditEntry objects ordered by most recent version
@@ -79,18 +81,20 @@ public interface AuditEntryDao {
 
     /**
      * Get the total number of AuditEntry objects available for a given user, Auditable
+     * @param catalog the catalog for the entity 
      * @param user username
      * @param clazz class of auditable object (e.g. Event.class)
      * @return total number of available AuditEntry objects 
      */
-    public Long getAuditEntriesCount(String user, Class<?> clazz);
+    public Long getAuditEntriesCount(String catalog, String user, Class<?> clazz);
 
     /**
      * Get the total number of AuditEntry objects available for a given user, Auditable
+     * @param catalog the catalog for the entity 
      * @param clazz class of auditable object (e.g. Event.class)
      * @return total number of available AuditEntry objects 
      */
-    public Long getAuditEntriesCount(Class<?> clazz);
+    public Long getAuditEntriesCount(String catalog, Class<?> clazz);
 
     public AuditFieldChange getAuditFieldChange(Long id);
 
