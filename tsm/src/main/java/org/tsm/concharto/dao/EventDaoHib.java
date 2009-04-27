@@ -117,7 +117,7 @@ public class EventDaoHib implements EventDao {
     @SuppressWarnings("unchecked")
     public List<Event> findRecent(int maxResults, int firstResult) {
         return this.sessionFactory.getCurrentSession().createQuery(
-                "select event from Event event " + HQL_VISIBLE_CLAUSE + "order by created desc")
+                "select event from Event event " + HQL_VISIBLE_CLAUSE + "order by created desc, sequence asc")
                 .setMaxResults(maxResults)
                 .setFirstResult(firstResult)
                 .list();

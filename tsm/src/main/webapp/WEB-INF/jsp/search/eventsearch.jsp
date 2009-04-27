@@ -119,12 +119,20 @@ limitations under the License.
 								<display:column autolink="true">
 									<div id="${event.id}" class="result wikitext">
 			            	<div>					           
-				          	<c:if test="${event.hasUnresolvedFlag}">
-					          	<a class="errorLabel" href="${basePath}event/changehistory.htm?id=${event.id}">Flagged! </a>
-				          	</c:if>
-					          <a class="summary" href="#" onclick="_overlayManager.openMarker(<c:out value='${event_rowNum-1}'/>); return false;">
-					          	<c:out value="${event.summary}"/></a></div>
-					          <div class="when"><c:out value="${event.when.asText}"/></div>
+  				          	<c:if test="${event.hasUnresolvedFlag}">
+  					          	<a class="errorLabel" href="${basePath}event/changehistory.htm?id=${event.id}">Flagged! </a>
+  				          	</c:if>
+  					          <a class="summary" href="#" onclick="_overlayManager.openMarker(<c:out value='${event_rowNum-1}'/>); return false;">
+  					          	<c:out value="${event.summary}"/></a>
+                    </div>
+					          <div class="when">
+                      <c:out value="${event.when.asText}"/>
+                      <small>
+                        <c:if test="${!(empty event.sequence)}">
+                          (<fmt:formatNumber type="number" value="${event.sequence}" />)
+                        </c:if>
+                      </small>
+                    </div>
 					          <span class="where">
 					          	<c:out value="${event.where}"/>
 					          	<c:if test="${null != event.positionalAccuracy.name}">

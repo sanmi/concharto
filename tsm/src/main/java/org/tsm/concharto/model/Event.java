@@ -76,6 +76,7 @@ public class Event extends BaseAuditableEntity {
     private WikiText discussion;
     private PositionalAccuracy positionalAccuracy;
     private String catalog;
+    private Double sequence;
     
     @Column(name = "_where", length=SZ_WHERE)  //'where' is a sql reserved word
     public String getWhere() {
@@ -314,5 +315,14 @@ public class Event extends BaseAuditableEntity {
 	public void setCatalog(String catalog) {
 		this.catalog = catalog;
 	}
+
+    @Index(name="sequenceindex")
+    public Double getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(Double sequence) {
+        this.sequence = sequence;
+    }
     
 }

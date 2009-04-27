@@ -43,6 +43,7 @@ public class EventFieldChangeFormatter extends BaseAuditFieldChangeFormatter{
     public static final int FLAGS = 9;
     public static final int DISCUSSION = 10;
     public static final int ZOOM_LEVEL = 11;
+    public static final int SEQUENCE = 12;
 	public static final String ENTITY_ADDED = "ADDED";
     protected final Log log = LogFactory.getLog(getClass());
 
@@ -90,6 +91,7 @@ public class EventFieldChangeFormatter extends BaseAuditFieldChangeFormatter{
         makeChange(POSITIONAL_ACCURACY, nullSafeToString(current.getPositionalAccuracy()), nullSafeToString(previous.getPositionalAccuracy()), auditEntry);
         makeChange(DISCUSSION, checkExists(current.getDiscussion()), checkExists(previous.getDiscussion()), auditEntry);
         makeChange(FLAGS, nullSafeToString(current.getHasUnresolvedFlag()), nullSafeToString(previous.getHasUnresolvedFlag()), auditEntry);
+        makeChange(SEQUENCE, nullSafeToString(current.getSequence()), nullSafeToString(previous.getSequence()), auditEntry);
         return auditEntry;
     }
     
@@ -110,18 +112,19 @@ private String nullSafeToString(PositionalAccuracy positionalAccuracy) {
 	}
 
    /**
-    * null safe to string or integer
-    * @param value an Integer
-    * @return "" or string representation of the Integer
+    * null safe to string or number
+    * @param value an Number
+    * @return "" or string representation of the Number
     */ 
-   private String nullSafeToString(Integer value) {
+   private String nullSafeToString(Number value) {
 		if (value == null) {
 			return "";
 		}
 		return value.toString();
 	}
 
-/**
+
+   /**
     * @param discussion
     * @return "" if value is null, "added" if there is a value
     */
@@ -171,6 +174,8 @@ private String nullSafeToString(PositionalAccuracy positionalAccuracy) {
 				} catch (NumberFormatException e) {
 					//nothing to do, just leave it null
 				}
+            } else if (field == SEQUENCE) {
+                event.setSequence(new Double(change));
 			} //NOTE you can't revert flags or discussions.
 		}
 		return event;

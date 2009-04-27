@@ -249,4 +249,27 @@ public class IntegrationTestEventDao extends BaseEventIntegrationTest{
     	assertEquals(new Integer(1), getEventDao().getTotalCount(catalog));
     	assertEquals(new Integer(3), getEventDao().getTotalCount(CatalogUtil.CATALOG_WWW));
     }
+
+    @Test
+    public void testSequence() throws ParseException {
+        for (int i=0; i<3; i++) {
+            Event event = getEventUtil().createEvent();
+            event.setSequence(i+1D);
+            event.setSummary(new Integer(i+1).toString());
+            getEventDao().save(event);
+        }
+        Event event = getEventUtil().createEvent();
+        String catalog = "SDfsdf";
+        event.setCatalog(catalog);
+        String summary = "sequence";
+        event.setSummary(summary);
+        event.setSequence(0D);
+        getEventDao().save(event);
+        assertEquals(1, getEventDao().findRecent(catalog, 10, 0).size());
+        assertEquals(3, getEventDao().findRecent(CatalogUtil.CATALOG_WWW, 10, 0).size());    	
+        assertEquals(new Integer(1), getEventDao().getTotalCount(catalog));
+        assertEquals(new Integer(3), getEventDao().getTotalCount(CatalogUtil.CATALOG_WWW));
+        List<Event> events = getEventDao().findRecent(10, 0);
+        assertEquals(summary, events.get(0).getSummary());
+    }
 }
