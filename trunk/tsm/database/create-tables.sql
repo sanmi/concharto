@@ -28,6 +28,7 @@
         description varchar(2048),
         hasUnresolvedFlag bit,
         mapType integer,
+        sequence double precision,
         snippet varchar(1024),
         source varchar(1024),
         summary varchar(512),
@@ -36,12 +37,12 @@
         positive integer,
         _where varchar(512),
         zoomLevel integer,
-        styleSelector_id bigint,
         discussion_id bigint,
         tsGeometry_id bigint,
-        positionalAccuracy_id bigint,
+        styleSelector_id bigint,
         when_id bigint,
         eventSearchText_id bigint,
+        positionalAccuracy_id bigint,
         primary key (id)
     );
 
@@ -235,6 +236,8 @@
 
     create index catalogindex on Event (catalog);
 
+    create index sequenceindex on Event (sequence);
+
     alter table Event 
         add index FK_EVENT_EVENTSEARCHTEXT (eventSearchText_id), 
         add constraint FK_EVENT_EVENTSEARCHTEXT 
@@ -242,16 +245,16 @@
         references EventSearchText (id);
 
     alter table Event 
-        add index FK_EVENT_GEOM (tsGeometry_id), 
-        add constraint FK_EVENT_GEOM 
-        foreign key (tsGeometry_id) 
-        references TsGeometry (id);
-
-    alter table Event 
         add index FK_EVENT_STYLE (styleSelector_id), 
         add constraint FK_EVENT_STYLE 
         foreign key (styleSelector_id) 
         references StyleSelector (id);
+
+    alter table Event 
+        add index FK_EVENT_GEOM (tsGeometry_id), 
+        add constraint FK_EVENT_GEOM 
+        foreign key (tsGeometry_id) 
+        references TsGeometry (id);
 
     alter table Event 
         add index FK_EVENT_TIMEPR (when_id), 

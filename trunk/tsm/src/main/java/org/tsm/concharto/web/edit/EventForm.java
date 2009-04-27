@@ -35,6 +35,7 @@ public class EventForm {
     private String where;
     private Long positionalAccuracy;
     private TimeRange when;
+    private Double sequence;
     private String source;
     private String geometryType;
     private Geometry geometry;
@@ -112,6 +113,14 @@ public class EventForm {
 
     public void setWhen(TimeRange when) {
         this.when = when;
+    }
+
+    public Double getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(Double sequence) {
+        this.sequence = sequence;
     }
 
     public String getWhere() {

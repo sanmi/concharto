@@ -87,6 +87,13 @@ limitations under the License.
 		        <form:input cssClass="textInput expando" path="when" />
    		    </div>
    		    <div class="inputcell">
+		        <span class="errorlabel"><form:errors path="sequence" element="div"/></span>
+		        <span class="inputlabel">Sequence</span> 
+	          <small>
+	            of events within the same time frame
+	          </small> <form:input cssClass="textInput sequence" path="sequence" />
+   		    </div>
+   		    <div class="inputcell">
 		        <span class="errorlabel"><form:errors path="where" element="div"/></span>
    		    	<span class="inputlabel">Where</span>
 	          <small>e.g., "gettysburg, pa" <a href="${basePath}help.htm?name=where" class="link_help">hint</a></small><br/>

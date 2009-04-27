@@ -46,6 +46,7 @@ public class EventFormFactory {
         event.setTsGeometry(new TsGeometry(eventForm.getGeometry()));
         event.setUserTagsAsString(eventForm.getTags());
         event.setWhen(eventForm.getWhen());
+        event.setSequence(eventForm.getSequence());
         event.setZoomLevel(eventForm.getZoomLevel());
         event.setMapType(eventForm.getMapType());
         PositionalAccuracy pa = new PositionalAccuracy();
@@ -63,6 +64,7 @@ public class EventFormFactory {
         eventForm.setSource(event.getSource());
         eventForm.setWhere(event.getWhere());
         eventForm.setWhen(event.getWhen());
+        eventForm.setSequence(event.getSequence());
         eventForm.setZoomLevel(event.getZoomLevel());
         eventForm.setMapType(event.getMapType());
         if (null != event.getPositionalAccuracy()) {

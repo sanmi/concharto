@@ -98,7 +98,7 @@ public class EventSearchServiceHib implements EventSearchService {
      * NOTE: be careful about this order by clause because it can break indexed searches
      * @see EventSearchServiceHib.sortResults()
      */
-    private static final String SQL_ORDER_CLAUSE = " order by t.begin asc";
+    private static final String SQL_ORDER_CLAUSE = " order by t.begin asc ";
 
     /*
      * (non-Javadoc)
@@ -300,8 +300,17 @@ public class EventSearchServiceHib implements EventSearchService {
 					//dates are different
 					return dateCompare;
 				} else {
-					//dates are the same, sort by summary
-					return o1.getSummary().compareTo(o2.getSummary());
+				    //sort by sequence
+				    int sequenceCompare = 0;
+				    if (( o1.getSequence() != null) && (o2.getSequence() != null)) {
+	                    sequenceCompare = o1.getSequence().compareTo(o2.getSequence());
+				    } 
+				    if (sequenceCompare != 0) {
+				        return sequenceCompare;
+				    } else {
+	                    //dates are the same, sort by summary
+	                    return o1.getSummary().compareTo(o2.getSummary());
+				    }
 				}
 			}
 		});

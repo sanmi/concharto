@@ -287,7 +287,7 @@ public class AuditEntryDaoHib implements AuditEntryDao {
         return query;
 	}
 	/*
-	 * @see org.tsm.concharto.dao.AuditEntryDao#getLatestAuditEntries(java.lang.Class, int, int)
+	 * @see org.tsm.concharto.dao.AuditEntryDao#getLatestAuditEntries(String, java.lang.Class, int, int)
 	 */
 	public List<AuditUserChange> getLatestAuditEntries(String catalog, Class<?> clazz,
 			int firstResult, int maxResults) {
@@ -308,23 +308,11 @@ public class AuditEntryDaoHib implements AuditEntryDao {
 		return handler.getAuditUserChanges(RECENT_AUDIT_USERCHANGE_SQL);
 	}
 
+    /*
+     * @see org.tsm.concharto.dao.AuditEntryDao#getLatestAuditEntries(String, int, int)
+     */
 	public List<AuditUserChange> getLatestEventEntries(String catalog, int firstResult, int maxResults) {
-
-		AuditEntryQueryHandler handler = 
-			new AuditEntryQueryHandler(sessionFactory, catalog, null, Event.class, firstResult, maxResults) {
-			public Query getAuditEntriesQuery(Session session, String sql) {		
-				Query query = session.createSQLQuery(sql)
-	        	.addEntity("a", AuditEntry.class)
-	        	.addEntity("e", clazz)
-	        	.setString(FIELD_CLASS_NAME, clazz.getSimpleName())
-	            .setFirstResult(firstResult)
-	            .setMaxResults(maxResults);
-				addCatalog(query, catalog, clazz);
-				return query;
-			}
-		};
-			
-		return handler.getAuditUserChanges(RECENT_AUDIT_USERCHANGE_SQL);
+	    return getLatestAuditEntries(catalog, Event.class, firstResult, maxResults);
 	}
 
 	/*

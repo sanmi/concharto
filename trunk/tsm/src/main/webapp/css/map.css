@@ -55,6 +55,11 @@
 #sidebar .inputcell .textInput {
 	font: 10pt Arial, Helvetica, sans-serif;
 }
+#sidebar .inputcell .sequence {
+  width:4em;
+  margin-left: 1em;
+}
+
 #sidebar .inputcell select {
 	margin-left: 1em;
 }
