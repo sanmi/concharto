@@ -34,8 +34,8 @@ import org.tsm.concharto.dao.EventDao;
 import org.tsm.concharto.model.Spotlight;
 import org.tsm.concharto.model.time.TimeRange;
 import org.tsm.concharto.service.SpotlightService;
-import org.tsm.concharto.service.TagAggregateService;
-import org.tsm.concharto.service.TagCloudEntry;
+import org.tsm.concharto.service.tagCloud.TagAggregateService;
+import org.tsm.concharto.service.tagCloud.TagCloudEntry;
 import org.tsm.concharto.web.eventsearch.SearchHelper;
 import org.tsm.concharto.web.util.CatalogUtil;
 
@@ -122,14 +122,14 @@ public class HomeController extends SimpleFormController {
 
     @SuppressWarnings("unchecked")
     private void setupTagIndex(HttpServletRequest request, Map model) {
-        SortedMap<TimeRange, List<TagCloudEntry>> tagIndex = tagAggregateService.getTagIndex();
+        SortedMap<TimeRange, List<TagCloudEntry>> tagIndex = tagAggregateService.getTagIndex(CatalogUtil.getCatalog(request));
         model.put(MODEL_TAG_INDEX, tagIndex);
     }
 
     @SuppressWarnings("unchecked")
     private void setupTagCloud(HttpServletRequest request, Map model) {
-        List<TagCloudEntry> tagCloud = tagAggregateService.getTagCloud();
-        model.put(MODEL_TAG_CLOUD, tagCloud);
+        List<TagCloudEntry> recentTagCloud = tagAggregateService.getRecent(CatalogUtil.getCatalog(request));
+        model.put(MODEL_TAG_CLOUD, recentTagCloud);
         model.put(MODEL_TAG_DAYS_BACK, tagAggregateService.getDefaultDaysBack());
     }
 

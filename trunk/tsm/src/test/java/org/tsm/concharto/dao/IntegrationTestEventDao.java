@@ -189,6 +189,10 @@ public class IntegrationTestEventDao extends BaseEventIntegrationTest{
         //get
         discussion = getEventDao().getDiscussion(returned.getId());
         assertEquals(updated, discussion.getText());
+        
+        //get by discussion id
+        Event foundByDiscussion = getEventDao().findByDiscussionId(discussion.getId());
+        assertEquals(returned.getId(), foundByDiscussion.getId());
     }
     
     @Test
@@ -271,5 +275,10 @@ public class IntegrationTestEventDao extends BaseEventIntegrationTest{
         assertEquals(new Integer(3), getEventDao().getTotalCount(CatalogUtil.CATALOG_WWW));
         List<Event> events = getEventDao().findRecent(10, 0);
         assertEquals(summary, events.get(0).getSummary());
+    }
+    
+    @Test
+    public void testFindByDiscussionId() {
+    	
     }
 }

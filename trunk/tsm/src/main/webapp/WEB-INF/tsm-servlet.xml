@@ -204,6 +204,7 @@
     <property name="formView" value="edit/event" />
     <property name="successView" value="redirect:/search/eventsearch.htm" />
     <property name="eventDao" ref="eventDao" />
+    <property name="tagAggregateService" ref="tagAggregateService" />
     <property name="validator" ref="eventFormValidator"/>
   </bean>
 

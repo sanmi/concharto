@@ -192,4 +192,17 @@ public class EventDaoHib implements EventDao {
 		return (PositionalAccuracy) this.sessionFactory.getCurrentSession().load(PositionalAccuracy.class, id);
 	}
 
+	@SuppressWarnings("unchecked")
+	public Event findByDiscussionId(Long discussionId) {
+		List results = this.sessionFactory.getCurrentSession()
+		.createQuery("select ev from Event ev where ev.discussion.id = ?")
+    	.setLong(0, discussionId)
+    	.list();
+    	if (0 == results.size()) {
+    		return null;
+    	} else {
+    		return (Event) results.get(0);
+    	}
+	}
+
 }

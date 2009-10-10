@@ -33,6 +33,7 @@ import org.tsm.concharto.dao.WikiTextDao;
 import org.tsm.concharto.model.Auditable;
 import org.tsm.concharto.model.Event;
 import org.tsm.concharto.model.audit.AuditEntry;
+import org.tsm.concharto.model.wiki.WikiText;
 import org.tsm.concharto.web.util.CatalogUtil;
 import org.tsm.concharto.web.util.DisplayTagHelper;
 import org.tsm.concharto.web.wiki.WikiConstants;
@@ -47,7 +48,8 @@ public class ChangeHistoryControllerHelper {
     private static final String MODEL_ID = "id";
     private static final String MODEL_USER = "user";
     private static final String MODEL_AUDIT_ENTRIES = "auditEntries";
-	private static final String MODEL_USER_CHANGES = "userChanges";
+    private static final String MODEL_EVENT_CHANGES = "userChanges";
+    private static final String MODEL_WIKI_CHANGES = "wikiChanges";
     private static final String DISPLAYTAG_TABLE_ID = "simpleTable";
 	private static final String MODEL_EVENT_ID = "eventId";
 	private static final String MODEL_EVENT = "event";
@@ -112,18 +114,21 @@ public class ChangeHistoryControllerHelper {
         	//we are doing history for a user
         	List<AuditUserChange> userChanges = auditEntryDao.getAuditEntries(catalog, user, clazz, firstRecord, pageSize);
             totalResults = auditEntryDao.getAuditEntriesCount(catalog, user, clazz);
-            model.put(MODEL_USER_CHANGES, userChanges);
+            model.put(MODEL_EVENT_CHANGES, userChanges);
     		Set<String> titles = new HashSet<String>();
     		addTitle(titles, user);
     		updateModelUserPages(model, titles);
         } else {
         	//just get everything
-        	List<AuditUserChange> userChanges = 
+        	List<AuditUserChange> eventChanges = 
         		auditEntryDao.getLatestEventEntries(catalog, firstRecord, pageSize);
+            List<AuditUserChange> wikiChanges = 
+                auditEntryDao.getLatestAuditEntries(catalog, WikiText.class, firstRecord, pageSize);
             totalResults = auditEntryDao.getAuditEntriesCount(catalog, Event.class);
-            model.put(MODEL_USER_CHANGES, userChanges);
+            model.put(MODEL_EVENT_CHANGES, eventChanges);
+            model.put(MODEL_WIKI_CHANGES, wikiChanges);
     		Set<String> titles = new HashSet<String>();
-    		for (AuditUserChange auditUserChange : userChanges) {
+    		for (AuditUserChange auditUserChange : eventChanges) {
     			addTitle(titles, auditUserChange.getAuditEntry().getUser());
     		}
     		updateModelUserPages(model, titles);

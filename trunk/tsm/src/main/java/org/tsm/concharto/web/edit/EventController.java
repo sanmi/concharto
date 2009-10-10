@@ -31,6 +31,7 @@ import org.tsm.concharto.dao.EventDao;
 import org.tsm.concharto.model.Event;
 import org.tsm.concharto.model.PositionalAccuracy;
 import org.tsm.concharto.model.time.TimeRange;
+import org.tsm.concharto.service.tagCloud.TagAggregateService;
 import org.tsm.concharto.util.GeometryType;
 import org.tsm.concharto.util.JSONFormat;
 import org.tsm.concharto.util.SensibleMapDefaults;
@@ -47,12 +48,17 @@ public class EventController extends SimpleFormController {
 	public static final String SESSION_EVENT = "EVENT";
 	private static final String PARAM_ID = "id";
     EventDao eventDao;
+    TagAggregateService tagAggregateService = new TagAggregateService();    
 
     public void setEventDao(EventDao eventDao) {
         this.eventDao = eventDao;
     }
     
-    @Override
+    public void setTagAggregateService(TagAggregateService tagAggregateService) {
+		this.tagAggregateService = tagAggregateService;
+	}
+
+	@Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder)
             throws Exception {
         binder.registerCustomEditor(TimeRange.class, new TimeRangePropertyEditor());
@@ -161,6 +167,9 @@ public class EventController extends SimpleFormController {
             //get the catalog from the URL
             event.setCatalog(CatalogUtil.getCatalog(request));
             this.eventDao.saveOrUpdate(event);
+            //update the tag cloud
+            this.tagAggregateService.refreshRecent(CatalogUtil.getCatalog(request));
+            //update the session
             eventSearchForm.setDisplayEventId(event.getId()); //we want to show only the event we've just edited  
             WebUtils.setSessionAttribute(request, SESSION_EVENT, event);
             WebUtils.setSessionAttribute(request, SearchHelper.SESSION_EVENT_SEARCH_FORM, eventSearchForm);

@@ -32,7 +32,8 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 	<jsp:attribute name="bodyattr"></jsp:attribute>
 	
 	<jsp:body>
-		
+
+    <!--  EVENTS -->		
 		<div class="textpanel">			
 			<h2>Latest Changes</h2>
 			
@@ -79,5 +80,51 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
 		 	</display:table>		
 
 		</div>	  	
+
+    <!--  WIKITEXT -->
+    <div class="textpanel">     
+      <h2>Discussion Changes</h2>
+      
+      <display:table id="simpleTable" 
+                name="wikiChanges" 
+                sort="list" 
+                requestURI="${requestURI}"
+                pagesize="${pagesize}"
+                partialList="true" 
+                size="${totalResults}"            
+                >
+        <display:setProperty name="basic.msg.empty_list">There have been no edits</display:setProperty>
+        <display:setProperty name="paging.banner.placement">both</display:setProperty>
+        <display:setProperty name="paging.banner.item_name">Edit</display:setProperty>
+        <display:setProperty name="paging.banner.items_name">Edits</display:setProperty>
+        <display:setProperty name="paging.banner.onepage">&nbsp;</display:setProperty>
+        <display:setProperty name="paging.banner.no_items_found">&nbsp;</display:setProperty>
+        <display:setProperty name="paging.banner.one_item_found">&nbsp;</display:setProperty>
+        <display:setProperty name="paging.banner.all_items_found">&nbsp;</display:setProperty>
+        <display:setProperty name="paging.banner.some_items_found">&nbsp;</display:setProperty>
+        <display:column >
+          <fmt:formatDate value="${simpleTable.auditEntry.dateCreated}" pattern="MMM dd, yyyy hh:mm a z"/>,
+          <jsp:include page="../include/userlinks.jsp">
+            <jsp:param name="user" value="${simpleTable.auditEntry.user}"/>
+          </jsp:include>
+          <%-- If the title has text it is a page, otherwise it is an event discussion --%>
+          <c:choose>
+            <c:when test="${not empty simpleTable.auditable.title}">
+		          (<a href="${basePath}page.htm?page=${simpleTable.auditable.title}">view</a> |
+		          <a href="${basePath}pagehistory.htm?id=${simpleTable.auditEntry.entityId}&page=${simpleTable.auditable.title}">changes</a>),
+            </c:when>
+            <c:otherwise>
+              (<a href="${basePath}event/discuss.htm?discussionId=${simpleTable.auditEntry.entityId}">view</a> |
+              <a href="${basePath}event/discusshistory.htm?id=${simpleTable.auditEntry.entityId}&discussionId=${simpleTable.auditEntry.entityId}">changes</a>),
+            </c:otherwise>
+          </c:choose>
+          ,(<spring:message code="audit.action.field.${simpleTable.auditEntry.action}"/>
+          r${simpleTable.auditEntry.version})             
+          , ${simpleTable.auditable.title} : ${fn:substring(simpleTable.auditable.text,0,100)}
+        </display:column>
+      </display:table>    
+
+    </div>      
+
 	</jsp:body>
 </tsm:page>

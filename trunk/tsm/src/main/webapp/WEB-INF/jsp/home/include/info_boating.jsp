@@ -13,13 +13,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 --%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib tagdir="/WEB-INF/tags" prefix="tsm" %>
+<h1>Geographic Wiki for Boaters</h1>
+<p>A boating geographic community</p>
+<table style="height:400px"><tr>
+  <td>
+    <ul>
+      <li><a href="http://wiki.concharto.com/wiki/Guidelines">Policies and guidelines</a></li>
+      <li><a href="http://wiki.concharto.com/wiki/About">About Concharto</a></li>
+    </ul>
+  </td>
+  <td>
+    <ul>
+      <li><a href="${basePath}list/recent.htm">Recently added</a></li>
+      <li><a href="${basePath}event/latestchanges.htm">Latest changes</a></li>
+    </ul>
+  </td>
+</tr></table>
 
-<h2>Recently created event tags:</h2>
-<c:forEach items="${tagCloud}" var="entry">
-
-<c:set var="tag" value="${entry.tag}" />
-  <tsm:rendertag name="${entry.tag}" tagCloudEntry="${entry}"/>
-</c:forEach>

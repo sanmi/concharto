@@ -13,13 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 --%>
+<%@tag description="renderEventTag" pageEncoding="UTF-8"%>
+<%@attribute name="name" required="true" type="java.lang.String"%>
+<%@attribute name="tagCloudEntry" required="true" type="org.tsm.concharto.service.tagCloud.TagCloudEntry"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib tagdir="/WEB-INF/tags" prefix="tsm" %>
-
-<h2>Recently created event tags:</h2>
-<c:forEach items="${tagCloud}" var="entry">
-
-<c:set var="tag" value="${entry.tag}" />
-  <tsm:rendertag name="${entry.tag}" tagCloudEntry="${entry}"/>
-</c:forEach>
+<a href='${basePath}<c:url value="search/eventsearch.htm"></c:url>?_tag=<c:out value="${tagCloudEntry.tag}"/>'><span style="font-size: <c:out value='${tagCloudEntry.fontSize}'/>pt"><c:out value="${tagCloudEntry.tag}"/></span></a>&nbsp;&nbsp;

@@ -13,6 +13,7 @@ Prerequisites
 
 Optional
 * MyEclipse IDE 
+* MyEclipse subversion support
 
 1. Install Prerequisites
 

@@ -126,8 +126,9 @@ limitations under the License.
         <div id="mainpane">
           <jsp:include page="include/spotlight.jsp"/>
           <div class="recent" >
+            
             <div class="infopane" id="info" style="display: ${selectedTab == 'info' ? 'inline' : 'none'}">
-              <jsp:include page="include/info.jsp"/>
+              <jsp:include page="include/info_${catalog}.jsp"/>
             </div>
             <div class="infopane" id="latest" style="display: ${selectedTab == 'latest' ? 'inline' : 'none'}">
               <jsp:include page="include/latest.jsp"/>
