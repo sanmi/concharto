@@ -83,12 +83,12 @@ public class IntegrationTestAuditEntriyDao extends BaseEventIntegrationTest {
         assertEquals(2, auditEntryDao.getAuditEntries(visibleEvent, FIRST_RESULT, MAX_RESULTS).size());
         assertEquals(3, auditEntryDao.getAuditEntries(CATALOG1, USERNAME1, Event.class, FIRST_RESULT, MAX_RESULTS).size());
         assertEquals(1, auditEntryDao.getAuditEntries(CATALOG1, USERNAME2, Event.class, FIRST_RESULT, MAX_RESULTS).size());
-        assertEquals(2L, auditEntryDao.getAuditEntriesCount(visibleEvent));
-        assertEquals(1L, auditEntryDao.getAuditEntriesCount(hiddenEvent));
+        assertEquals(new Long(2), auditEntryDao.getAuditEntriesCount(visibleEvent));
+        assertEquals(new Long(1), auditEntryDao.getAuditEntriesCount(hiddenEvent));
         assertEquals(1, auditEntryDao.getAuditEntries(hiddenEvent, FIRST_RESULT, MAX_RESULTS).size());
 
-        assertEquals(4L, auditEntryDao.getAuditEntriesCount(CATALOG1, Event.class));
-        assertEquals(3L, auditEntryDao.getAuditEntriesCount(CATALOG1, USERNAME1, Event.class));
+        assertEquals(new Long(4), auditEntryDao.getAuditEntriesCount(CATALOG1, Event.class));
+        assertEquals(new Long(3), auditEntryDao.getAuditEntriesCount(CATALOG1, USERNAME1, Event.class));
     }
 
     private Event makeEvent(Boolean visible) throws ParseException {

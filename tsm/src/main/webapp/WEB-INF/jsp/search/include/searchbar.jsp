@@ -22,12 +22,26 @@ limitations under the License.
     <div id="addbox">
       <span class="biglink"><a href="#" onclick="editEvent(''); return false;">Add to the Map...</a></span>
     </div>
-    <div id="search_tagline">
-    	An encyclopedic atlas of history and happenings that anyone can edit.
-      <c:if test="${(not empty totalEvents )}">
-        <div id="totals"> <a href='${basePath}search/eventsearch.htm?_what='><b>${totalEvents}</b> events and counting...</a> </div>
-      </c:if>
-    </div>      
+      <%--  if the catalog is www (e.g. www.concharto.com, we use "History" otherwise we use
+            the catalog name --%>
+      <c:choose>
+      	<c:when test="${catalog == 'www'}">
+          <div id="search_tagline">
+            An encyclopedic atlas of history and happenings that anyone can edit.
+            <c:if test="${(not empty totalEvents )}">
+              <div id="totals"> <a href='${basePath}search/eventsearch.htm?_what='><b>${totalEvents}</b> events and counting...</a> </div>
+            </c:if>
+          </div>      
+        </c:when>
+        <c:otherwise>
+          <span id="catalog_heading">
+            <c:out value="${catalog}"/>&nbsp;
+            <c:if test="${(not empty totalEvents )}">
+              <span id="totals"> <a href='${basePath}search/eventsearch.htm?_what='><b>${totalEvents}</b> events and counting...</a> </span>
+            </c:if>
+          </span>
+        </c:otherwise>
+      </c:choose>
     <div id="searchbox">
       <table>
         <tr>

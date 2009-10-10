@@ -60,4 +60,5 @@ public interface EventDao {
 	
 	public PositionalAccuracy getPositionalAccuracy(Long id);
 	
+	public Event findByDiscussionId(Long id);
 }

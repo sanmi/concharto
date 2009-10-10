@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.tsm.concharto.model.UserTag;
 import org.tsm.concharto.model.time.TimeRange;
+import org.tsm.concharto.service.tagCloud.TagCloudEntry;
 
 
 /**
@@ -31,19 +32,26 @@ public interface UserTagDao extends BaseDao <UserTag>{
      * @param daysBack number days in the past to search
      * @return a map of occurrences of tags keyed by tag name ordered by tag name ascending
      */
-    public List<Object[]> getTagCounts(int daysBack);
+    public List<TagCloudEntry> getTagCounts(int daysBack);
     
     /**
      * Gets aggregate tag counts for tags created within the given time range
      * @param timeRange time range to search
      * @return a map of occurrences of tags keyed by tag name ordered by tag name ascending
      */
-    public List<Object[]> getTagCounts(TimeRange timeRange); 
+    public List<TagCloudEntry> getTagCounts(TimeRange timeRange); 
 
     /**
      * Gets aggregate tag counts associated with events with begin date in the given time range
      * @param timeRange time range to search
      * @return a map of occurrences of tags keyed by tag name ordered by event begin date ascending
      */
-    public List<Object[]> getTagCountsByEventBeginDate(TimeRange timeRange); 
+    public List<TagCloudEntry> getTagCountsByEventBeginDate(TimeRange timeRange);
+    
+    /**
+     * Gets the list of distinct catalogs for all user tags.  Note that this should be reworked
+     * if the list gets to be a million or so Events - that would be nice.
+     * @return a list of distinct catalogs
+     */
+    public List<String> getDistinctCatalogs();
 }

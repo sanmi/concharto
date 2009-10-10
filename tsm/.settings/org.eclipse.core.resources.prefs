@@ -1,4 +1,4 @@
-#Sun Jan 11 20:25:53 EST 2009
+#Fri May 01 07:30:26 EDT 2009
 eclipse.preferences.version=1
 encoding//src/lab/html/maplet/marker-simple.xml=UTF-8
 encoding//src/main/webapp/WEB-INF/hibernate.cfg.xml=UTF-8
@@ -22,7 +22,7 @@ encoding//src/main/webapp/WEB-INF/jsp/event/include/showsummary.jsp=ISO-8859-1
 encoding//src/main/webapp/WEB-INF/jsp/event/latestchanges.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/jsp/help.jsp=ISO-8859-1
 encoding//src/main/webapp/WEB-INF/jsp/home/home.jsp=UTF-8
-encoding//src/main/webapp/WEB-INF/jsp/home/include/info.jsp=ISO-8859-1
+encoding//src/main/webapp/WEB-INF/jsp/home/include/info_www.jsp=ISO-8859-1
 encoding//src/main/webapp/WEB-INF/jsp/home/include/latest.jsp=ISO-8859-1
 encoding//src/main/webapp/WEB-INF/jsp/home/include/spotlight.jsp=ISO-8859-1
 encoding//src/main/webapp/WEB-INF/jsp/home/include/tagindex.jsp=ISO-8859-1

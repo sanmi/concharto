@@ -65,3 +65,17 @@
 	#memberForm input{
 	font: 10pt Arial, Helvetica, sans-serif;
 	}
+	#catalog_heading {
+  color: #4D4D4D;
+  font: italic 700 28pt Georgia, "Times New Roman", Times, serif;
+  text-align: left;
+  position: relative;
+  padding: 0;
+  left: 270px;
+  top: 14px;
+  padding-right: 20px;
+  width: auto;
+  right: auto;
+}
+
+	

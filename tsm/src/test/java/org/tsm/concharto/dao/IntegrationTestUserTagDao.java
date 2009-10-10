@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.tsm.concharto.dao.UserTagDao;
 import org.tsm.concharto.model.UserTag;
+import org.tsm.concharto.service.tagCloud.TagCloudEntry;
 import org.tsm.concharto.util.ContextUtil;
 import org.tsm.concharto.util.TimeRangeFormat;
 
@@ -66,10 +67,10 @@ public class IntegrationTestUserTagDao {
         userTag.setCreated(cal.getTime());
         userTagDao.saveOrUpdate(userTag);
         
-        List<Object[]> tagCounts = userTagDao.getTagCounts(20);
+        List<TagCloudEntry> tagCloudEntries = userTagDao.getTagCounts(20);
         //results are in alphabetic order
-        assertEquals(BigInteger.valueOf(2), tagCounts.get(0)[1]);
-        assertEquals(BigInteger.valueOf(1), tagCounts.get(1)[1]);
+        assertEquals(BigInteger.valueOf(2), tagCloudEntries.get(0).getCount());
+        assertEquals(BigInteger.valueOf(1), tagCloudEntries.get(1).getCount());
         
         assertEquals(4, userTagDao.findAll(50).size());
         

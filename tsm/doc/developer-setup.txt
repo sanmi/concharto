@@ -14,7 +14,7 @@ Optional
 mysql> create database tsm_dev;
 mysql> create database tsm_test;
 mysql> grant all privileges on tsm_dev.* to 'tsm_dev_user'@'localhost' identified by 'tsm_dev_user';
-mysql> grant all privileges on tsm_test.* to 'tsm_test_user'@'localhost' identified by 'tsm_test_user';
+mysql> grant all privileges on tsm_test_prod.* to 'tsm_test_user'@'localhost' identified by 'tsm_test_user';
 
 3. create the shema
 $ ant create-db-dev

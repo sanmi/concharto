@@ -13,13 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.tsm.concharto.service;
+package org.tsm.concharto.service.tagCloud;
+
+import java.math.BigInteger;
 
 /**
  * A single entry in the tag cloud
  */
 public class TagCloudEntry {
     
+    String tag;
+	BigInteger count;
+	public BigInteger getCount() {
+		return count;
+	}
+	public void setCount(BigInteger count) {
+		this.count = count;
+	}
+	public String getCatalog() {
+		return catalog;
+	}
+	public void setCatalog(String catalog) {
+		this.catalog = catalog;
+	}
+	String catalog;
+    Integer fontSize;
     public TagCloudEntry() {
         super();
     }
@@ -28,8 +46,6 @@ public class TagCloudEntry {
         this.tag = tag;
         this.fontSize = fontSize;
     }
-    String tag;
-    Integer fontSize;
     public String getTag() {
         return tag;
     }

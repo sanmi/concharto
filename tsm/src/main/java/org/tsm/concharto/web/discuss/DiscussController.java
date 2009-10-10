@@ -33,6 +33,7 @@ import org.tsm.concharto.web.wiki.SubstitutionMacro;
 public class DiscussController extends SimpleFormController {
 	
 	private static final String PARAM_ID = "id"; 
+	private static final String PARAM_DISCUSSION_ID = "discussionId"; 
 	private EventDao eventDao;
 	
 	public void setEventDao(EventDao eventDao) {
@@ -43,7 +44,15 @@ public class DiscussController extends SimpleFormController {
 	protected Object formBackingObject(HttpServletRequest request)
 			throws Exception {
         Long id = ServletRequestUtils.getLongParameter(request, PARAM_ID);
-        Event event = eventDao.findById(id);
+        Event event = null;
+        if (id != null) {
+            event = eventDao.findById(id);        	
+        } else {
+            Long discussId = ServletRequestUtils.getLongParameter(request, PARAM_DISCUSSION_ID);
+        	if (discussId != null) {
+        		event = eventDao.findByDiscussionId(discussId);
+        	}
+        }
         if (null == event.getDiscussion()) {
         	//there is no existing discussion, so add a blank one
         	event.setDiscussion(new WikiText());

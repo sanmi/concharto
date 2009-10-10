@@ -121,7 +121,7 @@
   <bean id="spotlightService" class="org.tsm.concharto.service.SpotlightService">
   	<property name="spotlightDao" ref="spotlightDao"/>
   </bean>
-  <bean id="tagAggregateService" class="org.tsm.concharto.service.TagAggregateService">
+  <bean id="tagAggregateService" class="org.tsm.concharto.service.tagCloud.TagAggregateService">
   	<property name="defaultDaysBack" value="60"/>
   	<property name="maxFont" value="25"/>
   	<property name="minFont" value="10"/>

@@ -13,5 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 --%>
-<div id="headershort"></div>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<div id="headershort">
+	<c:if test="${catalog != 'www'}">
+	  <div id="catalog_heading"><c:out value="${catalog}"/></div>
+	</c:if>
+</div>
   

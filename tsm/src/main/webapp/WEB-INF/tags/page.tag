@@ -12,6 +12,7 @@
 <%@tag import="org.tsm.concharto.auth.AuthConstants" %>
 <%@tag import="org.tsm.concharto.web.filter.NotificationFilter" %>
 <%@tag import="org.tsm.concharto.web.filter.LoginFilter" %>
+<%@tag import="org.tsm.concharto.web.util.CatalogUtil" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+path;
@@ -25,6 +26,7 @@ request.setAttribute("roles", (String)request.getSession().getAttribute(AuthCons
 request.setAttribute("username", (String)request.getSession().getAttribute(AuthConstants.SESSION_AUTH_USERNAME));
 request.setAttribute("hasMessages", (String)request.getSession().getAttribute(NotificationFilter.SESSION_MESSAGES_PENDING));
 request.setAttribute("hostprefix", (String)request.getSession().getAttribute(LoginFilter.SESSION_HOSTPREFIX));
+request.setAttribute("catalog", (String)CatalogUtil.getCatalog(request));
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
