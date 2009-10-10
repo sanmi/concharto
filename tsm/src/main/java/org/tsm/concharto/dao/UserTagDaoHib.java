@@ -95,7 +95,7 @@ public class UserTagDaoHib extends BaseDaoHib <UserTag> implements UserTagDao {
 	@SuppressWarnings("unchecked")
 	public List<String> getDistinctCatalogs() {
 		return getSessionFactory().getCurrentSession().
-			createSQLQuery("select distinct catalog from event").list();
+			createSQLQuery("select distinct catalog from Event").list();
 	}
 
     
