@@ -107,20 +107,19 @@ request.setAttribute("ACTION_INSERT", AuditEntry.ACTION_INSERT);
           <jsp:include page="../include/userlinks.jsp">
             <jsp:param name="user" value="${simpleTable.auditEntry.user}"/>
           </jsp:include>
+          ,(<spring:message code="audit.action.field.${simpleTable.auditEntry.action}"/>
+          r${simpleTable.auditEntry.version}),             
           <%-- If the title has text it is a page, otherwise it is an event discussion --%>
           <c:choose>
             <c:when test="${not empty simpleTable.auditable.title}">
-		          (<a href="${basePath}page.htm?page=${simpleTable.auditable.title}">view</a> |
-		          <a href="${basePath}pagehistory.htm?id=${simpleTable.auditEntry.entityId}&page=${simpleTable.auditable.title}">changes</a>),
+		          (<a href="${basePath}page.htm?page=${simpleTable.auditable.title}">${simpleTable.auditable.title}</a> |
+		          <a href="${basePath}pagehistory.htm?id=${simpleTable.auditEntry.entityId}&page=${simpleTable.auditable.title}">changes</a>) : 
             </c:when>
             <c:otherwise>
-              (<a href="${basePath}event/discuss.htm?discussionId=${simpleTable.auditEntry.entityId}">view</a> |
-              <a href="${basePath}event/discusshistory.htm?id=${simpleTable.auditEntry.entityId}&discussionId=${simpleTable.auditEntry.entityId}">changes</a>),
+              (<a href="${basePath}event/discuss.htm?discussionId=${simpleTable.auditEntry.entityId}">view</a>) :
             </c:otherwise>
           </c:choose>
-          ,(<spring:message code="audit.action.field.${simpleTable.auditEntry.action}"/>
-          r${simpleTable.auditEntry.version})             
-          , ${simpleTable.auditable.title} : ${fn:substring(simpleTable.auditable.text,0,100)}
+            ${fn:substring(simpleTable.auditable.text,0,100)}
         </display:column>
       </display:table>    
 

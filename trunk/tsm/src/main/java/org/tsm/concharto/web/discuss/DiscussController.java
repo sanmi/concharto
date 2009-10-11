@@ -24,6 +24,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
+import org.springframework.web.servlet.view.RedirectView;
 import org.tsm.concharto.dao.EventDao;
 import org.tsm.concharto.model.Event;
 import org.tsm.concharto.model.wiki.WikiText;
@@ -46,16 +47,11 @@ public class DiscussController extends SimpleFormController {
         Long id = ServletRequestUtils.getLongParameter(request, PARAM_ID);
         Event event = null;
         if (id != null) {
-            event = eventDao.findById(id);        	
-        } else {
-            Long discussId = ServletRequestUtils.getLongParameter(request, PARAM_DISCUSSION_ID);
-        	if (discussId != null) {
-        		event = eventDao.findByDiscussionId(discussId);
-        	}
-        }
-        if (null == event.getDiscussion()) {
-        	//there is no existing discussion, so add a blank one
-        	event.setDiscussion(new WikiText());
+	        event = eventDao.findById(id);
+	        if (null == event.getDiscussion()) {
+	        	//there is no existing discussion, so add a blank one
+	        	event.setDiscussion(new WikiText());
+	        }
         }
         return new WikiTextForm(event);
         
@@ -67,6 +63,13 @@ public class DiscussController extends SimpleFormController {
 	protected ModelAndView showForm(HttpServletRequest request,
 			HttpServletResponse response, BindException errors, Map controlModel)
 			throws Exception {
+		Long discussId = ServletRequestUtils.getLongParameter(request, PARAM_DISCUSSION_ID);
+		if (discussId != null) {
+			//Redirect
+    		Event event = eventDao.findByDiscussionId(discussId);
+			String redirect = request.getContextPath() + '/' + getFormView() + ".htm?id=" + event.getId();
+			return new ModelAndView(new RedirectView(redirect,true));
+		}
 		return new ModelAndView(getFormView(), errors.getModel());
 	}
 
